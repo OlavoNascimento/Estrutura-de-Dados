@@ -9,7 +9,7 @@ Circulo criar_circulo(char *linha) {
     return circ;
 }
 
-Circulo circulo_para_svg(FILE *arquivo, Circulo circ) {
+void circulo_para_svg(FILE *arquivo, Circulo circ) {
     fprintf(arquivo,
             "   <circle id='%s' r='%d' cx='%d' cy='%d' stroke='%s' fill='%s'/>\n",
             circ.id,

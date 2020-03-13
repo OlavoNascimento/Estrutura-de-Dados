@@ -4,7 +4,9 @@ siguel
 # Svg files
 *.svg
 
-# Input/Output text files
+# Input/Output/Query text files
+*.geo
+*.qry
 *.txt
 
 # Prerequisites

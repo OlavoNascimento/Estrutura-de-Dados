@@ -10,4 +10,4 @@ typedef struct {
 } Circulo;
 
 Circulo criar_circulo(char *linha);
-Circulo circulo_para_svg(FILE *arquivo, Circulo circ);
+void circulo_para_svg(FILE *arquivo, Circulo circ);
