@@ -2,6 +2,7 @@
 
 #include <circulo.h>
 #include <retangulo.h>
+#include <texto.h>
 
 #define LINHA_MAX 300
 
@@ -29,6 +30,9 @@ int main() {
         } else if(linha[0] == 'r') {
             Retangulo ret = criar_retangulo(linha);
             retangulo_para_svg(saida, ret);
+        } else if(linha[0] == 't') {
+            Texto tex = criar_texto(linha);
+            texto_para_svg(saida, tex);
         }
     }
 
