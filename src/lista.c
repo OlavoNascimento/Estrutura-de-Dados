@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include <lista.h>
-#include <retangulo.h>
 
 Lista* criar_lista() {
     Lista *lis = (Lista*) malloc(sizeof(Lista));
@@ -29,9 +28,8 @@ void inserir_lista(Lista *lista, Figuras fig, int fig_tipo) {
     }
 }
 
-void remover_elemento_lista(Lista *lista, char *id_buscado) {
+struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
     struct No *atual = lista->cabeca;
-    struct No *anterior;
     while(atual != NULL) {
         char *id_atual;
         switch (atual->tipo) {
@@ -47,14 +45,35 @@ void remover_elemento_lista(Lista *lista, char *id_buscado) {
         }
 
         if(strcmp(id_atual, id_buscado) == 0) {
-            anterior->prox = atual->prox;
-            free(atual);
-            atual = NULL;
-        } else {
-            anterior = atual;
-            atual = atual->prox;
+            return atual;
         }
     }
+    return NULL;
+}
+
+void lista_para_svg(Lista *lista, FILE *arquivo) {
+    if(arquivo == NULL) {
+        fprintf(stderr, "Arquivo de saida não pode ser criado!\n");
+        return;
+    }
+
+    fprintf(arquivo, "<svg>\n");
+    struct No* atual = lista->cabeca;
+    while(atual != NULL) {
+        switch (atual->tipo) {
+            case tipo_circulo:
+                circulo_para_svg(arquivo, atual->figura.circ);
+                break;
+            case tipo_retangulo:
+                retangulo_para_svg(arquivo, atual->figura.ret);
+                break;
+            case tipo_texto:
+                texto_para_svg(arquivo, atual->figura.tex);
+                break;
+        }
+        atual = atual->prox;
+    }
+    fprintf(arquivo, "</svg>\n");
 }
 
 void destruir_lista(Lista *lista) {

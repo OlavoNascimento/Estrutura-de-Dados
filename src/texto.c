@@ -11,7 +11,7 @@ Texto criar_texto(char *linha) {
 
 void texto_para_svg(FILE *arquivo, Texto tex) {
     fprintf(arquivo,
-            "   <text id='%s' x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n",
+            "\t<text id='%s' x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n",
             tex.id,
             tex.x,
             tex.y,

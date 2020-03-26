@@ -11,7 +11,7 @@ Circulo criar_circulo(char *linha) {
 
 void circulo_para_svg(FILE *arquivo, Circulo circ) {
     fprintf(arquivo,
-            "   <circle id='%s' r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'/>\n",
+            "\t<circle id='%s' r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'/>\n",
             circ.id,
             circ.raio,
             circ.x,
