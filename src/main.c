@@ -3,8 +3,6 @@
 #include <ler_geo.h>
 #include <lista.h>
 
-// TODO: Máximo de 1000 objetos
-
 int main() {
     FILE *entrada = fopen("entrada.geo", "r");
     if(entrada == NULL) {
