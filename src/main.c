@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include <lista.h>
 #include <circulo.h>
 #include <retangulo.h>
 #include <texto.h>
@@ -20,24 +21,51 @@ int main() {
         return 1;
     }
 
-    fprintf(saida, "<svg width='1024' height='768'>\n");
+    Lista *lista = criar_lista();
+
+    fprintf(saida, "<svg>\n");
 
     char linha[LINHA_MAX];
     while(fgets(linha, LINHA_MAX, entrada) != NULL) {
-        if(linha[0] == 'c') {
-            Circulo circ = criar_circulo(linha);
-            circulo_para_svg(saida, circ);
-        } else if(linha[0] == 'r') {
-            Retangulo ret = criar_retangulo(linha);
-            retangulo_para_svg(saida, ret);
-        } else if(linha[0] == 't') {
-            Texto tex = criar_texto(linha);
-            texto_para_svg(saida, tex);
+        Figuras nova_figura;
+        switch (linha[0]) {
+            case 'c':
+                nova_figura.circ = criar_circulo(linha);
+                inserir_lista(lista, nova_figura, tipo_circulo);
+                circulo_para_svg(saida, nova_figura.circ);
+                break;
+            case 'r':
+                nova_figura.ret = criar_retangulo(linha);
+                inserir_lista(lista, nova_figura, tipo_retangulo);
+                retangulo_para_svg(saida, nova_figura.ret);
+                break;
+            case 't':
+                nova_figura.tex = criar_texto(linha);
+                inserir_lista(lista, nova_figura, tipo_texto);
+                texto_para_svg(saida, nova_figura.tex);
+                break;
         }
     }
 
     fprintf(saida, "</svg>\n");
 
+    struct No *atual = lista->cabeca;
+    while(atual != NULL){
+        switch (atual->tipo) {
+        case tipo_circulo:
+            printf("Circulo: %s\n", atual->figura.circ.id);
+            break;
+        case tipo_retangulo:
+            printf("Retangulo: %s\n", atual->figura.ret.id);
+            break;
+        case tipo_texto:
+            printf("Texto: %s\n", atual->figura.tex.id);
+            break;
+        }
+        atual = atual->prox;
+    }
+
+    destruir_lista(lista);
     fclose(entrada);
     fclose(saida);
 

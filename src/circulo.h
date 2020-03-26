@@ -4,9 +4,9 @@
 
 typedef struct {
     char id[100];
-    int raio;
-    int x;
-    int y;
+    double raio;
+    double x;
+    double y;
     char cor_borda[20];
     char cor_preenchimento[20];
 } Circulo;

@@ -4,8 +4,8 @@
 
 typedef struct {
     char id[100];
-    int x;
-    int y;
+    double x;
+    double y;
     char cor_borda[20];
     char cor_preenchimento[20];
     char texto[300];

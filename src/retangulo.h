@@ -4,10 +4,10 @@
 
 typedef struct {
     char id[100];
-    int largura;
-    int altura;
-    int x;
-    int y;
+    double largura;
+    double altura;
+    double x;
+    double y;
     char cor_borda[20];
     char cor_preenchimento[20];
 } Retangulo;
