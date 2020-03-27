@@ -29,6 +29,6 @@ typedef struct {
 
 Lista* criar_lista();
 void inserir_lista(Lista *lista, Figuras fig, int fig_tipo);
-void lista_para_svg(Lista *lista, FILE *arquivo);
+void lista_para_svg(Lista *lista, char *caminho_svg);
 void remover_elemento_lista(Lista *lista, char *id);
 void destruir_lista();

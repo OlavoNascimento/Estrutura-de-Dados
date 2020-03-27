@@ -3,7 +3,8 @@
 
 #define LINHA_MAX 300
 
-Lista* ler_geo(FILE* arquivo) {
+Lista* ler_geo(char *caminho_geo) {
+    FILE *arquivo = fopen(caminho_geo, "r");
     if(arquivo == NULL) {
         fprintf(stderr, "Arquivo de entrada não pode ser lido!\n");
         return NULL;
@@ -40,6 +41,7 @@ Lista* ler_geo(FILE* arquivo) {
                 break;
         }
     }
+    fclose(arquivo);
 
     return lista;
 }

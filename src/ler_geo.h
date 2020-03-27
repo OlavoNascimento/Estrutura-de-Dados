@@ -2,4 +2,4 @@
 
 #include <lista.h>
 
-Lista* ler_geo(FILE *arquivo);
+Lista* ler_geo(char *caminho_arq_descricao);

@@ -51,7 +51,8 @@ struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
     return NULL;
 }
 
-void lista_para_svg(Lista *lista, FILE *arquivo) {
+void lista_para_svg(Lista *lista, char *caminho_svg) {
+    FILE *arquivo = fopen(caminho_svg, "w");
     if(arquivo == NULL) {
         fprintf(stderr, "Arquivo de saida não pode ser criado!\n");
         return;
@@ -74,6 +75,7 @@ void lista_para_svg(Lista *lista, FILE *arquivo) {
         atual = atual->prox;
     }
     fprintf(arquivo, "</svg>\n");
+    fclose(arquivo);
 }
 
 void destruir_lista(Lista *lista) {
