@@ -49,7 +49,9 @@ int main(int argc, char const *argv[]) {
 
     if(caminho_consulta != NULL) {
         printf("Arquivo de consulta: %s\n", caminho_consulta);
+        FILE *arquivo_log = criar_arquivo_log(caminho_dir_saida, caminho_descricao);
         ler_qry(lista, caminho_consulta);
+        fclose(arquivo_log);
     }
 
     destruir_lista(lista);

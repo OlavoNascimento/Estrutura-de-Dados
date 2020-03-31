@@ -8,6 +8,20 @@
 
 #define LINHA_MAX 300
 
+FILE* criar_arquivo_log(char *dir_saida, char *caminho_geo) {
+    char *nome_arquivo_log = adicionar_sufixo(caminho_geo, "-arqcons.txt");
+    char *caminho_arquivo_log = preparar_caminho(dir_saida, nome_arquivo_log);
+    printf("Arquivo de log: %s\n", caminho_arquivo_log);
+    FILE *arquivo_log = fopen(nome_arquivo_log, "w");
+    if(arquivo_log == NULL) {
+        fprintf(stderr, "Falha ao criar arquivo de log!\n");
+        return NULL;
+    }
+    free(nome_arquivo_log);
+    free(caminho_arquivo_log);
+    return arquivo_log;
+}
+
 void ler_qry(Lista *lista, char *caminho_qry) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if(arquivo_consulta == NULL) {
