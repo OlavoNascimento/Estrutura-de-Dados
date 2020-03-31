@@ -4,6 +4,13 @@
 #include <retangulo.h>
 #include <circulo.h>
 
+char* fig_tipo_para_string(TiposFigura tipo) {
+    char *valores[] = {
+        "retângulo", "círculo", "texto"
+    };
+    return valores[tipo];
+}
+
 double max(double a, double b) {
     return a > b ? a : b;
 }

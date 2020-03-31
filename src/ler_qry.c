@@ -32,15 +32,21 @@ bool checar_interseccao(Lista *lista, char *linha, FILE *log) {
         return NULL;
 
     bool intersectam = false;
-    if(no1->tipo == tipo_retangulo && no1->tipo == no2->tipo) {
+    if(no1->tipo == TipoRetangulo && no1->tipo == no2->tipo)
         intersectam = retangulos_interseccao(no1->figura.ret, no2->figura.ret);
-    } else if(no1->tipo == tipo_circulo && no1->tipo == no2->tipo) {
+    else if(no1->tipo == TipoCirculo && no1->tipo == no2->tipo)
         intersectam = circulos_interseccao(no1->figura.circ, no2->figura.circ);
-    } else if(no1->tipo == tipo_circulo && no2->tipo == tipo_retangulo) {
+    else if(no1->tipo == TipoCirculo && no2->tipo == TipoRetangulo)
         intersectam = circulo_retangulo_interseccao(no1->figura.circ, no2->figura.ret);
-    } else if(no1->tipo == tipo_retangulo && no2->tipo == tipo_circulo) {
+    else if(no1->tipo ==  TipoRetangulo && no2->tipo == TipoCirculo)
         intersectam = circulo_retangulo_interseccao(no2->figura.circ, no1->figura.ret);
-    }
+
+    fprintf(log, "o? %s %s\n", id1, id2);
+    fprintf(log, "%s: %s %s: %s %s\n",
+            id1, fig_tipo_para_string(no1->tipo),
+            id2, fig_tipo_para_string(no2->tipo),
+            intersectam ? "SIM" : "NAO"
+    );
     return intersectam;
 }
 

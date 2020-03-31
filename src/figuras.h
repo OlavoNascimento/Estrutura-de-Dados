@@ -7,9 +7,9 @@
 #include <texto.h>
 
 typedef enum {
-    tipo_retangulo,
-    tipo_circulo,
-    tipo_texto
+    TipoRetangulo,
+    TipoCirculo,
+    TipoTexto
 } TiposFigura ;
 
 typedef union {
@@ -18,6 +18,7 @@ typedef union {
     Texto tex;
 } Figuras;
 
+char* fig_tipo_para_string(TiposFigura tipo);
 bool retangulos_interseccao(Retangulo ret1, Retangulo ret2);
 bool circulos_interseccao(Circulo circ1, Circulo circ2);
 bool circulo_retangulo_interseccao(Circulo circ, Retangulo ret);

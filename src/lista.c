@@ -36,13 +36,13 @@ struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
     while(atual != NULL) {
         char *id_atual;
         switch (atual->tipo) {
-            case tipo_circulo:
+            case TipoCirculo:
                 id_atual = atual->figura.circ.id;
                 break;
-            case tipo_retangulo:
+            case TipoRetangulo:
                 id_atual = atual->figura.ret.id;
                 break;
-            case tipo_texto:
+            case TipoTexto:
                 id_atual = atual->figura.tex.id;
                 break;
         }
@@ -66,13 +66,13 @@ void lista_para_svg(Lista *lista, char *caminho_svg) {
     struct No* atual = lista->cabeca;
     while(atual != NULL) {
         switch (atual->tipo) {
-            case tipo_circulo:
+            case TipoCirculo:
                 circulo_para_svg(arquivo, atual->figura.circ);
                 break;
-            case tipo_retangulo:
+            case TipoRetangulo:
                 retangulo_para_svg(arquivo, atual->figura.ret);
                 break;
-            case tipo_texto:
+            case TipoTexto:
                 texto_para_svg(arquivo, atual->figura.tex);
                 break;
         }

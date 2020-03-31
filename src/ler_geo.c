@@ -21,17 +21,17 @@ Lista* ler_geo(char *caminho_geo) {
         switch (linha[0]) {
             case 'c':
                 nova_figura.circ = criar_circulo(linha);
-                inserir_lista(lista, nova_figura, tipo_circulo);
+                inserir_lista(lista, nova_figura, TipoCirculo);
                 figuras_criadas++;
                 break;
             case 'r':
                 nova_figura.ret = criar_retangulo(linha);
-                inserir_lista(lista, nova_figura, tipo_retangulo);
+                inserir_lista(lista, nova_figura, TipoRetangulo);
                 figuras_criadas++;
                 break;
             case 't':
                 nova_figura.tex = criar_texto(linha);
-                inserir_lista(lista, nova_figura, tipo_texto);
+                inserir_lista(lista, nova_figura, TipoTexto);
                 figuras_criadas++;
                 break;
             default:
