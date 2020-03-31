@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <lista.h>
+#include <figuras.h>
 
 Lista* criar_lista() {
     Lista *lis = (Lista*) malloc(sizeof(Lista));
@@ -10,7 +11,7 @@ Lista* criar_lista() {
     return lis;
 }
 
-void inserir_lista(Lista *lista, Figuras fig, int fig_tipo) {
+void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
     struct No *no = (struct No*) malloc(sizeof(struct No));
     no->figura = fig;
     no->tipo = fig_tipo;
@@ -61,7 +62,7 @@ void lista_para_svg(Lista *lista, char *caminho_svg) {
         return;
     }
 
-    fprintf(arquivo, "<svg>\n");
+    fprintf(arquivo, "<svg width='200' height='200'>\n");
     struct No* atual = lista->cabeca;
     while(atual != NULL) {
         switch (atual->tipo) {
