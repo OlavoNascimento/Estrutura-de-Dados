@@ -63,6 +63,10 @@ char* unir_caminhos(char* diretorio, char* nome_arquivo) {
 // Adiciona um diretório ao caminho de um arquivo caso
 // ele seja fornecido.
 char* preparar_caminho(char* diretorio, char* nome_arquivo) {
+    if(nome_arquivo == NULL) {
+        fprintf(stderr, "Nome de arquivo nulo passado a preparar caminho!\n");
+        return NULL;
+    }
     char* caminho_final = NULL;
     if(diretorio != NULL) {
         // Adiciona o diretório ada ao caminho do arquivo
@@ -81,17 +85,18 @@ char* extrair_nome_base(char* nome_arquivo) {
     // Aloca memória apenas para o nome do arquivo.
     char *nome_base = (char*) malloc((strlen(nome_arquivo)+1)*sizeof(char));
     // Extrai tudo até o primeiro . existente na string.
+    // TODO Encontrar *ultimo* ponto na string
     sscanf(nome_arquivo, "%[^.]", nome_base);
     return nome_base;
 }
 
 // Remove a extensão de um arquivo no formato nomeArquivo.ext e
-// em seu lugar coloca a nova extensão passada como argumento para
+// em seu lugar coloca um sufixo passado como argumento para
 // a função.
-char* substituir_extensao(char* nome_arquivo, char* ext_nova) {
+char* adicionar_sufixo(char* nome_arquivo, char* sufixo) {
     char *nome_base = extrair_nome_base(nome_arquivo);
-    char *novo_nome = (char*) malloc((strlen(nome_arquivo)+1)*sizeof(char));
-    sprintf(novo_nome, "%s.%s", nome_base, ext_nova);
+    char *novo_nome = (char*) malloc((strlen(nome_arquivo)+strlen(sufixo)+1)*sizeof(char));
+    sprintf(novo_nome, "%s%s", nome_base, sufixo);
     free(nome_base);
     return novo_nome;
 }

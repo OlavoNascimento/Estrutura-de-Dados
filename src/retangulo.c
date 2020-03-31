@@ -9,7 +9,7 @@ Retangulo criar_retangulo(char *linha) {
 
 void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
     fprintf(arquivo,
-           "\t<rect id='%s' width='%ld' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s'/>\n",
+           "\t<rect id='%s' width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s'/>\n",
             ret.id,
             ret.largura,
             ret.altura,

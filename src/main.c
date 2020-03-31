@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include <ler_geo.h>
+#include <ler_qry.h>
 #include <lista.h>
 #include <parametros.h>
 
@@ -31,7 +32,7 @@ int main(int argc, char const *argv[]) {
         caminho_consulta =  preparar_caminho(params.nome_dir_entrada, params.nome_consulta);
 
     // Adapta o nome do arquivo .svg a partir do arquivo de descrição
-    char *nome_svg = substituir_extensao(params.nome_descricao, "svg");
+    char *nome_svg = adicionar_sufixo(params.nome_descricao, ".svg");
     char *caminho_svg = preparar_caminho(params.nome_dir_saida, nome_svg);
     free(nome_svg);
     nome_svg = NULL;
@@ -40,17 +41,16 @@ int main(int argc, char const *argv[]) {
     destruir_parametros(params);
 
     printf("Arquivo de descrição: %s\n", caminho_descricao);
-    if(caminho_consulta != NULL)
-        printf("Arquivo de consulta: %s\n", caminho_consulta);
     printf("Diretório de saída: %s\n", caminho_dir_saida);
     printf("Nome do arquivo svg: %s\n", caminho_svg);
 
     Lista *lista = ler_geo(caminho_descricao);
-    if(lista == NULL) {
-        fprintf(stderr, "Falha ao ler %s!\n", caminho_descricao);
-        return 1;
-    }
     lista_para_svg(lista, caminho_svg);
+
+    if(caminho_consulta != NULL) {
+        printf("Arquivo de consulta: %s\n", caminho_consulta);
+        ler_qry(lista, caminho_consulta);
+    }
 
     destruir_lista(lista);
     free(caminho_descricao);

@@ -4,12 +4,13 @@
 #define LINHA_MAX 300
 
 Lista* ler_geo(char *caminho_geo) {
+    Lista *lista = criar_lista();
+
     FILE *arquivo = fopen(caminho_geo, "r");
     if(arquivo == NULL) {
-        fprintf(stderr, "Arquivo de entrada não pode ser lido!\n");
-        return NULL;
+        fprintf(stderr, "Falha ao ler %s!\n", caminho_geo);
+        return lista;
     }
-    Lista *lista = criar_lista();
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
 

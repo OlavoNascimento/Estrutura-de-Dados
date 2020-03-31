@@ -16,6 +16,8 @@ void inserir_lista(Lista *lista, Figuras fig, int fig_tipo) {
     no->tipo = fig_tipo;
     no->prox = NULL;
 
+    // TODO Remover elementos duplicados
+    // TODO Adicionar função comparar_nos
     struct No *atual = lista->cauda;
     if(atual == NULL) {
         // Primeiro elemento da lista
@@ -47,6 +49,7 @@ struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
         if(strcmp(id_atual, id_buscado) == 0) {
             return atual;
         }
+        atual = atual->prox;
     }
     return NULL;
 }
@@ -54,7 +57,7 @@ struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
 void lista_para_svg(Lista *lista, char *caminho_svg) {
     FILE *arquivo = fopen(caminho_svg, "w");
     if(arquivo == NULL) {
-        fprintf(stderr, "Arquivo de saida não pode ser criado!\n");
+        fprintf(stderr, "Arquivo %s não pode ser criado!\n", caminho_svg);
         return;
     }
 

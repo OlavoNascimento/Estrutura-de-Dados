@@ -9,7 +9,7 @@ OBJECTS = $(SOURCES:.c=.o)
 all: siguel
 
 siguel: $(OBJECTS)
-	@echo "Criando executavel..."
+	@echo "Criando executável..."
 	gcc -o $@ $(OBJECTS)
 
 # Específica que cada arquivo .o deve ser gerado a partir
