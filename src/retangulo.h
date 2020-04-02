@@ -10,6 +10,8 @@ typedef struct {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
+    int tracejado_tamanho;
+    int tracejado_espaco;
 } Retangulo;
 
 Retangulo criar_retangulo(char *linha);

@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
         caminho_consulta =  preparar_caminho(params.nome_dir_entrada, params.nome_consulta);
 
     // Adapta o nome do arquivo .svg a partir do arquivo de descrição
-    char *nome_svg = adicionar_sufixo(params.nome_descricao, ".svg");
+    char *nome_svg = alterar_sufixo(params.nome_descricao, ".svg");
     char *caminho_svg = preparar_caminho(params.nome_dir_saida, nome_svg);
     free(nome_svg);
     nome_svg = NULL;
@@ -41,17 +41,30 @@ int main(int argc, char const *argv[]) {
     destruir_parametros(params);
 
     printf("Arquivo de descrição: %s\n", caminho_descricao);
-    printf("Diretório de saída: %s\n", caminho_dir_saida);
     printf("Nome do arquivo svg: %s\n", caminho_svg);
 
     Lista *lista = ler_geo(caminho_descricao);
     lista_para_svg(lista, caminho_svg);
 
     if(caminho_consulta != NULL) {
+        char *caminho_log = alterar_sufixo(caminho_svg, "-arqcons.txt");
+        char *caminho_svg_consulta = alterar_sufixo(caminho_svg, "-arqcons.svg");
         printf("Arquivo de consulta: %s\n", caminho_consulta);
-        FILE *arquivo_log = criar_arquivo_log(caminho_dir_saida, caminho_descricao);
+        printf("Arquivo de log: %s\n", caminho_log);
+        printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
+
+        FILE *arquivo_log = fopen(caminho_log, "w");
+        if(arquivo_log == NULL) {
+            fprintf(stderr, "Falha ao criar arquivo de log!\n");
+            return 1;
+        }
+
         ler_qry(lista, caminho_consulta, arquivo_log);
+        lista_para_svg(lista, caminho_svg_consulta);
+
         fclose(arquivo_log);
+        free(caminho_log);
+        free(caminho_svg_consulta);
     }
 
     destruir_lista(lista);

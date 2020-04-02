@@ -19,6 +19,5 @@ typedef union {
 } Figuras;
 
 char* fig_tipo_para_string(TiposFigura tipo);
-bool retangulos_interseccao(Retangulo ret1, Retangulo ret2);
-bool circulos_interseccao(Circulo circ1, Circulo circ2);
-bool circulo_retangulo_interseccao(Circulo circ, Retangulo ret);
+bool interseccao_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);
+Retangulo envolver_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);

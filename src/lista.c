@@ -62,7 +62,7 @@ void lista_para_svg(Lista *lista, char *caminho_svg) {
         return;
     }
 
-    fprintf(arquivo, "<svg width='200' height='200'>\n");
+    fprintf(arquivo, "<svg>\n");
     struct No* atual = lista->cabeca;
     while(atual != NULL) {
         switch (atual->tipo) {
