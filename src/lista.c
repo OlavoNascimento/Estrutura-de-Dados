@@ -10,6 +10,10 @@ Lista* criar_lista() {
     Lista *lis = (Lista*) malloc(sizeof(Lista));
     lis->cabeca = NULL;
     lis->cauda= NULL;
+    lis->exibicao.origem_x = 0;
+    lis->exibicao.origem_y = 0;
+    lis->exibicao.largura = 0;
+    lis->exibicao.altura = 0;
     return lis;
 }
 
@@ -19,14 +23,14 @@ void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
         case TipoCirculo:
             novo_x = fig.circ.x - fig.circ.raio;
             novo_y = fig.circ.y - fig.circ.raio;
-            nova_largura = fig.circ.x + fig.circ.raio + abs(novo_x);
-            nova_altura = fig.circ.y + fig.circ.raio + abs(novo_y);
+            nova_largura = fig.circ.x + fig.circ.raio;
+            nova_altura = fig.circ.y + fig.circ.raio;
             break;
         case TipoRetangulo:
             novo_x = fig.ret.x;
             novo_y = fig.ret.y;
-            nova_largura = fig.ret.x + fig.ret.largura + abs(novo_x);
-            nova_altura = fig.ret.y + fig.ret.altura + abs(novo_y);
+            nova_largura = fig.ret.x + fig.ret.largura;
+            nova_altura = fig.ret.y + fig.ret.altura;
             break;
     }
 
@@ -83,9 +87,13 @@ struct No* buscar_elemento_id_lista(Lista *lista, char *id_buscado) {
 struct No* buscar_elemento_posicao_lista(Lista *lista, int posicao_buscada) {
     int posicao_atual = 0;
     struct No *atual = lista->cabeca;
-    while(atual != NULL && posicao_atual != posicao_buscada)
+    while(atual != NULL && posicao_atual != posicao_buscada) {
         atual = atual->prox;
-    return atual;
+        posicao_atual++;
+    }
+    if(posicao_atual == posicao_buscada)
+        return atual;
+    return NULL;
 }
 
 void lista_para_svg(Lista *lista, char *caminho_svg) {
@@ -98,8 +106,8 @@ void lista_para_svg(Lista *lista, char *caminho_svg) {
     fprintf(arquivo, "<svg viewBox='%lf %lf %lf %lf'>\n",
             lista->exibicao.origem_x - SVG_MARGEM,
             lista->exibicao.origem_y - SVG_MARGEM,
-            lista->exibicao.largura + 2*SVG_MARGEM,
-            lista->exibicao.altura + 2*SVG_MARGEM
+            lista->exibicao.largura + abs(lista->exibicao.origem_x) + 2 * SVG_MARGEM,
+            lista->exibicao.altura + abs(lista->exibicao.origem_y) + 2 * SVG_MARGEM
     );
     while(atual != NULL) {
         switch(atual->tipo) {
@@ -111,6 +119,9 @@ void lista_para_svg(Lista *lista, char *caminho_svg) {
                 break;
             case TipoTexto:
                 texto_para_svg(arquivo, atual->figura.tex);
+                break;
+            case TipoLinha:
+                linha_para_svg(arquivo, atual->figura.lin);
                 break;
         }
         atual = atual->prox;

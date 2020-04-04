@@ -10,7 +10,7 @@
 
 char* fig_tipo_para_string(TiposFigura tipo) {
     char *valores[] = {
-        "retângulo", "círculo", "texto"
+        "retângulo", "círculo", "texto", "linha"
     };
     return valores[tipo];
 }
@@ -83,6 +83,7 @@ void envolver_circulo_retangulo(Retangulo *contorno, Circulo circ, Retangulo ret
 
 Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2) {
     Retangulo contorno = {
+        .id = "\0",
         .cor_borda = "black",
         .cor_preenchimento = "none",
     };
@@ -106,10 +107,6 @@ Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Fi
         id2 = fig2.circ.id;
     }
 
-    char id[100];
-    sprintf(id, "contorno_%s_%s", id1, id2);
-    strcpy(contorno.id, id);
-
     if(!intersectam) {
         contorno.tracejado_tamanho = TRACEJADO_TAMANHO;
         contorno.tracejado_espaco = TRACEJADO_TAMANHO;
@@ -119,4 +116,56 @@ Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Fi
     contorno.largura += 2 * MARGEM_CONTORNO;
     contorno.altura += 2 * MARGEM_CONTORNO;
     return contorno;
+}
+
+bool ponto_interno_circulo(Circulo circ, double ponto_x, double ponto_y) {
+    if(ponto_x <= circ.x - circ.raio || ponto_x >= circ.x + circ.raio)
+        return false;
+    if(ponto_y <= circ.y - circ.raio || ponto_y >= circ.y + circ.raio)
+        return false;
+    return true;
+}
+
+bool ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_y) {
+    if(ponto_x <= ret.x || ponto_x >= ret.x + ret.largura)
+        return false;
+    if(ponto_y <= ret.y || ponto_y >= ret.y + ret.altura)
+        return false;
+    return true;
+}
+
+bool ponto_interno_figura(Figuras figura, TiposFigura tipo, double ponto_x, double ponto_y) {
+    bool interno = false;
+    switch(tipo) {
+        case TipoCirculo:
+            interno = ponto_interno_circulo(figura.circ, ponto_x, ponto_y);
+            break;
+        case TipoRetangulo:
+            interno = ponto_interno_retangulo(figura.ret, ponto_x, ponto_y);
+            break;
+    }
+    return interno;
+}
+
+Linha ligar_ponto_figura(Circulo ponto, Figuras figura, TiposFigura tipo) {
+    double fig_centro_x = 0, fig_centro_y = 0;
+    switch (tipo) {
+        case TipoCirculo:
+            fig_centro_x = figura.circ.x;
+            fig_centro_y = figura.circ.y;
+            break;
+        case TipoRetangulo:
+            fig_centro_x = figura.ret.x + figura.ret.largura/2;
+            fig_centro_y = figura.ret.y + figura.ret.altura/2;
+            break;
+    }
+    Linha ligacao = {
+        .x1 = ponto.x,
+        .y1 = ponto.y,
+        .x2 = fig_centro_x,
+        .y2 = fig_centro_y,
+    };
+    strcpy(ligacao.cor_borda, ponto.cor_borda);
+    strcpy(ligacao.cor_preenchimento, ponto.cor_preenchimento);
+    return ligacao;
 }

@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+
 #include <retangulo.h>
 
 Retangulo criar_retangulo(char *linha) {
@@ -10,9 +13,11 @@ Retangulo criar_retangulo(char *linha) {
 }
 
 void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
+    fprintf(arquivo, "\t<rect");
+    if(strlen(ret.id) > 0)
+        fprintf(arquivo, " id='%s'", ret.id);
     fprintf(arquivo,
-           "\t<rect id='%s' width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s'",
-            ret.id,
+           " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s'",
             ret.largura,
             ret.altura,
             ret.x,

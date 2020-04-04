@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include <circulo.h>
 
@@ -10,9 +11,11 @@ Circulo criar_circulo(char *linha) {
 }
 
 void circulo_para_svg(FILE *arquivo, Circulo circ) {
+    fprintf(arquivo, "\t<circle");
+    if(strlen(circ.id) > 0)
+        fprintf(arquivo, " id='%s'", circ.id);
     fprintf(arquivo,
-            "\t<circle id='%s' r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'/>\n",
-            circ.id,
+            " r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'/>\n",
             circ.raio,
             circ.x,
             circ.y,
