@@ -57,7 +57,7 @@ void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
     }
 }
 
-struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
+struct No* buscar_elemento_id_lista(Lista *lista, char *id_buscado) {
     struct No *atual = lista->cabeca;
     while(atual != NULL) {
         char *id_atual;
@@ -80,13 +80,21 @@ struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
     return NULL;
 }
 
+struct No* buscar_elemento_posicao_lista(Lista *lista, int posicao_buscada) {
+    int posicao_atual = 0;
+    struct No *atual = lista->cabeca;
+    while(atual != NULL && posicao_atual != posicao_buscada)
+        atual = atual->prox;
+    return atual;
+}
+
 void lista_para_svg(Lista *lista, char *caminho_svg) {
     FILE *arquivo = fopen(caminho_svg, "w");
     if(arquivo == NULL) {
         fprintf(stderr, "Arquivo %s não pode ser criado!\n", caminho_svg);
         return;
     }
-    struct No* atual = lista->cabeca;
+    struct No *atual = lista->cabeca;
     fprintf(arquivo, "<svg viewBox='%lf %lf %lf %lf'>\n",
             lista->exibicao.origem_x - SVG_MARGEM,
             lista->exibicao.origem_y - SVG_MARGEM,

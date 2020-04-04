@@ -26,17 +26,18 @@ Texto aviso_sobreposicao(Retangulo contorno, char *id1, char *id2) {
 void checar_interseccao(Lista *lista, char *linha, FILE *log) {
     char id1[100], id2[100];
     sscanf(linha, "o? %s %s", id1, id2);
-    struct No *no1 = buscar_elemento_lista(lista, id1);
-    struct No *no2 = buscar_elemento_lista(lista, id2);
+    struct No *no1 = buscar_elemento_id_lista(lista, id1);
+    struct No *no2 = buscar_elemento_id_lista(lista, id2);
     if(no1 == NULL || no2 == NULL)
         return;
 
     bool intersectam = interseccao_figuras(no1->figura, no1->tipo, no2->figura, no2->tipo);
+    Figuras contorno;
+    contorno.ret = envolver_figuras(intersectam, no1->figura, no1->tipo, no2->figura, no2->tipo);
+    inserir_lista(lista, contorno, TipoRetangulo);
     if(intersectam) {
-        Figuras contorno, aviso;
-        contorno.ret = envolver_figuras(no1->figura, no1->tipo, no2->figura, no2->tipo);
+        Figuras aviso;
         aviso.tex = aviso_sobreposicao(contorno.ret, id1, id2);
-        inserir_lista(lista, contorno, TipoRetangulo);
         inserir_lista(lista, aviso, TipoTexto);
     }
 

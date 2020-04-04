@@ -22,4 +22,4 @@ char* fig_tipo_para_string(TiposFigura tipo);
 double max(double a, double b);
 double min(double a, double b);
 bool interseccao_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);
-Retangulo envolver_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);
+Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);

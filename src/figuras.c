@@ -81,12 +81,10 @@ void envolver_circulo_retangulo(Retangulo *contorno, Circulo circ, Retangulo ret
     contorno->altura = max(ret.y+ret.altura, circ.y+circ.raio) - contorno->y;
 }
 
-Retangulo envolver_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2) {
+Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2) {
     Retangulo contorno = {
         .cor_borda = "black",
         .cor_preenchimento = "none",
-        .tracejado_tamanho = TRACEJADO_TAMANHO,
-        .tracejado_espaco = TRACEJADO_TAMANHO
     };
 
     char *id1, *id2;
@@ -112,6 +110,10 @@ Retangulo envolver_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposF
     sprintf(id, "contorno_%s_%s", id1, id2);
     strcpy(contorno.id, id);
 
+    if(!intersectam) {
+        contorno.tracejado_tamanho = TRACEJADO_TAMANHO;
+        contorno.tracejado_espaco = TRACEJADO_TAMANHO;
+    }
     contorno.x -= MARGEM_CONTORNO;
     contorno.y -= MARGEM_CONTORNO;
     contorno.largura += 2 * MARGEM_CONTORNO;
