@@ -1,10 +1,11 @@
 #include <stdbool.h>
+#include <string.h>
 
 #include <figuras.h>
 #include <retangulo.h>
 #include <circulo.h>
 
-#define MARGEM_CONTORNO 5
+#define MARGEM_CONTORNO 2
 #define TRACEJADO_TAMANHO 2
 
 char* fig_tipo_para_string(TiposFigura tipo) {
@@ -82,20 +83,35 @@ void envolver_circulo_retangulo(Retangulo *contorno, Circulo circ, Retangulo ret
 
 Retangulo envolver_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2) {
     Retangulo contorno = {
-        .id = "\0",
         .cor_borda = "black",
         .cor_preenchimento = "none",
-        .tracejado_espaco = MARGEM_CONTORNO,
-        .tracejado_tamanho = MARGEM_CONTORNO
+        .tracejado_tamanho = TRACEJADO_TAMANHO,
+        .tracejado_espaco = TRACEJADO_TAMANHO
     };
-    if(tipo1 == TipoRetangulo && tipo1 == tipo2)
+
+    char *id1, *id2;
+    if(tipo1 == TipoRetangulo && tipo1 == tipo2) {
         envolver_retangulos(&contorno, fig1.ret, fig2.ret);
-    else if(tipo1 == TipoCirculo && tipo1 == tipo2)
+        id1 = fig1.ret.id;
+        id2 = fig2.ret.id;
+    } else if(tipo1 == TipoCirculo && tipo1 == tipo2) {
         envolver_circulos(&contorno, fig1.circ, fig2.circ);
-    else if(tipo1 == TipoCirculo && tipo2 == TipoRetangulo)
+        id1 = fig1.circ.id;
+        id2 = fig2.circ.id;
+    } else if(tipo1 == TipoCirculo && tipo2 == TipoRetangulo) {
         envolver_circulo_retangulo(&contorno, fig1.circ, fig2.ret);
-    else if(tipo1 == TipoRetangulo && tipo2 == TipoCirculo)
+        id1 = fig1.circ.id;
+        id2 = fig2.ret.id;
+    } else if(tipo1 == TipoRetangulo && tipo2 == TipoCirculo) {
         envolver_circulo_retangulo(&contorno, fig2.circ, fig1.ret);
+        id1 = fig1.ret.id;
+        id2 = fig2.circ.id;
+    }
+
+    char id[100];
+    sprintf(id, "contorno_%s_%s", id1, id2);
+    strcpy(contorno.id, id);
+
     contorno.x -= MARGEM_CONTORNO;
     contorno.y -= MARGEM_CONTORNO;
     contorno.largura += 2 * MARGEM_CONTORNO;

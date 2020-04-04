@@ -14,7 +14,7 @@ Lista* criar_lista() {
 }
 
 void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
-    double novo_x, novo_y, nova_largura, nova_altura;
+    double novo_x = 0, novo_y = 0, nova_largura = 0, nova_altura = 0;
     switch(tipo) {
         case TipoCirculo:
             novo_x = fig.circ.x - fig.circ.raio;
@@ -27,9 +27,6 @@ void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
             novo_y = fig.ret.y;
             nova_largura = fig.ret.x + fig.ret.largura + abs(novo_x);
             nova_altura = fig.ret.y + fig.ret.altura + abs(novo_y);
-            break;
-        default:
-            return;
             break;
     }
 

@@ -8,6 +8,21 @@
 
 #define LINHA_MAX 300
 
+Texto aviso_sobreposicao(Retangulo contorno, char *id1, char *id2) {
+    char id[100];
+    sprintf(id, "aviso_sobreposição_%s_%s", id1, id2);
+    Texto aviso = {
+        .x = contorno.x + contorno.largura/8,
+        .y = contorno.y + contorno.altura/2,
+        .cor_borda = "None",
+        .cor_preenchimento = "Black",
+        .texto = "sobrepoe",
+        .tamanho = 6
+    };
+    strcpy(aviso.id, id);
+    return aviso;
+}
+
 void checar_interseccao(Lista *lista, char *linha, FILE *log) {
     char id1[100], id2[100];
     sscanf(linha, "o? %s %s", id1, id2);
@@ -18,9 +33,11 @@ void checar_interseccao(Lista *lista, char *linha, FILE *log) {
 
     bool intersectam = interseccao_figuras(no1->figura, no1->tipo, no2->figura, no2->tipo);
     if(intersectam) {
-        Figuras contorno;
+        Figuras contorno, aviso;
         contorno.ret = envolver_figuras(no1->figura, no1->tipo, no2->figura, no2->tipo);
+        aviso.tex = aviso_sobreposicao(contorno.ret, id1, id2);
         inserir_lista(lista, contorno, TipoRetangulo);
+        inserir_lista(lista, aviso, TipoTexto);
     }
 
     fprintf(log, "o? %s %s\n", id1, id2);
