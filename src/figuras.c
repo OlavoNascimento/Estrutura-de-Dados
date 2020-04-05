@@ -169,3 +169,20 @@ Linha ligar_ponto_figura(Circulo ponto, Figuras figura, TiposFigura tipo) {
     strcpy(ligacao.cor_preenchimento, ponto.cor_preenchimento);
     return ligacao;
 }
+
+void alterar_cor_figura(Figuras figura, TiposFigura tipo, char *cor_borda, char *cor_preenchimento) {
+    switch(tipo) {
+        case TipoCirculo:
+            strcpy(figura.circ.cor_borda, cor_borda);
+            strcpy(figura.circ.cor_preenchimento, cor_preenchimento);
+            break;
+        case TipoRetangulo:
+            strcpy(figura.ret.cor_borda, cor_borda);
+            strcpy(figura.ret.cor_preenchimento, cor_preenchimento);
+            break;
+        case TipoTexto:
+            strcpy(figura.tex.cor_borda, cor_borda);
+            strcpy(figura.tex.cor_preenchimento, cor_preenchimento);
+            break;
+    }
+}

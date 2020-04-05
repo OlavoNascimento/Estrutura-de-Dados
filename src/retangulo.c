@@ -26,7 +26,8 @@ void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
             ret.cor_preenchimento
     );
     if(ret.tracejado_tamanho != 0 || ret.tracejado_espaco != 0)
-        fprintf(arquivo, " style='stroke-dasharray: %d %d'",
+        fprintf(arquivo,
+                " style='stroke-dasharray: %d %d'",
                 ret.tracejado_tamanho,
                 ret.tracejado_espaco
         );

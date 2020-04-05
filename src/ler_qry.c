@@ -73,10 +73,9 @@ void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
         return;
 
     bool interno = ponto_interno_figura(no->figura, no->tipo, ponto_x, ponto_y);
-    Figuras ponto;
+    Figuras ponto, ligacao;
     ponto.circ = criar_ponto(interno, ponto_x, ponto_y);
     inserir_lista(lista, ponto, TipoCirculo);
-    Figuras ligacao;
     ligacao.lin = ligar_ponto_figura(ponto.circ, no->figura, no->tipo);
     inserir_lista(lista, ligacao, TipoLinha);
 
@@ -85,6 +84,15 @@ void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
             fig_pos, fig_tipo_para_string(no->tipo),
             interno ? "INTERNO" : "NAO INTERNO"
     );
+}
+
+void alterar_cor(Lista *lista, char *linha, FILE *log) {
+    char id[100], corb[20], corp[20];
+    sscanf(linha, "pnt %s %s %s", id, corb, corp);
+    struct No *no = buscar_elemento_id_lista(lista, id);
+    if(no == NULL)
+        return;
+    alterar_cor_figura(no->figura, no->tipo, corb, corp);
 }
 
 void ler_qry(Lista *lista, char *caminho_qry, FILE* log) {
@@ -102,7 +110,7 @@ void ler_qry(Lista *lista, char *caminho_qry, FILE* log) {
         } else if(strcmp("i?", comando) == 0) {
             checar_ponto_interno(lista, linha, log);
         } else if(strcmp("pnt", comando) == 0) {
-            printf("Comando pnt\n");
+            alterar_cor(lista, linha, log);
         } else if(strcmp("pnt*", comando) == 0) {
             printf("Comando pnt*\n");
         } else if(strcmp("delf", comando) == 0) {
