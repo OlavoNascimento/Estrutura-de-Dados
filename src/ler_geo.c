@@ -18,7 +18,7 @@ Lista* ler_geo(char *caminho_geo) {
     while(fgets(linha, LINHA_MAX, arquivo) != NULL
           && figuras_criadas < lista_max_figs) {
         Figuras nova_figura;
-        switch (linha[0]) {
+        switch(linha[0]) {
             case 'c':
                 nova_figura.circ = criar_circulo(linha);
                 inserir_lista(lista, nova_figura, TipoCirculo);

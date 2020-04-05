@@ -8,11 +8,27 @@
 #define MARGEM_CONTORNO 2
 #define TRACEJADO_TAMANHO 2
 
-char* fig_tipo_para_string(TiposFigura tipo) {
+char *fig_tipo_para_string(TiposFigura tipo) {
     char *valores[] = {
         "retângulo", "círculo", "texto", "linha"
     };
     return valores[tipo];
+}
+
+char *obter_id_figura(Figuras figura, TiposFigura tipo) {
+    char *id_atual = NULL;
+    switch(tipo) {
+        case TipoCirculo:
+            id_atual = figura.circ.id;
+            break;
+        case TipoRetangulo:
+            id_atual = figura.ret.id;
+            break;
+        case TipoTexto:
+            id_atual = figura.tex.id;
+            break;
+    }
+    return id_atual;
 }
 
 double max(double a, double b) {
@@ -149,7 +165,7 @@ bool ponto_interno_figura(Figuras figura, TiposFigura tipo, double ponto_x, doub
 
 Linha ligar_ponto_figura(Circulo ponto, Figuras figura, TiposFigura tipo) {
     double fig_centro_x = 0, fig_centro_y = 0;
-    switch (tipo) {
+    switch(tipo) {
         case TipoCirculo:
             fig_centro_x = figura.circ.x;
             fig_centro_y = figura.circ.y;
@@ -170,19 +186,19 @@ Linha ligar_ponto_figura(Circulo ponto, Figuras figura, TiposFigura tipo) {
     return ligacao;
 }
 
-void alterar_cor_figura(Figuras figura, TiposFigura tipo, char *cor_borda, char *cor_preenchimento) {
+void alterar_cor_figura(Figuras *figura, TiposFigura tipo, char *cor_borda, char *cor_preenchimento) {
     switch(tipo) {
         case TipoCirculo:
-            strcpy(figura.circ.cor_borda, cor_borda);
-            strcpy(figura.circ.cor_preenchimento, cor_preenchimento);
+            strcpy(figura->circ.cor_borda, cor_borda);
+            strcpy(figura->circ.cor_preenchimento, cor_preenchimento);
             break;
         case TipoRetangulo:
-            strcpy(figura.ret.cor_borda, cor_borda);
-            strcpy(figura.ret.cor_preenchimento, cor_preenchimento);
+            strcpy(figura->ret.cor_borda, cor_borda);
+            strcpy(figura->ret.cor_preenchimento, cor_preenchimento);
             break;
         case TipoTexto:
-            strcpy(figura.tex.cor_borda, cor_borda);
-            strcpy(figura.tex.cor_preenchimento, cor_preenchimento);
+            strcpy(figura->tex.cor_borda, cor_borda);
+            strcpy(figura->tex.cor_preenchimento, cor_preenchimento);
             break;
     }
 }

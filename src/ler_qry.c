@@ -92,7 +92,20 @@ void alterar_cor(Lista *lista, char *linha, FILE *log) {
     struct No *no = buscar_elemento_id_lista(lista, id);
     if(no == NULL)
         return;
-    alterar_cor_figura(no->figura, no->tipo, corb, corp);
+    alterar_cor_figura(&no->figura, no->tipo, corb, corp);
+}
+
+void alterar_cores(Lista *lista, char *linha, FILE *log) {
+    char id_inicial[100], id_final[100], corb[20], corp[20];
+    sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, corb, corp);
+    struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
+    while(atual != NULL) {
+        char *id_atual = obter_id_figura(atual->figura, atual->tipo);
+        alterar_cor_figura(&atual->figura, atual->tipo, corb, corp);
+        if(strcmp(id_atual, id_final) == 0)
+            break;
+        atual = atual->prox;
+    }
 }
 
 void ler_qry(Lista *lista, char *caminho_qry, FILE* log) {
@@ -112,7 +125,7 @@ void ler_qry(Lista *lista, char *caminho_qry, FILE* log) {
         } else if(strcmp("pnt", comando) == 0) {
             alterar_cor(lista, linha, log);
         } else if(strcmp("pnt*", comando) == 0) {
-            printf("Comando pnt*\n");
+            alterar_cores(lista, linha, log);
         } else if(strcmp("delf", comando) == 0) {
             printf("Comando delf\n");
         } else if(strcmp("delf*", comando) == 0) {
