@@ -5,6 +5,7 @@
 #include <figuras.h>
 
 #define SVG_MARGEM 5
+#define MARGEM_TEXTO_LETRAS 4
 
 Lista* criar_lista() {
     Lista *lis = (Lista*) malloc(sizeof(Lista));
@@ -31,6 +32,12 @@ void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
             novo_y = fig.ret.y;
             nova_largura = fig.ret.x + fig.ret.largura;
             nova_altura = fig.ret.y + fig.ret.altura;
+            break;
+        case TipoTexto:
+            novo_x = fig.tex.x;
+            novo_y = fig.tex.y;
+            nova_largura = fig.tex.x + strlen(fig.tex.texto) * MARGEM_TEXTO_LETRAS;
+            nova_altura = fig.tex.y + MARGEM_TEXTO_LETRAS;
             break;
     }
 
