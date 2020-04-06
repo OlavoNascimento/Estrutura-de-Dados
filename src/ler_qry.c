@@ -113,7 +113,23 @@ void alterar_cores(Lista *lista, char *linha, FILE *log) {
 void remover_elemento(Lista *lista, char *linha, FILE *log) {
     char id[100];
     sscanf(linha, "delf %s", id);
+    // TODO Adicionar log
     remover_elemento_lista(lista, id);
+}
+
+void remover_elementos(Lista *lista, char *linha, FILE *log) {
+    char id_inicial[100], id_final[100];
+    sscanf(linha, "delf* %s %s", id_inicial, id_final);
+    // TODO Adicionar log
+    struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
+    while(atual != NULL) {
+        char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+        if(strcmp(id_atual, id_final) == 0)
+            atual = NULL;
+        else
+            atual = atual->prox;
+        remover_elemento_lista(lista, id_atual);
+    }
 }
 
 void ler_qry(Lista *lista, char *caminho_qry, FILE* log) {
@@ -137,7 +153,7 @@ void ler_qry(Lista *lista, char *caminho_qry, FILE* log) {
         } else if(strcmp("delf", comando) == 0) {
             remover_elemento(lista, linha, log);
         } else if(strcmp("delf*", comando) == 0) {
-            printf("Comando delf*\n");
+            remover_elementos(lista, linha, log);
         }
     }
 
