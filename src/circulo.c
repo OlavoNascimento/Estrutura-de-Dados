@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <circulo.h>
 
@@ -22,4 +23,21 @@ void circulo_para_svg(FILE *arquivo, Circulo circ) {
             circ.cor_borda,
             circ.cor_preenchimento
     );
+}
+
+bool interseccao_circulos(Circulo circ1, Circulo circ2) {
+    double dist = (circ1.x - circ2.x) * (circ1.x - circ2.x) +
+                  (circ1.y - circ2.y) * (circ1.y - circ2.y);
+    double raios = (circ1.raio + circ2.raio) * (circ1.raio + circ2.raio);
+    if(dist > raios)
+        return false;
+    return true;
+}
+
+bool ponto_interno_circulo(Circulo circ, double ponto_x, double ponto_y) {
+    if(ponto_x <= circ.x - circ.raio || ponto_x >= circ.x + circ.raio)
+        return false;
+    if(ponto_y <= circ.y - circ.raio || ponto_y >= circ.y + circ.raio)
+        return false;
+    return true;
 }

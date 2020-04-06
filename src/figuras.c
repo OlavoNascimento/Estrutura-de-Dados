@@ -1,5 +1,5 @@
-#include <stdbool.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <figuras.h>
 #include <retangulo.h>
@@ -29,29 +29,40 @@ char *obter_id_figura(Figuras *figura, TiposFigura tipo) {
     }
 }
 
+double obter_x_figura(Figuras figura, TiposFigura tipo) {
+    switch(tipo) {
+        case TipoCirculo:
+            return figura.circ.x;
+            break;
+        case TipoRetangulo:
+            return figura.ret.x;
+            break;
+        case TipoTexto:
+            return figura.tex.x;
+            break;
+    }
+}
+
+double obter_y_figura(Figuras figura, TiposFigura tipo) {
+    switch(tipo) {
+        case TipoCirculo:
+            return figura.circ.y;
+            break;
+        case TipoRetangulo:
+            return figura.ret.y;
+            break;
+        case TipoTexto:
+            return figura.tex.y;
+            break;
+    }
+}
+
 double max(double a, double b) {
     return a > b ? a : b;
 }
 
 double min(double a, double b) {
     return a < b ? a : b;
-}
-
-bool interseccao_retangulos(Retangulo ret1, Retangulo ret2) {
-    if(ret1.x > ret2.x + ret2.largura || ret2.x > ret1.x + ret1.largura)
-        return false;
-    if(ret1.y + ret1.altura < ret2.y || ret2.y + ret2.altura < ret1.y)
-        return false;
-    return true;
-}
-
-bool interseccao_circulos(Circulo circ1, Circulo circ2) {
-    double dist = (circ1.x - circ2.x) * (circ1.x - circ2.x) +
-                  (circ1.y - circ2.y) * (circ1.y - circ2.y);
-    double raios = (circ1.raio + circ2.raio) * (circ1.raio + circ2.raio);
-    if(dist > raios)
-        return false;
-    return true;
 }
 
 bool interseccao_circulo_retangulo(Circulo circ, Retangulo ret) {
@@ -74,11 +85,11 @@ bool interseccao_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFig
     return intersectam;
 }
 
-void envolver_retangulos(Retangulo *contorno, Retangulo ret1, Retangulo ret2) {
-    contorno->x = min(ret1.x, ret2.x);
-    contorno->y = min(ret1.y, ret2.y);
-    contorno->largura = max(ret1.x+ret1.largura, ret2.x+ret2.largura) - contorno->x;
-    contorno->altura = max(ret1.y+ret1.altura, ret2.y+ret2.altura) - contorno->y;
+void envolver_circulo_retangulo(Retangulo *contorno, Circulo circ, Retangulo ret) {
+    contorno->x = min(ret.x, circ.x-circ.raio);
+    contorno->y = min(ret.y, circ.y-circ.raio);
+    contorno->largura = max(ret.x+ret.largura, circ.x+circ.raio) - contorno->x;
+    contorno->altura = max(ret.y+ret.altura, circ.y+circ.raio) - contorno->y;
 }
 
 void envolver_circulos(Retangulo *contorno, Circulo circ1, Circulo circ2) {
@@ -88,11 +99,11 @@ void envolver_circulos(Retangulo *contorno, Circulo circ1, Circulo circ2) {
     contorno->altura = max(circ1.y+circ1.raio, circ2.y+circ2.raio) - contorno->y;
 }
 
-void envolver_circulo_retangulo(Retangulo *contorno, Circulo circ, Retangulo ret) {
-    contorno->x = min(ret.x, circ.x-circ.raio);
-    contorno->y = min(ret.y, circ.y-circ.raio);
-    contorno->largura = max(ret.x+ret.largura, circ.x+circ.raio) - contorno->x;
-    contorno->altura = max(ret.y+ret.altura, circ.y+circ.raio) - contorno->y;
+void envolver_retangulos(Retangulo *contorno, Retangulo ret1, Retangulo ret2) {
+    contorno->x = min(ret1.x, ret2.x);
+    contorno->y = min(ret1.y, ret2.y);
+    contorno->largura = max(ret1.x+ret1.largura, ret2.x+ret2.largura) - contorno->x;
+    contorno->altura = max(ret1.y+ret1.altura, ret2.y+ret2.altura) - contorno->y;
 }
 
 Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2) {
@@ -130,22 +141,6 @@ Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Fi
     contorno.largura += 2 * MARGEM_CONTORNO;
     contorno.altura += 2 * MARGEM_CONTORNO;
     return contorno;
-}
-
-bool ponto_interno_circulo(Circulo circ, double ponto_x, double ponto_y) {
-    if(ponto_x <= circ.x - circ.raio || ponto_x >= circ.x + circ.raio)
-        return false;
-    if(ponto_y <= circ.y - circ.raio || ponto_y >= circ.y + circ.raio)
-        return false;
-    return true;
-}
-
-bool ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_y) {
-    if(ponto_x <= ret.x || ponto_x >= ret.x + ret.largura)
-        return false;
-    if(ponto_y <= ret.y || ponto_y >= ret.y + ret.altura)
-        return false;
-    return true;
 }
 
 bool ponto_interno_figura(Figuras figura, TiposFigura tipo, double ponto_x, double ponto_y) {

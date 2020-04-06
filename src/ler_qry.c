@@ -40,7 +40,7 @@ void checar_interseccao(Lista *lista, char *linha, FILE *log) {
     }
 
     fprintf(log, "o? %s %s\n", id1, id2);
-    fprintf(log, "%s: %s %s: %s %s\n",
+    fprintf(log, "%s: %s %s: %s %s\n\n",
             id1, fig_tipo_para_string(no1->tipo),
             id2, fig_tipo_para_string(no2->tipo),
             intersectam ? "SIM" : "NAO"
@@ -80,7 +80,7 @@ void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
     inserir_lista(lista, ligacao, TipoLinha);
 
     fprintf(log, "i? %d %lf %lf\n", fig_pos, ponto_x, ponto_y);
-    fprintf(log, "%d: %s %s\n",
+    fprintf(log, "%d: %s %s\n\n",
             fig_pos, fig_tipo_para_string(no->tipo),
             interno ? "INTERNO" : "NAO INTERNO"
     );
@@ -93,6 +93,11 @@ void alterar_cor(Lista *lista, char *linha, FILE *log) {
     struct No *no = buscar_elemento_id_lista(lista, id);
     if(no == NULL)
         return;
+    double coord_x = obter_x_figura(no->figura, no->tipo);
+    double coord_y = obter_y_figura(no->figura, no->tipo);
+    fprintf(log, "pnt %s %s %s\n", id, corb, corp);
+    fprintf(log, "%lf %lf\n\n", coord_x, coord_y);
+
     alterar_cor_figura(&no->figura, no->tipo, corb, corp);
 }
 
@@ -101,8 +106,15 @@ void alterar_cores(Lista *lista, char *linha, FILE *log) {
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, corb, corp);
     // TODO Adicionar log
     struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
+    if(atual == NULL)
+        return;
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+        double coord_x = obter_x_figura(atual->figura, atual->tipo);
+        double coord_y = obter_y_figura(atual->figura, atual->tipo);
+        fprintf(log, "pnt* %s %s %s %s\n", id_inicial, id_final, corb, corp);
+        fprintf(log, "%lf %lf\n\n", coord_x, coord_y);
+
         alterar_cor_figura(&atual->figura, atual->tipo, corb, corp);
         if(strcmp(id_atual, id_final) == 0)
             break;

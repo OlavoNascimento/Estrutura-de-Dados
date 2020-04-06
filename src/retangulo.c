@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <retangulo.h>
 
@@ -32,4 +33,20 @@ void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
                 ret.tracejado_espaco
         );
     fprintf(arquivo, "/>\n");
+}
+
+bool interseccao_retangulos(Retangulo ret1, Retangulo ret2) {
+    if(ret1.x > ret2.x + ret2.largura || ret2.x > ret1.x + ret1.largura)
+        return false;
+    if(ret1.y + ret1.altura < ret2.y || ret2.y + ret2.altura < ret1.y)
+        return false;
+    return true;
+}
+
+bool ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_y) {
+    if(ponto_x <= ret.x || ponto_x >= ret.x + ret.largura)
+        return false;
+    if(ponto_y <= ret.y || ponto_y >= ret.y + ret.altura)
+        return false;
+    return true;
 }
