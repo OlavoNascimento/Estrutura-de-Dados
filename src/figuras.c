@@ -15,20 +15,18 @@ char *fig_tipo_para_string(TiposFigura tipo) {
     return valores[tipo];
 }
 
-char *obter_id_figura(Figuras figura, TiposFigura tipo) {
-    char *id_atual = NULL;
+char *obter_id_figura(Figuras *figura, TiposFigura tipo) {
     switch(tipo) {
         case TipoCirculo:
-            id_atual = figura.circ.id;
+            return figura->circ.id;
             break;
         case TipoRetangulo:
-            id_atual = figura.ret.id;
+            return figura->ret.id;
             break;
         case TipoTexto:
-            id_atual = figura.tex.id;
+            return figura->tex.id;
             break;
     }
-    return id_atual;
 }
 
 double max(double a, double b) {

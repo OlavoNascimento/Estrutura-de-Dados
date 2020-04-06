@@ -25,7 +25,7 @@ double max(double a, double b);
 double min(double a, double b);
 
 char* fig_tipo_para_string(TiposFigura tipo);
-char *obter_id_figura(Figuras figura, TiposFigura tipo);
+char* obter_id_figura(Figuras *figura, TiposFigura tipo);
 
 bool interseccao_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);
 Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);

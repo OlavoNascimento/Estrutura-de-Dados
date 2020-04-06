@@ -11,6 +11,7 @@ Lista* ler_geo(char *caminho_geo) {
         fprintf(stderr, "Falha ao ler %s!\n", caminho_geo);
         return lista;
     }
+    // TODO Mover número de elementos para a struct Lista
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
 

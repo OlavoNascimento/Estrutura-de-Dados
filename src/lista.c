@@ -19,6 +19,7 @@ Lista* criar_lista() {
 }
 
 void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
+    // TODO Mover para figuras
     double novo_x = 0, novo_y = 0, nova_largura = 0, nova_altura = 0;
     switch(tipo) {
         case TipoCirculo:
@@ -59,8 +60,8 @@ void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
     struct No *atual = lista->cauda;
     if(atual == NULL) {
         // Primeiro elemento da lista
-       lista->cabeca = no;
-       lista->cauda = no;
+        lista->cabeca = no;
+        lista->cauda = no;
     } else {
         // Elementos após o primeiro
         atual->prox = no;
@@ -71,19 +72,7 @@ void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
 struct No* buscar_elemento_id_lista(Lista *lista, char *id_buscado) {
     struct No *atual = lista->cabeca;
     while(atual != NULL) {
-        char *id_atual;
-        switch(atual->tipo) {
-            case TipoCirculo:
-                id_atual = atual->figura.circ.id;
-                break;
-            case TipoRetangulo:
-                id_atual = atual->figura.ret.id;
-                break;
-            case TipoTexto:
-                id_atual = atual->figura.tex.id;
-                break;
-        }
-
+        char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
         if(strcmp(id_atual, id_buscado) == 0)
             return atual;
         atual = atual->prox;
@@ -101,6 +90,32 @@ struct No* buscar_elemento_posicao_lista(Lista *lista, int posicao_buscada) {
     if(posicao_atual == posicao_buscada)
         return atual;
     return NULL;
+}
+
+void remover_elemento_lista(Lista *lista, char *id) {
+    struct No *atual = lista->cabeca;
+    struct No *anterior;
+    while(atual != NULL) {
+        char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+        if(id_atual == NULL) {
+            printf("Atual é nulo!\n") ;
+        }
+        if(strcmp(id_atual, id) == 0) {
+            if(atual == lista->cabeca) {
+                lista->cabeca = atual->prox;
+            } else if(atual == lista->cauda) {
+                lista->cauda = anterior;
+                anterior->prox = NULL;
+            } else {
+                anterior->prox = atual->prox;
+            }
+            free(atual);
+            break;
+        } else {
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
 }
 
 void lista_para_svg(Lista *lista, char *caminho_svg) {
