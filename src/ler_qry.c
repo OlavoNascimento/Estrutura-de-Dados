@@ -125,17 +125,26 @@ void alterar_cores(Lista *lista, char *linha, FILE *log) {
 void remover_elemento(Lista *lista, char *linha, FILE *log) {
     char id[100];
     sscanf(linha, "delf %s", id);
-    // TODO Adicionar log
+    struct No *no = buscar_elemento_id_lista(lista, id);
+    if(no == NULL)
+        return;
+
+    fprintf(log, "delf %s\n", id);
+    escrever_informacoes_figura(log, no->figura, no->tipo);
+    fprintf(log, "\n");
     remover_elemento_lista(lista, id);
 }
 
 void remover_elementos(Lista *lista, char *linha, FILE *log) {
     char id_inicial[100], id_final[100];
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
-    // TODO Adicionar log
     struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+        fprintf(log, "delf %s\n", id_atual);
+        escrever_informacoes_figura(log, atual->figura, atual->tipo);
+        fprintf(log, "\n");
+
         if(strcmp(id_atual, id_final) == 0)
             atual = NULL;
         else

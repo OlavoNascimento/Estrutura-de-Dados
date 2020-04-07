@@ -15,6 +15,7 @@ typedef struct {
 } Retangulo;
 
 Retangulo criar_retangulo(char *linha);
+void escrever_informacoes_retangulo(FILE *arquivo, Retangulo ret);
 void retangulo_para_svg(FILE *arquivo, Retangulo ret);
 bool interseccao_retangulos(Retangulo ret1, Retangulo ret2);
 bool ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_y);

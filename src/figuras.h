@@ -25,6 +25,7 @@ double max(double a, double b);
 double min(double a, double b);
 
 char* fig_tipo_para_string(TiposFigura tipo);
+void escrever_informacoes_figura(FILE *arquivo, Figuras figura, TiposFigura tipo);
 char* obter_id_figura(Figuras *figura, TiposFigura tipo);
 double obter_x_figura(Figuras figura, TiposFigura tipo);
 double obter_y_figura(Figuras figura, TiposFigura tipo);

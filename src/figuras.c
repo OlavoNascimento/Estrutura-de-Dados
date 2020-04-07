@@ -15,6 +15,20 @@ char *fig_tipo_para_string(TiposFigura tipo) {
     return valores[tipo];
 }
 
+void escrever_informacoes_figura(FILE *arquivo, Figuras figura, TiposFigura tipo) {
+    switch(tipo) {
+        case TipoCirculo:
+            escrever_informacoes_circulo(arquivo, figura.circ);
+            break;
+        case TipoRetangulo:
+            escrever_informacoes_retangulo(arquivo, figura.ret);
+            break;
+        case TipoTexto:
+            escrever_informacoes_texto(arquivo, figura.tex);
+            break;
+    }
+}
+
 char *obter_id_figura(Figuras *figura, TiposFigura tipo) {
     switch(tipo) {
         case TipoCirculo:
@@ -27,6 +41,7 @@ char *obter_id_figura(Figuras *figura, TiposFigura tipo) {
             return figura->tex.id;
             break;
     }
+    return NULL;
 }
 
 double obter_x_figura(Figuras figura, TiposFigura tipo) {
@@ -41,6 +56,7 @@ double obter_x_figura(Figuras figura, TiposFigura tipo) {
             return figura.tex.x;
             break;
     }
+    return 0;
 }
 
 double obter_y_figura(Figuras figura, TiposFigura tipo) {
@@ -55,6 +71,7 @@ double obter_y_figura(Figuras figura, TiposFigura tipo) {
             return figura.tex.y;
             break;
     }
+    return 0;
 }
 
 double max(double a, double b) {

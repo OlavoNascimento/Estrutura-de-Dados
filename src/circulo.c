@@ -11,6 +11,13 @@ Circulo criar_circulo(char *linha) {
     return circ;
 }
 
+void escrever_informacoes_circulo(FILE *arquivo, Circulo circ) {
+    if(strlen(circ.id) > 0)
+        fprintf(arquivo, "%s", circ.id);
+    fprintf(arquivo, " %lf %lf %lf %s %s\n",
+            circ.raio, circ.x, circ.y, circ.cor_borda, circ.cor_preenchimento);
+}
+
 void circulo_para_svg(FILE *arquivo, Circulo circ) {
     fprintf(arquivo, "\t<circle");
     if(strlen(circ.id) > 0)

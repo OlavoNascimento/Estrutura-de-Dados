@@ -13,4 +13,5 @@ typedef struct {
 } Texto;
 
 Texto criar_texto(char *linha);
+void escrever_informacoes_texto(FILE *arquivo, Texto tex);
 void texto_para_svg(FILE *arquivo, Texto tex);

@@ -11,6 +11,20 @@ Texto criar_texto(char *linha) {
     return tex;
 }
 
+void escrever_informacoes_texto(FILE *arquivo, Texto tex) {
+    if(strlen(tex.id) > 0)
+        fprintf(arquivo, "%s", tex.id);
+    fprintf(arquivo,
+            " %lf %lf %s %s %d %s\n",
+            tex.x,
+            tex.y,
+            tex.cor_borda,
+            tex.cor_preenchimento,
+            tex.tamanho,
+            tex.texto
+    );
+}
+
 void texto_para_svg(FILE *arquivo, Texto tex) {
     fprintf(arquivo, "\t<text");
     if(strlen(tex.id) > 0)

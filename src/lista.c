@@ -73,7 +73,7 @@ struct No* buscar_elemento_id_lista(Lista *lista, char *id_buscado) {
     struct No *atual = lista->cabeca;
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        if(strcmp(id_atual, id_buscado) == 0)
+        if(id_atual != NULL && strcmp(id_atual, id_buscado) == 0)
             return atual;
         atual = atual->prox;
     }
@@ -97,10 +97,7 @@ void remover_elemento_lista(Lista *lista, char *id) {
     struct No *anterior;
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        if(id_atual == NULL) {
-            printf("Atual é nulo!\n") ;
-        }
-        if(strcmp(id_atual, id) == 0) {
+        if(id_atual != NULL && strcmp(id_atual, id) == 0) {
             if(atual == lista->cabeca) {
                 lista->cabeca = atual->prox;
             } else if(atual == lista->cauda) {

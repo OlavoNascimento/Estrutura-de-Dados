@@ -13,6 +13,27 @@ Retangulo criar_retangulo(char *linha) {
     return ret;
 }
 
+void escrever_informacoes_retangulo(FILE *arquivo, Retangulo ret) {
+    if(strlen(ret.id) > 0)
+        fprintf(arquivo, "%s", ret.id);
+    fprintf(arquivo,
+           " %lf %lf %lf %lf %s %s",
+            ret.largura,
+            ret.altura,
+            ret.x,
+            ret.y,
+            ret.cor_borda,
+            ret.cor_preenchimento
+    );
+    if(ret.tracejado_tamanho != 0 || ret.tracejado_espaco != 0)
+        fprintf(arquivo,
+                " %d %d",
+                ret.tracejado_tamanho,
+                ret.tracejado_espaco
+        );
+    fprintf(arquivo, "\n");
+}
+
 void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
     fprintf(arquivo, "\t<rect");
     if(strlen(ret.id) > 0)

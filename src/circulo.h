@@ -12,6 +12,7 @@ typedef struct {
 } Circulo;
 
 Circulo criar_circulo(char *linha);
+void escrever_informacoes_circulo(FILE *arquivo, Circulo circ);
 void circulo_para_svg(FILE *arquivo, Circulo circ);
 bool interseccao_circulos(Circulo circ1, Circulo circ2);
 bool ponto_interno_circulo(Circulo circ, double ponto_x, double ponto_y);
