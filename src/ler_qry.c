@@ -89,7 +89,6 @@ void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
 void alterar_cor(Lista *lista, char *linha, FILE *log) {
     char id[100], corb[20], corp[20];
     sscanf(linha, "pnt %s %s %s", id, corb, corp);
-    // TODO Adicionar log
     struct No *no = buscar_elemento_id_lista(lista, id);
     if(no == NULL)
         return;
@@ -104,7 +103,6 @@ void alterar_cor(Lista *lista, char *linha, FILE *log) {
 void alterar_cores(Lista *lista, char *linha, FILE *log) {
     char id_inicial[100], id_final[100], corb[20], corp[20];
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, corb, corp);
-    // TODO Adicionar log
     struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
     if(atual == NULL)
         return;

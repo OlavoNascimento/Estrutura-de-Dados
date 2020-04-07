@@ -81,16 +81,28 @@ char* preparar_caminho(char* diretorio, char* nome_arquivo) {
 }
 
 // Extrai o nome do arquivo de uma string no formato: nomeArquivo.ext
-char* extrair_nome_base(char* nome_arquivo) {
+char* extrair_nome_base(char* caminho_arquivo) {
+    // Encontra a última / no caminho do arquivo.
+    char *nome_arquivo = strrchr(caminho_arquivo, '/');
+    // Avança um caratere, removendo a /.
+    nome_arquivo++;
+
     // Aloca memória apenas para o nome do arquivo.
     char *nome_base = (char*) malloc((strlen(nome_arquivo)+1)*sizeof(char));
-    // Extrai tudo até o primeiro . existente na string.
-    // TODO Encontrar *ultimo* ponto na string
-    sscanf(nome_arquivo, "%[^.]", nome_base);
+    if(nome_base == NULL)
+        return NULL;
+    strcpy(nome_base, nome_arquivo);
+
+    // Encontra o último . no caminho do arquivo.
+    char *extensao = strrchr(nome_base, '.');
+    // Se o arquivo possui uma extensão ela é substituida por um caractere nulo.
+    if (extensao != NULL)
+        *extensao = '\0';
+
     return nome_base;
 }
 
-// Remove a extensão de um arquivo no formato nomeArquivo.ext e
+// Remove a extensão de um arquivo no formato nome-arquivo.ext e
 // em seu lugar coloca um sufixo passado como argumento para
 // a função.
 char* alterar_sufixo(char* nome_arquivo, char* sufixo) {
@@ -99,6 +111,19 @@ char* alterar_sufixo(char* nome_arquivo, char* sufixo) {
     sprintf(novo_nome, "%s%s", nome_base, sufixo);
     free(nome_base);
     return novo_nome;
+}
+
+// Altera o sufixo do nome de um arquivo e une o caminho dele
+// a um diretório fornecido a função, case este seja fornecido.
+char* preparar_caminho_sufixo(char* diretorio, char* nome_arquivo, char* sufixo) {
+    if(nome_arquivo == NULL || sufixo == NULL) {
+        fprintf(stderr, "Parâmetro nulo passado a preparar caminho sufixo!\n");
+        return NULL;
+    }
+    char *novo_nome = alterar_sufixo(nome_arquivo, sufixo);
+    char *caminho = preparar_caminho(diretorio, novo_nome);
+    free(novo_nome);
+    return caminho;
 }
 
 // Libera a memória alocada pelos argumentos.
