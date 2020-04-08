@@ -80,7 +80,7 @@ char* preparar_caminho(char* diretorio, char* nome_arquivo) {
     return caminho_final;
 }
 
-// Extrai o nome do arquivo de uma string no formato: nomeArquivo.ext
+// Extrai o nome do arquivo de uma string no formato: /diretorio/nome-arquivo.ext
 char* extrair_nome_base(char* caminho_arquivo) {
     // Encontra a última / no caminho do arquivo.
     char *nome_arquivo = strrchr(caminho_arquivo, '/');
@@ -133,6 +133,22 @@ char* preparar_caminho_sufixo(char* diretorio, char* nome_arquivo, char* sufixo)
     char *caminho = preparar_caminho(diretorio, novo_nome);
     free(novo_nome);
     return caminho;
+}
+
+// Adiciona o nome do arquivo de consulta a uma extensão,
+// retornando um sufixo no formato: -nome_consulta.extensao
+// que pode ser passado para a função preparar_caminho_sufixo.
+char* preparar_sufixo_consulta(char *caminho_consulta, char *extensao) {
+    char *nome_consulta = extrair_nome_base(caminho_consulta);
+    char *sufixo = (char*) malloc((strlen(nome_consulta)+strlen(extensao)+2)*sizeof(char));
+
+    sufixo[0] = '-';
+    sufixo[1] = '\0';
+    strcat(sufixo, nome_consulta);
+    strcat(sufixo, extensao);
+
+    free(nome_consulta);
+    return sufixo;
 }
 
 // Libera a memória alocada pelos argumentos.

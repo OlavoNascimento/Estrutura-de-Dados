@@ -37,12 +37,20 @@ int main(int argc, char const *argv[]) {
     lista_para_svg(lista, caminho_svg);
 
     if(caminho_consulta != NULL) {
+        // Cria um sufixo usando o nome do arquivo de consulta.
+        char *sufixo_log = preparar_sufixo_consulta(caminho_consulta, ".txt");
+        // Cria um caminho com o sufixo criado anteriormente.
         char *caminho_log = preparar_caminho_sufixo(params.nome_dir_saida,
                                                     params.nome_descricao,
-                                                    "-arqcons.txt");
+                                                    sufixo_log);
+        free(sufixo_log);
+
+        char *sufixo_svg_consulta = preparar_sufixo_consulta(caminho_consulta, ".svg");
         char *caminho_svg_consulta = preparar_caminho_sufixo(params.nome_dir_saida,
                                                              params.nome_descricao,
-                                                             "-arqcons.svg");
+                                                             sufixo_svg_consulta);
+        free(sufixo_svg_consulta);
+
         printf("Arquivo consulta: %s\n", caminho_consulta);
         printf("Arquivo log: %s\n", caminho_log);
         printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
