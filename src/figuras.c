@@ -7,6 +7,7 @@
 
 #define MARGEM_CONTORNO 2
 #define TRACEJADO_TAMANHO 2
+#define ESPACO_LETRAS_TEXTO 4
 
 char *fig_tipo_para_string(TiposFigura tipo) {
     char *valores[] = {
@@ -81,6 +82,36 @@ double max(double a, double b) {
 double min(double a, double b) {
     return a < b ? a : b;
 }
+
+void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
+    double novo_x = 0, novo_y = 0, nova_largura = 0, nova_altura = 0;
+    switch(tipo) {
+        case TipoCirculo:
+            novo_x = fig.circ.x - fig.circ.raio;
+            novo_y = fig.circ.y - fig.circ.raio;
+            nova_largura = fig.circ.x + fig.circ.raio;
+            nova_altura = fig.circ.y + fig.circ.raio;
+            break;
+        case TipoRetangulo:
+            novo_x = fig.ret.x;
+            novo_y = fig.ret.y;
+            nova_largura = fig.ret.x + fig.ret.largura;
+            nova_altura = fig.ret.y + fig.ret.altura;
+            break;
+        case TipoTexto:
+            novo_x = fig.tex.x;
+            novo_y = fig.tex.y;
+            nova_largura = fig.tex.x + strlen(fig.tex.texto) * ESPACO_LETRAS_TEXTO;
+            nova_altura = fig.tex.y + ESPACO_LETRAS_TEXTO;
+            break;
+    }
+
+    exi->origem_x = min(exi->origem_x, novo_x);
+    exi->origem_y = min(exi->origem_y, novo_y);
+    exi->largura = max(exi->largura, nova_largura);
+    exi->altura = max(exi->altura, nova_altura);
+}
+
 
 bool interseccao_circulo_retangulo(Circulo circ, Retangulo ret) {
     double deltaX = circ.x - max(ret.x, min(circ.x, ret.x + ret.largura));

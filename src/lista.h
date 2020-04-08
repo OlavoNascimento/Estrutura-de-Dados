@@ -9,13 +9,6 @@ struct No {
 };
 
 typedef struct {
-    double origem_x;
-    double origem_y;
-    double largura;
-    double altura;
-} Exibicao;
-
-typedef struct {
     struct No* cabeca;
     struct No* cauda;
     Exibicao exibicao;

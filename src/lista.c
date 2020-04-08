@@ -4,9 +4,6 @@
 #include <lista.h>
 #include <figuras.h>
 
-#define SVG_MARGEM 5
-#define MARGEM_TEXTO_LETRAS 4
-
 Lista* criar_lista() {
     Lista *lis = (Lista*) malloc(sizeof(Lista));
     lis->cabeca = NULL;
@@ -18,36 +15,6 @@ Lista* criar_lista() {
     return lis;
 }
 
-void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo) {
-    // TODO Mover para figuras
-    double novo_x = 0, novo_y = 0, nova_largura = 0, nova_altura = 0;
-    switch(tipo) {
-        case TipoCirculo:
-            novo_x = fig.circ.x - fig.circ.raio;
-            novo_y = fig.circ.y - fig.circ.raio;
-            nova_largura = fig.circ.x + fig.circ.raio;
-            nova_altura = fig.circ.y + fig.circ.raio;
-            break;
-        case TipoRetangulo:
-            novo_x = fig.ret.x;
-            novo_y = fig.ret.y;
-            nova_largura = fig.ret.x + fig.ret.largura;
-            nova_altura = fig.ret.y + fig.ret.altura;
-            break;
-        case TipoTexto:
-            novo_x = fig.tex.x;
-            novo_y = fig.tex.y;
-            nova_largura = fig.tex.x + strlen(fig.tex.texto) * MARGEM_TEXTO_LETRAS;
-            nova_altura = fig.tex.y + MARGEM_TEXTO_LETRAS;
-            break;
-    }
-
-    exi->origem_x = min(exi->origem_x, novo_x);
-    exi->origem_y = min(exi->origem_y, novo_y);
-    exi->largura = max(exi->largura, nova_largura);
-    exi->altura = max(exi->altura, nova_altura);
-}
-
 void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
     struct No *no = (struct No*) malloc(sizeof(struct No));
     no->figura = fig;
@@ -55,8 +22,6 @@ void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
     no->prox = NULL;
     atualizar_exibicao_svg(&lista->exibicao, fig, fig_tipo);
 
-    // TODO Remover elementos duplicados
-    // TODO Adicionar função comparar_nos
     struct No *atual = lista->cauda;
     if(atual == NULL) {
         // Primeiro elemento da lista

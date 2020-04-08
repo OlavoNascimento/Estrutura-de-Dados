@@ -7,12 +7,14 @@
 #include <texto.h>
 #include <linha.h>
 
+#define SVG_MARGEM 5
+
 typedef enum {
     TipoRetangulo,
     TipoCirculo,
     TipoTexto,
     TipoLinha
-} TiposFigura ;
+} TiposFigura;
 
 typedef union {
     Retangulo ret;
@@ -21,14 +23,19 @@ typedef union {
     Linha lin;
 } Figuras;
 
-double max(double a, double b);
-double min(double a, double b);
+typedef struct {
+    double origem_x;
+    double origem_y;
+    double largura;
+    double altura;
+} Exibicao;
 
 char* fig_tipo_para_string(TiposFigura tipo);
 void escrever_informacoes_figura(FILE *arquivo, Figuras figura, TiposFigura tipo);
 char* obter_id_figura(Figuras *figura, TiposFigura tipo);
 double obter_x_figura(Figuras figura, TiposFigura tipo);
 double obter_y_figura(Figuras figura, TiposFigura tipo);
+void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo);
 
 bool interseccao_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);
 Retangulo envolver_figuras(bool intersectam, Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);
