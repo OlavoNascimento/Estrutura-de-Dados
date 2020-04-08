@@ -84,19 +84,28 @@ char* preparar_caminho(char* diretorio, char* nome_arquivo) {
 char* extrair_nome_base(char* caminho_arquivo) {
     // Encontra a última / no caminho do arquivo.
     char *nome_arquivo = strrchr(caminho_arquivo, '/');
-    // Avança um caratere, removendo a /.
-    nome_arquivo++;
 
-    // Aloca memória apenas para o nome do arquivo.
-    char *nome_base = (char*) malloc((strlen(nome_arquivo)+1)*sizeof(char));
-    if(nome_base == NULL)
-        return NULL;
-    strcpy(nome_base, nome_arquivo);
+    char *nome_base = NULL;
+    if(nome_arquivo != NULL) {
+        // Avança um caratere, removendo a /.
+        nome_arquivo++;
+        // Arquivo tem uma / em seu caminho.
+        nome_base = (char*) malloc((strlen(nome_arquivo)+1)*sizeof(char));
+        if(nome_base == NULL)
+            return NULL;
+        strcpy(nome_base, nome_arquivo);
+    } else {
+        // Arquivo não tem uma / em seu caminho.
+        nome_base = (char*) malloc((strlen(caminho_arquivo)+1)*sizeof(char));
+        if(nome_base == NULL)
+            return NULL;
+        strcpy(nome_base, caminho_arquivo);
+    }
 
     // Encontra o último . no caminho do arquivo.
     char *extensao = strrchr(nome_base, '.');
     // Se o arquivo possui uma extensão ela é substituida por um caractere nulo.
-    if (extensao != NULL)
+    if(extensao != NULL)
         *extensao = '\0';
 
     return nome_base;
