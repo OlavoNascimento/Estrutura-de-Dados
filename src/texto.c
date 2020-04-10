@@ -13,14 +13,13 @@ Texto criar_texto(char *linha) {
 
 void escrever_informacoes_texto(FILE *arquivo, Texto tex) {
     if(strlen(tex.id) > 0)
-        fprintf(arquivo, "%s", tex.id);
+        fprintf(arquivo, "id: %s, ", tex.id);
     fprintf(arquivo,
-            " %lf %lf %s %s %d %s\n",
+            "x: %lf, y: %lf, corb: %s, corp: %s, txto: %s\n",
             tex.x,
             tex.y,
             tex.cor_borda,
             tex.cor_preenchimento,
-            tex.tamanho,
             tex.texto
     );
 }

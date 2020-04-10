@@ -17,6 +17,7 @@ char *fig_tipo_para_string(TiposFigura tipo) {
 }
 
 void escrever_informacoes_figura(FILE *arquivo, Figuras figura, TiposFigura tipo) {
+    fprintf(arquivo, "tipo: %s, ", fig_tipo_para_string(tipo));
     switch(tipo) {
         case TipoCirculo:
             escrever_informacoes_circulo(arquivo, figura.circ);
