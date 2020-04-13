@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>
 
 #include <lista.h>
 #include <figuras.h>
@@ -8,8 +9,8 @@ Lista* criar_lista() {
     Lista *lis = (Lista*) malloc(sizeof(Lista));
     lis->cabeca = NULL;
     lis->cauda= NULL;
-    lis->exibicao.origem_x = 0;
-    lis->exibicao.origem_y = 0;
+    lis->exibicao.origem_x = DBL_MAX;
+    lis->exibicao.origem_y = DBL_MAX;
     lis->exibicao.largura = 0;
     lis->exibicao.altura = 0;
     return lis;
@@ -90,8 +91,8 @@ void lista_para_svg(Lista *lista, char *caminho_svg) {
     fprintf(arquivo, "<svg viewBox='%lf %lf %lf %lf'>\n",
             lista->exibicao.origem_x - SVG_MARGEM,
             lista->exibicao.origem_y - SVG_MARGEM,
-            lista->exibicao.largura + abs(lista->exibicao.origem_x) + 2 * SVG_MARGEM,
-            lista->exibicao.altura + abs(lista->exibicao.origem_y) + 2 * SVG_MARGEM
+            lista->exibicao.largura - abs(lista->exibicao.origem_x) + 2 * SVG_MARGEM,
+            lista->exibicao.altura - abs(lista->exibicao.origem_y) + 2 * SVG_MARGEM
     );
     while(atual != NULL) {
         switch(atual->tipo) {
