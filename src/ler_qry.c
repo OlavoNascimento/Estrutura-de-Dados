@@ -111,7 +111,7 @@ void alterar_cores(Lista *lista, char *linha, FILE *log) {
         double coord_x = obter_x_figura(atual->figura, atual->tipo);
         double coord_y = obter_y_figura(atual->figura, atual->tipo);
         fprintf(log, "pnt* %s %s %s %s\n", id_inicial, id_final, corb, corp);
-        fprintf(log, "%lf %lf\n\n", coord_x, coord_y);
+        fprintf(log, "x: %lf, y: %lf\n\n", coord_x, coord_y);
 
         alterar_cor_figura(&atual->figura, atual->tipo, corb, corp);
         if(strcmp(id_atual, id_final) == 0)
@@ -139,7 +139,7 @@ void remover_elementos(Lista *lista, char *linha, FILE *log) {
     struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        fprintf(log, "delf %s\n", id_atual);
+        fprintf(log, "delf* %s %s\n", id_inicial, id_final);
         escrever_informacoes_figura(log, atual->figura, atual->tipo);
         fprintf(log, "\n");
 
