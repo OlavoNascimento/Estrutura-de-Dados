@@ -24,8 +24,8 @@ Texto aviso_sobreposicao(Retangulo contorno, char *id1, char *id2) {
 void checar_interseccao(Lista *lista, char *linha, FILE *log) {
     char id1[100], id2[100];
     sscanf(linha, "o? %s %s", id1, id2);
-    struct No *no1 = buscar_elemento_id_lista(lista, id1);
-    struct No *no2 = buscar_elemento_id_lista(lista, id2);
+    struct No *no1 = buscar_elemento_lista(lista, id1);
+    struct No *no2 = buscar_elemento_lista(lista, id2);
     if(no1 == NULL || no2 == NULL)
         return;
 
@@ -65,10 +65,10 @@ Circulo criar_ponto(bool interno, double ponto_x, double ponto_y) {
 }
 
 void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
-    int fig_pos = 0;
+    char id[100];
     double ponto_x = 0, ponto_y = 0;
-    sscanf(linha, "i? %d %lf %lf", &fig_pos, &ponto_x, &ponto_y);
-    struct No *no = buscar_elemento_posicao_lista(lista, fig_pos);
+    sscanf(linha, "i? %s %lf %lf", id, &ponto_x, &ponto_y);
+    struct No *no = buscar_elemento_lista(lista, id);
     if(no == NULL)
         return;
 
@@ -79,9 +79,9 @@ void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
     ligacao.lin = ligar_ponto_figura(ponto.circ, no->figura, no->tipo);
     inserir_lista(lista, ligacao, TipoLinha);
 
-    fprintf(log, "i? %d %lf %lf\n", fig_pos, ponto_x, ponto_y);
-    fprintf(log, "%d: %s %s\n\n",
-            fig_pos, fig_tipo_para_string(no->tipo),
+    fprintf(log, "i? %s %lf %lf\n", id, ponto_x, ponto_y);
+    fprintf(log, "%s: %s %s\n\n",
+            id, fig_tipo_para_string(no->tipo),
             interno ? "INTERNO" : "NAO INTERNO"
     );
 }
@@ -89,13 +89,13 @@ void checar_ponto_interno(Lista *lista, char *linha, FILE *log) {
 void alterar_cor(Lista *lista, char *linha, FILE *log) {
     char id[100], corb[20], corp[20];
     sscanf(linha, "pnt %s %s %s", id, corb, corp);
-    struct No *no = buscar_elemento_id_lista(lista, id);
+    struct No *no = buscar_elemento_lista(lista, id);
     if(no == NULL)
         return;
-    double coord_x = obter_x_figura(no->figura, no->tipo);
-    double coord_y = obter_y_figura(no->figura, no->tipo);
+    char *cor_preenchimento = obter_cor_preenchimento_figura(&no->figura, no->tipo);
+    char *cor_borda = obter_cor_borda_figura(&no->figura, no->tipo);
     fprintf(log, "pnt %s %s %s\n", id, corb, corp);
-    fprintf(log, "%lf %lf\n\n", coord_x, coord_y);
+    fprintf(log, "corb: %s, corp: %s\n\n", cor_borda, cor_preenchimento);
 
     alterar_cor_figura(&no->figura, no->tipo, corb, corp);
 }
@@ -103,15 +103,15 @@ void alterar_cor(Lista *lista, char *linha, FILE *log) {
 void alterar_cores(Lista *lista, char *linha, FILE *log) {
     char id_inicial[100], id_final[100], corb[20], corp[20];
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, corb, corp);
-    struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
+    struct No *atual = buscar_elemento_lista(lista, id_inicial);
     if(atual == NULL)
         return;
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        double coord_x = obter_x_figura(atual->figura, atual->tipo);
-        double coord_y = obter_y_figura(atual->figura, atual->tipo);
+        char *atual_corp = obter_cor_preenchimento_figura(&atual->figura, atual->tipo);
+        char *atual_corb = obter_cor_borda_figura(&atual->figura, atual->tipo);
         fprintf(log, "pnt* %s %s %s %s\n", id_inicial, id_final, corb, corp);
-        fprintf(log, "x: %lf, y: %lf\n\n", coord_x, coord_y);
+        fprintf(log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
 
         alterar_cor_figura(&atual->figura, atual->tipo, corb, corp);
         if(strcmp(id_atual, id_final) == 0)
@@ -123,7 +123,7 @@ void alterar_cores(Lista *lista, char *linha, FILE *log) {
 void remover_elemento(Lista *lista, char *linha, FILE *log) {
     char id[100];
     sscanf(linha, "delf %s", id);
-    struct No *no = buscar_elemento_id_lista(lista, id);
+    struct No *no = buscar_elemento_lista(lista, id);
     if(no == NULL)
         return;
 
@@ -136,7 +136,7 @@ void remover_elemento(Lista *lista, char *linha, FILE *log) {
 void remover_elementos(Lista *lista, char *linha, FILE *log) {
     char id_inicial[100], id_final[100];
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
-    struct No *atual = buscar_elemento_id_lista(lista, id_inicial);
+    struct No *atual = buscar_elemento_lista(lista, id_inicial);
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
         fprintf(log, "delf* %s %s\n", id_inicial, id_final);

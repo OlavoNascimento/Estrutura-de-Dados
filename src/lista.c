@@ -35,7 +35,7 @@ void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
     }
 }
 
-struct No* buscar_elemento_id_lista(Lista *lista, char *id_buscado) {
+struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
     struct No *atual = lista->cabeca;
     while(atual != NULL) {
         char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
@@ -43,18 +43,6 @@ struct No* buscar_elemento_id_lista(Lista *lista, char *id_buscado) {
             return atual;
         atual = atual->prox;
     }
-    return NULL;
-}
-
-struct No* buscar_elemento_posicao_lista(Lista *lista, int posicao_buscada) {
-    int posicao_atual = 0;
-    struct No *atual = lista->cabeca;
-    while(atual != NULL && posicao_atual != posicao_buscada) {
-        atual = atual->prox;
-        posicao_atual++;
-    }
-    if(posicao_atual == posicao_buscada)
-        return atual;
     return NULL;
 }
 

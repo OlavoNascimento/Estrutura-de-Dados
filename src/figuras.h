@@ -33,8 +33,8 @@ typedef struct {
 char* fig_tipo_para_string(TiposFigura tipo);
 void escrever_informacoes_figura(FILE *arquivo, Figuras figura, TiposFigura tipo);
 char* obter_id_figura(Figuras *figura, TiposFigura tipo);
-double obter_x_figura(Figuras figura, TiposFigura tipo);
-double obter_y_figura(Figuras figura, TiposFigura tipo);
+char* obter_cor_borda_figura(Figuras *figura, TiposFigura tipo);
+char* obter_cor_preenchimento_figura(Figuras *figura, TiposFigura tipo);
 void atualizar_exibicao_svg(Exibicao *exi, Figuras fig, TiposFigura tipo);
 
 bool interseccao_figuras(Figuras fig1, TiposFigura tipo1, Figuras fig2, TiposFigura tipo2);

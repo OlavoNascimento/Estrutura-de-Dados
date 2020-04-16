@@ -46,34 +46,34 @@ char *obter_id_figura(Figuras *figura, TiposFigura tipo) {
     return NULL;
 }
 
-double obter_x_figura(Figuras figura, TiposFigura tipo) {
+char* obter_cor_borda_figura(Figuras *figura, TiposFigura tipo) {
     switch(tipo) {
         case TipoCirculo:
-            return figura.circ.x;
+            return figura->circ.cor_borda;
             break;
         case TipoRetangulo:
-            return figura.ret.x;
+            return figura->ret.cor_borda;
             break;
         case TipoTexto:
-            return figura.tex.x;
+            return figura->tex.cor_borda;
             break;
     }
-    return 0;
+    return NULL;
 }
 
-double obter_y_figura(Figuras figura, TiposFigura tipo) {
+char* obter_cor_preenchimento_figura(Figuras *figura, TiposFigura tipo) {
     switch(tipo) {
         case TipoCirculo:
-            return figura.circ.y;
+            return figura->circ.cor_preenchimento;
             break;
         case TipoRetangulo:
-            return figura.ret.y;
+            return figura->ret.cor_preenchimento;
             break;
         case TipoTexto:
-            return figura.tex.y;
+            return figura->tex.cor_preenchimento;
             break;
     }
-    return 0;
+    return NULL;
 }
 
 double max(double a, double b) {

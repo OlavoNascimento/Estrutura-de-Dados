@@ -15,7 +15,7 @@ void escrever_informacoes_texto(FILE *arquivo, Texto tex) {
     if(strlen(tex.id) > 0)
         fprintf(arquivo, "id: %s, ", tex.id);
     fprintf(arquivo,
-            "x: %lf, y: %lf, corb: %s, corp: %s, txto: %s\n",
+            "x: %lf, y: %lf, corb: %s, corp: %s, texto: %s\n",
             tex.x,
             tex.y,
             tex.cor_borda,
