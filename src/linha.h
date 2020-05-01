@@ -11,4 +11,4 @@ typedef struct {
     char cor_preenchimento[20];
 } Linha;
 
-void linha_para_svg(FILE *arquivo, Linha lin);
+void escrever_svg_linha(FILE *arquivo, Linha lin);

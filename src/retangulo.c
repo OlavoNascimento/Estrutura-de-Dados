@@ -4,7 +4,8 @@
 
 #include <retangulo.h>
 
-Retangulo criar_retangulo(char *linha) {
+// Criar um retângulo com base em informações de uma linha.
+Retangulo ler_retangulo(char *linha) {
     Retangulo ret;
     sscanf(linha, "%*c %s %lf %lf %lf %lf %s %s",
         ret.id, &ret.largura, &ret.altura, &ret.x, &ret.y, ret.cor_borda, ret.cor_preenchimento);
@@ -13,6 +14,7 @@ Retangulo criar_retangulo(char *linha) {
     return ret;
 }
 
+// Escreve todos os dados de um retângulo em um arquivo.
 void escrever_informacoes_retangulo(FILE *arquivo, Retangulo ret) {
     if(strlen(ret.id) > 0)
         fprintf(arquivo, "id: %s, ", ret.id);
@@ -27,7 +29,8 @@ void escrever_informacoes_retangulo(FILE *arquivo, Retangulo ret) {
     );
 }
 
-void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
+// Escreve o código svg que representa um retângulo em um arquivo.
+void escrever_svg_retangulo(FILE *arquivo, Retangulo ret) {
     fprintf(arquivo, "\t<rect");
     if(strlen(ret.id) > 0)
         fprintf(arquivo, " id='%s'", ret.id);
@@ -49,7 +52,8 @@ void retangulo_para_svg(FILE *arquivo, Retangulo ret) {
     fprintf(arquivo, "/>\n");
 }
 
-bool interseccao_retangulos(Retangulo ret1, Retangulo ret2) {
+// Retorna verdadeiro se dois retângulos se intersectam.
+bool checar_interseccao_retangulo(Retangulo ret1, Retangulo ret2) {
     if(ret1.x > ret2.x + ret2.largura || ret2.x > ret1.x + ret1.largura)
         return false;
     if(ret1.y + ret1.altura < ret2.y || ret2.y + ret2.altura < ret1.y)
@@ -57,7 +61,9 @@ bool interseccao_retangulos(Retangulo ret1, Retangulo ret2) {
     return true;
 }
 
-bool ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_y) {
+// Retorna verdadeiro se um ponto se encontra dentro de um retângulo.
+bool checar_ponto_interno_retangulo(Retangulo ret,
+                                    double ponto_x, double ponto_y) {
     if(ponto_x <= ret.x || ponto_x >= ret.x + ret.largura)
         return false;
     if(ponto_y <= ret.y || ponto_y >= ret.y + ret.altura)

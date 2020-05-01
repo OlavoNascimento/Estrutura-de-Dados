@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include <parametros.h>
 
-// Retorna uma struct com todos os parâmetros
-// que podem ser lidos pelo programa.
+// Retorna uma struct com todos os parâmetros que podem ser lidos pelo programa.
 Parametros criar_parametros() {
     Parametros params;
     params.nome_descricao = NULL;
@@ -16,25 +17,33 @@ Parametros criar_parametros() {
 }
 
 // Retorna uma struct contendo os parâmetros fornecidos ao programa.
-Parametros ler_parametros(int argc, char const *argv[]) {
+Parametros ler_parametros(int argc, const char *argv[]) {
     Parametros params = criar_parametros();
     int i = 0;
     while(i < argc) {
         if(strcmp("-e", argv[i]) == 0) {
             i++;
-            params.nome_dir_entrada = (char*) malloc((strlen(argv[i])+1)*sizeof(char));
+            params.nome_dir_entrada = malloc(
+                (strlen(argv[i]) + 1) * sizeof(char)
+            );
             strcpy(params.nome_dir_entrada, argv[i]);
         } else if(strcmp("-f", argv[i]) == 0) {
             i++;
-            params.nome_descricao = (char*) malloc((strlen(argv[i])+1)*sizeof(char));
+            params.nome_descricao = malloc(
+                (strlen(argv[i]) + 1) * sizeof(char)
+            );
             strcpy(params.nome_descricao, argv[i]);
         } else if(strcmp("-o", argv[i]) == 0) {
             i++;
-            params.nome_dir_saida = (char*) malloc((strlen(argv[i])+1)*sizeof(char));
+            params.nome_dir_saida = malloc(
+                (strlen(argv[i]) + 1) * sizeof(char)
+            );
             strcpy(params.nome_dir_saida, argv[i]);
         } else if(strcmp("-q", argv[i]) == 0) {
             i++;
-            params.nome_consulta = (char*) malloc((strlen(argv[i])+1)*sizeof(char));
+            params.nome_consulta = malloc(
+                (strlen(argv[i]) + 1) * sizeof(char)
+            );
             strcpy(params.nome_consulta, argv[i]);
         }
         i++;
@@ -42,15 +51,34 @@ Parametros ler_parametros(int argc, char const *argv[]) {
     return params;
 }
 
-// Concatena um diretório com um arquivo fornecido,
-// separados por uma '/'.
-char* unir_caminhos(char* diretorio, char* nome_arquivo) {
+// Retorna verdadeiro caso os parâmetros buscados pela função existam.
+bool checar_parametros_obrigatorios(const Parametros params) {
+    if(params.nome_descricao == NULL) {
+        fprintf(
+            stderr,
+            "Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n"
+        );
+        return false;
+    }
+
+    if(params.nome_dir_saida == NULL) {
+        fprintf(
+            stderr,
+            "Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n"
+        );
+        return false;
+    }
+    return true;
+}
+
+// Concatena um diretório com um arquivo fornecido, separados por uma '/'.
+char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
     if(diretorio == NULL || nome_arquivo == NULL) {
         fprintf(stderr, "Variável nula fornecida ao unir caminhos!\n");
         return NULL;
     }
 
-    char *uniao = (char*) malloc(strlen(diretorio)+strlen(nome_arquivo)+2);
+    char *uniao = malloc(strlen(diretorio) + strlen(nome_arquivo) + 2);
     if(uniao == NULL) {
         fprintf(stderr, "Falha ao alocar memória paro o caminho %s/%s!\n",
                 diretorio, nome_arquivo);
@@ -60,95 +88,101 @@ char* unir_caminhos(char* diretorio, char* nome_arquivo) {
     return uniao;
 }
 
-// Adiciona um diretório ao caminho de um arquivo caso
-// ele seja fornecido.
-char* preparar_caminho(char* diretorio, char* nome_arquivo) {
+// Adiciona um diretório ao caminho de um arquivo caso ele seja fornecido.
+char *preparar_caminho(const char *diretorio, const char *nome_arquivo) {
     if(nome_arquivo == NULL) {
         fprintf(stderr, "Nome de arquivo nulo passado a preparar caminho!\n");
         return NULL;
     }
-    char* caminho_final = NULL;
+    char *caminho_final = NULL;
     if(diretorio != NULL) {
-        // Adiciona o diretório ao caminho do arquivo
+        // Adiciona o diretório ao caminho do arquivo.
         caminho_final = unir_caminhos(diretorio, nome_arquivo);
     } else {
-        // Caso o diretório não seja fornecido
-        // usa o caminho do arquivo como caminho final.
-        caminho_final = (char*) malloc(strlen(nome_arquivo)+1);
+        // Caso o diretório não seja fornecido usa o caminho do arquivo como
+        // caminho final.
+        caminho_final = malloc(strlen(nome_arquivo) + 1);
         strcpy(caminho_final, nome_arquivo);
     }
     return caminho_final;
 }
 
-// Extrai o nome do arquivo de uma string no formato: /diretorio/nome-arquivo.ext
-char* extrair_nome_base(char* caminho_arquivo) {
-    // Encontra a última / no caminho do arquivo.
+// Extrai o nome do arquivo sem sua extensão e o diretórios que compõem seu
+// caminho de uma string no formato:
+// /diretório-a/diretório-b/nome-arquivo.ext
+char *extrair_nome_base(const char *caminho_arquivo) {
+    // Avança até a última / no caminho do arquivo.
     char *nome_arquivo = strrchr(caminho_arquivo, '/');
 
     char *nome_base = NULL;
     if(nome_arquivo != NULL) {
-        // Avança um caratere, removendo a /.
-        nome_arquivo++;
         // Arquivo tem uma / em seu caminho.
-        nome_base = (char*) malloc((strlen(nome_arquivo)+1)*sizeof(char));
+        // Avança um caratere, removendo a /
+        nome_arquivo++;
+        nome_base = malloc(
+            (strlen(nome_arquivo) + 1) * sizeof(char)
+        );
         if(nome_base == NULL)
             return NULL;
         strcpy(nome_base, nome_arquivo);
     } else {
-        // Arquivo não tem uma / em seu caminho.
-        nome_base = (char*) malloc((strlen(caminho_arquivo)+1)*sizeof(char));
+        // Arquivo não tem uma / em seu caminho, consequentemente o caminho
+        // passado a função já não possui diretórios antecedentes ao arquivo.
+        nome_base = malloc(
+            (strlen(caminho_arquivo) + 1) * sizeof(char)
+        );
         if(nome_base == NULL)
             return NULL;
         strcpy(nome_base, caminho_arquivo);
     }
 
-    // Encontra o último . no caminho do arquivo.
+    // Avança até o último . no nome do arquivo.
     char *extensao = strrchr(nome_base, '.');
-    // Se o arquivo possui uma extensão ela é substituida por um caractere nulo.
+    // Se o arquivo possui uma extensão ela será usada para delimitar o fim da
+    // string.
     if(extensao != NULL)
         *extensao = '\0';
 
     return nome_base;
 }
 
-// Remove a extensão de um arquivo no formato nome-arquivo.ext e
-// em seu lugar coloca um sufixo passado como argumento para
-// a função.
-char* alterar_sufixo(char* nome_arquivo, char* sufixo) {
-    char *nome_base = extrair_nome_base(nome_arquivo);
-    char *novo_nome = (char*) malloc((strlen(nome_arquivo)+strlen(sufixo)+1)*sizeof(char));
-    sprintf(novo_nome, "%s%s", nome_base, sufixo);
-    free(nome_base);
-    return novo_nome;
-}
+// Cria uma string com nome baseado em um nome passado a função, porém sua
+// extensão é substituida por sufixos adicionais.
+char *alterar_sufixo(const char *nome_arquivo, int num_sufixos, ...) {
+    char *sufixo_final = malloc(sizeof(char));
+    sufixo_final[0] = '\0';
 
-// Altera o sufixo do nome de um arquivo e une o caminho dele
-// a um diretório fornecido a função, case este seja fornecido.
-char* preparar_caminho_sufixo(char* diretorio, char* nome_arquivo, char* sufixo) {
-    if(nome_arquivo == NULL || sufixo == NULL) {
-        fprintf(stderr, "Parâmetro nulo passado a preparar caminho sufixo!\n");
-        return NULL;
+    va_list sufixos;
+    va_start(sufixos, num_sufixos);
+    // Concatena todos os sufixos em uma string
+    for (int i = 0; i < num_sufixos; i++) {
+        // Recebe o próximo sufixo da lista
+        char *sufixo = va_arg(sufixos, char*);
+        // Aumenta o tamanho da string para receber o proximo sufixo
+        char *tmp = realloc(
+            sufixo_final,
+            (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof(char)
+        );
+        if(tmp == NULL) {
+            fprintf(stderr, "Falha ao alocar memória para novo sufixo!\n");
+            free(sufixo_final);
+            return NULL;
+        }
+        sufixo_final = tmp;
+        strcat(sufixo_final, sufixo);
     }
-    char *novo_nome = alterar_sufixo(nome_arquivo, sufixo);
-    char *caminho = preparar_caminho(diretorio, novo_nome);
-    free(novo_nome);
-    return caminho;
-}
+    va_end(sufixos);
 
-// Adiciona o nome do arquivo de consulta a uma extensão,
-// retornando um sufixo no formato: -nome_consulta.extensao
-// que pode ser passado para a função preparar_caminho_sufixo.
-char* preparar_sufixo_consulta(char *caminho_consulta, char *extensao) {
-    char *nome_consulta = extrair_nome_base(caminho_consulta);
-    char *sufixo = (char*) malloc((strlen(nome_consulta)+strlen(extensao)+2)*sizeof(char));
-
-    sufixo[0] = '-';
-    sufixo[1] = '\0';
-    strcat(sufixo, nome_consulta);
-    strcat(sufixo, extensao);
-
-    free(nome_consulta);
-    return sufixo;
+    // Recebe o nome do arquivo, sem os diretórios que compõem seu caminho e sua
+    // extensão
+    char *nome_base = extrair_nome_base(nome_arquivo);
+    char *novo_nome = malloc(
+        (strlen(nome_base) + strlen(sufixo_final) + 1) * sizeof(char)
+    );
+    sprintf(novo_nome, "%s%s", nome_base, sufixo_final);
+    free(nome_base);
+    free(sufixo_final);
+    return novo_nome;
 }
 
 // Libera a memória alocada pelos argumentos.

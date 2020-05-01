@@ -1,48 +1,48 @@
+#include <string.h>
+
 #include <ler_geo.h>
 #include <lista.h>
 
+// Tamanho maxímo de um comando do arquivo de descrição.
 #define LINHA_MAX 300
 
-Lista* ler_geo(char *caminho_geo) {
+// Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas
+// em suas linha como elementos de uma lista.
+Lista *ler_geo(const char *caminho_geo) {
+    FILE *arquivo_descricao = fopen(caminho_geo, "r");
+    if(arquivo_descricao == NULL) {
+        fprintf(stderr, "Falha ao ler arquivo de descrição: %s\n", caminho_geo);
+        return NULL;
+    }
     Lista *lista = criar_lista();
 
-    FILE *arquivo = fopen(caminho_geo, "r");
-    if(arquivo == NULL) {
-        fprintf(stderr, "Falha ao ler %s!\n", caminho_geo);
-        return lista;
-    }
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
-
     char linha[LINHA_MAX];
-    while(fgets(linha, LINHA_MAX, arquivo) != NULL
-          && figuras_criadas < lista_max_figs) {
+    while(fgets(linha, LINHA_MAX, arquivo_descricao) != NULL &&
+          figuras_criadas < lista_max_figs) {
+        char comando[100];
+        sscanf(linha, "%s", comando);
+
         Figuras nova_figura;
-        switch(linha[0]) {
-            case 'c':
-                nova_figura.circ = criar_circulo(linha);
-                inserir_lista(lista, nova_figura, TipoCirculo);
-                figuras_criadas++;
-                break;
-            case 'r':
-                nova_figura.ret = criar_retangulo(linha);
-                inserir_lista(lista, nova_figura, TipoRetangulo);
-                figuras_criadas++;
-                break;
-            case 't':
-                nova_figura.tex = criar_texto(linha);
-                inserir_lista(lista, nova_figura, TipoTexto);
-                figuras_criadas++;
-                break;
-            default:
-                if(linha[0] == 'n' && linha[1] == 'x') {
-                    sscanf(linha, "nx %d", &lista_max_figs);
-                    printf("Novo valor máximo: %d\n", lista_max_figs);
-                }
-                break;
+        if(strcmp("c", comando) == 0) {
+            nova_figura.circ = ler_circulo(linha);
+            inserir_lista(lista, nova_figura, TIPO_CIRCULO);
+            figuras_criadas++;
+        } else if(strcmp("r", comando) == 0) {
+            nova_figura.ret = ler_retangulo(linha);
+            inserir_lista(lista, nova_figura, TIPO_RETANGULO);
+            figuras_criadas++;
+        } else if(strcmp("t", comando) == 0) {
+            nova_figura.tex = ler_texto(linha);
+            inserir_lista(lista, nova_figura, TIPO_TEXTO);
+            figuras_criadas++;
+        } else if(strcmp("nx", comando) == 0) {
+            sscanf(linha, "nx %d", &lista_max_figs);
+            printf("Novo valor máximo: %d\n", lista_max_figs);
         }
     }
-    fclose(arquivo);
+    fclose(arquivo_descricao);
 
     return lista;
 }

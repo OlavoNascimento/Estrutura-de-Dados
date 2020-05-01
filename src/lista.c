@@ -5,53 +5,83 @@
 #include <lista.h>
 #include <figuras.h>
 
-Lista* criar_lista() {
-    Lista *lis = (Lista*) malloc(sizeof(Lista));
+// Margem entre o svg e a figuras mais próximas de suas bordas.
+#define SVG_MARGEM 5
+
+// Retorna uma struct que representa as propriedades iniciais do arquivo svg.
+ExibicaoSVG criar_exibicao_svg() {
+    ExibicaoSVG exi = {
+        .origem_x = DBL_MAX,
+        .origem_y = DBL_MAX,
+        .largura = 0,
+        .altura = 0
+    };
+    return exi;
+}
+
+// Inicializa um struct lista e retorna seu endereço.
+Lista *criar_lista() {
+    Lista *lis = malloc(sizeof(Lista));
     lis->cabeca = NULL;
     lis->cauda= NULL;
-    lis->exibicao.origem_x = DBL_MAX;
-    lis->exibicao.origem_y = DBL_MAX;
-    lis->exibicao.largura = 0;
-    lis->exibicao.altura = 0;
+    lis->exibicao = criar_exibicao_svg();
     return lis;
 }
 
-void inserir_lista(Lista *lista, Figuras fig, TiposFigura fig_tipo) {
-    struct No *no = (struct No*) malloc(sizeof(struct No));
-    no->figura = fig;
-    no->tipo = fig_tipo;
-    no->prox = NULL;
-    atualizar_exibicao_svg(&lista->exibicao, fig, fig_tipo);
-
-    struct No *atual = lista->cauda;
-    if(atual == NULL) {
-        // Primeiro elemento da lista
-        lista->cabeca = no;
-        lista->cauda = no;
-    } else {
-        // Elementos após o primeiro
-        atual->prox = no;
-        lista->cauda = no;
-    }
+// Checa se é necessário atualizar os valores da struct ExibiçãoSVG para
+// garantir que a figura passada a função possa ser vista no arquivo svg.
+void atualizar_exibicao_svg(ExibicaoSVG *exi,
+                            Figuras figura, TiposFigura tipo) {
+    exi->origem_x = min(exi->origem_x, obter_x_inicio_figura(figura,tipo));
+    exi->origem_y = min(exi->origem_y, obter_y_inicio_figura(figura,tipo));
+    exi->largura = max(exi->largura, obter_x_fim_figura(figura,tipo));
+    exi->altura = max(exi->altura, obter_y_fim_figura(figura,tipo));
 }
 
-struct No* buscar_elemento_lista(Lista *lista, char *id_buscado) {
+// Adiciona um novo elemento a uma lista.
+void inserir_lista(Lista *lista, Figuras figura, TiposFigura tipo) {
+    struct No *novo = (struct No *) malloc(sizeof(struct No));
+    novo->figura = figura;
+    novo->tipo = tipo;
+    novo->prox = NULL;
+    // Muda as proporções do svg caso a nova figura esteja fora das bordas
+    // atuais.
+    atualizar_exibicao_svg(&lista->exibicao, figura, tipo);
+
+    struct No *ultimo = lista->cauda;
+    if(ultimo == NULL) {
+        // Primeiro elemento a ser adicionado a lista
+        lista->cabeca = novo;
+    } else {
+        // Elementos adidionados após o primeiro
+        ultimo->prox = novo;
+    }
+    lista->cauda = novo;
+}
+
+// Busca um id passado como parâmetro dentro de uma lista e retorna o nó
+// correspondente.
+struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
     struct No *atual = lista->cabeca;
     while(atual != NULL) {
-        char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        if(id_atual != NULL && strcmp(id_atual, id_buscado) == 0)
+        const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+
+        if(strcmp(id_atual, id_buscado) == 0)
             return atual;
         atual = atual->prox;
     }
     return NULL;
 }
 
-void remover_elemento_lista(Lista *lista, char *id) {
+// Remove um nó que tenha id igual ao id passado como parâmetro para função de
+// dentro de uma lista.
+void remover_elemento_lista(Lista *lista, const char *id_buscado) {
     struct No *atual = lista->cabeca;
     struct No *anterior;
     while(atual != NULL) {
-        char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        if(id_atual != NULL && strcmp(id_atual, id) == 0) {
+        const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+
+        if(strcmp(id_atual, id_buscado) == 0) {
             if(atual == lista->cabeca) {
                 lista->cabeca = atual->prox;
             } else if(atual == lista->cauda) {
@@ -61,7 +91,7 @@ void remover_elemento_lista(Lista *lista, char *id) {
                 anterior->prox = atual->prox;
             }
             free(atual);
-            break;
+            atual = NULL;
         } else {
             anterior = atual;
             atual = atual->prox;
@@ -69,40 +99,51 @@ void remover_elemento_lista(Lista *lista, char *id) {
     }
 }
 
-void lista_para_svg(Lista *lista, char *caminho_svg) {
+// Transforma as figuras de uma lista em um código svg que as representam,
+// salvando o resultado em um arquivo localizado no caminho específicado.
+void lista_para_svg(Lista *lista, const char *caminho_svg) {
     FILE *arquivo = fopen(caminho_svg, "w");
     if(arquivo == NULL) {
         fprintf(stderr, "Arquivo %s não pode ser criado!\n", caminho_svg);
         return;
     }
-    struct No *atual = lista->cabeca;
-    fprintf(arquivo, "<svg viewBox='%lf %lf %lf %lf'>\n",
-            lista->exibicao.origem_x - SVG_MARGEM,
-            lista->exibicao.origem_y - SVG_MARGEM,
-            lista->exibicao.largura - abs(lista->exibicao.origem_x) + 2 * SVG_MARGEM,
-            lista->exibicao.altura - abs(lista->exibicao.origem_y) + 2 * SVG_MARGEM
+    double svg_origem_x = lista->exibicao.origem_x - SVG_MARGEM;
+    double svg_origem_y = lista->exibicao.origem_y - SVG_MARGEM;
+
+    double svg_largura = lista->exibicao.largura + 2 * SVG_MARGEM;
+    // Caso a origem x seja diferente de 0, a largura do svg deve ser alterada
+    // para utilizar esta nova origem como base.
+    if(svg_origem_x > 0)
+        svg_largura -= lista->exibicao.origem_x;
+    else
+        svg_largura += abs(lista->exibicao.origem_x);
+
+    double svg_altura = lista->exibicao.altura + 2 * SVG_MARGEM;
+    // Caso a origem y seja diferente de 0, a altura do svg deve ser alterada
+    // para utilizar esta nova origem como base.
+    if(svg_origem_y > 0)
+        svg_altura -= lista->exibicao.origem_y;
+    else
+        svg_altura += abs(lista->exibicao.origem_y);
+
+    // Utiliza o atributo viewbox para garantir que todas as figuras possam ser
+    // vistas no arquivo svg.
+    fprintf(
+        arquivo,
+        "<svg viewBox='%lf %lf %lf %lf'>\n",
+        svg_origem_x, svg_origem_y, svg_largura ,svg_altura
     );
+    struct No *atual = lista->cabeca;
     while(atual != NULL) {
-        switch(atual->tipo) {
-            case TipoCirculo:
-                circulo_para_svg(arquivo, atual->figura.circ);
-                break;
-            case TipoRetangulo:
-                retangulo_para_svg(arquivo, atual->figura.ret);
-                break;
-            case TipoTexto:
-                texto_para_svg(arquivo, atual->figura.tex);
-                break;
-            case TipoLinha:
-                linha_para_svg(arquivo, atual->figura.lin);
-                break;
-        }
+        escrever_svg_figura(arquivo, atual->figura, atual->tipo);
         atual = atual->prox;
     }
     fprintf(arquivo, "</svg>\n");
+
     fclose(arquivo);
 }
 
+// Libera a memória alocada por uma lista e seus elementos.
 void destruir_lista(Lista *lista) {
     struct No *atual = lista->cabeca;
     struct No *prox;
@@ -115,4 +156,5 @@ void destruir_lista(Lista *lista) {
     lista->cabeca = NULL;
     lista->cauda = NULL;
     free(lista);
+    lista = NULL;
 }

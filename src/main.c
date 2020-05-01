@@ -1,79 +1,83 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
+#include <parametros.h>
+#include <lista.h>
 #include <ler_geo.h>
 #include <ler_qry.h>
-#include <lista.h>
-#include <parametros.h>
 
-int main(int argc, char const *argv[]) {
-    Parametros params = ler_parametros(argc, argv);
+// Usa o nome do arquivo de descrição para criar o nome do svg.
+char *criar_caminho_svg_descricao(const Parametros params) {
+    char *nome_svg_descricao = alterar_sufixo(
+        params.nome_descricao, 1, ".svg"
+    );
+    char *caminho_svg_descricao = preparar_caminho(
+        params.nome_dir_saida, nome_svg_descricao
+    );
+    free(nome_svg_descricao);
+    return caminho_svg_descricao;
+}
 
-    char *caminho_descricao = NULL;
-    if(params.nome_descricao != NULL) {
-        caminho_descricao = preparar_caminho(params.nome_dir_entrada, params.nome_descricao);
-    } else {
-        fprintf(stderr, "Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
+// Cria uma nova string baseada no arquivo de descrição, porém com sufixo
+// adicional com o nome da consulta que está sendo executada, utilizado pelo
+// arquivo de log e svg da consulta.
+char *criar_caminho_resultado_consulta(const Parametros params,
+                                       const char *extensao) {
+    char *nome_base_consulta = extrair_nome_base(params.nome_consulta);
+    char *nome_resultado_consulta = alterar_sufixo(
+        params.nome_descricao, 3, "-", nome_base_consulta, extensao
+    );
+    char *caminho_resultado_consulta = preparar_caminho(
+        params.nome_dir_saida, nome_resultado_consulta
+    );
+    free(nome_base_consulta);
+    free(nome_resultado_consulta);
+    return caminho_resultado_consulta;
+}
+
+int main(int argc, const char *argv[]) {
+    const Parametros params = ler_parametros(argc, argv);
+    if(!checar_parametros_obrigatorios(params))
         return 1;
-    }
 
-    if(params.nome_dir_saida == NULL) {
-        fprintf(stderr, "Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
-        return 1;
-    }
-
-    char *caminho_consulta = NULL;
-    if(params.nome_consulta != NULL)
-        caminho_consulta =  preparar_caminho(params.nome_dir_entrada, params.nome_consulta);
-
-    // Adapta o nome do arquivo .svg a partir do arquivo de descrição
-    char *caminho_svg = preparar_caminho_sufixo(params.nome_dir_saida, params.nome_descricao, ".svg");
-
+    // Adiciona o diretório de entrada ao caminho do arquivo de descrição caso
+    // necessário.
+    char *caminho_descricao = preparar_caminho(
+        params.nome_dir_entrada, params.nome_descricao
+    );
+    char *caminho_svg_descricao = criar_caminho_svg_descricao(params);
     printf("Arquivo descrição: %s\n", caminho_descricao);
-    printf("Arquivo svg: %s\n", caminho_svg);
+    printf("Arquivo svg: %s\n", caminho_svg_descricao);
 
     Lista *lista = ler_geo(caminho_descricao);
-    lista_para_svg(lista, caminho_svg);
+    lista_para_svg(lista, caminho_svg_descricao);
 
-    if(caminho_consulta != NULL) {
-        // Cria um sufixo usando o nome do arquivo de consulta.
-        char *sufixo_log = preparar_sufixo_consulta(caminho_consulta, ".txt");
-        // Cria um caminho com o sufixo criado anteriormente.
-        char *caminho_log = preparar_caminho_sufixo(params.nome_dir_saida,
-                                                    params.nome_descricao,
-                                                    sufixo_log);
-        free(sufixo_log);
-
-        char *sufixo_svg_consulta = preparar_sufixo_consulta(caminho_consulta, ".svg");
-        char *caminho_svg_consulta = preparar_caminho_sufixo(params.nome_dir_saida,
-                                                             params.nome_descricao,
-                                                             sufixo_svg_consulta);
-        free(sufixo_svg_consulta);
-
+    if(params.nome_consulta != NULL) {
+        // Adiciona o diretório de entrada ao caminho do arquivo de consulta
+        // caso necessário.
+        char *caminho_consulta = preparar_caminho(
+            params.nome_dir_entrada, params.nome_consulta
+        );
+        char *caminho_log = criar_caminho_resultado_consulta(params, ".txt");
+        char *caminho_svg_consulta = criar_caminho_resultado_consulta(
+            params, ".svg"
+        );
         printf("Arquivo consulta: %s\n", caminho_consulta);
         printf("Arquivo log: %s\n", caminho_log);
         printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
-        FILE *arquivo_log = fopen(caminho_log, "w");
-        if(arquivo_log == NULL) {
-            fprintf(stderr, "Falha ao criar arquivo de log!\n");
-            return 1;
-        }
-
-        ler_qry(lista, caminho_consulta, arquivo_log);
+        ler_qry(lista, caminho_consulta, caminho_log);
         lista_para_svg(lista, caminho_svg_consulta);
 
-        fclose(arquivo_log);
         free(caminho_log);
         free(caminho_svg_consulta);
+        free(caminho_consulta);
     }
 
     destruir_parametros(params);
     destruir_lista(lista);
+    free(caminho_svg_descricao);
     free(caminho_descricao);
-    free(caminho_consulta);
-    free(caminho_svg);
 
     return 0;
 }
