@@ -6,7 +6,9 @@
 #include <figuras.h>
 
 // Margem entre o svg e a figuras mais próximas de suas bordas.
-#define SVG_MARGEM 5
+#define SVG_MARGEM 14
+// Margem entra a figura e seu rótulo.
+#define ROTULO_MARGEM 4
 
 // Retorna uma struct que representa as propriedades iniciais do arquivo svg.
 ExibicaoSVG criar_exibicao_svg() {
@@ -32,10 +34,18 @@ Lista *criar_lista() {
 // garantir que a figura passada a função possa ser vista no arquivo svg.
 void atualizar_exibicao_svg(ExibicaoSVG *exi,
                             Figuras figura, TiposFigura tipo) {
-    exi->origem_x = min(exi->origem_x, obter_x_inicio_figura(figura,tipo));
-    exi->origem_y = min(exi->origem_y, obter_y_inicio_figura(figura,tipo));
-    exi->largura = max(exi->largura, obter_x_fim_figura(figura,tipo));
-    exi->altura = max(exi->altura, obter_y_fim_figura(figura,tipo));
+    exi->origem_x = min(
+        exi->origem_x, obter_x_inicio_figura(figura,tipo) - ROTULO_MARGEM
+    );
+    exi->origem_y = min(
+        exi->origem_y, obter_y_inicio_figura(figura,tipo) - ROTULO_MARGEM
+    );
+    exi->largura = max(
+        exi->largura, obter_x_fim_figura(figura,tipo) - ROTULO_MARGEM
+    );
+    exi->altura = max(
+        exi->altura, obter_y_fim_figura(figura,tipo) - ROTULO_MARGEM
+    );
 }
 
 // Adiciona um novo elemento a uma lista.
@@ -66,7 +76,7 @@ struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
     while(atual != NULL) {
         const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
 
-        if(strcmp(id_atual, id_buscado) == 0)
+        if(id_atual != NULL && strcmp(id_atual, id_buscado) == 0)
             return atual;
         atual = atual->prox;
     }
@@ -76,8 +86,8 @@ struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
 // Remove um nó que tenha id igual ao id passado como parâmetro para função de
 // dentro de uma lista.
 void remover_elemento_lista(Lista *lista, const char *id_buscado) {
-    struct No *atual = lista->cabeca;
     struct No *anterior;
+    struct No *atual = lista->cabeca;
     while(atual != NULL) {
         const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
 
@@ -97,6 +107,19 @@ void remover_elemento_lista(Lista *lista, const char *id_buscado) {
             atual = atual->prox;
         }
     }
+}
+
+// Cria um texto igual ao id de uma figura.
+Texto criar_rotulo(Figuras figura, TiposFigura tipo) {
+    Texto rotulo = {
+        .id = "\0",
+        .cor_borda = "black",
+        .cor_preenchimento = "black"
+    };
+    rotulo.x = obter_x_inicio_figura(figura, tipo) - ROTULO_MARGEM;
+    rotulo.y = obter_y_inicio_figura(figura, tipo) - ROTULO_MARGEM;
+    strcpy(rotulo.texto, obter_id_figura(&figura, tipo));
+    return rotulo;
 }
 
 // Transforma as figuras de uma lista em um código svg que as representam,
@@ -136,6 +159,13 @@ void lista_para_svg(Lista *lista, const char *caminho_svg) {
     struct No *atual = lista->cabeca;
     while(atual != NULL) {
         escrever_svg_figura(arquivo, atual->figura, atual->tipo);
+
+        // Checa se a figura atual possui um id.
+        if(obter_id_figura(&atual->figura, atual->tipo) != NULL) {
+            Figuras rotulo;
+            rotulo.tex = criar_rotulo(atual->figura, atual->tipo);
+            escrever_svg_figura(arquivo, rotulo, TIPO_TEXTO);
+        }
         atual = atual->prox;
     }
     fprintf(arquivo, "</svg>\n");

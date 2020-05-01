@@ -201,7 +201,7 @@ void remover_elementos(Lista *lista, const char *linha, FILE *arquivo_log) {
         fprintf(arquivo_log, "\n");
 
         if(strcmp(id_atual, id_final) == 0) {
-            // É necessário marcar a sáida do loop antes de remover o elemento,
+            // É necessário marcar a saída do loop antes de remover o elemento,
             // já que após a remoção do elemento seu id será perdido.
             atual = NULL;
         } else {

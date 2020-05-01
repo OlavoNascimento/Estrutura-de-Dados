@@ -47,7 +47,7 @@ double obter_y_inicio_figura(Figuras figura, TiposFigura tipo) {
     switch(tipo) {
         case TIPO_CIRCULO: return figura.circ.y - figura.circ.raio;
         case TIPO_RETANGULO: return figura.ret.y;
-        case TIPO_TEXTO: return figura.tex.y;
+        case TIPO_TEXTO: return figura.tex.y - TAMANHO_LETRAS_TEXTO;
         case TIPO_LINHA: return min(figura.lin.y1, figura.lin.y2);
     }
     return 0;
@@ -72,7 +72,7 @@ double obter_y_fim_figura(Figuras figura, TiposFigura tipo) {
         case TIPO_CIRCULO: return figura.circ.y + figura.circ.raio;
         case TIPO_RETANGULO: return figura.ret.y + figura.ret.altura;
         // Usa uma altura estimada para o texto
-        case TIPO_TEXTO: return figura.tex.y + TAMANHO_LETRAS_TEXTO;
+        case TIPO_TEXTO: return figura.tex.y;
         case TIPO_LINHA: return max(figura.lin.y1, figura.lin.y2);
     }
     return 0;
