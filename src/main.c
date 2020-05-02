@@ -1,10 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <parametros.h>
 #include <lista.h>
 #include <ler_geo.h>
 #include <ler_qry.h>
+
+#ifdef _WIN32
+    #include <windows.h>
+    #define mkdir(dir, mode) _mkdir(dir)
+    #define DIRECTORY_SEPARATOR '\\'
+#elif __linux__
+    #include <sys/stat.h>
+    #include <sys/types.h>
+    #define DIRECTORY_SEPARATOR '/'
+#endif
+
+void criar_diretorio(char const *diretorio) {
+    char *caminho = malloc((strlen(diretorio) + 1) * sizeof(char));
+    strcpy(caminho, diretorio);
+    for (char *p = caminho + 1; *p; p++) {
+        if(*p == DIRECTORY_SEPARATOR) {
+            *p = '\0';
+            mkdir(caminho, 0755);
+            *p = DIRECTORY_SEPARATOR;
+        }
+    }
+    mkdir(caminho, 0755);
+    free(caminho);
+}
 
 // Usa o nome do arquivo de descrição para criar o nome do svg.
 char *criar_caminho_svg_descricao(const Parametros params) {
@@ -39,6 +64,7 @@ int main(int argc, const char *argv[]) {
     const Parametros params = ler_parametros(argc, argv);
     if(!checar_parametros_obrigatorios(params))
         return 1;
+    criar_diretorio(params.nome_dir_saida);
 
     // Adiciona o diretório de entrada ao caminho do arquivo de descrição caso
     // necessário.

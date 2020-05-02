@@ -36,7 +36,7 @@ double obter_x_inicio_figura(Figuras figura, TiposFigura tipo) {
     switch(tipo) {
         case TIPO_CIRCULO: return figura.circ.x - figura.circ.raio;
         case TIPO_RETANGULO: return figura.ret.x;
-        case TIPO_TEXTO: return figura.tex.x;
+        case TIPO_TEXTO: return figura.tex.x - TAMANHO_LETRAS_TEXTO;
         case TIPO_LINHA: return min(figura.lin.x1,figura.lin.x2);
     }
     return 0;
