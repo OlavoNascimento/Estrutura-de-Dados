@@ -146,7 +146,7 @@ char *extrair_nome_base(const char *caminho_arquivo) {
     return nome_base;
 }
 
-// Cria uma string com nome baseado em um nome passado a função, porém sua
+// Cria uma string baseado em um nome de arquivo passado a função, porém sua
 // extensão é substituida por sufixos adicionais.
 char *alterar_sufixo(const char *nome_arquivo, int num_sufixos, ...) {
     char *sufixo_final = malloc(sizeof(char));
