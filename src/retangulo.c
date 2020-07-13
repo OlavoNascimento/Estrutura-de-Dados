@@ -17,7 +17,7 @@ typedef struct {
 } Retangulo;
 
 // Criar um retângulo com base em informações de uma linha.
-Retangulo ler_retangulo(char *linha) {
+Retangulo retangulo_ler(char *linha) {
     Retangulo ret;
     sscanf(linha,
            "%*c %s %lf %lf %lf %lf %s %s",
@@ -28,7 +28,7 @@ Retangulo ler_retangulo(char *linha) {
 }
 
 // Escreve todos os dados de um retângulo em um arquivo.
-void escrever_informacoes_retangulo(FILE *arquivo, Retangulo ret) {
+void retangulo_escrever_informacoes(FILE *arquivo, Retangulo ret) {
     if (strlen(ret.id) > 0)
         fprintf(arquivo, "id: %s, ", ret.id);
     fprintf(arquivo,
@@ -37,7 +37,7 @@ void escrever_informacoes_retangulo(FILE *arquivo, Retangulo ret) {
 }
 
 // Escreve o código svg que representa um retângulo em um arquivo.
-void escrever_svg_retangulo(FILE *arquivo, Retangulo ret) {
+void retangulo_escrever_svg(FILE *arquivo, Retangulo ret) {
     fprintf(arquivo, "\t<rect");
     if (strlen(ret.id) > 0)
         fprintf(arquivo, " id='%s'", ret.id);
@@ -52,7 +52,7 @@ void escrever_svg_retangulo(FILE *arquivo, Retangulo ret) {
 }
 
 // Retorna verdadeiro se dois retângulos se intersectam.
-bool checar_interseccao_retangulo(Retangulo ret1, Retangulo ret2) {
+bool retangulo_checar_interseccao(Retangulo ret1, Retangulo ret2) {
     if (ret1.x > ret2.x + ret2.largura || ret2.x > ret1.x + ret1.largura)
         return false;
     if (ret1.y + ret1.altura < ret2.y || ret2.y + ret2.altura < ret1.y)
@@ -61,7 +61,7 @@ bool checar_interseccao_retangulo(Retangulo ret1, Retangulo ret2) {
 }
 
 // Retorna verdadeiro se um ponto se encontra dentro de um retângulo.
-bool checar_ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_y) {
+bool retangulo_checar_ponto_interno(Retangulo ret, double ponto_x, double ponto_y) {
     if (ponto_x <= ret.x || ponto_x >= ret.x + ret.largura)
         return false;
     if (ponto_y <= ret.y || ponto_y >= ret.y + ret.altura)
@@ -69,30 +69,30 @@ bool checar_ponto_interno_retangulo(Retangulo ret, double ponto_x, double ponto_
     return true;
 }
 
-char obterIdRetangulo(Retangulo ret) {
+char retangulo_obter_id(Retangulo ret) {
     return ret.id;
 }
 
-double obterLarguraRetangulo(Retangulo ret) {
+double retangulo_obter_largura(Retangulo ret) {
     return ret.largura;
 }
 
-double obterAlturaRetangulo(Retangulo ret) {
+double retangulo_obter_altura(Retangulo ret) {
     return ret.altura;
 }
 
-double obterXRetangulo(Retangulo ret) {
+double retangulo_obter_x(Retangulo ret) {
     return ret.x;
 }
 
-double obterYRetangulo(Retangulo ret) {
+double retangulo_obter_y(Retangulo ret) {
     return ret.y;
 }
 
-char obterCorBordaRetangulo(Retangulo ret) {
+char retangulo_obter_cor_borda(Retangulo ret) {
     return ret.cor_borda;
 }
 
-char obterCorPreenchimentoRetangulo(Retangulo ret) {
+char retangulo_obter_cor_preenchimento(Retangulo ret) {
     return ret.cor_preenchimento;
 }

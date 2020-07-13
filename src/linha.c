@@ -12,7 +12,7 @@ typedef struct {
 } Linha;
 
 // Escreve o código svg que representa uma linha em um arquivo.
-void escrever_svg_linha(FILE *arquivo, Linha lin) {
+void linha_escrever_svg(FILE *arquivo, Linha lin) {
     fprintf(arquivo,
             "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' fill='%s'/>\n",
             lin.x1,
@@ -23,26 +23,26 @@ void escrever_svg_linha(FILE *arquivo, Linha lin) {
             lin.cor_preenchimento);
 }
 
-double obterX1Linha(Linha lin) {
+double linha_obter_x1(Linha lin) {
     return lin.x1;
 }
 
-double obterY1Linha(Linha lin) {
+double linha_obter_y1(Linha lin) {
     return lin.y1;
 }
 
-double obterX2Linha(Linha lin) {
+double linha_obter_x2(Linha lin) {
     return lin.x2;
 }
 
-double obterY2Linha(Linha lin) {
+double linha_obter_y2(Linha lin) {
     return lin.y2;
 }
 
-char obterCorBorda(Linha lin) {
+char linha_obter_cor_borda(Linha lin) {
     return lin.cor_borda;
 }
 
-char obterCorPreenchimento(Linha lin) {
+char linha_obter_cor_preenchimento(Linha lin) {
     return lin.cor_preenchimento;
 }
