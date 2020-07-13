@@ -8,7 +8,7 @@
 
 typedef void *Circulo;
 
-// Cria e inicializa um struct Circulo a partir de um texto obtido no arquivo .geo. Parâmetro linha não pode ser nulo.
+// Cria e inicializa um struct Circulo a partir de um texto obtido no arquivo .geo. O parâmetro não pode ser nulo.
 Circulo ler_circulo(const char *linha);
 // Escreve todas as informações presentes em um círculo em um arquivo. Ambos os parâmetros não podem ser nulos.
 void escrever_informacoes_circulo(FILE *arquivo, Circulo circ);
