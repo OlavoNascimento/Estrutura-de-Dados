@@ -1,10 +1,10 @@
 #pragma once
 
-// Este módulo define o tipo Circulo, assim como funções que criam, acessam suas propiedades e realizam operações
-// exclusivas deste tipo.
-
 #include <stdbool.h>
 #include <stdio.h>
+
+// Este módulo define o tipo Circulo, assim como funções que criam, acessam suas propriedades e realizam operações
+// entre variáveis deste tipo.
 
 typedef void *Circulo;
 

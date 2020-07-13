@@ -16,10 +16,9 @@ typedef struct {
 // Criar um círculo com base em informações de uma linha.
 Circulo ler_circulo(const char *linha) {
     Circulo circ;
-    sscanf(
-        linha,
-        "%*c %s %lf %lf %lf %s %s",
-        circ.id, &circ.raio, &circ.x, &circ.y, circ.cor_borda, circ.cor_preenchimento);
+    sscanf(linha,
+           "%*c %s %lf %lf %lf %s %s",
+           circ.id, &circ.raio, &circ.x, &circ.y, circ.cor_borda, circ.cor_preenchimento);
     return circ;
 }
 
@@ -27,10 +26,9 @@ Circulo ler_circulo(const char *linha) {
 void escrever_informacoes_circulo(FILE *arquivo, Circulo circ) {
     if (strlen(circ.id) > 0)
         fprintf(arquivo, "id: %s, ", circ.id);
-    fprintf(
-        arquivo,
-        "raio: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
-        circ.raio, circ.x, circ.y, circ.cor_borda, circ.cor_preenchimento);
+    fprintf(arquivo,
+            "raio: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
+            circ.raio, circ.x, circ.y, circ.cor_borda, circ.cor_preenchimento);
 }
 
 // Escreve o código svg que representa um círculo em um arquivo.
@@ -58,8 +56,7 @@ bool checar_interseccao_circulo(Circulo circ1, Circulo circ2) {
 }
 
 // Retorna verdadeiro se um ponto se encontra dentro de um círculo.
-bool checar_ponto_interno_circulo(Circulo circ,
-                                  double ponto_x, double ponto_y) {
+bool checar_ponto_interno_circulo(Circulo circ, double ponto_x, double ponto_y) {
     if (ponto_x <= circ.x - circ.raio || ponto_x >= circ.x + circ.raio)
         return false;
     if (ponto_y <= circ.y - circ.raio || ponto_y >= circ.y + circ.raio)
