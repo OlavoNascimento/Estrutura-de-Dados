@@ -8,6 +8,7 @@ typedef void *Linha;
 
 // Escreve todas as informações presentes em uma Linha em um arquivo. Ambos os parâmetros não podem ser nulos.
 void linha_escrever_svg(FILE *arquivo, Linha lin);
+
 // Retorna a coordenada x1 de uma Linha. O parâmetro não pode ser nulo.
 double linha_obter_x1(Linha lin);
 // Retorna a coordenada y1 de uma Linha. O parâmetro não pode ser nulo.

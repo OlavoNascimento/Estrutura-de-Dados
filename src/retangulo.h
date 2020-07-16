@@ -17,6 +17,7 @@ void retangulo_escrever_svg(FILE *arquivo, Retangulo ret);
 bool retangulo_checar_interseccao(Retangulo ret1, Retangulo ret2);
 // parâmetros não podem ser nulos.
 bool retangulo_checar_ponto_interno(Retangulo ret, double ponto_x, double ponto_y);
+
 // Retorna o id de um retângulo. O parâmetro não pode ser nulo.
 char retangulo_obter_id(Retangulo ret);
 // Retorna a largura de um retângulo. O parâmetro não pode ser nulo.

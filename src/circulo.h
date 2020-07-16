@@ -19,6 +19,7 @@ bool circulo_checar_interseccao(Circulo circ1, Circulo circ2);
 // Recebe um círculo e as coordenadas de um ponto, retorna verdadeiro caso o ponto esteja dentro do círculo. Ambos os
 // parâmetros não podem ser nulos.
 bool circulo_checar_ponto_interno(Circulo circ, double ponto_x, double ponto_y);
+
 // Retorna o id de um círculo. O parâmetro não pode ser nulo.
 char *circulo_obter_id(Circulo circ);
 // Retorna o raio de um círculo. O parâmetro não pode ser nulo.

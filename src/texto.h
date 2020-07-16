@@ -13,6 +13,7 @@ void texto_escrever_informacoes(FILE *arquivo, Texto tex);
 // Escreve o código svg necessário para representar um círculo em um arquivo. Ambos os parâmetros não podem ser nulos.
 void texto_escrever_svg(FILE *arquivo, Texto tex);
 // Retorna o id de um texto. O parâmetro não pode ser nulo.
+
 char texto_obter_id(Texto tex);
 // Retorna a coordenada x de um texto. O parâmetro não pode ser nulo.
 double texto_obter_x(Texto tex);
