@@ -2,13 +2,16 @@
 
 #include <stdbool.h>
 
-#include <retangulo.h>
-#include <circulo.h>
-#include <texto.h>
-#include <linha.h>
+#include "circulo.h"
+#include "linha.h"
+#include "retangulo.h"
+#include "texto.h"
+
+// Este módulo define o tipo Figura, assim como funções que criam, acessam suas propriedades e realizam operações entre
+// variáveis deste tipo. Sua principal função é servir de intermediador entre a possíveis figuras e outros módulos.
 
 typedef enum {
-    TIPOS_FIGURA_MIN,
+    TIPOS_FIGURA_MIN = -1,
     TIPO_RETANGULO,
     TIPO_CIRCULO,
     TIPO_TEXTO,
@@ -16,36 +19,50 @@ typedef enum {
     TIPOS_FIGURA_MAX
 } TiposFigura;
 
-typedef union {
-    Retangulo ret;
-    Circulo circ;
-    Texto tex;
-    Linha lin;
-} Figuras;
+typedef void *Figura;
 
-double max(double a, double b);
-double min(double a, double b);
+Figura figura_criar(TiposFigura tipo);
+Figura figura_ler(const char *linha, TiposFigura tipo);
 
-const char *tipo_para_string_figura(TiposFigura tipo);
-double obter_x_inicio_figura(Figuras figura, TiposFigura tipo);
-double obter_y_inicio_figura(Figuras figura, TiposFigura tipo);
-double obter_x_fim_figura(Figuras figura, TiposFigura tipo);
-double obter_y_fim_figura(Figuras figura, TiposFigura tipo);
-const char *obter_id_figura(Figuras *figura, TiposFigura tipo);
-const char *obter_cor_borda_figura(Figuras *figura, TiposFigura tipo);
-const char *obter_cor_preenchimento_figura(Figuras *figura, TiposFigura tipo);
+// Escreve todos os dados de uma figura em um arquivo passado a função.
+void figura_escrever_informacoes(FILE *arquivo, Figura figura);
+// Escreve o código svg que representa uma figura em um arquivo.
+void figura_escrever_svg(FILE *arquivo, Figura figura);
 
-void escrever_informacoes_figura(FILE *arquivo,
-                                 Figuras figura, TiposFigura tipo);
-void escrever_svg_figura(FILE *arquivo, Figuras figura, TiposFigura tipo);
+// Retorna verdadeiro caso duas figuras se intersectem.
+bool figura_checar_interseccao(Figura figura1, Figura figura2);
+// Checa se um ponto se encontra dentro ou fora de uma figura.
+bool figura_checar_ponto_interno(Figura figura, double ponto_x, double ponto_y);
 
-bool checar_interseccao_figuras(Figuras fig1, TiposFigura tipo1,
-                         Figuras fig2, TiposFigura tipo2);
-Retangulo envolver_figuras(Figuras fig1, TiposFigura tipo1,
-                           Figuras fig2, TiposFigura tipo2);
-bool checar_ponto_interno_figura(Figuras figura, TiposFigura tipo,
-                          double ponto_x, double ponto_y);
-Linha ligar_ponto_figura(Circulo ponto, Figuras figura, TiposFigura tipo);
+// Retorna o nome do tipo de uma figura.
+const char *figura_obter_tipo(Figura figura);
+// Retorna o nome do tipo de uma figura como uma string.
+const char *figura_obter_string_tipo(Figura figura);
+// Retorna o nome do tipo de uma figura.
+const char *figura_obter_figura(Figura figura);
+// Altera a figura armazenada no struct Figura.
+const char *figura_definir_figura(Figura *figura, void *nova_figura, TiposFigura tipo_nova_figura);
 
-void alterar_cor_figura(Figuras *figura, TiposFigura tipo,
-                        char *cor_borda, char *cor_preenchimento);
+// Retorna a coordenada x onde uma figura se inicia.
+double figura_obter_x_inicio(Figura figura);
+// Retorna a coordenada y onde uma figura se inicia.
+double figura_obter_y_inicio(Figura figura);
+// Retorna a coordenada x onde uma figura acaba.
+double figura_obter_x_fim(Figura figura);
+// Retorna a coordenada x do centro de uma figura.
+double figura_obter_centro_x(Figura figura);
+// Retorna a coordenada y do centro de uma figura.
+double figura_obter_centro_y(Figura figura);
+// Retorna a coordenada y onde uma figura acaba.
+double figura_obter_y_fim(Figura figura);
+
+// Retorna o id de uma figura.
+const char *figura_obter_id(Figura *figura);
+// Retorna a cor da borda de uma figura.
+const char *figura_obter_cor_borda(Figura *figura);
+// Substitui a cor da borda de uma figura.
+void figura_definir_cor_borda(Figura *figura, const char *cor_borda);
+// Retorna a cor do preenchimento de uma figura.
+const char *figura_obter_cor_preenchimento(Figura *figura);
+// Substitui a cor de preenchimento de uma figura.
+void figura_definir_cor_preenchimento(Figura *figura, const char *cor_preenchimento);

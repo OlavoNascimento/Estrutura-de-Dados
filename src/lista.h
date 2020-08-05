@@ -1,6 +1,6 @@
 #pragma once
 
-#include <figuras.h>
+#include "figuras.h"
 
 // Utilizado para representar as proporções de um arquivo svg.
 typedef struct {

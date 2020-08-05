@@ -58,14 +58,14 @@ bool checar_obrigatorios(const Parametros params) {
     if (params.caminho_descricao == NULL) {
         fprintf(
             stderr,
-            "Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
+            "ERRO: Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
         return false;
     }
 
     if (params.nome_dir_saida == NULL) {
         fprintf(
             stderr,
-            "Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
+            "ERRO: Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
         return false;
     }
     return true;

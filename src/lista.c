@@ -1,9 +1,10 @@
+#include "lista.h"
+
+#include <float.h>
 #include <stdlib.h>
 #include <string.h>
-#include <float.h>
 
-#include <lista.h>
-#include <figuras.h>
+#include "figuras.h"
 
 // Margem entre o svg e a figuras mais próximas de suas bordas.
 #define SVG_MARGEM 14
@@ -16,8 +17,7 @@ ExibicaoSVG criar_exibicao_svg() {
         .origem_x = DBL_MAX,
         .origem_y = DBL_MAX,
         .largura = 0,
-        .altura = 0
-    };
+        .altura = 0};
     return exi;
 }
 
@@ -25,7 +25,7 @@ ExibicaoSVG criar_exibicao_svg() {
 Lista *criar_lista() {
     Lista *lis = malloc(sizeof(Lista));
     lis->cabeca = NULL;
-    lis->cauda= NULL;
+    lis->cauda = NULL;
     lis->exibicao = criar_exibicao_svg();
     return lis;
 }
@@ -35,22 +35,18 @@ Lista *criar_lista() {
 void atualizar_exibicao_svg(ExibicaoSVG *exi,
                             Figuras figura, TiposFigura tipo) {
     exi->origem_x = min(
-        exi->origem_x, obter_x_inicio_figura(figura,tipo) - ROTULO_MARGEM
-    );
+        exi->origem_x, obter_x_inicio_figura(figura, tipo) - ROTULO_MARGEM);
     exi->origem_y = min(
-        exi->origem_y, obter_y_inicio_figura(figura,tipo) - ROTULO_MARGEM
-    );
+        exi->origem_y, obter_y_inicio_figura(figura, tipo) - ROTULO_MARGEM);
     exi->largura = max(
-        exi->largura, obter_x_fim_figura(figura,tipo) - ROTULO_MARGEM
-    );
+        exi->largura, obter_x_fim_figura(figura, tipo) - ROTULO_MARGEM);
     exi->altura = max(
-        exi->altura, obter_y_fim_figura(figura,tipo) - ROTULO_MARGEM
-    );
+        exi->altura, obter_y_fim_figura(figura, tipo) - ROTULO_MARGEM);
 }
 
 // Adiciona um novo elemento a uma lista.
 void inserir_lista(Lista *lista, Figuras figura, TiposFigura tipo) {
-    struct No *novo = (struct No *) malloc(sizeof(struct No));
+    struct No *novo = (struct No *)malloc(sizeof(struct No));
     novo->figura = figura;
     novo->tipo = tipo;
     novo->prox = NULL;
@@ -59,7 +55,7 @@ void inserir_lista(Lista *lista, Figuras figura, TiposFigura tipo) {
     atualizar_exibicao_svg(&lista->exibicao, figura, tipo);
 
     struct No *ultimo = lista->cauda;
-    if(ultimo == NULL) {
+    if (ultimo == NULL) {
         // Primeiro elemento a ser adicionado a lista
         lista->cabeca = novo;
     } else {
@@ -73,10 +69,10 @@ void inserir_lista(Lista *lista, Figuras figura, TiposFigura tipo) {
 // correspondente.
 struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
     struct No *atual = lista->cabeca;
-    while(atual != NULL) {
+    while (atual != NULL) {
         const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
 
-        if(id_atual != NULL && strcmp(id_atual, id_buscado) == 0)
+        if (id_atual != NULL && strcmp(id_atual, id_buscado) == 0)
             return atual;
         atual = atual->prox;
     }
@@ -88,13 +84,13 @@ struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
 void remover_elemento_lista(Lista *lista, const char *id_buscado) {
     struct No *anterior;
     struct No *atual = lista->cabeca;
-    while(atual != NULL) {
+    while (atual != NULL) {
         const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
 
-        if(strcmp(id_atual, id_buscado) == 0) {
-            if(atual == lista->cabeca) {
+        if (strcmp(id_atual, id_buscado) == 0) {
+            if (atual == lista->cabeca) {
                 lista->cabeca = atual->prox;
-            } else if(atual == lista->cauda) {
+            } else if (atual == lista->cauda) {
                 lista->cauda = anterior;
                 anterior->prox = NULL;
             } else {
@@ -114,8 +110,7 @@ Texto criar_rotulo(Figuras figura, TiposFigura tipo) {
     Texto rotulo = {
         .id = "\0",
         .cor_borda = "black",
-        .cor_preenchimento = "black"
-    };
+        .cor_preenchimento = "black"};
     rotulo.x = obter_x_inicio_figura(figura, tipo) - ROTULO_MARGEM;
     rotulo.y = obter_y_inicio_figura(figura, tipo) - ROTULO_MARGEM;
     strcpy(rotulo.texto, obter_id_figura(&figura, tipo));
@@ -126,8 +121,8 @@ Texto criar_rotulo(Figuras figura, TiposFigura tipo) {
 // salvando o resultado em um arquivo localizado no caminho específicado.
 void lista_para_svg(Lista *lista, const char *caminho_svg) {
     FILE *arquivo = fopen(caminho_svg, "w");
-    if(arquivo == NULL) {
-        fprintf(stderr, "Arquivo %s não pode ser criado!\n", caminho_svg);
+    if (arquivo == NULL) {
+        fprintf(stderr, "ERRO: Arquivo %s não pode ser criado!\n", caminho_svg);
         return;
     }
     double svg_origem_x = lista->exibicao.origem_x - SVG_MARGEM;
@@ -136,7 +131,7 @@ void lista_para_svg(Lista *lista, const char *caminho_svg) {
     double svg_largura = lista->exibicao.largura + 2 * SVG_MARGEM;
     // Caso a origem x seja diferente de 0, a largura do svg deve ser alterada
     // para utilizar esta nova origem como base.
-    if(svg_origem_x > 0)
+    if (svg_origem_x > 0)
         svg_largura -= lista->exibicao.origem_x;
     else
         svg_largura += abs(lista->exibicao.origem_x);
@@ -144,7 +139,7 @@ void lista_para_svg(Lista *lista, const char *caminho_svg) {
     double svg_altura = lista->exibicao.altura + 2 * SVG_MARGEM;
     // Caso a origem y seja diferente de 0, a altura do svg deve ser alterada
     // para utilizar esta nova origem como base.
-    if(svg_origem_y > 0)
+    if (svg_origem_y > 0)
         svg_altura -= lista->exibicao.origem_y;
     else
         svg_altura += abs(lista->exibicao.origem_y);
@@ -154,14 +149,13 @@ void lista_para_svg(Lista *lista, const char *caminho_svg) {
     fprintf(
         arquivo,
         "<svg viewBox='%lf %lf %lf %lf'>\n",
-        svg_origem_x, svg_origem_y, svg_largura ,svg_altura
-    );
+        svg_origem_x, svg_origem_y, svg_largura, svg_altura);
     struct No *atual = lista->cabeca;
-    while(atual != NULL) {
+    while (atual != NULL) {
         escrever_svg_figura(arquivo, atual->figura, atual->tipo);
 
         // Checa se a figura atual possui um id.
-        if(obter_id_figura(&atual->figura, atual->tipo) != NULL) {
+        if (obter_id_figura(&atual->figura, atual->tipo) != NULL) {
             Figuras rotulo;
             rotulo.tex = criar_rotulo(atual->figura, atual->tipo);
             escrever_svg_figura(arquivo, rotulo, TIPO_TEXTO);
@@ -177,7 +171,7 @@ void lista_para_svg(Lista *lista, const char *caminho_svg) {
 void destruir_lista(Lista *lista) {
     struct No *atual = lista->cabeca;
     struct No *prox;
-    while(atual != NULL) {
+    while (atual != NULL) {
         prox = atual->prox;
         free(atual);
         atual = prox;

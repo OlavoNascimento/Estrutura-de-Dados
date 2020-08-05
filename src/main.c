@@ -25,8 +25,6 @@ int main(int argc, const char *argv[]) {
     lista_para_svg(lista, caminho_svg_descricao);
 
     if (caminho_consulta != NULL) {
-        // Adiciona o diretório de entrada ao caminho do arquivo de consulta
-        // caso necessário.
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
         char *caminho_svg_consulta = parametros_obter_caminho_svg_consulta(params);
 

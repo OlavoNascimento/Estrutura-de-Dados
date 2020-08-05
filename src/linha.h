@@ -6,18 +6,39 @@
 
 typedef void *Linha;
 
-// Escreve todas as informações presentes em uma Linha em um arquivo. Ambos os parâmetros não podem ser nulos.
+// Cria e inicializa um struct Linha com os valores passados.
+Linha linha_criar(double x1, double y1, double x2, double y2, char cor_borda[20],
+                  char cor_preenchimento[20]);
+// Escreve todas as informações presentes em uma linha em um arquivo.
+// O parâmetro arquivo não pode ser nulo.
 void linha_escrever_svg(FILE *arquivo, Linha lin);
 
-// Retorna a coordenada x1 de uma Linha. O parâmetro não pode ser nulo.
+// Retorna a coordenada x inicial de uma linha.
 double linha_obter_x1(Linha lin);
-// Retorna a coordenada y1 de uma Linha. O parâmetro não pode ser nulo.
+// Define a coordenada x inicial de uma linha.
+void linha_definir_x1(Linha lin, double x1);
+
+// Retorna a coordenada y inicial de uma linha.
 double linha_obter_y1(Linha lin);
-// Retorna a coordenada x2 de uma Linha. O parâmetro não pode ser nulo.
+// Define a coordenada y inicial de uma linha.
+void linha_definir_y1(Linha lin, double y1);
+
+// Retorna a coordenada x final de uma linha.
 double linha_obter_x2(Linha lin);
-// Retorna a coordenada y2 de uma Linha. O parâmetro não pode ser nulo.
+// Define a coordenada x final de uma linha.
+void linha_definir_x2(Linha lin, double x2);
+
+// Retorna a coordenada y final de uma linha.
 double linha_obter_y2(Linha lin);
-// Retorna a cor da borda de uma Linha. O parâmetro não pode ser nulo.
-char linha_obter_cor_borda(Linha lin);
-// Retorna a cor de preenchimento de uma Linha. O parâmetro não pode ser nulo.
-char linha_obter_cor_preenchimento(Linha lin);
+// Define a coordenada y final de uma linha.
+void linha_definir_y2(Linha lin, double y2);
+
+// Retorna a cor da borda de uma linha.
+const char *linha_obter_cor_borda(Linha lin);
+// Define a cor da borda de uma linha. O parâmetro cor_borda não pode ser nulo.
+void linha_definir_cor_borda(Linha lin, const char *cor_borda);
+
+// Retorna a cor de preenchimento de uma linha.
+const char *linha_obter_cor_preenchimento(Linha lin);
+// Define a cor de preenchimento de uma linha. O parâmetro cor_preenchimento não pode ser nulo.
+void linha_definir_cor_preenchimento(Linha lin, const char *cor_preenchimento);
