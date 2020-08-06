@@ -45,7 +45,7 @@ void atualizar_exibicao_svg(ExibicaoSVG *exi,
 }
 
 // Adiciona um novo elemento a uma lista.
-void inserir_lista(Lista *lista, Figuras figura, TiposFigura tipo) {
+void inserir_lista(Lista *lista, Figura figura) {
     struct No *novo = (struct No *)malloc(sizeof(struct No));
     novo->figura = figura;
     novo->tipo = tipo;
@@ -67,7 +67,7 @@ void inserir_lista(Lista *lista, Figuras figura, TiposFigura tipo) {
 
 // Busca um id passado como parâmetro dentro de uma lista e retorna o nó
 // correspondente.
-struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
+No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
     struct No *atual = lista->cabeca;
     while (atual != NULL) {
         const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);

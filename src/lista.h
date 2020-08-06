@@ -10,11 +10,10 @@ typedef struct {
     double altura;
 } ExibicaoSVG;
 
-struct No {
-    TiposFigura tipo;
-    Figuras figura;
+typedef struct {
+    Figura figura;
     struct No *prox;
-};
+} No;
 
 typedef struct {
     struct No *cabeca;
@@ -23,8 +22,8 @@ typedef struct {
 } Lista;
 
 Lista *criar_lista();
-void inserir_lista(Lista *lista, Figuras fig, TiposFigura tipo_fig);
-struct No *buscar_elemento_lista(Lista *lista, const char *id_buscado);
+void inserir_lista(Lista *lista, Figura fig);
+No *buscar_elemento_lista(Lista *lista, const char *id_buscado);
 void remover_elemento_lista(Lista *lista, const char *id_buscado);
 void lista_para_svg(Lista *lista, const char *caminho_svg);
 void destruir_lista(Lista *lista);

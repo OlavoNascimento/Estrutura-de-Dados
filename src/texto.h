@@ -23,29 +23,29 @@ void texto_escrever_svg(FILE *arquivo, Texto tex);
 // Retorna o id de um texto.
 const char *texto_obter_id(Texto tex);
 // Define o id de um texto. O parâmetro id não pode ser nulo.
-void texto_definir_id(Texto tex, const char *id);
+void texto_definir_id(Texto *tex, const char *id);
 
 // Retorna a coordenada x de um texto.
 double texto_obter_x(Texto tex);
 // Retorna a coordenada x de um texto.
-void texto_definir_x(Texto tex, double x);
+void texto_definir_x(Texto *tex, double x);
 
 // Retorna a coordenada y de um texto.
 double texto_obter_y(Texto tex);
 // Retorna a coordenada y de um texto.
-void texto_definir_y(Texto tex, double y);
+void texto_definir_y(Texto *tex, double y);
 
 // Retorna a cor da borda de um texto.
 const char *texto_obter_cor_borda(Texto tex);
 // Define a cor da borda de um texto. O parâmetro cor_borda não pode ser nulo.
-void texto_definir_cor_borda(Texto tex, const char *cor_borda);
+void texto_definir_cor_borda(Texto *tex, const char *cor_borda);
 
 // Retorna a cor de preenchimento de um texto.
 const char *texto_obter_cor_preenchimento(Texto tex);
 // Define a cor de preenchimento de um texto. O parâmetro cor_preenchimento não pode ser nulo.
-void texto_definir_cor_preenchimento(Texto tex, const char *cor_preenchimento);
+void texto_definir_cor_preenchimento(Texto *tex, const char *cor_preenchimento);
 
 // Retorna o conteudo de um texto.
 const char *texto_obter_texto(Texto tex);
 // Define o conteudo de um texto. O parâmetro conteudo não pode ser nulo.
-void texto_definir_texto(Texto tex, const char *conteudo);
+void texto_definir_texto(Texto *tex, const char *conteudo);

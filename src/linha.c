@@ -35,54 +35,54 @@ double linha_obter_x1(Linha lin) {
     return lin.x1;
 }
 
-void linha_definir_x1(Linha lin, double x1) {
-    lin.x1 = x1;
+void linha_definir_x1(Linha *lin, double x1) {
+    lin->x1 = x1;
 }
 
 double linha_obter_y1(Linha lin) {
     return lin.y1;
 }
 
-void linha_definir_y1(Linha lin, double y1) {
-    lin.y1 = y1;
+void linha_definir_y1(Linha *lin, double y1) {
+    lin->y1 = y1;
 }
 
 double linha_obter_x2(Linha lin) {
     return lin.x2;
 }
 
-void linha_definir_x2(Linha lin, double x2) {
-    lin.x2 = x2;
+void linha_definir_x2(Linha *lin, double x2) {
+    lin->x2 = x2;
 }
 
 double linha_obter_y2(Linha lin) {
     return lin.y2;
 }
 
-void linha_definir_y2(Linha lin, double y2) {
-    lin.y2 = y2;
+void linha_definir_y2(Linha *lin, double y2) {
+    lin->y2 = y2;
 }
 
 const char *linha_obter_cor_borda(Linha lin) {
     return lin.cor_borda;
 }
 
-void linha_definir_cor_borda(Linha lin, const char *cor_borda) {
+void linha_definir_cor_borda(Linha *lin, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de uma linha!");
         return;
     }
-    strcpy(lin.cor_borda, cor_borda);
+    strcpy(lin->cor_borda, cor_borda);
 }
 
 const char *linha_obter_cor_preenchimento(Linha lin) {
     return lin.cor_preenchimento;
 }
 
-void linha_definir_cor_preenchimento(Linha lin, const char *cor_preenchimento) {
+void linha_definir_cor_preenchimento(Linha *lin, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de uma linha!");
         return;
     }
-    strcpy(lin.cor_preenchimento, cor_preenchimento);
+    strcpy(lin->cor_preenchimento, cor_preenchimento);
 }

@@ -98,66 +98,83 @@ const char *retangulo_obter_id(Retangulo ret) {
     return ret.id;
 }
 
-void retangulo_definir_id(Retangulo ret, const char *id) {
+void retangulo_definir_id(Retangulo *ret, const char *id) {
     if (id == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como id de um retângulo!");
         return;
     }
-    strcpy(ret.id, id);
+    strcpy(ret->id, id);
 }
 
 double retangulo_obter_largura(Retangulo ret) {
     return ret.largura;
 }
 
-void retangulo_definir_largura(Retangulo ret, double x1) {
-    ret.largura = x1;
+void retangulo_definir_largura(Retangulo *ret, double x1) {
+    ret->largura = x1;
 }
 
 double retangulo_obter_altura(Retangulo ret) {
     return ret.altura;
 }
 
-void retangulo_definir_altura(Retangulo ret, double x1) {
-    ret.altura = x1;
+void retangulo_definir_altura(Retangulo *ret, double x1) {
+    ret->altura = x1;
 }
 
 double retangulo_obter_x(Retangulo ret) {
     return ret.x;
 }
 
-void retangulo_definir_x(Retangulo ret, double x1) {
-    ret.x = x1;
+void retangulo_definir_x(Retangulo *ret, double x1) {
+    ret->x = x1;
 }
 
 double retangulo_obter_y(Retangulo ret) {
     return ret.y;
 }
 
-void retangulo_definir_y(Retangulo ret, double x1) {
-    ret.y = x1;
+void retangulo_definir_y(Retangulo *ret, double x1) {
+    ret->y = x1;
 }
 
 const char *retangulo_obter_cor_borda(Retangulo ret) {
     return ret.cor_borda;
 }
 
-void retangulo_definir_cor_borda(Retangulo ret, const char *cor_borda) {
+void retangulo_definir_cor_borda(Retangulo *ret, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um retângulo!");
         return;
     }
-    strcpy(ret.cor_borda, cor_borda);
+    strcpy(ret->cor_borda, cor_borda);
 }
 
 const char *retangulo_obter_cor_preenchimento(Retangulo ret) {
     return ret.cor_preenchimento;
 }
 
-void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchimento) {
+void retangulo_definir_cor_preenchimento(Retangulo *ret, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um retângulo!");
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como cor de preenchimento de um retângulo!");
         return;
     }
-    strcpy(ret.cor_preenchimento, cor_preenchimento);
+    strcpy(ret->cor_preenchimento, cor_preenchimento);
+}
+
+int retangulo_obter_tracejado_tamanho(Retangulo ret) {
+    return ret.tracejado_tamanho;
+}
+
+void retangulo_definir_tracejado_tamanho(Retangulo *ret, int tracejado_tamanho) {
+    ret->tracejado_tamanho = tracejado_tamanho;
+}
+
+int retangulo_obter_tracejado_espaco(Retangulo ret) {
+    return ret.tracejado_espaco;
+}
+
+void retangulo_definir_tracejado_espaco(Retangulo *ret, int tracejado_espaco) {
+    ret->tracejado_espaco = tracejado_espaco;
 }

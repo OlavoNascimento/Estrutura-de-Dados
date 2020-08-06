@@ -31,29 +31,29 @@ bool circulo_checar_ponto_interno(Circulo circ, double ponto_x, double ponto_y);
 // Retorna o id de um círculo.
 const char *circulo_obter_id(Circulo circ);
 // Define o id de um círculo. Os parâmetro id não pode ser nulo.
-void circulo_definir_id(Circulo circ, const char *id);
+void circulo_definir_id(Circulo *circ, const char *id);
 
 // Retorna o raio de um círculo.
 double circulo_obter_raio(Circulo circ);
 // Define o raio de um círculo.
-void circulo_definir_raio(Circulo circ, double raio);
+void circulo_definir_raio(Circulo *circ, double raio);
 
 // Retorna a coordenada x de um círculo.
 double circulo_obter_x(Circulo circ);
 // Define a coordenada x de um círculo.
-void circulo_definir_x(Circulo circ, double x);
+void circulo_definir_x(Circulo *circ, double x);
 
 // Retorna a coordenada y de um círculo.
 double circulo_obter_y(Circulo circ);
 // Define a coordenada y de um círculo.
-void circulo_definir_y(Circulo circ, double y);
+void circulo_definir_y(Circulo *circ, double y);
 
 // Retorna a cor da borda de um círculo.
 const char *circulo_obter_cor_borda(Circulo circ);
 // Define a cor da borda de um círculo. O parâmetro cor_borda não pode ser nulo.
-void circulo_definir_cor_borda(Circulo circ, const char *cor_borda);
+void circulo_definir_cor_borda(Circulo *circ, const char *cor_borda);
 
 // Retorna a cor de preenchimento de um círculo..
 const char *circulo_obter_cor_preenchimento(Circulo circ);
 // Define a cor de preenchimento de um círculo. O parâmetros cor_preenchimento não pode ser nulo.
-void circulo_definir_cor_preenchimento(Circulo circ, const char *cor_preenchimento);
+void circulo_definir_cor_preenchimento(Circulo *circ, const char *cor_preenchimento);

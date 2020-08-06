@@ -62,62 +62,62 @@ const char *texto_obter_id(Texto tex) {
     return tex.id;
 }
 
-void texto_definir_id(Texto tex, const char *id) {
+void texto_definir_id(Texto *tex, const char *id) {
     if (id == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como id de um texto!");
         return;
     }
-    strcpy(tex.id, id);
+    strcpy(tex->id, id);
 }
 
 double texto_obter_x(Texto tex) {
     return tex.x;
 }
 
-void texto_definir_x(Texto tex, double x) {
-    tex.x = x;
+void texto_definir_x(Texto *tex, double x) {
+    tex->x = x;
 }
 
 double texto_obter_y(Texto tex) {
     return tex.y;
 }
 
-void texto_definir_y(Texto tex, double y) {
-    tex.y = y;
+void texto_definir_y(Texto *tex, double y) {
+    tex->y = y;
 }
 
 const char *texto_obter_cor_borda(Texto tex) {
     return tex.cor_borda;
 }
 
-void texto_definir_cor_borda(Texto tex, const char *cor_borda) {
+void texto_definir_cor_borda(Texto *tex, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um texto!");
         return;
     }
-    strcpy(tex.cor_borda, cor_borda);
+    strcpy(tex->cor_borda, cor_borda);
 }
 
 const char *texto_obter_cor_preenchimento(Texto tex) {
     return tex.cor_preenchimento;
 }
 
-void texto_definir_cor_preenchimento(Texto tex, const char *cor_preenchimento) {
+void texto_definir_cor_preenchimento(Texto *tex, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um texto!");
         return;
     }
-    strcpy(tex.cor_preenchimento, cor_preenchimento);
+    strcpy(tex->cor_preenchimento, cor_preenchimento);
 }
 
 const char *texto_obter_conteudo(Texto tex) {
     return tex.conteudo;
 }
 
-void texto_definir_conteudo(Texto tex, const char *conteudo) {
+void texto_definir_conteudo(Texto *tex, const char *conteudo) {
     if (conteudo == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como conteúdo de um texto!");
         return;
     }
-    strcpy(tex.conteudo, conteudo);
+    strcpy(tex->conteudo, conteudo);
 }

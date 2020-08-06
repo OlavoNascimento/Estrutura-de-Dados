@@ -18,17 +18,28 @@ typedef struct {
     };
 } Figura;
 
-Figura figura_criar(TiposFigura tipo) {
+// Cria uma figura com uma figura e um tipo
+Figura figura_criar(void *figura, TiposFigura tipo) {
     if (tipo <= TIPOS_FIGURA_MIN || tipo >= TIPOS_FIGURA_MAX) {
         fprintf(stderr, "ERRO: Tipo de figura inválido: %d\n", tipo);
         return;
     }
     Figura fig;
     fig.tipo = tipo;
+    switch (tipo) {
+        case TIPO_CIRCULO:
+            fig.cir = figura;
+        case TIPO_RETANGULO:
+            fig.ret = figura;
+        case TIPO_TEXTO:
+            fig.tex = figura;
+        case TIPO_LINHA:
+            fig.lin = figura;
+    }
     return fig;
 }
 
-// Retorna a coordenada x onde uma figura se inicia.
+// Cria uma figura com base nos dados fornecidos por uma linha
 Figura figura_ler(const char *linha, TiposFigura tipo) {
     if (linha == NULL) {
         fprintf(stderr, "ERRO: Linha vazia passada a função ler figura!\n", tipo);
@@ -39,18 +50,20 @@ Figura figura_ler(const char *linha, TiposFigura tipo) {
         return;
     }
 
-    Figura fig = figura_criar(tipo);
     switch (tipo) {
         case TIPO_CIRCULO:
-            fig.cir = circulo_ler(linha);
+            Circulo cir = circulo_ler(linha);
+            return figura_criar(cir, tipo);
         case TIPO_RETANGULO:
-            fig.ret = retangulo_ler(linha);
+            Retangulo ret = retangulo_ler(linha);
+            return figura_criar(ret, tipo);
         case TIPO_TEXTO:
-            fig.tex = texto_ler(linha);
+            Texto tex = texto_ler(linha);
+            return figura_criar(tex, tipo);
         case TIPO_LINHA:
-            fig.lin = linha_ler(linha);
+            Linha lin = linha_ler(linha);
+            return figura_criar(lin, tipo);
     }
-    return fig;
 }
 
 // Escreve todos os dados de uma figura em um arquivo passado a função.
@@ -164,21 +177,16 @@ const char *figura_obter_string_tipo(Figura figura) {
 }
 
 // Retorna o nome do tipo de uma figura.
-const char *figura_obter_figura(Figura figura) {
-    return figura.tipo;
-}
-
-// Altera a figura armazenada no struct Figura.
-const char *figura_definir_figura(Figura *figura, void *nova_figura, TiposFigura tipo_nova_figura) {
-    switch (tipo_nova_figura) {
+void *figura_obter_figura(Figura *figura) {
+    switch (figura->tipo) {
         case TIPO_CIRCULO:
-            figura->cir = nova_figura;
+            return figura->cir;
         case TIPO_RETANGULO:
-            figura->ret = nova_figura;
+            return figura->ret;
         case TIPO_TEXTO:
-            figura->tex = nova_figura;
+            return figura->tex;
         case TIPO_LINHA:
-            figura->lin = nova_figura;
+            return figura->lin;
     }
 }
 

@@ -7,8 +7,9 @@
 #include "retangulo.h"
 #include "texto.h"
 
-// Este módulo define o tipo Figura, assim como funções que criam, acessam suas propriedades e realizam operações entre
-// variáveis deste tipo. Sua principal função é servir de intermediador entre a possíveis figuras e outros módulos.
+// Este módulo define o tipo Figura, assim como funções que criam, acessam suas propriedades e
+// realizam operações entre variáveis deste tipo. Sua principal função é servir de intermediador
+// entre a possíveis figuras e outros módulos.
 
 typedef enum {
     TIPOS_FIGURA_MIN = -1,
@@ -21,7 +22,9 @@ typedef enum {
 
 typedef void *Figura;
 
-Figura figura_criar(TiposFigura tipo);
+// TODO Adicionar comentário
+Figura figura_criar(void *figura, TiposFigura tipo);
+// TODO Adicionar comentário
 Figura figura_ler(const char *linha, TiposFigura tipo);
 
 // Escreve todos os dados de uma figura em um arquivo passado a função.
@@ -38,11 +41,8 @@ bool figura_checar_ponto_interno(Figura figura, double ponto_x, double ponto_y);
 const char *figura_obter_tipo(Figura figura);
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura);
-// Retorna o nome do tipo de uma figura.
-const char *figura_obter_figura(Figura figura);
-// Altera a figura armazenada no struct Figura.
-const char *figura_definir_figura(Figura *figura, void *nova_figura, TiposFigura tipo_nova_figura);
-
+// Retorna a figura armazenada no struct Figura
+void *figura_obter_figura(Figura *figura);
 // Retorna a coordenada x onde uma figura se inicia.
 double figura_obter_x_inicio(Figura figura);
 // Retorna a coordenada y onde uma figura se inicia.

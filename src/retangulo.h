@@ -32,34 +32,44 @@ bool retangulo_checar_ponto_interno(Retangulo ret, double ponto_x, double ponto_
 // Retorna o id de um retângulo.
 const char *retangulo_obter_id(Retangulo ret);
 // Define o id de um retângulo. O parâmetro id não pode ser nulo.
-void retangulo_definir_id(Retangulo ret, const char *id);
+void retangulo_definir_id(Retangulo *ret, const char *id);
 
 // Retorna a largura de um retângulo.
 double retangulo_obter_largura(Retangulo ret);
 // Define a largura de um retângulo.
-void retangulo_definir_largura(Retangulo ret, double x1);
+void retangulo_definir_largura(Retangulo *ret, double x1);
 
 // Retorna a altura de um retângulo.
 double retangulo_obter_altura(Retangulo ret);
 // Define a largura de um retângulo.
-void retangulo_definir_altura(Retangulo ret, double x1);
+void retangulo_definir_altura(Retangulo *ret, double x1);
 
 // Retorna a coordenada x de um retângulo.
 double retangulo_obter_x(Retangulo ret);
 // Define a coordenada x de um retângulo.
-void retangulo_definir_x(Retangulo ret, double x1);
+void retangulo_definir_x(Retangulo *ret, double x1);
 
 // Retorna a coordenada y de um retângulo.
 double retangulo_obter_y(Retangulo ret);
 // Define a coordenada y de um retângulo.
-void retangulo_definir_y(Retangulo ret, double x1);
+void retangulo_definir_y(Retangulo *ret, double x1);
 
 // Retorna a cor da borda de um retângulo.
 const char *retangulo_obter_cor_borda(Retangulo ret);
 // Define a cor da borda de um retângulo. O parâmetro cor_borda não podem ser nulo.
-void retangulo_definir_cor_borda(Retangulo ret, const char *cor_borda);
+void retangulo_definir_cor_borda(Retangulo *ret, const char *cor_borda);
 
 // Retorna a cor de preenchimento de um retângulo.
 const char *retangulo_obter_cor_preenchimento(Retangulo ret);
 // Define a cor de preenchimento de um retângulo. O parâmetro cor_preenchimento não pode ser nulo.
-void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchimento);
+void retangulo_definir_cor_preenchimento(Retangulo *ret, const char *cor_preenchimento);
+
+// Retorna o tamanho do tracejado da borda de um retângulo.
+int retangulo_obter_tracejado_tamanho(Retangulo ret);
+// Define o tamanho do tracejado da borda de um retângulo.
+void retangulo_definir_tracejado_tamanho(Retangulo *ret, int tracejado_tamanho);
+
+// Retorna o espaçamento do tracejado da borda de um retângulo.
+int retangulo_obter_tracejado_espaco(Retangulo ret);
+// Define o espaçamento do tracejado da borda de um retângulo.
+void retangulo_definir_tracejado_espaco(Retangulo *ret, int tracejado_espaco);

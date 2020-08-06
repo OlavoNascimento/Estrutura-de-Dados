@@ -21,7 +21,7 @@
 // Cria o texto "sobrepoe" no centro de um retângulo.
 void criar_texto_sobreposicao(Texto *aviso, Figura contorno) {
     linha_definir_id(aviso, "\0");
-    linha_definir_x(aviso, figura_obter_centro_x - strlen("sobrepoe"));
+    linha_definir_x(aviso, figura_obter_centro_x(contorno) - strlen("sobrepoe"));
     linha_definir_y(aviso, figura_obter_centro_y(contorno));
     linha_definir_cor_borda(aviso, "None");
     linha_definir_cor_preenchimento(aviso, "Black");
@@ -29,88 +29,98 @@ void criar_texto_sobreposicao(Texto *aviso, Figura contorno) {
 }
 
 // Cria um retângulo com coordenadas e dimensões necessárias para envolver duas figuras.
-void criar_delimitacao_figuras(Retangulo *contorno, Figura figura1, Figura figura2) {
-    retangulo_definir_id(contorno, "\0");
-    retangulo_definir_cor_borda(contorno, "black");
-    retangulo_definir_cor_preenchimento(contorno, "none");
-    // Coordenada x do contorno é a menor coordenada x entre as duas figuras.
-    retangulo_definir_x(contorno, min(figura_obter_x_inicio(figura1), figura_obter_x_inicio(figura2)) -
-                                      MARGEM_CONTORNO);
-    // Coordenada y do contorno é a menor coordenada y entre as duas figuras.
-    retangulo_definir_y(contorno, min(figura_obter_y_inicio(figura1), figura_obter_y_inicio(figura2)) -
-                                      MARGEM_CONTORNO);
-    // Largura do contorno é a distancia entre o x do contorno e a coordenada x onde fim da figura
+Retangulo *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
+    Retangulo ret = retangulo_criar(
+        "\0",
+        // Largura
+        0,
+        // Altura
+        0,
+        // Coordenada x do contorno é a menor coordenada x entre as duas figuras.
+        min(figura_obter_x_inicio(figura1), figura_obter_x_inicio(figura2)) - MARGEM_CONTORNO,
+        // Coordenada y do contorno é a menor coordenada y entre as duas figuras.
+        min(figura_obter_y_inicio(figura1), figura_obter_y_inicio(figura2)) - MARGEM_CONTORNO,
+        // Cor borda
+        "black",
+        // Cor Preenchimento
+        "none",
+        // Tracejado
+        0,
+        // Espaço Tracejado
+        0);
+
+    // Largura do contorno é a distancia entre o x do contorno e a coordenada x onde o fim da figura
     // mais longe se encontra.
-    retangulo_definir_largura(contorno, max(figura_obter_x_fim(figura1), figura_obter_x_fim(figura2)) -
-                                            retangulo_obter_x(contorno) + 2 * MARGEM_CONTORNO);
+    retangulo_definir_largura(ret,
+                              max(figura_obter_x_fim(figura1), figura_obter_x_fim(figura2)) -
+                                  retangulo_obter_x(ret) + 2 * MARGEM_CONTORNO);
     // Altura do contorno é a distancia entre o y do contorno e a coordenada y onde o fim da figura
     // mais longe se encontra.
-    retangulo_definir_altura(contorno, max(figura_obter_y_fim(figura1), figura_obter_y_fim(figura2)) -
-                                           retangulo_obter_y(contorno) + 2 * MARGEM_CONTORNO);
+    retangulo_definir_altura(ret,
+                             max(figura_obter_y_fim(figura1), figura_obter_y_fim(figura2)) -
+                                 retangulo_obter_y(ret) + 2 * MARGEM_CONTORNO);
+    return ret;
 }
 
-// Cria uma linha que conecta um ponto ao centro de uma figura
-void criar_ligacao_ponto_figura(Linha *ligacao, Circulo ponto, Figura figura) {
-    double fig_centro_x = 0, fig_centro_y = 0;
-    Linha ligacao = linha_criar();
-    linha_definir_x1(ligacao, circulo_obter_x(ponto));
-    linha_definir_y1(ligacao, circulo_obter_y(ponto));
-    linha_definir_x2(ligacao, figura_obter_centro_x(figura));
-    linha_definir_y2(ligacao, figura_obter_centro_y(figura));
-    linha_definir_cor_borda(ligacao, circulo_obter_cor_borda(ponto));
-    linha_definir_cor_preenchimento(ligacao, circulo_obter_cor_preenchimento(ponto));
-}
-
-// Executa o comando o? especificado no arquivo de consulta, verificando se um
-// ponto é interno a uma figura, conecta este ponto e a figura utilizando uma
-// linha.
+// Executa o comando o? especificado no arquivo de consulta, verificando se um ponto é interno a uma
+// figura, conecta este ponto e a figura utilizando uma linha.
 void checar_interseccao(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id1[100], id2[100];
     sscanf(linha, "o? %s %s", id1, id2);
 
-    struct No *no1 = buscar_elemento_lista(lista, id1);
-    struct No *no2 = buscar_elemento_lista(lista, id2);
+    No *no1 = buscar_elemento_lista(lista, id1);
+    No *no2 = buscar_elemento_lista(lista, id2);
     if (no1 == NULL || no2 == NULL)
         return;
 
     bool intersectam = figura_checar_interseccao(no1->figura, no2->figura);
-    Figura contorno = figura_criar(TIPO_RETANGULO);
 
-    criar_delimitacao_figuras(&contorno, no1->figura, no2->figura);
+    Retangulo ret = criar_delimitacao_figuras(no1->figura, no2->figura);
+    Figura contorno = figura_criar(ret, TIPO_RETANGULO);
+
     if (intersectam) {
         // Adiciona uma mensagem de sobreposição caso as figuras se intersectem.
         Figura aviso;
         criar_texto_sobreposicao(&aviso, contorno);
-        inserir_lista(lista, aviso, TIPO_TEXTO);
+        inserir_lista(lista, aviso);
     } else {
         // Adiciona traços a borda do retângulo de contorno caso as figuras não se intersectem.
-        contorno.ret.tracejado_tamanho = TRACEJADO_TAMANHO;
-        contorno.ret.tracejado_espaco = TRACEJADO_TAMANHO;
-        Retangulo
+        retangulo_definir_tracejado_tamanho(figura_obter_figura(contorno), CONTORNO_TRACEJADO_TAMANHO);
+        retangulo_definir_tracejado_espaco(figura_obter_figura(contorno), CONTORNO_TRACEJADO_TAMANHO);
     }
-    inserir_lista(lista, contorno, TIPO_RETANGULO);
+    inserir_lista(lista, contorno);
 
     fprintf(arquivo_log,
             "o? %s %s\n", id1, id2);
     fprintf(arquivo_log,
             "%s: %s %s: %s %s\n\n",
-            id1, tipo_para_string_figura(no1->tipo),
-            id2, tipo_para_string_figura(no2->tipo),
+            id1, figura_tipo_para_string(no1->figura),
+            id2, figura_tipo_para_string(no2->figura),
             intersectam ? "SIM" : "NAO");
 }
 
 // Cria um círculo com as coordenadas especificadas e com cores que dependem de
 // um valor booleano.
 Circulo criar_ponto(double ponto_x, double ponto_y, bool interno) {
-    Circulo ponto = {
-        .id = "\0",
-        .raio = 1,
-        .x = ponto_x,
-        .y = ponto_y,
-    };
-    strcpy(ponto.cor_preenchimento, interno ? "blue" : "magenta");
-    strcpy(ponto.cor_borda, interno ? "blue" : "magenta");
+    Circulo ponto = circulo_criar(
+        "\0",
+        1,
+        ponto_x,
+        ponto_y,
+        interno ? "blue" : "magenta",
+        interno ? "blue" : "magenta");
     return ponto;
+}
+
+// Cria uma linha que conecta um ponto ao centro de uma figura
+Circulo criar_ligacao_ponto_figura(Circulo ponto, Figura figura) {
+    return linha_criar(
+        circulo_obter_x(ponto),
+        circulo_obter_y(ponto),
+        figura_obter_centro_x(figura),
+        figura_obter_centro_y(figura),
+        circulo_obter_cor_borda(ponto),
+        circulo_obter_cor_preenchimento(ponto));
 }
 
 // Executa o comando i? especificado no arquivo de consulta, verificando se um
@@ -121,23 +131,24 @@ void checar_ponto_interno(Lista *lista, const char *linha, FILE *arquivo_log) {
     double ponto_x = 0, ponto_y = 0;
     sscanf(linha, "i? %s %lf %lf", id, &ponto_x, &ponto_y);
 
-    struct No *no = buscar_elemento_lista(lista, id);
+    No *no = buscar_elemento_lista(lista, id);
     if (no == NULL)
         return;
 
-    bool interno = checar_ponto_interno_figura(
-        no->figura, no->tipo,
-        ponto_x, ponto_y);
-    Figura ponto, ligacao;
-    ponto.circ = criar_ponto(ponto_x, ponto_y, interno);
-    inserir_lista(lista, ponto, TIPO_CIRCULO);
-    ligacao.lin = ligar_ponto_figura(ponto.circ, no->figura, no->tipo);
-    inserir_lista(lista, ligacao, TIPO_LINHA);
+    bool interno = figura_checar_ponto_interno(no->figura, ponto_x, ponto_y);
+
+    Circulo circ = criar_ponto(ponto_x, ponto_y, interno);
+    Figura ponto = figura_criar(circ, TIPO_CIRCULO);
+    inserir_lista(lista, ponto);
+
+    Linha lin = criar_ligacao_ponto_figura(circ, no->figura);
+    Figura ligacao = figura_criar(lin, TIPO_CIRCULO);
+    inserir_lista(lista, ligacao);
 
     fprintf(arquivo_log, "i? %s %lf %lf\n", id, ponto_x, ponto_y);
     fprintf(arquivo_log,
             "%s: %s %s\n\n",
-            id, tipo_para_string_figura(no->tipo),
+            id, figura_obter_string_tipo(no->figura),
             interno ? "INTERNO" : "NAO INTERNO");
 }
 
@@ -147,18 +158,18 @@ void alterar_cor(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt %s %s %s", id, nova_corb, nova_corp);
 
-    struct No *no = buscar_elemento_lista(lista, id);
+    No *no = buscar_elemento_lista(lista, id);
     if (no == NULL)
         return;
 
-    const char *atual_corp = obter_cor_preenchimento_figura(
-        &no->figura, no->tipo);
-    const char *atual_corb = obter_cor_borda_figura(&no->figura, no->tipo);
+    const char *atual_corp = figura_obter_cor_preenchimento(&no->figura);
+    const char *atual_corb = figura_obter_cor_borda(&no->figura);
 
     fprintf(arquivo_log, "pnt %s %s %s\n", id, nova_corb, nova_corp);
     fprintf(arquivo_log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
 
-    alterar_cor_figura(&no->figura, no->tipo, nova_corb, nova_corp);
+    alterar_cor_figura_borda(&no->figura, nova_corb);
+    alterar_cor_figura_preenchimento(&no->figura, nova_corp);
 }
 
 // Executa o comando pnt* especificado no arquivo de consulta, alterando a cor
@@ -166,28 +177,21 @@ void alterar_cor(Lista *lista, const char *linha, FILE *arquivo_log) {
 // (inclusive).
 void alterar_cores(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100], nova_corb[20], nova_corp[20];
-    sscanf(
-        linha,
-        "pnt* %s %s %s %s",
-        id_inicial, id_final, nova_corb, nova_corp);
-    struct No *atual = buscar_elemento_lista(lista, id_inicial);
+    sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, nova_corb, nova_corp);
+    No *atual = buscar_elemento_lista(lista, id_inicial);
     if (atual == NULL)
         return;
 
     while (atual != NULL) {
-        const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-        const char *atual_corp = obter_cor_preenchimento_figura(
-            &atual->figura, atual->tipo);
-        const char *atual_corb = obter_cor_borda_figura(
-            &atual->figura, atual->tipo);
+        const char *id_atual = figura_obter_id(&atual);
+        const char *atual_corp = figura_obter_cor_preenchimento(&atual);
+        const char *atual_corb = figura_obter_cor_borda(&atual);
 
-        fprintf(
-            arquivo_log,
-            "pnt* %s %s %s %s\n",
-            id_inicial, id_final, nova_corb, nova_corp);
+        fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
         fprintf(arquivo_log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
 
-        alterar_cor_figura(&atual->figura, atual->tipo, nova_corb, nova_corp);
+        alterar_cor_figura_borda(&atual, nova_corb);
+        alterar_cor_figura_preenchimento(&atual, nova_corp);
         if (strcmp(id_atual, id_final) == 0)
             break;
         atual = atual->prox;
@@ -199,12 +203,12 @@ void alterar_cores(Lista *lista, const char *linha, FILE *arquivo_log) {
 void remover_elemento(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id[100];
     sscanf(linha, "delf %s", id);
-    struct No *no = buscar_elemento_lista(lista, id);
+    No *no = buscar_elemento_lista(lista, id);
     if (no == NULL)
         return;
 
     fprintf(arquivo_log, "delf %s\n", id);
-    escrever_informacoes_figura(arquivo_log, no->figura, no->tipo);
+    figura_escrever_informacoes(arquivo_log, no->figura);
     fprintf(arquivo_log, "\n");
     remover_elemento_lista(lista, id);
 }
@@ -215,12 +219,12 @@ void remover_elementos(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100];
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
-    struct No *atual = buscar_elemento_lista(lista, id_inicial);
+    No *atual = buscar_elemento_lista(lista, id_inicial);
     while (atual != NULL) {
-        const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
+        const char *id_atual = figura_obter_id(&atual->figura);
 
         fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
-        escrever_informacoes_figura(arquivo_log, atual->figura, atual->tipo);
+        figura_escrever_informacoes(arquivo_log, atual->figura);
         fprintf(arquivo_log, "\n");
 
         if (strcmp(id_atual, id_final) == 0) {

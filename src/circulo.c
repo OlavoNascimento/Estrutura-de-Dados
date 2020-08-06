@@ -80,58 +80,58 @@ const char *circulo_obter_id(Circulo cir) {
     return cir.id;
 }
 
-void circulo_definir_id(Circulo cir, const char *id) {
+void circulo_definir_id(Circulo *cir, const char *id) {
     if (id == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como id de um círculo!");
         return;
     }
-    strcpy(cir.id, id);
+    strcpy(cir->id, id);
 }
 
 double circulo_obter_raio(Circulo cir) {
     return cir.raio;
 }
 
-void circulo_definir_raio(Circulo cir, double raio) {
-    cir.raio = raio;
+void circulo_definir_raio(Circulo *cir, double raio) {
+    cir->raio = raio;
 }
 
 double circulo_obter_x(Circulo cir) {
     return cir.x;
 }
 
-void circulo_definir_x(Circulo cir, double x) {
-    cir.x = x;
+void circulo_definir_x(Circulo *cir, double x) {
+    cir->x = x;
 }
 
 double circulo_obter_y(Circulo cir) {
     return cir.y;
 }
 
-void circulo_definir_y(Circulo cir, double y) {
-    cir.y = y;
+void circulo_definir_y(Circulo *cir, double y) {
+    cir->y = y;
 }
 
 const char *circulo_obter_cor_borda(Circulo cir) {
     return cir.cor_borda;
 }
 
-void circulo_definir_cor_borda(Circulo cir, const char *cor_borda) {
+void circulo_definir_cor_borda(Circulo *cir, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um círculo!");
         return;
     }
-    strcpy(cir.cor_borda, cor_borda);
+    strcpy(cir->cor_borda, cor_borda);
 }
 
 const char *circulo_obter_cor_preenchimento(Circulo cir) {
     return cir.cor_preenchimento;
 }
 
-void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento) {
+void circulo_definir_cor_preenchimento(Circulo *cir, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um círculo!");
         return;
     }
-    strcpy(cir.cor_preenchimento, cor_preenchimento);
+    strcpy(cir->cor_preenchimento, cor_preenchimento);
 }
