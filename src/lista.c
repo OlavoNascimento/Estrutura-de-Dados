@@ -1,6 +1,8 @@
 #include "lista.h"
 
 #include <float.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,174 +13,297 @@
 // Margem entra a figura e seu rótulo.
 #define ROTULO_MARGEM 4
 
-// Retorna uma struct que representa as propriedades iniciais do arquivo svg.
-ExibicaoSVG criar_exibicao_svg() {
-    ExibicaoSVG exi = {
-        .origem_x = DBL_MAX,
-        .origem_y = DBL_MAX,
-        .largura = 0,
-        .altura = 0};
-    return exi;
+typedef struct circulo {
+    int id;
+} circ;
+
+typedef struct N {
+    Figura figura;
+    struct N *proximo;
+    struct N *anterior;
+} no;
+
+typedef struct lista {
+    int tamanho;
+    no *primeiro;
+    no *ultimo;
+} list;
+
+Lista lista_create() {
+    list *lista = (list *)malloc(sizeof(list));
+    if (lista == NULL) {
+        printf("Erro ao alocar espaço para a lista\n");
+        exit(1);
+    }
+
+    lista->tamanho = 0;
+    lista->primeiro = NULL;
+    lista->ultimo = NULL;
+    return lista;
 }
 
-// Inicializa um struct lista e retorna seu endereço.
-Lista *criar_lista() {
-    Lista *lis = malloc(sizeof(Lista));
-    lis->cabeca = NULL;
-    lis->cauda = NULL;
-    lis->exibicao = criar_exibicao_svg();
-    return lis;
+int lista_get_length(Lista lista) {
+    list *listaAux = (list *)lista;
+    return listaAux->tamanho;
 }
 
-// Checa se é necessário atualizar os valores da struct ExibiçãoSVG para
-// garantir que a figura passada a função possa ser vista no arquivo svg.
-void atualizar_exibicao_svg(ExibicaoSVG *exi,
-                            Figuras figura, TiposFigura tipo) {
-    exi->origem_x = min(
-        exi->origem_x, obter_x_inicio_figura(figura, tipo) - ROTULO_MARGEM);
-    exi->origem_y = min(
-        exi->origem_y, obter_y_inicio_figura(figura, tipo) - ROTULO_MARGEM);
-    exi->largura = max(
-        exi->largura, obter_x_fim_figura(figura, tipo) - ROTULO_MARGEM);
-    exi->altura = max(
-        exi->altura, obter_y_fim_figura(figura, tipo) - ROTULO_MARGEM);
-}
+Posic lista_insert_final(Lista lista, Figura figura) {
+    list *listaAux = (list *)lista;
+    no *nodeAux;
+    no *nodeInsert = (no *)malloc(sizeof(no));
+    nodeInsert->figura = figura;
+    int tamAux = listaAux->tamanho;
 
-// Adiciona um novo elemento a uma lista.
-void inserir_lista(Lista *lista, Figura figura) {
-    struct No *novo = (struct No *)malloc(sizeof(struct No));
-    novo->figura = figura;
-    novo->tipo = tipo;
-    novo->prox = NULL;
-    // Muda as proporções do svg caso a nova figura esteja fora das bordas
-    // atuais.
-    atualizar_exibicao_svg(&lista->exibicao, figura, tipo);
+    if (listaAux->primeiro == NULL) {
+        listaAux->primeiro = nodeInsert;
+        nodeInsert->anterior = NULL;
+        nodeInsert->proximo = NULL;
 
-    struct No *ultimo = lista->cauda;
-    if (ultimo == NULL) {
-        // Primeiro elemento a ser adicionado a lista
-        lista->cabeca = novo;
+        listaAux->ultimo = nodeInsert;
+        listaAux->tamanho++;
+        return nodeInsert;
     } else {
-        // Elementos adidionados após o primeiro
-        ultimo->prox = novo;
+        nodeAux = listaAux->ultimo;
+        nodeAux->proximo = nodeInsert;
+        nodeInsert->anterior = nodeAux;
+        nodeInsert->proximo = NULL;
+        listaAux->ultimo = nodeInsert;
+        listaAux->tamanho++;
+        return nodeInsert;
     }
-    lista->cauda = novo;
-}
 
-// Busca um id passado como parâmetro dentro de uma lista e retorna o nó
-// correspondente.
-No *buscar_elemento_lista(Lista *lista, const char *id_buscado) {
-    struct No *atual = lista->cabeca;
-    while (atual != NULL) {
-        const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-
-        if (id_atual != NULL && strcmp(id_atual, id_buscado) == 0)
-            return atual;
-        atual = atual->prox;
-    }
-    return NULL;
-}
-
-// Remove um nó que tenha id igual ao id passado como parâmetro para função de
-// dentro de uma lista.
-void remover_elemento_lista(Lista *lista, const char *id_buscado) {
-    struct No *anterior;
-    struct No *atual = lista->cabeca;
-    while (atual != NULL) {
-        const char *id_atual = obter_id_figura(&atual->figura, atual->tipo);
-
-        if (strcmp(id_atual, id_buscado) == 0) {
-            if (atual == lista->cabeca) {
-                lista->cabeca = atual->prox;
-            } else if (atual == lista->cauda) {
-                lista->cauda = anterior;
-                anterior->prox = NULL;
-            } else {
-                anterior->prox = atual->prox;
-            }
-            free(atual);
-            atual = NULL;
-        } else {
-            anterior = atual;
-            atual = atual->prox;
-        }
+    if (listaAux->tamanho != tamAux) {
+        printf("Nó adicionado com sucesso!\n");
     }
 }
 
-// Cria um texto igual ao id de uma figura.
-Texto criar_rotulo(Figuras figura, TiposFigura tipo) {
-    Texto rotulo = {
-        .id = "\0",
-        .cor_borda = "black",
-        .cor_preenchimento = "black"};
-    rotulo.x = obter_x_inicio_figura(figura, tipo) - ROTULO_MARGEM;
-    rotulo.y = obter_y_inicio_figura(figura, tipo) - ROTULO_MARGEM;
-    strcpy(rotulo.texto, obter_id_figura(&figura, tipo));
-    return rotulo;
+Posic lista_insert_after(Lista lista, Figura figura, Posic p) {
+    list *lista_aux = (list *)lista;
+    no *node_aux;
+    no *node_proximo = NULL;
+    no *node_anterior = NULL;
+    no *node_insert = (no *)malloc(sizeof(no));
+    int tam_aux = lista_aux->tamanho;
+
+    node_insert->figura = figura;
+    node_aux = p;
+
+    if (node_aux == lista_aux->ultimo) {  //caso seja inserido depois do último
+        node_aux->proximo = node_insert;
+        lista_aux->ultimo = node_insert;
+
+        node_insert->anterior = node_aux;
+        node_insert->proximo = NULL;
+        lista_aux->tamanho++;
+    } else {
+        node_proximo = node_aux->proximo;
+        node_aux->proximo = node_insert;
+        node_proximo->anterior = node_insert;
+
+        node_insert->proximo = node_proximo;
+        node_insert->anterior = node_aux;
+        lista_aux->tamanho++;
+    }
+    if (tam_aux != lista_aux->tamanho) {
+        printf("Elemento inserido com sucesso (insert_after)\n");
+    } else {
+        printf("Erro ao inserir elemento (insert_after)\n");
+        exit(1);
+    }
+
+    return node_insert;
 }
 
-// Transforma as figuras de uma lista em um código svg que as representam,
-// salvando o resultado em um arquivo localizado no caminho específicado.
-void lista_para_svg(Lista *lista, const char *caminho_svg) {
-    FILE *arquivo = fopen(caminho_svg, "w");
-    if (arquivo == NULL) {
-        fprintf(stderr, "ERRO: Arquivo %s não pode ser criado!\n", caminho_svg);
+Posic lista_insert_before(Lista lista, Figura figura, Posic p) {
+    list *lista_aux = (list *)lista;
+    no *node_aux;
+    no *node_proximo = NULL;
+    no *node_anteriror = NULL;
+    no *node_insert = (no *)malloc(sizeof(no));
+    int tam_aux = lista_aux->tamanho;
+
+    node_insert->figura = figura;
+    node_aux = p;
+
+    if (node_aux == lista_aux->primeiro) {  //caso seja inserido antes do primeiro
+        node_aux->anterior = node_insert;
+        node_insert->proximo = node_aux;
+        node_insert->anterior = NULL;
+
+        lista_aux->primeiro = node_insert;
+        lista_aux->tamanho++;
+    } else {
+        node_anteriror = node_aux->anterior;
+        node_aux->anterior = node_insert;
+        node_anteriror->proximo = node_insert;
+
+        node_insert->proximo = node_aux;
+        node_insert->anterior = node_anteriror;
+        lista_aux->tamanho++;
+    }
+    if (tam_aux != lista_aux->tamanho) {
+        printf("Elemento inserido com sucesso (insert_before)\n");
+    } else {
+        printf("Erro ao inserir elemento (insert_before)\n");
+        exit(1);
+    }
+
+    return node_insert;
+}
+
+void lista_printLista(Lista lista) {
+    if (lista == NULL) {
+        printf("Lista não inicializada\n");
         return;
     }
-    double svg_origem_x = lista->exibicao.origem_x - SVG_MARGEM;
-    double svg_origem_y = lista->exibicao.origem_y - SVG_MARGEM;
 
-    double svg_largura = lista->exibicao.largura + 2 * SVG_MARGEM;
-    // Caso a origem x seja diferente de 0, a largura do svg deve ser alterada
-    // para utilizar esta nova origem como base.
-    if (svg_origem_x > 0)
-        svg_largura -= lista->exibicao.origem_x;
-    else
-        svg_largura += abs(lista->exibicao.origem_x);
+    list *listaAux = (list *)lista;
+    no *node = listaAux->primeiro;
+    int i = 0;
 
-    double svg_altura = lista->exibicao.altura + 2 * SVG_MARGEM;
-    // Caso a origem y seja diferente de 0, a altura do svg deve ser alterada
-    // para utilizar esta nova origem como base.
-    if (svg_origem_y > 0)
-        svg_altura -= lista->exibicao.origem_y;
-    else
-        svg_altura += abs(lista->exibicao.origem_y);
-
-    // Utiliza o atributo viewbox para garantir que todas as figuras possam ser
-    // vistas no arquivo svg.
-    fprintf(
-        arquivo,
-        "<svg viewBox='%lf %lf %lf %lf'>\n",
-        svg_origem_x, svg_origem_y, svg_largura, svg_altura);
-    struct No *atual = lista->cabeca;
-    while (atual != NULL) {
-        escrever_svg_figura(arquivo, atual->figura, atual->tipo);
-
-        // Checa se a figura atual possui um id.
-        if (obter_id_figura(&atual->figura, atual->tipo) != NULL) {
-            Figuras rotulo;
-            rotulo.tex = criar_rotulo(atual->figura, atual->tipo);
-            escrever_svg_figura(arquivo, rotulo, TIPO_TEXTO);
-        }
-        atual = atual->prox;
+    if (listaAux->primeiro == NULL) {
+        printf("Lista vazia, impossível printar\n");
+        return;
     }
-    fprintf(arquivo, "</svg>\n");
 
-    fclose(arquivo);
+    while (node != NULL) {
+        printf("No %d => %f id:%s endereço do nó: %p\n", i, retorna_circuloX(node->figura), retorna_circuloID(node->figura), node);
+        node = node->proximo;
+
+        i++;
+    }
 }
 
-// Libera a memória alocada por uma lista e seus elementos.
-void destruir_lista(Lista *lista) {
-    struct No *atual = lista->cabeca;
-    struct No *prox;
-    while (atual != NULL) {
-        prox = atual->prox;
-        free(atual);
-        atual = prox;
+void lista_remove_no(Lista lista, Posic no_selecionado) {
+    list *lista_auxiliar = (list *)lista;
+    no *no_auxiliar = (no *)no_selecionado;
+    no *no_anterior = NULL;
+    no *no_proximo = NULL;
+
+    if (no_auxiliar == NULL) {
+        printf("ID invalido\n");
+        system("pause");
+    } else {
+        if (no_auxiliar == lista_auxiliar->primeiro) {  //se for o primeiro elemento da lista
+            no_proximo = no_auxiliar->proximo;
+            lista_auxiliar->primeiro = no_proximo;
+            no_proximo->anterior = NULL;
+
+            free(no_auxiliar);
+            lista_auxiliar->tamanho--;
+        } else if (no_auxiliar == lista_auxiliar->ultimo) {  //se for o último elemento da lista
+            no_anterior = no_auxiliar->anterior;
+            lista_auxiliar->ultimo = no_anterior;
+            no_anterior->proximo = NULL;
+
+            free(no_auxiliar);
+            lista_auxiliar->tamanho--;
+        } else {  //se estiver no meio da lista
+            no_anterior = no_auxiliar->anterior;
+            no_proximo = no_auxiliar->proximo;
+
+            no_anterior->proximo = no_proximo;
+            no_proximo->anterior = no_anterior;
+
+            free(no_auxiliar);
+            lista_auxiliar->tamanho--;
+        }
+
+        printf("Elemento removido com sucesso\n");
+        return;
+    }
+}
+
+Posic lista_get_posic(Lista lista, char id[20]) {
+    list *lista_auxiliar = (list *)lista;
+    no *no_auxiliar = lista_auxiliar->primeiro;
+    char id_auxiliar[20];
+    bool saida = false;
+
+    while (saida != true) {
+        strcpy(id_auxiliar, retorna_circuloID(no_auxiliar->figura));
+        if (strcmp(id_auxiliar, id) == 0) {
+            return no_auxiliar;
+        }
+        if (no_auxiliar == lista_auxiliar->ultimo) {
+            break;
+        }
+
+        no_auxiliar = no_auxiliar->proximo;
     }
 
-    lista->cabeca = NULL;
-    lista->cauda = NULL;
-    free(lista);
-    lista = NULL;
+    printf("Elemento não encontrando\n");
+    exit(1);
+}
+
+Posic lista_get_first(Lista lista) {
+    list *lista_aux = (list *)lista;
+    if (lista_aux->tamanho == 0) {
+        printf("Não há elementos na lista\n");
+        return NULL;
+    } else {
+        return lista_aux->primeiro;
+    }
+}
+
+Posic lista_get_last(Lista lista) {
+    list *lista_aux = (list *)lista;
+    if (lista_aux->tamanho == 0) {
+        printf("Não há elementos na lista\n");
+        return NULL;
+    } else {
+        printf("retornando %p\n", lista_aux->ultimo);
+        return lista_aux->ultimo;
+    }
+}
+
+Info lista_get_infos(Posic p) {
+    no *node_auxiliar;
+    node_auxiliar = p;
+    if (p == NULL) {
+        printf("Erro ao obter infromações do nó especificado\n");
+        exit(1);
+    } else {
+        return node_auxiliar->figura;
+    }
+}
+
+Posic lista_get_next(Lista lista, Posic p) {
+    list *lista_aux = (list *)lista;
+    no *node_aux = (no *)p;
+    if (node_aux == lista_aux->ultimo) {
+        return NULL;
+    } else {
+        return node_aux->proximo;
+    }
+}
+
+Posic lista_get_previous(Lista lista, Posic p) {
+    list *lista_aux = (list *)lista;
+    no *node_aux = (no *)p;
+    if (node_aux == lista_aux->primeiro) {
+        return NULL;
+    } else {
+        return node_aux->anterior;
+    }
+}
+
+Lista lista_libera_lista(Lista lista) {
+    list *lista_aux = (list *)lista;
+    no *node_atual = lista_aux->primeiro;
+    no *node_proximo;
+
+    while (node_atual != NULL) {
+        node_proximo = node_atual->proximo;
+        free(node_atual);
+        node_atual = node_proximo;
+    }
+
+    lista_aux->primeiro = NULL;
+    lista_aux->ultimo = NULL;
+    free(lista_aux);
+    lista_aux = NULL;
+
+    return NULL;
+    printf("Lista liberada\n");
 }
