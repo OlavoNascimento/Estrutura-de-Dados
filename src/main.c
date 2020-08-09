@@ -39,7 +39,7 @@ int main(int argc, const char *argv[]) {
         free(caminho_svg_consulta);
     }
 
-    destruir_lista(lista);
+    lista_libera_lista(lista);
     free(caminho_svg_descricao);
     destruir_parametros(params);
 

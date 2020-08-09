@@ -19,7 +19,7 @@ Lista *ler_geo(const char *caminho_geo) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
         return NULL;
     }
-    Lista *lista = criar_lista();
+    Lista *lista = lista_create();
 
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
@@ -32,15 +32,15 @@ Lista *ler_geo(const char *caminho_geo) {
         Figura nova_figura;
         if (strcmp("c", tipo_figura) == 0) {
             nova_figura = figura_ler(linha, TIPO_CIRCULO);
-            inserir_lista(lista, nova_figura);
+            lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("r", tipo_figura) == 0) {
             nova_figura = figura_ler(linha, TIPO_RETANGULO);
-            inserir_lista(lista, nova_figura);
+            lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("t", tipo_figura) == 0) {
             nova_figura = figura_ler(linha, TIPO_LINHA);
-            inserir_lista(lista, nova_figura);
+            lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("nx", tipo_figura) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);

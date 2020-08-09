@@ -68,8 +68,8 @@ void checar_interseccao(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id1[100], id2[100];
     sscanf(linha, "o? %s %s", id1, id2);
 
-    No *no1 = buscar_elemento_lista(lista, id1);
-    No *no2 = buscar_elemento_lista(lista, id2);
+    No *no1 = lista_get_posic(lista, id1);
+    No *no2 = lista_get_posic(lista, id2);
     if (no1 == NULL || no2 == NULL)
         return;
 
@@ -82,13 +82,13 @@ void checar_interseccao(Lista *lista, const char *linha, FILE *arquivo_log) {
         // Adiciona uma mensagem de sobreposição caso as figuras se intersectem.
         Figura aviso;
         criar_texto_sobreposicao(&aviso, contorno);
-        inserir_lista(lista, aviso);
+        lista_insert_final(lista, aviso);
     } else {
         // Adiciona traços a borda do retângulo de contorno caso as figuras não se intersectem.
         retangulo_definir_tracejado_tamanho(figura_obter_figura(contorno), CONTORNO_TRACEJADO_TAMANHO);
         retangulo_definir_tracejado_espaco(figura_obter_figura(contorno), CONTORNO_TRACEJADO_TAMANHO);
     }
-    inserir_lista(lista, contorno);
+    lista_insert_final(lista, contorno);
 
     fprintf(arquivo_log,
             "o? %s %s\n", id1, id2);
@@ -131,7 +131,7 @@ void checar_ponto_interno(Lista *lista, const char *linha, FILE *arquivo_log) {
     double ponto_x = 0, ponto_y = 0;
     sscanf(linha, "i? %s %lf %lf", id, &ponto_x, &ponto_y);
 
-    No *no = buscar_elemento_lista(lista, id);
+    No *no = lista_get_posic(lista, id);
     if (no == NULL)
         return;
 
@@ -139,11 +139,11 @@ void checar_ponto_interno(Lista *lista, const char *linha, FILE *arquivo_log) {
 
     Circulo circ = criar_ponto(ponto_x, ponto_y, interno);
     Figura ponto = figura_criar(circ, TIPO_CIRCULO);
-    inserir_lista(lista, ponto);
+    lista_insert_final(lista, ponto);
 
     Linha lin = criar_ligacao_ponto_figura(circ, no->figura);
     Figura ligacao = figura_criar(lin, TIPO_CIRCULO);
-    inserir_lista(lista, ligacao);
+    lista_insert_final(lista, ligacao);
 
     fprintf(arquivo_log, "i? %s %lf %lf\n", id, ponto_x, ponto_y);
     fprintf(arquivo_log,
@@ -158,7 +158,7 @@ void alterar_cor(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt %s %s %s", id, nova_corb, nova_corp);
 
-    No *no = buscar_elemento_lista(lista, id);
+    No *no = lista_get_posic(lista, id);
     if (no == NULL)
         return;
 
@@ -178,7 +178,7 @@ void alterar_cor(Lista *lista, const char *linha, FILE *arquivo_log) {
 void alterar_cores(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, nova_corb, nova_corp);
-    No *atual = buscar_elemento_lista(lista, id_inicial);
+    No *atual = lista_get_posic(lista, id_inicial);
     if (atual == NULL)
         return;
 
@@ -203,14 +203,14 @@ void alterar_cores(Lista *lista, const char *linha, FILE *arquivo_log) {
 void remover_elemento(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id[100];
     sscanf(linha, "delf %s", id);
-    No *no = buscar_elemento_lista(lista, id);
+    No *no = lista_get_posic(lista, id);
     if (no == NULL)
         return;
 
     fprintf(arquivo_log, "delf %s\n", id);
     figura_escrever_informacoes(arquivo_log, no->figura);
     fprintf(arquivo_log, "\n");
-    remover_elemento_lista(lista, id);
+    lista_remove_no(lista, no);
 }
 
 // Executa o comando delf* especificado pelo arquivo de consulta, removendo
@@ -219,7 +219,7 @@ void remover_elementos(Lista *lista, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100];
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
-    No *atual = buscar_elemento_lista(lista, id_inicial);
+    No *atual = lista_get_posic(lista, id_inicial);
     while (atual != NULL) {
         const char *id_atual = figura_obter_id(&atual->figura);
 
@@ -234,7 +234,7 @@ void remover_elementos(Lista *lista, const char *linha, FILE *arquivo_log) {
         } else {
             atual = atual->prox;
         }
-        remover_elemento_lista(lista, id_atual);
+        lista_remove_no(lista, atual);
     }
 }
 

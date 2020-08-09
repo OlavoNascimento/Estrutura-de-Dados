@@ -1,9 +1,8 @@
-#ifndef __LISTA__
-#define __LISTA__
+#ifndef LISTA_H
+#define LISTA_H
 
 typedef void* No;
 typedef void* Lista;
-typedef void* Info;
 typedef void* Posic;
 
 /*
@@ -22,31 +21,24 @@ int lista_get_length(Lista lista);
 
 /*
 *insere um elemento no final da lista
-*é preciso inicar a lista antes de inserir um elemento 
+*é preciso inicar a lista antes de inserir um elemento
 *não retorna nada
 */
-Posic lista_insert_final(Lista lista, Info infos);
+Posic lista_insert_final(Lista lista, Figura figura);
 
 /*
 *insere um elemento posterior um determinado p
 *p deve ser um elemento válido da lista
 *é retornado o endereço do elemento inserido
 */
-Posic lista_insert_before(Lista lista, Info infos, Posic p);
+Posic lista_insert_before(Lista lista, Figura figura, Posic p);
 
 /*
 *insere um elemento anterior um determinado p
 *p deve ser um elemento válido da lista
 *é retornado o endereço do elemento inserido
 */
-Posic lista_insert_after(Lista lista, Info infos, Posic p);
-
-/*
-*printa todos os nós da lista
-*não pode ser uma lista vazia
-*não retorna nada
-*/
-void lista_printLista(Lista lista);
+Posic lista_insert_after(Lista lista, Figura figura, Posic p);
 
 /*
 *remove um elemento da lista
@@ -81,7 +73,7 @@ Posic lista_get_first(Lista lista);
 *p não pode ser NULL e deve indicar um endereço válido que esteja na lista
 *retorna o endereço para as informações do nó especificado por p
 */
-Info lista_get_infos(Posic p);
+Figura figura_get_infos(Posic p);
 
 /*
 *acessa o proximo elemento de p
@@ -100,8 +92,7 @@ Posic lista_get_previous(Lista lista, Posic p);
 /*
 *libera a memoria alocada em todos os elementos da lista
 *é necessário que a lista seja incializada para que seja possível liberar
-*retorna NULL 
 */
-Lista lista_libera_lista(Lista lista);
+void lista_libera_lista(Lista lista);
 
 #endif

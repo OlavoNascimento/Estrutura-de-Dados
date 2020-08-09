@@ -182,10 +182,10 @@ void lista_remove_no(Lista lista, Posic no_selecionado) {
     }
 }
 
-Posic lista_get_posic(Lista lista, char id[20]) {
+Posic lista_get_posic(Lista lista, char id[100]) {
     list *lista_auxiliar = (list *)lista;
     no *no_auxiliar = lista_auxiliar->primeiro;
-    char id_auxiliar[20];
+    char id_auxiliar[100];
     bool saida = false;
 
     while (saida != true) {
@@ -249,7 +249,7 @@ Posic lista_get_previous(Lista lista, Posic p) {
     return node_aux->anterior;
 }
 
-Lista lista_libera_lista(Lista lista) {
+void lista_libera_lista(Lista lista) {
     list *lista_aux = (list *)lista;
     no *node_atual = lista_aux->primeiro;
     no *node_proximo;
@@ -266,5 +266,5 @@ Lista lista_libera_lista(Lista lista) {
     lista_aux = NULL;
 
     printf("Lista liberada\n");
-    return NULL;
+    return;
 }
