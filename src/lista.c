@@ -13,10 +13,6 @@
 // Margem entra a figura e seu rótulo.
 #define ROTULO_MARGEM 4
 
-typedef struct circulo {
-    int id;
-} circ;
-
 typedef struct N {
     Figura figura;
     struct N *proximo;
@@ -32,7 +28,7 @@ typedef struct lista {
 Lista lista_create() {
     list *lista = (list *)malloc(sizeof(list));
     if (lista == NULL) {
-        printf("Erro ao alocar espaço para a lista\n");
+        printf(stderr, "ERRO: Erro ao alocar espaço para a lista\n");
         exit(1);
     }
 
@@ -104,10 +100,8 @@ Posic lista_insert_after(Lista lista, Figura figura, Posic p) {
         node_insert->anterior = node_aux;
         lista_aux->tamanho++;
     }
-    if (tam_aux != lista_aux->tamanho) {
-        printf("Elemento inserido com sucesso (insert_after)\n");
-    } else {
-        printf("Erro ao inserir elemento (insert_after)\n");
+    if (tam_aux == lista_aux->tamanho) {
+        printf(stderr, "ERRO: Erro ao inserir elemento (insert_after)\n");
         exit(1);
     }
 
@@ -118,7 +112,7 @@ Posic lista_insert_before(Lista lista, Figura figura, Posic p) {
     list *lista_aux = (list *)lista;
     no *node_aux;
     no *node_proximo = NULL;
-    no *node_anteriror = NULL;
+    no *node_anterior = NULL;
     no *node_insert = (no *)malloc(sizeof(no));
     int tam_aux = lista_aux->tamanho;
 
@@ -133,45 +127,20 @@ Posic lista_insert_before(Lista lista, Figura figura, Posic p) {
         lista_aux->primeiro = node_insert;
         lista_aux->tamanho++;
     } else {
-        node_anteriror = node_aux->anterior;
+        node_anterior = node_aux->anterior;
         node_aux->anterior = node_insert;
-        node_anteriror->proximo = node_insert;
+        node_anterior->proximo = node_insert;
 
         node_insert->proximo = node_aux;
-        node_insert->anterior = node_anteriror;
+        node_insert->anterior = node_anterior;
         lista_aux->tamanho++;
     }
-    if (tam_aux != lista_aux->tamanho) {
-        printf("Elemento inserido com sucesso (insert_before)\n");
-    } else {
-        printf("Erro ao inserir elemento (insert_before)\n");
+    if (tam_aux == lista_aux->tamanho) {
+        printf(stderr, "ERRO: Erro ao inserir elemento (insert_before)!\n");
         exit(1);
     }
 
     return node_insert;
-}
-
-void lista_printLista(Lista lista) {
-    if (lista == NULL) {
-        printf("Lista não inicializada\n");
-        return;
-    }
-
-    list *listaAux = (list *)lista;
-    no *node = listaAux->primeiro;
-    int i = 0;
-
-    if (listaAux->primeiro == NULL) {
-        printf("Lista vazia, impossível printar\n");
-        return;
-    }
-
-    while (node != NULL) {
-        printf("No %d => %f id:%s endereço do nó: %p\n", i, retorna_circuloX(node->figura), retorna_circuloID(node->figura), node);
-        node = node->proximo;
-
-        i++;
-    }
 }
 
 void lista_remove_no(Lista lista, Posic no_selecionado) {
@@ -181,8 +150,7 @@ void lista_remove_no(Lista lista, Posic no_selecionado) {
     no *no_proximo = NULL;
 
     if (no_auxiliar == NULL) {
-        printf("ID invalido\n");
-        system("pause");
+        printf(stderr, "ERRO: Nó possui ID inválido\n");
     } else {
         if (no_auxiliar == lista_auxiliar->primeiro) {  //se for o primeiro elemento da lista
             no_proximo = no_auxiliar->proximo;
@@ -232,14 +200,13 @@ Posic lista_get_posic(Lista lista, char id[20]) {
         no_auxiliar = no_auxiliar->proximo;
     }
 
-    printf("Elemento não encontrando\n");
+    printf(stderr, "ERRO: Elemento não encontrando\n");
     exit(1);
 }
 
 Posic lista_get_first(Lista lista) {
     list *lista_aux = (list *)lista;
     if (lista_aux->tamanho == 0) {
-        printf("Não há elementos na lista\n");
         return NULL;
     } else {
         return lista_aux->primeiro;
@@ -249,23 +216,19 @@ Posic lista_get_first(Lista lista) {
 Posic lista_get_last(Lista lista) {
     list *lista_aux = (list *)lista;
     if (lista_aux->tamanho == 0) {
-        printf("Não há elementos na lista\n");
         return NULL;
-    } else {
-        printf("retornando %p\n", lista_aux->ultimo);
-        return lista_aux->ultimo;
     }
+    return lista_aux->ultimo;
 }
 
-Info lista_get_infos(Posic p) {
+Figura lista_get_infos(Posic p) {
     no *node_auxiliar;
     node_auxiliar = p;
     if (p == NULL) {
-        printf("Erro ao obter infromações do nó especificado\n");
+        printf(stderr, "ERRO: Erro ao obter informações do nó especificado\n");
         exit(1);
-    } else {
-        return node_auxiliar->figura;
     }
+    return node_auxiliar->figura;
 }
 
 Posic lista_get_next(Lista lista, Posic p) {
@@ -273,9 +236,8 @@ Posic lista_get_next(Lista lista, Posic p) {
     no *node_aux = (no *)p;
     if (node_aux == lista_aux->ultimo) {
         return NULL;
-    } else {
-        return node_aux->proximo;
     }
+    return node_aux->proximo;
 }
 
 Posic lista_get_previous(Lista lista, Posic p) {
@@ -283,9 +245,8 @@ Posic lista_get_previous(Lista lista, Posic p) {
     no *node_aux = (no *)p;
     if (node_aux == lista_aux->primeiro) {
         return NULL;
-    } else {
-        return node_aux->anterior;
     }
+    return node_aux->anterior;
 }
 
 Lista lista_libera_lista(Lista lista) {
@@ -304,6 +265,6 @@ Lista lista_libera_lista(Lista lista) {
     free(lista_aux);
     lista_aux = NULL;
 
-    return NULL;
     printf("Lista liberada\n");
+    return NULL;
 }

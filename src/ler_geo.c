@@ -1,7 +1,9 @@
 #include "ler_geo.h"
 
+#include <stdio.h>
 #include <string.h>
 
+#include "figuras.h"
 #include "lista.h"
 
 // Tamanho maxímo de um comando do arquivo de descrição.
