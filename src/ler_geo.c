@@ -6,9 +6,11 @@
 
 // Tamanho maxímo de um comando do arquivo de descrição.
 #define LINHA_MAX 300
+// Tamanho maxímo da abreviação do tipo de uma figura
+#define TIPO_FIGURA_TAMANHO 100
 
-// Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas
-// em suas linha como elementos de uma lista.
+// Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
+// elementos de uma lista.
 Lista *ler_geo(const char *caminho_geo) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
@@ -22,23 +24,23 @@ Lista *ler_geo(const char *caminho_geo) {
     char linha[LINHA_MAX];
     while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL &&
            figuras_criadas < lista_max_figs) {
-        char comando[100];
-        sscanf(linha, "%s", comando);
+        char tipo_figura[TIPO_FIGURA_TAMANHO];
+        sscanf(linha, "%s", tipo_figura);
 
         Figura nova_figura;
-        if (strcmp("c", comando) == 0) {
-            nova_figura.circ = ler_circulo(linha);
-            inserir_lista(lista, nova_figura, TIPO_CIRCULO);
+        if (strcmp("c", tipo_figura) == 0) {
+            nova_figura = figura_ler(linha, TIPO_CIRCULO);
+            inserir_lista(lista, nova_figura);
             figuras_criadas++;
-        } else if (strcmp("r", comando) == 0) {
-            nova_figura.ret = ler_retangulo(linha);
-            inserir_lista(lista, nova_figura, TIPO_RETANGULO);
+        } else if (strcmp("r", tipo_figura) == 0) {
+            nova_figura = figura_ler(linha, TIPO_RETANGULO);
+            inserir_lista(lista, nova_figura);
             figuras_criadas++;
-        } else if (strcmp("t", comando) == 0) {
-            nova_figura.tex = ler_texto(linha);
-            inserir_lista(lista, nova_figura, TIPO_TEXTO);
+        } else if (strcmp("t", tipo_figura) == 0) {
+            nova_figura = figura_ler(linha, TIPO_LINHA);
+            inserir_lista(lista, nova_figura);
             figuras_criadas++;
-        } else if (strcmp("nx", comando) == 0) {
+        } else if (strcmp("nx", tipo_figura) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);
             printf("Novo valor máximo: %d\n", lista_max_figs);
         }
