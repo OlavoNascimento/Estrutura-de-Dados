@@ -243,12 +243,12 @@ void remover_elementos(Lista *lista, const char *linha, FILE *arquivo_log) {
 void ler_qry(Lista *lista, const char *caminho_qry, const char *caminho_log) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s\n", caminho_qry);
+        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
         return;
     }
     FILE *arquivo_log = fopen(caminho_log, "w");
     if (arquivo_log == NULL) {
-        fprintf(stderr, "ERRO: Falha ao criar arquivo de log: %s\n", caminho_log);
+        fprintf(stderr, "ERRO: Falha ao criar arquivo de log: %s!\n", caminho_log);
         return;
     }
 

@@ -40,6 +40,7 @@ Circulo circulo_ler(const char *linha) {
 
 // Escreve todos os dados de um círculo em um arquivo.
 void circulo_escrever_informacoes(FILE *arquivo, Circulo cir) {
+    // Um circulo pode não ter um id
     if (strlen(cir.id) > 0)
         fprintf(arquivo, "id: %s, ", cir.id);
     fprintf(arquivo,
@@ -50,7 +51,8 @@ void circulo_escrever_informacoes(FILE *arquivo, Circulo cir) {
 // Escreve o código svg que representa um círculo em um arquivo.
 void circulo_escrever_svg(FILE *arquivo, Circulo cir) {
     fprintf(arquivo, "\t<circle ");
-    if (strlen(cir.id) > 1)
+    // Um circulo pode não ter um id
+    if (strlen(cir.id) > 0)
         fprintf(arquivo, "id='%s' ", cir.id);
     fprintf(arquivo,
             "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'/>\n",
@@ -82,7 +84,7 @@ const char *circulo_obter_id(Circulo cir) {
 
 void circulo_definir_id(Circulo *cir, const char *id) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como id de um círculo!");
+        fprintf(stderr, "ERRO: Não é possível definir null como id de um círculo!\n");
         return;
     }
     strcpy(cir->id, id);
@@ -118,7 +120,7 @@ const char *circulo_obter_cor_borda(Circulo cir) {
 
 void circulo_definir_cor_borda(Circulo *cir, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um círculo!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um círculo!\n");
         return;
     }
     strcpy(cir->cor_borda, cor_borda);
@@ -130,7 +132,7 @@ const char *circulo_obter_cor_preenchimento(Circulo cir) {
 
 void circulo_definir_cor_preenchimento(Circulo *cir, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um círculo!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um círculo!\n");
         return;
     }
     strcpy(cir->cor_preenchimento, cor_preenchimento);

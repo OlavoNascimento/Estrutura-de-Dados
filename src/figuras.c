@@ -70,10 +70,11 @@ Figura figura_ler(const char *linha, TiposFigura tipo) {
 // Escreve todos os dados de uma figura em um arquivo passado a função.
 void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
     if (arquivo == NULL) {
-        fprintf(stderr, "ERRO: Arquivo nulo recebido ao escrever informações\n");
+        fprintf(stderr, "ERRO: Arquivo nulo recebido ao escrever informações!\n");
         return;
     }
-    fprintf(arquivo, "tipo: %s, ", figura_tipo_para_string(figura.tipo));
+    // TODO Remover , e espaço, generalizando a função
+    fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figura));
     switch (figura.tipo) {
         case TIPO_CIRCULO:
             circulo_escrever_informacoes(arquivo, figura.cir);
@@ -90,7 +91,7 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
 // Escreve o código svg que representa uma figura em um arquivo.
 void figura_escrever_svg(FILE *arquivo, Figura figura) {
     if (arquivo == NULL) {
-        fprintf(stderr, "ERRO: Arquivo nulo recebido ao transformar figura em svg\n");
+        fprintf(stderr, "ERRO: Arquivo nulo recebido ao transformar figura em svg!\n");
         return;
     }
     switch (figura.tipo) {

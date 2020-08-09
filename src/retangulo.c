@@ -100,7 +100,7 @@ const char *retangulo_obter_id(Retangulo ret) {
 
 void retangulo_definir_id(Retangulo *ret, const char *id) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como id de um retângulo!");
+        fprintf(stderr, "ERRO: Não é possível definir null como id de um retângulo!\n");
         return;
     }
     strcpy(ret->id, id);
@@ -144,7 +144,7 @@ const char *retangulo_obter_cor_borda(Retangulo ret) {
 
 void retangulo_definir_cor_borda(Retangulo *ret, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um retângulo!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um retângulo!\n");
         return;
     }
     strcpy(ret->cor_borda, cor_borda);
@@ -157,7 +157,7 @@ const char *retangulo_obter_cor_preenchimento(Retangulo ret) {
 void retangulo_definir_cor_preenchimento(Retangulo *ret, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr,
-                "ERRO: Não é possível definir null como cor de preenchimento de um retângulo!");
+                "ERRO: Não é possível definir null como cor de preenchimento de um retângulo!\n");
         return;
     }
     strcpy(ret->cor_preenchimento, cor_preenchimento);

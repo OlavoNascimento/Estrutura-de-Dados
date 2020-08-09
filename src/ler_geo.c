@@ -14,7 +14,7 @@
 Lista *ler_geo(const char *caminho_geo) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s\n", caminho_geo);
+        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
         return NULL;
     }
     Lista *lista = criar_lista();

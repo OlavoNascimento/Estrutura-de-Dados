@@ -64,7 +64,7 @@ const char *texto_obter_id(Texto tex) {
 
 void texto_definir_id(Texto *tex, const char *id) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como id de um texto!");
+        fprintf(stderr, "ERRO: Não é possível definir null como id de um texto!\n");
         return;
     }
     strcpy(tex->id, id);
@@ -92,7 +92,7 @@ const char *texto_obter_cor_borda(Texto tex) {
 
 void texto_definir_cor_borda(Texto *tex, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um texto!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um texto!\n");
         return;
     }
     strcpy(tex->cor_borda, cor_borda);
@@ -104,7 +104,7 @@ const char *texto_obter_cor_preenchimento(Texto tex) {
 
 void texto_definir_cor_preenchimento(Texto *tex, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um texto!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de um texto!\n");
         return;
     }
     strcpy(tex->cor_preenchimento, cor_preenchimento);
@@ -116,7 +116,7 @@ const char *texto_obter_conteudo(Texto tex) {
 
 void texto_definir_conteudo(Texto *tex, const char *conteudo) {
     if (conteudo == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como conteúdo de um texto!");
+        fprintf(stderr, "ERRO: Não é possível definir null como conteúdo de um texto!\n");
         return;
     }
     strcpy(tex->conteudo, conteudo);

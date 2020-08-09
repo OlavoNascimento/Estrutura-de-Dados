@@ -69,7 +69,7 @@ const char *linha_obter_cor_borda(Linha lin) {
 
 void linha_definir_cor_borda(Linha *lin, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de uma linha!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de uma linha!\n");
         return;
     }
     strcpy(lin->cor_borda, cor_borda);
@@ -81,7 +81,7 @@ const char *linha_obter_cor_preenchimento(Linha lin) {
 
 void linha_definir_cor_preenchimento(Linha *lin, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de uma linha!");
+        fprintf(stderr, "ERRO: Não é possível definir null como cor de preenchimento de uma linha!\n");
         return;
     }
     strcpy(lin->cor_preenchimento, cor_preenchimento);
