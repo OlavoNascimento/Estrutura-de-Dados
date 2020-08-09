@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LISTA_H
+#define LISTA_H
 
 #include "figuras.h"
 
@@ -27,3 +28,5 @@ No *buscar_elemento_lista(Lista *lista, const char *id_buscado);
 void remover_elemento_lista(Lista *lista, const char *id_buscado);
 void lista_para_svg(Lista *lista, const char *caminho_svg);
 void destruir_lista(Lista *lista);
+
+#endif

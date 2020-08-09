@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FIGURAS_H
+#define FIGURAS_H
 
 #include <stdbool.h>
 
@@ -66,3 +67,5 @@ void figura_definir_cor_borda(Figura *figura, const char *cor_borda);
 const char *figura_obter_cor_preenchimento(Figura *figura);
 // Substitui a cor de preenchimento de uma figura.
 void figura_definir_cor_preenchimento(Figura *figura, const char *cor_preenchimento);
+
+#endif

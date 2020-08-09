@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PARAMETROS_H
+#define PARAMETROS_H
 
 #include <stdbool.h>
 
@@ -34,3 +35,5 @@ char *parametros_obter_caminho_registro_consulta(const Parametros params);
 
 // Libera a memória alocada pelos parâmetros.
 void parametros_destruir(Parametros params);
+
+#endif

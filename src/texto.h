@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEXTO_H
+#define TEXTO_H
 
 #include <stdio.h>
 
@@ -49,3 +50,5 @@ void texto_definir_cor_preenchimento(Texto *tex, const char *cor_preenchimento);
 const char *texto_obter_texto(Texto tex);
 // Define o conteudo de um texto. O parâmetro conteudo não pode ser nulo.
 void texto_definir_texto(Texto *tex, const char *conteudo);
+
+#endif

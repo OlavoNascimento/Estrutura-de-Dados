@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LINHA_H
+#define LINHA_H
 
 #include <stdio.h>
 
@@ -42,3 +43,5 @@ void linha_definir_cor_borda(Linha *lin, const char *cor_borda);
 const char *linha_obter_cor_preenchimento(Linha lin);
 // Define a cor de preenchimento de uma linha. O parâmetro cor_preenchimento não pode ser nulo.
 void linha_definir_cor_preenchimento(Linha *lin, const char *cor_preenchimento);
+
+#endif

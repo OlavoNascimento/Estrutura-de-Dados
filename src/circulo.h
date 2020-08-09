@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CIRCULO_H
+#define CIRCULO_H
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -57,3 +58,5 @@ void circulo_definir_cor_borda(Circulo *circ, const char *cor_borda);
 const char *circulo_obter_cor_preenchimento(Circulo circ);
 // Define a cor de preenchimento de um círculo. O parâmetros cor_preenchimento não pode ser nulo.
 void circulo_definir_cor_preenchimento(Circulo *circ, const char *cor_preenchimento);
+
+#endif
