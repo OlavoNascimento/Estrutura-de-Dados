@@ -18,45 +18,45 @@ Circulo circulo_ler(const char *linha);
 
 // Escreve todas as informações presentes em um círculo em um arquivo.
 // O parâmetro arquivo não pode ser nulo.
-void circulo_escrever_informacoes(FILE *arquivo, Circulo circ);
+void circulo_escrever_informacoes(FILE *arquivo, Circulo cir);
 // Escreve o código svg necessário para representar um círculo em um arquivo.
 // O parâmetro arquivo não pode ser nulo.
-void circulo_escrever_svg(FILE *arquivo, Circulo circ);
+void circulo_escrever_svg(FILE *arquivo, Circulo cir);
 
 // Recebe dois circulos e retorna verdadeiro caso se intersectem.
-bool circulo_checar_interseccao(Circulo circ1, Circulo circ2);
+bool circulo_checar_interseccao(Circulo cir1, Circulo cir2);
 // Recebe um círculo e as coordenadas de um ponto, retorna verdadeiro caso o ponto esteja dentro do
 // círculo.
-bool circulo_checar_ponto_interno(Circulo circ, double ponto_x, double ponto_y);
+bool circulo_checar_ponto_interno(Circulo cir, double ponto_x, double ponto_y);
 
 // Retorna o id de um círculo.
-const char *circulo_obter_id(Circulo circ);
+const char *circulo_obter_id(Circulo cir);
 // Define o id de um círculo. Os parâmetro id não pode ser nulo.
-void circulo_definir_id(Circulo *circ, const char *id);
+void circulo_definir_id(Circulo cir, const char *id);
 
 // Retorna o raio de um círculo.
-double circulo_obter_raio(Circulo circ);
+double circulo_obter_raio(Circulo cir);
 // Define o raio de um círculo.
-void circulo_definir_raio(Circulo *circ, double raio);
+void circulo_definir_raio(Circulo cir, double raio);
 
 // Retorna a coordenada x de um círculo.
-double circulo_obter_x(Circulo circ);
+double circulo_obter_x(Circulo cir);
 // Define a coordenada x de um círculo.
-void circulo_definir_x(Circulo *circ, double x);
+void circulo_definir_x(Circulo cir, double x);
 
 // Retorna a coordenada y de um círculo.
-double circulo_obter_y(Circulo circ);
+double circulo_obter_y(Circulo cir);
 // Define a coordenada y de um círculo.
-void circulo_definir_y(Circulo *circ, double y);
+void circulo_definir_y(Circulo cir, double y);
 
 // Retorna a cor da borda de um círculo.
-const char *circulo_obter_cor_borda(Circulo circ);
+const char *circulo_obter_cor_borda(Circulo cir);
 // Define a cor da borda de um círculo. O parâmetro cor_borda não pode ser nulo.
-void circulo_definir_cor_borda(Circulo *circ, const char *cor_borda);
+void circulo_definir_cor_borda(Circulo cir, const char *cor_borda);
 
 // Retorna a cor de preenchimento de um círculo..
-const char *circulo_obter_cor_preenchimento(Circulo circ);
+const char *circulo_obter_cor_preenchimento(Circulo cir);
 // Define a cor de preenchimento de um círculo. O parâmetros cor_preenchimento não pode ser nulo.
-void circulo_definir_cor_preenchimento(Circulo *circ, const char *cor_preenchimento);
+void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento);
 
 #endif

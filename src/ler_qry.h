@@ -9,6 +9,6 @@
 // Recebe uma linha, o caminho para o arquivo de consulta e o caminho para o arquivo de log. Altera
 // a lista de acordo com os comandos presentes no arquivo de consulta.
 // Nenhum dos argumentos pode ser nulo.
-void ler_qry(Lista *lista, const char *caminho_qry, const char *caminho_log);
+void ler_qry(Lista lista, const char *caminho_qry, const char *caminho_log);
 
 #endif

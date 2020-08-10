@@ -9,11 +9,11 @@
 #include "utils.h"
 
 int main(int argc, const char *argv[]) {
-    const Parametros params = ler_parametros(argc, argv);
-    if (!checar_parametros_obrigatorios(params))
+    const Parametros params = parametros_ler(argc, argv);
+    if (!parametros_checar_obrigatorios(params))
         return 1;
-    criar_diretorio(parametros_obter_diretorio_saida(params));
 
+    criar_diretorio(parametros_obter_diretorio_saida(params));
     char *caminho_descricao = parametros_obter_caminho_descricao(params);
     char *caminho_consulta = parametros_obter_caminho_consulta(params);
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
@@ -41,7 +41,7 @@ int main(int argc, const char *argv[]) {
 
     lista_libera_lista(lista);
     free(caminho_svg_descricao);
-    destruir_parametros(params);
+    parametros_destruir(params);
 
     return 0;
 }

@@ -1,10 +1,12 @@
 #include "figuras.h"
 
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "circulo.h"
 #include "linha.h"
+#include "matematica.h"
 #include "retangulo.h"
 #include "texto.h"
 
@@ -16,29 +18,33 @@ typedef struct {
         Texto tex;
         Linha lin;
     };
-} Figura;
+} FiguraImp;
 
 // Cria um struct figura que recebe uma figura a ser armazenada e o tipo dessa figura.
 Figura figura_criar(void *figura, TiposFigura tipo) {
     if (figura == NULL) {
         fprintf(stderr, "ERRO: Figura nula passada ao criar figura!\n");
-        return;
+        return NULL;
     }
-    if (tipo <= TIPOS_FIGURA_MIN || tipo >= TIPOS_FIGURA_MAX) {
-        fprintf(stderr, "ERRO: Tipo de figura inválido passado ao criar figura: %d!\n", tipo);
-        return;
+    if (tipo <= TIPO_CIRCULO || tipo >= TIPO_TEXTO) {
+        fprintf(stderr, "ERRO: Tipo de figura inválido passado a criar figura: %d!\n", tipo);
+        return NULL;
     }
-    Figura fig;
-    fig.tipo = tipo;
+    FiguraImp *fig = malloc(sizeof(FiguraImp));
+    fig->tipo = tipo;
     switch (tipo) {
         case TIPO_CIRCULO:
-            fig.cir = figura;
+            fig->cir = figura;
+            break;
         case TIPO_RETANGULO:
-            fig.ret = figura;
+            fig->ret = figura;
+            break;
         case TIPO_TEXTO:
-            fig.tex = figura;
+            fig->tex = figura;
+            break;
         case TIPO_LINHA:
-            fig.lin = figura;
+            fig->lin = figura;
+            break;
     }
     return fig;
 }
@@ -47,23 +53,23 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
 // representa.
 Figura figura_ler(const char *linha, TiposFigura tipo) {
     if (linha == NULL) {
-        fprintf(stderr, "ERRO: Linha nula passada a função ler figura!\n", tipo);
-        return;
+        fprintf(stderr, "ERRO: Linha nula passada a função ler figura!\n");
+        return NULL;
     }
 
     switch (tipo) {
-        case TIPO_CIRCULO:
+        case TIPO_CIRCULO:;
             Circulo cir = circulo_ler(linha);
             return figura_criar(cir, tipo);
-        case TIPO_LINHA:
-            Linha lin = linha_ler(linha);
-            return figura_criar(lin, tipo);
-        case TIPO_RETANGULO:
+        case TIPO_RETANGULO:;
             Retangulo ret = retangulo_ler(linha);
             return figura_criar(ret, tipo);
-        case TIPO_TEXTO:
+        case TIPO_TEXTO:;
             Texto tex = texto_ler(linha);
             return figura_criar(tex, tipo);
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para ler figura!\n", tipo);
+            return NULL;
     }
 }
 
@@ -73,17 +79,22 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
         fprintf(stderr, "ERRO: Arquivo nulo recebido ao escrever informações!\n");
         return;
     }
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     // TODO Remover , e espaço, generalizando a função
     fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figura));
-    switch (figura.tipo) {
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            circulo_escrever_informacoes(arquivo, figura.cir);
+            circulo_escrever_informacoes(arquivo, figuraImp->cir);
             break;
         case TIPO_RETANGULO:
-            retangulo_escrever_informacoes(arquivo, figura.ret);
+            retangulo_escrever_informacoes(arquivo, figuraImp->ret);
             break;
         case TIPO_TEXTO:
-            texto_escrever_informacoes(arquivo, figura.tex);
+            texto_escrever_informacoes(arquivo, figuraImp->tex);
+            break;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para escrever informações!\n",
+                    figuraImp->tipo);
             break;
     }
 }
@@ -94,218 +105,271 @@ void figura_escrever_svg(FILE *arquivo, Figura figura) {
         fprintf(stderr, "ERRO: Arquivo nulo recebido ao transformar figura em svg!\n");
         return;
     }
-    switch (figura.tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            circulo_escrever_svg(arquivo, figura.cir);
+            circulo_escrever_svg(arquivo, figuraImp->cir);
             break;
         case TIPO_LINHA:
-            linha_escrever_svg(arquivo, figura.lin);
+            linha_escrever_svg(arquivo, figuraImp->lin);
             break;
         case TIPO_RETANGULO:
-            retangulo_escrever_svg(arquivo, figura.ret);
+            retangulo_escrever_svg(arquivo, figuraImp->ret);
             break;
         case TIPO_TEXTO:
-            texto_escrever_svg(arquivo, figura.tex);
+            texto_escrever_svg(arquivo, figuraImp->tex);
+            break;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para escrever svg!\n",
+                    figuraImp->tipo);
             break;
     }
 }
 
-double max(double a, double b) {
-    return a > b ? a : b;
-}
-
-double min(double a, double b) {
-    return a < b ? a : b;
-}
-
 // Retorna verdadeiro caso um circulo e um retângulo se intersectem.
 bool circulo_retangulo_checar_interseccao(Circulo cir, Retangulo ret) {
-    double deltaX = circulo_obter_x(cir) - max(retangulo_obter_x(ret),
-                                               min(circulo_obter_x(ret),
-                                                   retangulo_obter_x(ret) + retangulo_obter_largura(ret)));
-    double deltaY = circulo_obter_y(cir) - max(retangulo_obter_y(ret),
-                                               min(circulo_obter_y(ret),
-                                                   retangulo_obter_y(ret) + retangulo_obter_altura(ret)));
-    return (deltaX * deltaX + deltaY * deltaY) <= (circulo_obter_raio(cir) * circulo_obter_raio(cir));
+    double deltaX =
+        circulo_obter_x(cir) -
+        max(retangulo_obter_x(ret),
+            min(circulo_obter_x(ret), retangulo_obter_x(ret) + retangulo_obter_largura(ret)));
+    double deltaY =
+        circulo_obter_y(cir) -
+        max(retangulo_obter_y(ret),
+            min(circulo_obter_y(ret), retangulo_obter_y(ret) + retangulo_obter_altura(ret)));
+    return (deltaX * deltaX + deltaY * deltaY) <=
+           (circulo_obter_raio(cir) * circulo_obter_raio(cir));
 }
 
 // Retorna verdadeiro caso duas figuras se intersectem.
 bool figura_checar_interseccao(Figura figura1, Figura figura2) {
+    FiguraImp *figuraImp1 = (FiguraImp *) figura1;
+    FiguraImp *figuraImp2 = (FiguraImp *) figura2;
     bool intersectam = false;
-    if (figura1.tipo == TIPO_RETANGULO && figura1.tipo == figura2.tipo)
-        intersectam = retangulo_checar_interseccao(figura1.ret, figura2.ret);
-    else if (figura1.tipo == TIPO_CIRCULO && figura1.tipo == figura2.tipo)
-        intersectam = circulo_checar_interseccao(figura1.cir, figura2.cir);
-    else if (figura1.tipo == TIPO_CIRCULO && figura2.tipo == TIPO_RETANGULO)
-        intersectam = circulo_retangulo_checar_interseccao(figura1.cir, figura2.ret);
-    else if (figura1.tipo == TIPO_RETANGULO && figura2.tipo == TIPO_CIRCULO)
-        intersectam = circulo_retangulo_checar_interseccao(figura2.cir, figura1.ret);
+    if (figuraImp1->tipo == TIPO_RETANGULO && figuraImp1->tipo == figuraImp2->tipo)
+        intersectam = retangulo_checar_interseccao(figuraImp1->ret, figuraImp2->ret);
+    else if (figuraImp1->tipo == TIPO_CIRCULO && figuraImp1->tipo == figuraImp2->tipo)
+        intersectam = circulo_checar_interseccao(figuraImp1->cir, figuraImp2->cir);
+    else if (figuraImp1->tipo == TIPO_CIRCULO && figuraImp2->tipo == TIPO_RETANGULO)
+        intersectam = circulo_retangulo_checar_interseccao(figuraImp1->cir, figuraImp2->ret);
+    else if (figuraImp1->tipo == TIPO_RETANGULO && figuraImp2->tipo == TIPO_CIRCULO)
+        intersectam = circulo_retangulo_checar_interseccao(figuraImp2->cir, figuraImp1->ret);
 
     return intersectam;
 }
 
 // Checa se um ponto se encontra dentro ou fora de uma figura.
 bool figura_checar_ponto_interno(Figura figura, double ponto_x, double ponto_y) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     bool interno = false;
-    switch (figura.tipo) {
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            interno = checar_ponto_interno_circulo(figura.cir, ponto_x, ponto_y);
+            interno = circulo_checar_ponto_interno(figuraImp->cir, ponto_x, ponto_y);
             break;
         case TIPO_RETANGULO:
-            interno = checar_ponto_interno_retangulo(figura.ret, ponto_x, ponto_y);
+            interno = retangulo_checar_ponto_interno(figuraImp->ret, ponto_x, ponto_y);
+            break;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para checar ponto interno!\n",
+                    figuraImp->tipo);
             break;
     }
     return interno;
 }
 
 // Retorna o nome do tipo de uma figura.
-const char *figura_obter_tipo(Figura figura) {
-    return figura.tipo;
+TiposFigura figura_obter_tipo(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    return figuraImp->tipo;
 }
 
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     const char *valores[] = {
         "círculo",
         "linha",
         "retângulo",
         "texto",
     };
-    return valores[figura.tipo];
+    return valores[figuraImp->tipo];
 }
 
 // Retorna o nome do tipo de uma figura.
-void *figura_obter_figura(Figura *figura) {
-    switch (figura->tipo) {
+void *figura_obter_figura(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return figura->cir;
+            return figuraImp->cir;
         case TIPO_LINHA:
-            return figura->lin;
+            return figuraImp->lin;
         case TIPO_RETANGULO:
-            return figura->ret;
+            return figuraImp->ret;
         case TIPO_TEXTO:
-            return figura->tex;
+            return figuraImp->tex;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter figura!\n",
+                    figuraImp->tipo);
+            return NULL;
     }
 }
 
 // Retorna a coordenada x onde uma figura se inicia.
 double figura_obter_x_inicio(Figura figura) {
-    switch (figura.tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_x(figura.cir) - circulo_obter_raio(figura.cir);
+            return circulo_obter_x(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
         case TIPO_LINHA:
-            return min(linha_obter_x1(figura.lin), linha_obter_x2(figura.lin));
+            return min(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
         case TIPO_RETANGULO:
-            return retangulo_obter_x(figura.ret);
+            return retangulo_obter_x(figuraImp->ret);
         case TIPO_TEXTO:
-            return texto_obter_x(figura.tex);
+            return texto_obter_x(figuraImp->tex);
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter x inicio!\n",
+                    figuraImp->tipo);
+            break;
     }
     return 0;
 }
 
 // Retorna a coordenada y onde uma figura se inicia.
 double figura_obter_y_inicio(Figura figura) {
-    switch (figura.tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_y(figura.cir) - circulo_obter_raio(figura.cir);
+            return circulo_obter_y(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
         case TIPO_LINHA:
-            return min(linha_obter_y1(figura.lin), linha_obter_y2(figura.lin));
+            return min(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
         case TIPO_RETANGULO:
-            return retangulo_obter_y(figura.ret);
+            return retangulo_obter_y(figuraImp->ret);
         case TIPO_TEXTO:
-            return texto_obter_y(figura.tex);
+            return texto_obter_y(figuraImp->tex);
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter y inicio!\n",
+                    figuraImp->tipo);
+            break;
     }
     return 0;
 }
 
 // Retorna a coordenada x onde uma figura acaba.
 double figura_obter_x_fim(Figura figura) {
-    switch (figura.tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_x(figura.cir) + circulo_obter_raio(figura.cir);
+            return circulo_obter_x(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_LINHA:
-            return max(linha_obter_x1(figura.lin), linha_obter_x2(figura.lin));
+            return max(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
         case TIPO_RETANGULO:
-            return retangulo_obter_x(figura.ret) + retangulo_obter_largura(figura.ret);
+            return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret);
         case TIPO_TEXTO:
             // Usa uma largura estimada para o texto
-            return texto_obter_x(figura.tex) + strlen(texto_obter_texto(figura.tex)) * 4;
+            return texto_obter_x(figuraImp->tex) + strlen(texto_obter_conteudo(figuraImp->tex)) * 4;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter x fim!\n",
+                    figuraImp->tipo);
+            break;
+    }
+    return 0;
+}
+
+// Retorna a coordenada y onde uma figura acaba.
+double figura_obter_y_fim(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
+        case TIPO_CIRCULO:
+            return circulo_obter_y(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
+        case TIPO_LINHA:
+            return max(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
+        case TIPO_RETANGULO:
+            return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret);
+        case TIPO_TEXTO:
+            return texto_obter_y(figuraImp->tex);
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter y fim!\n",
+                    figuraImp->tipo);
+            break;
     }
     return 0;
 }
 
 // Retorna a coordenada x do centro de uma figura.
 double figura_obter_centro_x(Figura figura) {
-    switch (figura.tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_x(figura.cir);
+            return circulo_obter_x(figuraImp->cir);
         case TIPO_RETANGULO:
-            return retangulo_obter_x(figura.ret) + retangulo_obter_largura(figura.ret) / 2;
+            return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret) / 2;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter centro x!\n",
+                    figuraImp->tipo);
+            return 0;
     }
 }
 
 // Retorna a coordenada y do centro de uma figura.
 double figura_obter_centro_y(Figura figura) {
-    switch (figura.tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_y(figura.cir);
+            return circulo_obter_y(figuraImp->cir);
         case TIPO_RETANGULO:
-            return retangulo_obter_y(figura.ret) + retangulo_obter_altura(figura.ret) / 2;
+            return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret) / 2;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter centro y!\n",
+                    figuraImp->tipo);
+            return 0;
     }
-}
-
-// Retorna a coordenada y onde uma figura acaba.
-double figura_obter_y_fim(Figura figura) {
-    switch (figura.tipo) {
-        case TIPO_CIRCULO:
-            return circulo_obter_y(figura.cir) + circulo_obter_raio(figura.cir);
-        case TIPO_LINHA:
-            return max(linha_obter_y1(figura.lin), linha_obter_y2(figura.lin));
-        case TIPO_RETANGULO:
-            return retangulo_obter_y(figura.ret) + retangulo_obter_altura(figura.ret);
-        case TIPO_TEXTO:
-            return texto_obter_y(figura.tex);
-    }
-    return 0;
 }
 
 // Retorna o id de uma figura.
-const char *figura_obter_id(Figura *figura) {
-    switch (figura->tipo) {
+const char *figura_obter_id(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_id(figura->cir);
-        case TIPO_LINHA:
-            return linha_obter_id(figura->ret);
+            return circulo_obter_id(figuraImp->cir);
         case TIPO_RETANGULO:
-            return retangulo_obter_id(figura->ret);
+            return retangulo_obter_id(figuraImp->ret);
         case TIPO_TEXTO:
-            return texto_obter_id(figura->tex);
+            return texto_obter_id(figuraImp->tex);
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter id!\n",
+                    figuraImp->tipo);
+            break;
     }
     return NULL;
 }
 
 // Retorna a cor da borda de uma figura.
-const char *figura_obter_cor_borda(Figura *figura) {
-    switch (figura->tipo) {
+const char *figura_obter_cor_borda(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_cor_borda(figura->cir);
+            return circulo_obter_cor_borda(figuraImp->cir);
         case TIPO_LINHA:
-            return linha_obter_cor_borda(figura->lin);
+            return linha_obter_cor_borda(figuraImp->lin);
         case TIPO_RETANGULO:
-            return retangulo_obter_cor_borda(figura->ret);
+            return retangulo_obter_cor_borda(figuraImp->ret);
         case TIPO_TEXTO:
-            return texto_obter_cor_borda(figura->tex);
+            return texto_obter_cor_borda(figuraImp->tex);
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para obter cor borda!\n",
+                    figuraImp->tipo);
+            break;
     }
     return NULL;
 }
 
 // Substitui a cor da borda de uma figura.
-void figura_definir_cor_borda(Figura *figura, const char *cor_borda) {
+void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Tentando alterar cor da borda de uma figura para nulo!\n");
         return;
     }
-    switch (figura->tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_definir_cor_borda(figura, cor_borda);
             break;
@@ -318,31 +382,42 @@ void figura_definir_cor_borda(Figura *figura, const char *cor_borda) {
         case TIPO_TEXTO:
             texto_definir_cor_borda(figura, cor_borda);
             break;
+        default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido %d passado para definir cor borda!\n",
+                    figuraImp->tipo);
+            break;
     }
 }
 
 // Retorna a cor do preenchimento de uma figura.
-const char *figura_obter_cor_preenchimento(Figura *figura) {
-    switch (figura->tipo) {
+const char *figura_obter_cor_preenchimento(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
-            return circulo_obter_cor_preenchimento(figura->cir);
+            return circulo_obter_cor_preenchimento(figuraImp->cir);
         case TIPO_LINHA:
-            return linha_obter_cor_preenchimento(figura->lin);
+            return linha_obter_cor_preenchimento(figuraImp->lin);
         case TIPO_RETANGULO:
-            return retangulo_obter_cor_preenchimento(figura->tex);
+            return retangulo_obter_cor_preenchimento(figuraImp->tex);
         case TIPO_TEXTO:
-            return texto_obter_cor_preenchimento(figura->tex);
+            return texto_obter_cor_preenchimento(figuraImp->tex);
+        default:
+            fprintf(stderr,
+                    "ERRO: Tipo de figura inválido %d passado para obter cor preenchimento!\n",
+                    figuraImp->tipo);
+            break;
     }
     return NULL;
 }
 
 // Substitui a cor de preenchimento de uma figura.
-void figura_definir_cor_preenchimento(Figura *figura, const char *cor_preenchimento) {
+void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr, "ERRO: Tentando alterar cor de preenchimento de uma figura para nulo!\n");
         return;
     }
-    switch (figura->tipo) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_definir_cor_preenchimento(figura, cor_preenchimento);
             break;
@@ -354,6 +429,11 @@ void figura_definir_cor_preenchimento(Figura *figura, const char *cor_preenchime
             break;
         case TIPO_TEXTO:
             texto_definir_cor_preenchimento(figura, cor_preenchimento);
+            break;
+        default:
+            fprintf(stderr,
+                    "ERRO: Tipo de figura inválido %d passado para definir cor preenchimento!\n",
+                    figuraImp->tipo);
             break;
     }
 }

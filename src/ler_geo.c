@@ -24,8 +24,7 @@ Lista *ler_geo(const char *caminho_geo) {
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
     char linha[LINHA_MAX];
-    while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL &&
-           figuras_criadas < lista_max_figs) {
+    while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL && figuras_criadas < lista_max_figs) {
         char tipo_figura[TIPO_FIGURA_TAMANHO];
         sscanf(linha, "%s", tipo_figura);
 
