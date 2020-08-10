@@ -37,7 +37,7 @@ void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
     retangulo_definir_cor_borda(quadImp->ret, cor_borda);
 }
 
-void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_borda) {
+void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento) {
     QuadraImp *quadImp = (QuadraImp *)quad;
-    retangulo_definir_cor_preenchimento(quadImp->ret, cor_borda);
+    retangulo_definir_cor_preenchimento(quadImp->ret, cor_preenchimento);
 }
