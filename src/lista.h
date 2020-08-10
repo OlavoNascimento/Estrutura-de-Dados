@@ -49,7 +49,7 @@ No lista_insert_after(Lista lista, Figura figura, No p);
 void lista_remove_no(Lista lista, No no_selecionado);
 
 /*
- *utilzada para ter acesso a um nó da lista
+ *utilizada para ter acesso a um nó da lista
  *o id passado tem q ser válido
  *retorna o endereço do nó
  */

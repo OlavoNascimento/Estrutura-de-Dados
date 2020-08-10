@@ -8,8 +8,8 @@
 typedef void *Texto;
 
 // Cria e inicializa um struct Texto com os valores passados.
-Texto texto_criar(char id[100], double x, double y, char cor_borda[20], char cor_preenchimento[20],
-                  char conteudo[500]);
+Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
+                  const char cor_preenchimento[20], const char conteudo[500]);
 // Cria e inicializa um struct Texto a partir de um texto obtido no arquivo .geo.
 // O parâmetro linha não pode ser nulo.
 Texto texto_ler(const char *linha);

@@ -6,11 +6,6 @@
 
 #include "figuras.h"
 
-// Margem entre o svg e a figuras mais próximas de suas bordas.
-#define SVG_MARGEM 14
-// Margem entra a figura e seu rótulo.
-#define ROTULO_MARGEM 4
-
 typedef struct N {
     Figura figura;
     struct N *proximo;

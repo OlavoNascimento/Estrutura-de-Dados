@@ -6,6 +6,7 @@
 #include "ler_qry.h"
 #include "lista.h"
 #include "parametros.h"
+#include "svg.h"
 #include "utils.h"
 
 int main(int argc, const char *argv[]) {
@@ -22,7 +23,7 @@ int main(int argc, const char *argv[]) {
     printf("Arquivo svg: %s\n", caminho_svg_descricao);
 
     Lista *lista = ler_geo(caminho_descricao);
-    lista_para_svg(lista, caminho_svg_descricao);
+    svg_lista_para_svg(lista, caminho_svg_descricao);
 
     if (caminho_consulta != NULL) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
@@ -33,7 +34,7 @@ int main(int argc, const char *argv[]) {
         printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
         ler_qry(lista, caminho_consulta, caminho_registro_consulta);
-        lista_para_svg(lista, caminho_svg_consulta);
+        svg_lista_para_svg(lista, caminho_svg_consulta);
 
         free(caminho_registro_consulta);
         free(caminho_svg_consulta);
