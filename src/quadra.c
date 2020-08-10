@@ -26,10 +26,9 @@ Quadra quadra_ler(const char *linha) {
     double altura;
     double x;
     double y;
-    char cor_borda[20] = "red";
-    char cor_preenchimento[20] = "green";
-    sscanf(linha, "%*c %s %lf %lf %lf %lf %s %s", id, &largura, &altura, &x, &y, cor_borda,
-           cor_preenchimento);
+    char cor_borda[20] = "none";
+    char cor_preenchimento[20] = "none";
+    sscanf(linha, "%*c %s %lf %lf %lf %lf", id, &largura, &altura, &x, &y);
     return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento, 0, 0);
 }
 
