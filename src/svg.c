@@ -12,10 +12,10 @@
 
 // Tamanho maxímo da linha de um arquivo svg
 #define LINHA_MAX 300
-// Margem entre o svg e a figuras mais próximas de suas bordas.
-#define SVG_MARGEM 14
 // Margem entra a figura e seu rótulo.
 #define ROTULO_MARGEM 4
+// Margem entre o svg e as figuras mais próximas das bordas.
+#define SVG_MARGEM 14
 
 // Utilizado para representar as proporções de um arquivo svg.
 typedef struct {
@@ -86,6 +86,7 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
 
         atual = lista_get_next(lista, atual);
     }
+    fprintf(arquivo_tmp, "</svg>\n");
     fclose(arquivo_tmp);
     arquivo_tmp = fopen(caminho_tmp, "r");
     if (arquivo_tmp == NULL) {
@@ -104,15 +105,15 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
     double svg_origem_x = exibicao.origem_x - SVG_MARGEM;
     // Coordenada y da origem é a figura mais acima.
     double svg_origem_y = exibicao.origem_y - SVG_MARGEM;
-    // Coordenada largura é a figura mais a direita. A largura do svg deve ser alterada para
-    // utilizar a nova origem como base.
+    // Largura é a figura mais a direita. A largura do svg deve ser alterada para utilizar a nova
+    // origem como base.
     double svg_largura = exibicao.largura - exibicao.origem_x + 2 * SVG_MARGEM;
-    // Coordenada altura é a figura mais a abaixo. A largura do svg deve ser alterada para
-    // utilizar a nova origem como base.
+    // Altura é a figura mais abaixo. A largura do svg deve ser alterada para utilizar a nova origem
+    // como base.
     double svg_altura = exibicao.altura - exibicao.origem_y + 2 * SVG_MARGEM;
 
-    // Utiliza o atributo viewbox para garantir que todas as figuras possam ser vistas no
-    // arquivo svg.
+    // Utiliza o atributo viewbox para garantir que todas as figuras possam ser vistas no arquivo
+    // svg.
     int count = 0;
     char linha[LINHA_MAX];
     while ((fgets(linha, LINHA_MAX, arquivo_tmp)) != NULL) {
