@@ -16,7 +16,8 @@ Quadra quadra_criar(char id[100], double largura, double altura, double x, doubl
                     char cor_borda[20], char cor_preenchimento[20], int tracejado_tamanho,
                     int tracejado_espaco) {
     QuadraImp *quadImp = malloc(sizeof(QuadraImp));
-    quadImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento, tracejado_tamanho, tracejado_espaco);
+    quadImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento,
+                                   tracejado_tamanho, tracejado_espaco);
     return quadImp;
 }
 
@@ -33,11 +34,15 @@ Quadra quadra_ler(const char *linha) {
 }
 
 void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
-    QuadraImp *quadImp = (QuadraImp *)quad;
+    QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_definir_cor_borda(quadImp->ret, cor_borda);
 }
 
 void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento) {
-    QuadraImp *quadImp = (QuadraImp *)quad;
+    QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_definir_cor_preenchimento(quadImp->ret, cor_preenchimento);
+}
+
+void quadra_destruir(Quadra quad) {
+    free(quad);
 }

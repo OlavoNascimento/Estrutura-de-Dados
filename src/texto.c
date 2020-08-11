@@ -26,7 +26,7 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
     return tex;
 }
 
-// Criar um texto com base em informações de uma linha.
+// Cria um texto com base em informações de uma linha.
 Texto texto_ler(const char *linha) {
     char id[100];
     double x;
@@ -133,4 +133,8 @@ void texto_definir_conteudo(Texto tex, const char *conteudo) {
     }
     TextoImp *texImp = (TextoImp *) tex;
     strcpy(texImp->conteudo, conteudo);
+}
+
+void texto_destruir(Texto tex) {
+    free(tex);
 }

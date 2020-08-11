@@ -16,7 +16,7 @@ typedef struct {
 
 // Retorna uma struct com todos os parâmetros que podem ser lidos pelo programa.
 Parametros parametros_criar() {
-    ParametrosImp *params = malloc(sizeof(params));
+    ParametrosImp *params = malloc(sizeof(ParametrosImp));
     params->nome_dir_entrada = NULL;
     params->caminho_descricao = NULL;
     params->caminho_consulta = NULL;
@@ -80,7 +80,7 @@ char *parametros_obter_caminho_descricao(const Parametros params) {
         caminho_descricao =
             unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_descricao);
     } else {
-        caminho_descricao = malloc(strlen(paramsImp->caminho_descricao) * sizeof(char));
+        caminho_descricao = malloc((strlen(paramsImp->caminho_descricao) + 1) * sizeof(char));
         strcpy(caminho_descricao, paramsImp->caminho_descricao);
     }
 
@@ -95,7 +95,7 @@ char *parametros_obter_caminho_consulta(const Parametros params) {
         // Concatena o diretório ao caminho do arquivo.
         caminho_consulta = unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_consulta);
     } else {
-        caminho_consulta = malloc(strlen(paramsImp->caminho_consulta) * sizeof(char));
+        caminho_consulta = malloc((strlen(paramsImp->caminho_consulta) + 1) * sizeof(char));
         strcpy(caminho_consulta, paramsImp->caminho_consulta);
     }
 
@@ -150,4 +150,5 @@ void parametros_destruir(Parametros params) {
     free(paramsImp->nome_dir_entrada);
     free(paramsImp->nome_dir_saida);
     free(paramsImp->caminho_consulta);
+    free(params);
 }

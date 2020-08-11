@@ -51,7 +51,8 @@ Retangulo retangulo_ler(const char *linha) {
 // Escreve todos os dados de um retângulo em um arquivo.
 void retangulo_escrever_informacoes(FILE *arquivo, Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    if (strlen(retImp->id) > 0) fprintf(arquivo, "id: %s, ", retImp->id);
+    if (strlen(retImp->id) > 0)
+        fprintf(arquivo, "id: %s, ", retImp->id);
     fprintf(arquivo, "largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
             retImp->largura, retImp->altura, retImp->x, retImp->y, retImp->cor_borda,
             retImp->cor_preenchimento);
@@ -61,7 +62,8 @@ void retangulo_escrever_informacoes(FILE *arquivo, Retangulo ret) {
 void retangulo_escrever_svg(FILE *arquivo, Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     fprintf(arquivo, "\t<rect");
-    if (strlen(retImp->id) > 0) fprintf(arquivo, " id='%s'", retImp->id);
+    if (strlen(retImp->id) > 0)
+        fprintf(arquivo, " id='%s'", retImp->id);
 
     fprintf(arquivo, " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s'",
             retImp->largura, retImp->altura, retImp->x, retImp->y, retImp->cor_borda,
@@ -87,8 +89,10 @@ bool retangulo_checar_interseccao(Retangulo ret1, Retangulo ret2) {
 // Retorna verdadeiro se um ponto se encontra dentro de um retângulo.
 bool retangulo_checar_ponto_interno(Retangulo ret, double ponto_x, double ponto_y) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    if (ponto_x <= retImp->x || ponto_x >= retImp->x + retImp->largura) return false;
-    if (ponto_y <= retImp->y || ponto_y >= retImp->y + retImp->altura) return false;
+    if (ponto_x <= retImp->x || ponto_x >= retImp->x + retImp->largura)
+        return false;
+    if (ponto_y <= retImp->y || ponto_y >= retImp->y + retImp->altura)
+        return false;
     return true;
 }
 
@@ -193,4 +197,8 @@ int retangulo_obter_tracejado_espaco(Retangulo ret) {
 void retangulo_definir_tracejado_espaco(Retangulo ret, int tracejado_espaco) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->tracejado_espaco = tracejado_espaco;
+}
+
+void retangulo_destruir(Retangulo ret) {
+    free(ret);
 }

@@ -44,4 +44,6 @@ const char *linha_obter_cor_preenchimento(Linha lin);
 // Define a cor de preenchimento de uma linha. O parâmetro cor_preenchimento não pode ser nulo.
 void linha_definir_cor_preenchimento(Linha lin, const char *cor_preenchimento);
 
+void linha_destruir(Linha lin);
+
 #endif

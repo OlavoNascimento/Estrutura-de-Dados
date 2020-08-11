@@ -15,19 +15,27 @@
 // Tipos de figuras que podem ser instanciados, com exceção dos tipos TIPOS_FIGURA_MIN e
 // TIPOS_FIGURA_MAX que servem o propósito de verificar se um tipo está contido no enum.
 typedef enum {
+    TIPOS_FIGURA_MIN = -1,
     TIPO_CIRCULO,
+    TIPO_HIDRANTE,
     TIPO_LINHA,
+    TIPO_QUADRA,
+    TIPO_RADIO,
     TIPO_RETANGULO,
+    TIPO_SEMAFORO,
     TIPO_TEXTO,
+    TIPOS_FIGURA_MAX,
 } TiposFigura;
 
 typedef void *Figura;
 
 // Cria um struct figura que recebe uma figura a ser armazenada e o tipo dessa figura.
-// A figura não pode nula e seu tipo deve estar contido no enum TiposFigura.
+// A figura não pode nula e seu tipo deve estar contido no enum TiposFigura, sendo considerado
+// inválidos os tipos TIPOS_FIGURA_MIN e TIPOS_FIGURA_MAX.
 Figura figura_criar(void *figura, TiposFigura tipo);
 // Instancia uma figura de tipo especificado com base nas informações de uma linha.
-// A linha não pode ser nula e o tipo deve estar contido no enum TiposFigura.
+// A linha não pode ser nula e o tipo deve estar contido no enum TiposFigura, sendo considerado
+// inválidos os tipos TIPOS_FIGURA_MIN e TIPOS_FIGURA_MAX.
 Figura figura_ler(const char *linha, TiposFigura tipo);
 
 // Escreve todos os dados de uma figura em um arquivo passado a função.
@@ -86,5 +94,8 @@ const char *figura_obter_cor_preenchimento(Figura figura);
 // Substitui a cor de preenchimento de uma figura.
 // Nenhum dos argumentos pode ser nulo.
 void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimento);
+
+// Libera a memória alocada por uma figura.
+void figura_destruir(Figura figura);
 
 #endif

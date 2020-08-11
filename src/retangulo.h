@@ -75,4 +75,6 @@ int retangulo_obter_tracejado_espaco(Retangulo ret);
 // Define o espaçamento do tracejado da borda de um retângulo.
 void retangulo_definir_tracejado_espaco(Retangulo ret, int tracejado_espaco);
 
+void retangulo_destruir(Retangulo ret);
+
 #endif

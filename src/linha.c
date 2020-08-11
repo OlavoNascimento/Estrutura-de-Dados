@@ -102,3 +102,7 @@ void linha_definir_cor_preenchimento(Linha lin, const char *cor_preenchimento) {
     LinhaImp *linImp = (LinhaImp *) lin;
     strcpy(linImp->cor_preenchimento, cor_preenchimento);
 }
+
+void linha_destruir(Linha lin) {
+    free(lin);
+}

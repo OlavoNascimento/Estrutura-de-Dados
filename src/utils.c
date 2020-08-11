@@ -42,8 +42,8 @@ char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
 
     char *uniao = malloc(strlen(diretorio) + strlen(nome_arquivo) + 2);
     if (uniao == NULL) {
-        fprintf(stderr, "ERRO: Falha ao alocar memória paro o caminho %s%c%s!\n",
-                diretorio, SEPARADOR_DE_DIRETORIOS, nome_arquivo);
+        fprintf(stderr, "ERRO: Falha ao alocar memória paro o caminho %s%c%s!\n", diretorio,
+                SEPARADOR_DE_DIRETORIOS, nome_arquivo);
         return NULL;
     }
     sprintf(uniao, "%s%c%s", diretorio, SEPARADOR_DE_DIRETORIOS, nome_arquivo);
@@ -60,16 +60,14 @@ char *extrair_nome_base(const char *caminho_arquivo) {
     if (nome_arquivo != NULL) {
         // Caso o arquivo tem uma / ou \ em seu caminho, avança um caratere, removendo a /
         nome_arquivo++;
-        nome_base = malloc(
-            (strlen(nome_arquivo) + 1) * sizeof(char));
+        nome_base = malloc((strlen(nome_arquivo) + 1) * sizeof(char));
         if (nome_base == NULL)
             return NULL;
         strcpy(nome_base, nome_arquivo);
     } else {
         // Arquivo não tem uma / ou \ em seu caminho, consequentemente o caminho passado a função
         // não possui diretórios antecedentes ao arquivo.
-        nome_base = malloc(
-            (strlen(caminho_arquivo) + 1) * sizeof(char));
+        nome_base = malloc((strlen(caminho_arquivo) + 1) * sizeof(char));
         if (nome_base == NULL)
             return NULL;
         strcpy(nome_base, caminho_arquivo);
@@ -98,8 +96,8 @@ char *alterar_sufixo(const char *nome_arquivo, int num_sufixos, ...) {
         // Recebe o próximo sufixo da lista
         char *sufixo = va_arg(sufixos, char *);
         // Aumenta o tamanho da string para receber o proximo sufixo
-        char *tmp = realloc(sufixo_final,
-                            (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof(char));
+        char *tmp =
+            realloc(sufixo_final, (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof(char));
         if (tmp == NULL) {
             fprintf(stderr, "ERRO: Falha ao alocar memória para novo sufixo!\n");
             free(sufixo_final);

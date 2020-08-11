@@ -6,6 +6,7 @@
 #include "ler_qry.h"
 #include "lista.h"
 #include "parametros.h"
+#include "retangulo.h"
 #include "svg.h"
 #include "utils.h"
 
@@ -41,6 +42,8 @@ int main(int argc, const char *argv[]) {
     }
 
     lista_libera_lista(lista);
+    free(caminho_descricao);
+    free(caminho_consulta);
     free(caminho_svg_descricao);
     parametros_destruir(params);
 

@@ -59,4 +59,7 @@ const char *circulo_obter_cor_preenchimento(Circulo cir);
 // Define a cor de preenchimento de um círculo. O parâmetros cor_preenchimento não pode ser nulo.
 void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento);
 
+// Libera a memória alocada por um círculo.
+void circulo_destruir(Circulo cir);
+
 #endif

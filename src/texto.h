@@ -51,4 +51,6 @@ const char *texto_obter_conteudo(Texto tex);
 // Define o conteudo de um texto. O parâmetro conteudo não pode ser nulo.
 void texto_definir_conteudo(Texto tex, const char *conteudo);
 
+void texto_destruir(Texto tex);
+
 #endif

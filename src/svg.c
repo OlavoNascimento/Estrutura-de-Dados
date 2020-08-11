@@ -81,7 +81,10 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
             // Adiciona um texto com o id no canto superior esquerdo da figura.
             Figura rotulo = svg_criar_rotulo(figura_atual);
             figura_escrever_svg(arquivo_tmp, rotulo);
+            figura_destruir(rotulo);
         }
+
+        atual = lista_get_next(lista, atual);
     }
     fclose(arquivo_tmp);
     arquivo_tmp = fopen(caminho_tmp, "r");
@@ -119,7 +122,7 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
             fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf'>\n", svg_origem_x, svg_origem_y,
                     svg_largura, svg_altura);
         else
-            fprintf(arquivo_svg, linha);
+            fprintf(arquivo_svg, "%s", linha);
         count++;
     }
 

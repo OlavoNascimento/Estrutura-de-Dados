@@ -24,29 +24,18 @@ Figura criar_texto_sobreposicao(Figura contorno) {
     Texto aviso = texto_criar("\0", figura_obter_centro_x(contorno),
                               figura_obter_centro_y(contorno), "None", "Black", "sobrepoe");
 
-    return figura_criar(aviso, TIPO_RETANGULO);
+    return figura_criar(aviso, TIPO_TEXTO);
 }
 
 // Cria um retângulo com coordenadas e dimensões necessárias para envolver duas figuras.
 Figura *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
     Retangulo contorno = retangulo_criar(
-        "\0",
-        // Largura
-        0,
-        // Altura
-        0,
+        "\0", 0, 0,
         // Coordenada x do contorno é a menor coordenada x entre as duas figuras.
         min(figura_obter_x_inicio(figura1), figura_obter_x_inicio(figura2)) - MARGEM_CONTORNO,
         // Coordenada y do contorno é a menor coordenada y entre as duas figuras.
         min(figura_obter_y_inicio(figura1), figura_obter_y_inicio(figura2)) - MARGEM_CONTORNO,
-        // Cor borda
-        "black",
-        // Cor Preenchimento
-        "none",
-        // Tracejado
-        0,
-        // Espaço Tracejado
-        0);
+        "black", "none", 0, 0);
 
     // Largura do contorno é a distancia entre o x do contorno e a coordenada x onde o fim da figura
     // mais longe se encontra.
@@ -69,11 +58,14 @@ void checar_interseccao(Lista lista, const char *linha, FILE *arquivo_log) {
 
     No no1 = lista_get_no(lista, id1);
     No no2 = lista_get_no(lista, id2);
-    if (no1 == NULL || no2 == NULL) return;
+    if (no1 == NULL || no2 == NULL)
+        return;
+    Figura fig1 = lista_get_figura(no1);
+    Figura fig2 = lista_get_figura(no2);
 
-    bool intersectam = figura_checar_interseccao(lista_get_figura(no1), lista_get_figura(no2));
+    bool intersectam = figura_checar_interseccao(fig1, fig2);
 
-    Figura contorno = criar_delimitacao_figuras(lista_get_figura(no1), lista_get_figura(no2));
+    Figura contorno = criar_delimitacao_figuras(fig1, fig2);
 
     if (intersectam) {
         // Adiciona uma mensagem de sobreposição caso as figuras se intersectem.
@@ -89,13 +81,11 @@ void checar_interseccao(Lista lista, const char *linha, FILE *arquivo_log) {
     lista_insert_final(lista, contorno);
 
     fprintf(arquivo_log, "o? %s %s\n", id1, id2);
-    fprintf(arquivo_log, "%s: %s %s: %s %s\n\n", id1,
-            figura_obter_string_tipo(lista_get_figura(no1)), id2,
-            figura_obter_string_tipo(lista_get_figura(no2)), intersectam ? "SIM" : "NAO");
+    fprintf(arquivo_log, "%s: %s %s: %s %s\n\n", id1, figura_obter_string_tipo(fig1), id2,
+            figura_obter_string_tipo(fig2), intersectam ? "SIM" : "NAO");
 }
 
-// Cria um círculo com as coordenadas especificadas e com cores que dependem de
-// um valor booleano.
+// Cria um círculo com as coordenadas especificadas e com cores que dependem de um valor booleano.
 Figura criar_ponto(double ponto_x, double ponto_y, bool interno) {
     Circulo ponto = circulo_criar("\0", 1, ponto_x, ponto_y, interno ? "blue" : "magenta",
                                   interno ? "blue" : "magenta");
@@ -111,114 +101,121 @@ Figura criar_ligacao_ponto_figura(Circulo ponto, Figura figura) {
     return figura_criar(ligacao, TIPO_LINHA);
 }
 
-// Executa o comando i? especificado no arquivo de consulta, verificando se um
-// ponto é interno a uma figura, conecta este ponto e a figura utilizando uma
-// linha.
+// Executa o comando i? especificado no arquivo de consulta, verificando se um ponto é interno a uma
+// figura, conecta este ponto e a figura utilizando uma linha.
 void checar_ponto_interno(Lista lista, const char *linha, FILE *arquivo_log) {
     char id[100];
     double ponto_x = 0, ponto_y = 0;
     sscanf(linha, "i? %s %lf %lf", id, &ponto_x, &ponto_y);
 
     No no = lista_get_no(lista, id);
-    if (no == NULL) return;
+    if (no == NULL)
+        return;
+    Figura fig = lista_get_figura(no);
 
-    bool interno = figura_checar_ponto_interno(lista_get_figura(no), ponto_x, ponto_y);
+    bool interno = figura_checar_ponto_interno(fig, ponto_x, ponto_y);
 
     Figura ponto = criar_ponto(ponto_x, ponto_y, interno);
     lista_insert_final(lista, ponto);
 
-    Figura ligacao = criar_ligacao_ponto_figura(figura_obter_figura(ponto), lista_get_figura(no));
+    Figura ligacao = criar_ligacao_ponto_figura(figura_obter_figura(ponto), fig);
     lista_insert_final(lista, ligacao);
 
     fprintf(arquivo_log, "i? %s %lf %lf\n", id, ponto_x, ponto_y);
-    fprintf(arquivo_log, "%s: %s %s\n\n", id, figura_obter_string_tipo(lista_get_figura(no)),
+    fprintf(arquivo_log, "%s: %s %s\n\n", id, figura_obter_string_tipo(fig),
             interno ? "INTERNO" : "NAO INTERNO");
 }
 
-// Executa o comando pnt especificado no arquivo de consulta, alterando a cor de
-// preenchimento e borda da figura com id igual ao id que segue o comando pnt.
+// Executa o comando pnt especificado no arquivo de consulta, alterando a cor de preenchimento e
+// borda da figura com id igual ao id que segue o comando pnt.
 void alterar_cor(Lista lista, const char *linha, FILE *arquivo_log) {
     char id[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt %s %s %s", id, nova_corb, nova_corp);
 
     No no = lista_get_no(lista, id);
-    if (no == NULL) return;
+    if (no == NULL)
+        return;
+    Figura fig = lista_get_figura(no);
 
-    const char *atual_corp = figura_obter_cor_preenchimento(lista_get_figura(no));
-    const char *atual_corb = figura_obter_cor_borda(lista_get_figura(no));
+    const char *atual_corp = figura_obter_cor_preenchimento(fig);
+    const char *atual_corb = figura_obter_cor_borda(fig);
 
     fprintf(arquivo_log, "pnt %s %s %s\n", id, nova_corb, nova_corp);
     fprintf(arquivo_log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
 
-    figura_definir_cor_borda(lista_get_figura(no), nova_corb);
-    figura_definir_cor_preenchimento(lista_get_figura(no), nova_corp);
+    figura_definir_cor_borda(fig, nova_corb);
+    figura_definir_cor_preenchimento(fig, nova_corp);
 }
 
-// Executa o comando pnt* especificado no arquivo de consulta, alterando a cor
-// de preenchimento e borda de todas as figuras entre id_inicial e id_final.
-// (inclusive).
+// Executa o comando pnt* especificado no arquivo de consulta, alterando a cor de preenchimento e
+// borda de todas as figuras entre id_inicial e id_final (inclusive).
 void alterar_cores(Lista lista, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, nova_corb, nova_corp);
     No atual = lista_get_no(lista, id_inicial);
-    if (atual == NULL) return;
+    if (atual == NULL)
+        return;
 
     while (atual != NULL) {
-        const char *id_atual = figura_obter_id(atual);
-        const char *atual_corp = figura_obter_cor_preenchimento(atual);
-        const char *atual_corb = figura_obter_cor_borda(atual);
+        Figura fig = lista_get_figura(atual);
+        const char *id_atual = figura_obter_id(fig);
+        const char *atual_corp = figura_obter_cor_preenchimento(fig);
+        const char *atual_corb = figura_obter_cor_borda(fig);
 
         fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
         fprintf(arquivo_log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
 
-        figura_definir_cor_borda(lista_get_figura(atual), nova_corb);
-        figura_definir_cor_preenchimento(lista_get_figura(atual), nova_corp);
-        if (strcmp(id_atual, id_final) == 0) break;
+        figura_definir_cor_borda(fig, nova_corb);
+        figura_definir_cor_preenchimento(fig, nova_corp);
+        if (strcmp(id_atual, id_final) == 0)
+            break;
         atual = lista_get_next(lista, atual);
     }
 }
 
-// Executa o comando delf especificado no arquivo de consulta, removendo a
-// figura com id igual ao id que segue o comando delf.
+// Executa o comando delf especificado no arquivo de consulta, removendo a figura com id igual ao id
+// que segue o comando delf.
 void remover_elemento(Lista lista, const char *linha, FILE *arquivo_log) {
     char id[100];
     sscanf(linha, "delf %s", id);
     No no = lista_get_no(lista, id);
-    if (no == NULL) return;
+    if (no == NULL)
+        return;
+    Figura fig = lista_get_figura(no);
 
     fprintf(arquivo_log, "delf %s\n", id);
-    figura_escrever_informacoes(arquivo_log, lista_get_figura(no));
+    figura_escrever_informacoes(arquivo_log, fig);
     fprintf(arquivo_log, "\n");
     lista_remove_no(lista, no);
 }
 
-// Executa o comando delf* especificado pelo arquivo de consulta, removendo
-// todas as figuras que se encontrem entre id_inicial e id_final (inclusive).
+// Executa o comando delf* especificado pelo arquivo de consulta, removendo todas as figuras que se
+// encontrem entre id_inicial e id_final (inclusive).
 void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100];
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
     No atual = lista_get_no(lista, id_inicial);
+    No proximo = lista_get_next(lista, atual);
     while (atual != NULL) {
-        const char *id_atual = figura_obter_id(atual);
+        Figura fig = lista_get_figura(atual);
+        const char *id_atual = figura_obter_id(fig);
 
         fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
-        figura_escrever_informacoes(arquivo_log, lista_get_figura(atual));
+        figura_escrever_informacoes(arquivo_log, fig);
         fprintf(arquivo_log, "\n");
 
-        if (strcmp(id_atual, id_final) == 0) {
-            // É necessário marcar a saída do loop antes de remover o elemento,
-            // já que após a remoção do elemento seu id será perdido.
-            atual = NULL;
-        } else {
-            atual = lista_get_next(lista, atual);
-        }
+        proximo = lista_get_next(lista, atual);
+        if (strcmp(id_atual, id_final) == 0)
+            proximo = NULL;
+
         lista_remove_no(lista, atual);
+        atual = proximo;
     }
 }
 
-// Ler o arquivo de consulta localizado no caminho fornecido a função e itera
-// por todas as suas linhas, executando funções correspondentes aos comandos.
+// Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
+// linhas, executando funções correspondentes aos comandos.
 void ler_qry(Lista lista, const char *caminho_qry, const char *caminho_log) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {

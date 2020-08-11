@@ -38,7 +38,7 @@ Lista *ler_geo(const char *caminho_geo) {
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("t", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_LINHA);
+            nova_figura = figura_ler(linha, TIPO_TEXTO);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("nx", tipo_figura) == 0) {

@@ -22,7 +22,7 @@ Lista lista_create() {
     list *lista = (list *) malloc(sizeof(list));
     if (lista == NULL) {
         fprintf(stderr, "ERRO: Erro ao alocar espaço para a lista!\n");
-        exit(1);
+        return NULL;
     }
 
     lista->tamanho = 0;
@@ -89,7 +89,7 @@ No lista_insert_after(Lista lista, Figura figura, No p) {
     }
     if (tam_aux == lista_aux->tamanho) {
         fprintf(stderr, "ERRO: Erro ao inserir elemento (insert_after)\n");
-        exit(1);
+        return NULL;
     }
 
     return node_insert;
@@ -123,7 +123,7 @@ No lista_insert_before(Lista lista, Figura figura, No p) {
     }
     if (tam_aux == lista_aux->tamanho) {
         fprintf(stderr, "ERRO: Erro ao inserir elemento (insert_before)!\n");
-        exit(1);
+        return NULL;
     }
 
     return node_insert;
@@ -137,42 +137,37 @@ void lista_remove_no(Lista lista, No no_selecionado) {
 
     if (no_auxiliar == NULL) {
         fprintf(stderr, "ERRO: Nó possui ID inválido\n");
-    } else {
-        if (no_auxiliar == lista_auxiliar->primeiro) {  // se for o primeiro elemento da lista
-            no_proximo = no_auxiliar->proximo;
-            lista_auxiliar->primeiro = no_proximo;
-            no_proximo->anterior = NULL;
-
-            free(no_auxiliar);
-            lista_auxiliar->tamanho--;
-        } else if (no_auxiliar == lista_auxiliar->ultimo) {  // se for o último elemento da lista
-            no_anterior = no_auxiliar->anterior;
-            lista_auxiliar->ultimo = no_anterior;
-            no_anterior->proximo = NULL;
-
-            free(no_auxiliar);
-            lista_auxiliar->tamanho--;
-        } else {  // se estiver no meio da lista
-            no_anterior = no_auxiliar->anterior;
-            no_proximo = no_auxiliar->proximo;
-
-            no_anterior->proximo = no_proximo;
-            no_proximo->anterior = no_anterior;
-
-            free(no_auxiliar);
-            lista_auxiliar->tamanho--;
-        }
+        return;
     }
+    if (no_auxiliar == lista_auxiliar->primeiro) {  // se for o primeiro elemento da lista
+        no_proximo = no_auxiliar->proximo;
+        lista_auxiliar->primeiro = no_proximo;
+        no_proximo->anterior = NULL;
+    } else if (no_auxiliar == lista_auxiliar->ultimo) {  // se for o último elemento da lista
+        no_anterior = no_auxiliar->anterior;
+        lista_auxiliar->ultimo = no_anterior;
+        no_anterior->proximo = NULL;
+    } else {  // se estiver no meio da lista
+        no_anterior = no_auxiliar->anterior;
+        no_proximo = no_auxiliar->proximo;
+
+        no_anterior->proximo = no_proximo;
+        no_proximo->anterior = no_anterior;
+    }
+
+    figura_destruir(no_auxiliar->figura);
+    free(no_auxiliar);
+    lista_auxiliar->tamanho--;
 }
 
 No lista_get_no(Lista lista, char id[100]) {
     list *lista_auxiliar = (list *) lista;
     no *no_auxiliar = lista_auxiliar->primeiro;
-    char id_auxiliar[100];
 
     while (true) {
-        strcpy(id_auxiliar, figura_obter_id(no_auxiliar->figura));
-        if (strcmp(id_auxiliar, id) == 0) {
+        char const *id_atual = figura_obter_id(no_auxiliar->figura);
+
+        if (strcmp(id_atual, id) == 0) {
             return no_auxiliar;
         }
         if (no_auxiliar == lista_auxiliar->ultimo) {
@@ -182,8 +177,8 @@ No lista_get_no(Lista lista, char id[100]) {
         no_auxiliar = no_auxiliar->proximo;
     }
 
-    fprintf(stderr, "ERRO: Elemento não encontrando\n");
-    exit(1);
+    // fprintf(stderr, "ERRO: Id não encontrado na lista: %s!\n", id);
+    return NULL;
 }
 
 No lista_get_first(Lista lista) {
@@ -208,7 +203,7 @@ Figura lista_get_figura(No p) {
     node_auxiliar = p;
     if (p == NULL) {
         fprintf(stderr, "ERRO: Erro ao obter informações do nó especificado\n");
-        exit(1);
+        return NULL;
     }
     return node_auxiliar->figura;
 }
@@ -238,6 +233,7 @@ void lista_libera_lista(Lista lista) {
 
     while (node_atual != NULL) {
         node_proximo = node_atual->proximo;
+        figura_destruir(node_atual->figura);
         free(node_atual);
         node_atual = node_proximo;
     }
