@@ -33,19 +33,19 @@ Hidrante hidrante_ler(const char *linha) {
 
 // Define a cor da borda de um hidrante.
 void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+    HidranteImp *hidImp = (HidranteImp *)hid;
     circulo_definir_cor_borda(hidImp->circ, cor_borda);
 }
 
 // Define a cor de preenchimento de um hidrante.
 void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+    HidranteImp *hidImp = (HidranteImp *)hid;
     circulo_definir_cor_preenchimento(hidImp->circ, cor_preenchimento);
 }
 
 // Libera a memória alocada por um hidrante.
 void hidrante_destruir(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+    HidranteImp *hidImp = (HidranteImp *)hid;
     circulo_destruir(hidImp->circ);
     free(hid);
 }
