@@ -1,6 +1,9 @@
 #ifndef QUADRA_H
 #define QUADRA_H
 
+#include <stdbool.h>
+#include <stdio.h>
+
 #include "quadra.h"
 
 typedef void *Quadra;
@@ -23,5 +26,9 @@ void quadra_definir_cor_borda(Quadra quad, const char *cor_borda);
 void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento);
 
 void quadra_destruir(Quadra quad);
+
+void quadra_escrever_informacoes(FILE *arquivo, Quadra quad);
+
+void quadra_escrever_svg(FILE *arquivo, Quadra quad);
 
 #endif

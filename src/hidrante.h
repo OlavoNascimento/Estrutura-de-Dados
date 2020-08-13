@@ -1,6 +1,9 @@
 #ifndef HIDRANTE_H
 #define HIDRANTE_H
 
+#include <stdbool.h>
+#include <stdio.h>
+
 #include "circulo.h"
 
 typedef void *Hidrante;
@@ -23,5 +26,9 @@ void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda);
 void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento);
 
 void hidrante_destruir(Hidrante hid);
+
+void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid);
+
+void hidrante_escrever_svg(FILE *arquivo, Hidrante hid);
 
 #endif

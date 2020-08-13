@@ -51,3 +51,15 @@ void semaforo_destruir(Semaforo sema) {
     retangulo_destruir(semaImp->sema);
     free(sema);
 }
+
+// escreve as informações de uma radio base
+void semaforo_escrever_informacoes(FILE *arquivo, Semaforo sema) {
+    SemaforoImp *semaImp = (SemaforoImp *) sema;
+    retangulo_escrever_informacoes(arquivo, semaImp->sema);
+}
+
+// escreve no svg as informações de uma radio base
+void semaforo_escrever_svg(FILE *arquivo, Semaforo sema) {
+    SemaforoImp *semaImp = (SemaforoImp *) sema;
+    retangulo_escrever_svg(arquivo, semaImp->sema);
+}

@@ -18,12 +18,12 @@ typedef struct {
     TiposFigura tipo;
     union {
         Circulo cir;
-        Circulo hid;
+        Hidrante hid;
         Linha lin;
-        Retangulo qua;
-        Circulo rad;
+        Quadra qua;
+        Radio rad;
         Retangulo ret;
-        Retangulo sem;
+        Semaforo sem;
         Texto tex;
     };
 } FiguraImp;
@@ -93,6 +93,9 @@ Figura figura_ler(const char *linha, TiposFigura tipo) {
         case TIPO_RETANGULO:;
             Retangulo ret = retangulo_ler(linha);
             return figura_criar(ret, tipo);
+        case TIPO_RADIO:;
+            Radio rad = radio_ler(linha);
+            return figura_criar(rad, tipo);
         case TIPO_TEXTO:;
             Texto tex = texto_ler(linha);
             return figura_criar(tex, tipo);
@@ -108,7 +111,7 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
         fprintf(stderr, "ERRO: Arquivo nulo recebido ao escrever informações!\n");
         return;
     }
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     // TODO Remover , e espaço, generalizando a função
     fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figuraImp));
     switch (figuraImp->tipo) {
@@ -116,16 +119,16 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
             circulo_escrever_informacoes(arquivo, figuraImp->cir);
             break;
         case TIPO_HIDRANTE:
-            circulo_escrever_informacoes(arquivo, figuraImp->hid);
+            hidrante_escrever_informacoes(arquivo, figuraImp->hid);
             break;
         case TIPO_RADIO:
-            circulo_escrever_informacoes(arquivo, figuraImp->rad);
+            radio_escrever_informacoes(arquivo, figuraImp->rad);
             break;
         case TIPO_QUADRA:
-            retangulo_escrever_informacoes(arquivo, figuraImp->qua);
+            quadra_escrever_informacoes(arquivo, figuraImp->qua);
             break;
         case TIPO_SEMAFORO:
-            retangulo_escrever_informacoes(arquivo, figuraImp->sem);
+            semaforo_escrever_informacoes(arquivo, figuraImp->sem);
             break;
         case TIPO_RETANGULO:
             retangulo_escrever_informacoes(arquivo, figuraImp->ret);
@@ -147,22 +150,22 @@ void figura_escrever_svg(FILE *arquivo, Figura figura) {
         fprintf(stderr, "ERRO: Arquivo nulo recebido ao transformar figura em svg!\n");
         return;
     }
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_escrever_svg(arquivo, figuraImp->cir);
             break;
         case TIPO_HIDRANTE:
-            circulo_escrever_svg(arquivo, figuraImp->hid);
+            hidrante_escrever_svg(arquivo, figuraImp->hid);
             break;
         case TIPO_RADIO:
-            circulo_escrever_svg(arquivo, figuraImp->rad);
+            radio_escrever_svg(arquivo, figuraImp->rad);
             break;
         case TIPO_QUADRA:
-            retangulo_escrever_svg(arquivo, figuraImp->qua);
+            quadra_escrever_svg(arquivo, figuraImp->qua);
             break;
         case TIPO_SEMAFORO:
-            retangulo_escrever_svg(arquivo, figuraImp->sem);
+            semaforo_escrever_svg(arquivo, figuraImp->sem);
             break;
         case TIPO_LINHA:
             linha_escrever_svg(arquivo, figuraImp->lin);
@@ -196,8 +199,8 @@ bool circulo_retangulo_checar_interseccao(Circulo cir, Retangulo ret) {
 
 // Retorna verdadeiro caso duas figuras se intersectem.
 bool figura_checar_interseccao(Figura figura1, Figura figura2) {
-    FiguraImp *figuraImp1 = (FiguraImp *)figura1;
-    FiguraImp *figuraImp2 = (FiguraImp *)figura2;
+    FiguraImp *figuraImp1 = (FiguraImp *) figura1;
+    FiguraImp *figuraImp2 = (FiguraImp *) figura2;
     bool intersectam = false;
     if (figuraImp1->tipo == TIPO_RETANGULO && figuraImp1->tipo == figuraImp2->tipo)
         intersectam = retangulo_checar_interseccao(figuraImp1->ret, figuraImp2->ret);
@@ -213,7 +216,7 @@ bool figura_checar_interseccao(Figura figura1, Figura figura2) {
 
 // Checa se um ponto se encontra dentro ou fora de uma figura.
 bool figura_checar_ponto_interno(Figura figura, double ponto_x, double ponto_y) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     bool interno = false;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
@@ -233,21 +236,21 @@ bool figura_checar_ponto_interno(Figura figura, double ponto_x, double ponto_y) 
 
 // Retorna o nome do tipo de uma figura.
 TiposFigura figura_obter_tipo(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     return figuraImp->tipo;
 }
 
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
-    const char *valores[] = {"Círculo", "Hidrante", "Linha", "Quadra",
-                             "Rádio", "Retângulo", "Semáforo", "Texto"};
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    const char *valores[] = {"Círculo", "Hidrante",  "Linha",    "Quadra",
+                             "Rádio",   "Retângulo", "Semáforo", "Texto"};
     return valores[figuraImp->tipo];
 }
 
 // Retorna o nome do tipo de uma figura.
 void *figura_obter_figura(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return figuraImp->cir;
@@ -266,7 +269,7 @@ void *figura_obter_figura(Figura figura) {
 
 // Retorna a coordenada x onde uma figura se inicia.
 double figura_obter_x_inicio(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
@@ -286,7 +289,7 @@ double figura_obter_x_inicio(Figura figura) {
 
 // Retorna a coordenada y onde uma figura se inicia.
 double figura_obter_y_inicio(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
@@ -306,7 +309,7 @@ double figura_obter_y_inicio(Figura figura) {
 
 // Retorna a coordenada x onde uma figura acaba.
 double figura_obter_x_fim(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
@@ -327,7 +330,7 @@ double figura_obter_x_fim(Figura figura) {
 
 // Retorna a coordenada y onde uma figura acaba.
 double figura_obter_y_fim(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
@@ -347,7 +350,7 @@ double figura_obter_y_fim(Figura figura) {
 
 // Retorna a coordenada x do centro de uma figura.
 double figura_obter_centro_x(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir);
@@ -362,7 +365,7 @@ double figura_obter_centro_x(Figura figura) {
 
 // Retorna a coordenada y do centro de uma figura.
 double figura_obter_centro_y(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir);
@@ -377,7 +380,7 @@ double figura_obter_centro_y(Figura figura) {
 
 // Retorna o id de uma figura.
 const char *figura_obter_id(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_id(figuraImp->cir);
@@ -393,7 +396,7 @@ const char *figura_obter_id(Figura figura) {
 
 // Retorna a cor da borda de uma figura.
 const char *figura_obter_cor_borda(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_cor_borda(figuraImp->cir);
@@ -417,7 +420,7 @@ void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
         fprintf(stderr, "ERRO: Tentando alterar cor da borda de uma figura para nulo!\n");
         return;
     }
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_definir_cor_borda(figuraImp->cir, cor_borda);
@@ -452,7 +455,7 @@ void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
 
 // Retorna a cor do preenchimento de uma figura.
 const char *figura_obter_cor_preenchimento(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_cor_preenchimento(figuraImp->cir);
@@ -477,7 +480,7 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
         fprintf(stderr, "ERRO: Tentando alterar cor de preenchimento de uma figura para nulo!\n");
         return;
     }
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_definir_cor_preenchimento(figuraImp->cir, cor_preenchimento);
@@ -513,7 +516,7 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
 
 // Libera a memória alocada por uma figura.
 void figura_destruir(Figura figura) {
-    FiguraImp *figuraImp = (FiguraImp *)figura;
+    FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_destruir(figuraImp->cir);

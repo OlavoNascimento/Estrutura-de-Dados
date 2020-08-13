@@ -1,6 +1,9 @@
 #ifndef RADIO_BASE_H
 #define RADIO_BASE_H
 
+#include <stdbool.h>
+#include <stdio.h>
+
 #include "circulo.h"
 
 typedef void* Radio;
@@ -24,5 +27,9 @@ void radio_definir_cor_borda(Radio rad, const char* cor_borda);
 
 // Libera a memória alocada por um radio base.
 void radio_destruir(Radio rad);
+
+void radio_escrever_informacoes(FILE* arquivo, Radio rad);
+
+void radio_escrever_svg(FILE* arquivo, Radio rad);
 
 #endif

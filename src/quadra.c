@@ -27,8 +27,8 @@ Quadra quadra_ler(const char *linha) {
     double altura;
     double x;
     double y;
-    char cor_borda[20] = "none";
-    char cor_preenchimento[20] = "none";
+    char cor_borda[20] = "black";
+    char cor_preenchimento[20] = "black";
     sscanf(linha, "%*c %s %lf %lf %lf %lf", id, &largura, &altura, &x, &y);
     return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento, 0, 0);
 }
@@ -45,4 +45,16 @@ void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento
 
 void quadra_destruir(Quadra quad) {
     free(quad);
+}
+
+// escreve as informações de uma radio base
+void quadra_escrever_informacoes(FILE *arquivo, Quadra quad) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_escrever_informacoes(arquivo, quadImp->ret);
+}
+
+// escreve no svg as informações de uma radio base
+void quadra_escrever_svg(FILE *arquivo, Quadra quad) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_escrever_svg(arquivo, quadImp->ret);
 }

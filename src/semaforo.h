@@ -1,6 +1,9 @@
 #ifndef SEMAFORO_H
 #define SEMAFORO_H
 
+#include <stdbool.h>
+#include <stdio.h>
+
 #include "retangulo.h"
 
 typedef void *Semaforo;
@@ -24,5 +27,9 @@ void semaforo_definir_cor_preenchimento(Semaforo sema, const char *cor_preenchim
 
 // Libera a memória alocada por um semáforo.
 void semaforo_destruir(Semaforo sema);
+
+void semaforo_escrever_informacoes(FILE *arquivo, Semaforo sema);
+
+void semaforo_escrever_svg(FILE *arquivo, Semaforo sema);
 
 #endif
