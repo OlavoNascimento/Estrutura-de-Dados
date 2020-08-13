@@ -293,6 +293,8 @@ double figura_obter_y_inicio(Figura figura) {
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
+        case TIPO_HIDRANTE:
+            return hidrante_obter_y(figuraImp->hid);
         case TIPO_LINHA:
             return min(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
         case TIPO_RETANGULO:

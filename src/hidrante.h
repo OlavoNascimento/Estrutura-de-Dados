@@ -31,4 +31,6 @@ void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid);
 
 void hidrante_escrever_svg(FILE *arquivo, Hidrante hid);
 
+double hidrante_obter_y(Hidrante hid);
+
 #endif
