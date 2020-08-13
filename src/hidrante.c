@@ -64,6 +64,22 @@ void hidrante_escrever_svg(FILE *arquivo, Hidrante hid) {
 
 // Retorna a coordenada y de um hidrante. O hidrante é considerado apenas um ponto.
 double hidrante_obter_y(Hidrante hid) {
-    HidranteImp *hidImp - (HidranteImp *) hid;
-    circulo_obter_y(hidImp->circ);
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    return circulo_obter_y(hidImp->circ);
+}
+
+// Retorna a coordenada x de um hidrante. O hidrante é considerado apenas um ponto.
+double hidrante_obter_x(Hidrante hid) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    return circulo_obter_x(hidImp->circ);
+}
+
+const char *hidrante_obter_cor_preenchimento(Hidrante hid) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    return circulo_obter_cor_preenchimento(hidImp->circ);
+}
+
+const char *hidrante_obter_cor_borda(Hidrante hid) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    return circulo_obter_cor_borda(hidImp->circ);
 }

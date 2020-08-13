@@ -32,4 +32,12 @@ void radio_escrever_informacoes(FILE* arquivo, Radio rad);
 
 void radio_escrever_svg(FILE* arquivo, Radio rad);
 
+double radio_obter_y(Radio rad);
+
+double radio_obter_x(Radio rad);
+
+const char* radio_obter_cor_preenchimento(Radio rad);
+
+const char* radio_obter_cor_borda(Radio rad);
+
 #endif

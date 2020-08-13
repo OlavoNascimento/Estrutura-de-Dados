@@ -33,4 +33,10 @@ void hidrante_escrever_svg(FILE *arquivo, Hidrante hid);
 
 double hidrante_obter_y(Hidrante hid);
 
+double hidrante_obter_x(Hidrante hid);
+
+const char *hidrante_obter_cor_preenchimento(Hidrante hid);
+
+const char *hidrante_obter_cor_borda(Hidrante hid);
+
 #endif

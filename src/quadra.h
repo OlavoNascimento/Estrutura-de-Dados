@@ -31,4 +31,16 @@ void quadra_escrever_informacoes(FILE *arquivo, Quadra quad);
 
 void quadra_escrever_svg(FILE *arquivo, Quadra quad);
 
+double quadra_obter_y(Quadra quad);
+
+double quadra_obter_x(Quadra quad);
+
+double quadra_obter_largura(Quadra quad);
+
+double quadra_obter_altura(Quadra quad);
+
+const char *quadra_obter_cor_preenchimento(Quadra quad);
+
+const char *quadra_obter_cor_borda(Quadra quad);
+
 #endif

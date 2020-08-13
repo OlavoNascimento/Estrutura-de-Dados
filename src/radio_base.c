@@ -21,12 +21,12 @@ Radio radio_criar(char id[100], double raio, double x, double y, char cor_borda[
 
 Radio radio_ler(const char *linha) {
     char id[100];
-    double raio = 20;  // valor simbólico, padrão para todos os hidrantes
+    double raio = 10;  // valor simbólico, padrão para todos os hidrantes
     double x;
     double y;
     char cor_borda[20] = "purple";          // será alterado com outro comando
     char cor_preenchimento[20] = "purple";  // será alterado com outro comando
-    sscanf(linha, "%*c %s %lf %lf", id, &x, &y);
+    sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
     return radio_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
@@ -56,4 +56,25 @@ void radio_escrever_informacoes(FILE *arquivo, Radio rad) {
 void radio_escrever_svg(FILE *arquivo, Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     circulo_escrever_svg(arquivo, radImp->circ);
+}
+
+// Retorna a coordenada y de uma radio base. A radio base é considerada apenas um ponto.
+double radio_obter_y(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_y(radImp->circ);
+}
+// Retorna a coordenada y de uma radio base. A radio base é considerada apenas um ponto.
+double radio_obter_x(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_x(radImp->circ);
+}
+
+const char *radio_obter_cor_preenchimento(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_cor_preenchimento(radImp->circ);
+}
+
+const char *radio_obter_cor_borda(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_cor_borda(radImp->circ);
 }

@@ -63,3 +63,23 @@ void semaforo_escrever_svg(FILE *arquivo, Semaforo sema) {
     SemaforoImp *semaImp = (SemaforoImp *) sema;
     retangulo_escrever_svg(arquivo, semaImp->sema);
 }
+
+double semaforo_obter_y(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_y(semImp->sema);
+}
+
+double semaforo_obter_x(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_x(semImp->sema);
+}
+
+const char *semaforo_obter_cor_preenchimento(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_cor_preenchimento(semImp->sema);
+}
+
+const char *semaforo_obter_cor_borda(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_cor_borda(semImp->sema);
+}

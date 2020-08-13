@@ -32,4 +32,12 @@ void semaforo_escrever_informacoes(FILE *arquivo, Semaforo sema);
 
 void semaforo_escrever_svg(FILE *arquivo, Semaforo sema);
 
+double semaforo_obter_y(Semaforo sem);
+
+double semaforo_obter_x(Semaforo sem);
+
+const char *semaforo_obter_cor_preenchimento(Semaforo sem);
+
+const char *semaforo_obter_cor_borda(Semaforo sem);
+
 #endif
