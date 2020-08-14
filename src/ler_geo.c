@@ -44,6 +44,11 @@ Figura ler_radio(const char *linha) {
     return figura_criar(rad, TIPO_RADIO);
 }
 
+Figura ler_semaforo(const char *linha) {
+    Semaforo sem = semaforo_ler(linha);
+    return figura_criar(sem, TIPO_SEMAFORO);
+}
+
 Figura ler_texto(const char *linha) {
     Texto tex = texto_ler(linha);
     return figura_criar(tex, TIPO_TEXTO);
