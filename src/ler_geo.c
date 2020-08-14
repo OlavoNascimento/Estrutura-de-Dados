@@ -19,6 +19,47 @@
 // Tamanho maxímo da abreviação do tipo de uma figura
 #define TIPO_FIGURA_TAMANHO 100
 
+typedef struct {
+    int espessura_borda;
+} PropriedadesCirculos;
+
+typedef struct {
+    int espessura_borda;
+    char cor_borda[20];
+    char cor_preenchimento[20];
+} PropriedadesHidrantes;
+
+typedef struct {
+    int espessura_borda;
+    char cor_borda[20];
+    char cor_preenchimento[20];
+} PropriedadesQuadras;
+
+typedef struct {
+    int espessura_borda;
+} PropriedadesRetangulos;
+
+typedef struct {
+    int espessura_borda;
+    char cor_borda[20];
+    char cor_preenchimento[20];
+} PropriedadesSemaforos;
+
+typedef struct {
+    int espessura_borda;
+    char cor_borda[20];
+    char cor_preenchimento[20];
+} PropriedadesRadios;
+
+typedef struct {
+    PropriedadesCirculos cir;
+    PropriedadesHidrantes hid;
+    PropriedadesQuadras quad;
+    PropriedadesRetangulos ret;
+    PropriedadesSemaforos sem;
+    PropriedadesRadios rad;
+} PropriedadesFiguras;
+
 Figura ler_circulo(const char *linha) {
     Circulo cir = circulo_ler(linha);
     return figura_criar(cir, TIPO_CIRCULO);
@@ -68,25 +109,25 @@ Lista *ler_geo(const char *caminho_geo) {
     int lista_max_figs = 1000;
     char linha[LINHA_MAX];
     while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL && figuras_criadas < lista_max_figs) {
-        char tipo_figura[TIPO_FIGURA_TAMANHO];
-        sscanf(linha, "%s", tipo_figura);
+        char comando[TIPO_FIGURA_TAMANHO];
+        sscanf(linha, "%s", comando);
 
         Figura nova_figura = NULL;
-        if (strcmp("c", tipo_figura) == 0) {
+        if (strcmp("c", comando) == 0) {
             nova_figura = ler_circulo(linha);
-        } else if (strcmp("r", tipo_figura) == 0) {
+        } else if (strcmp("r", comando) == 0) {
             nova_figura = ler_retangulo(linha);
-        } else if (strcmp("q", tipo_figura) == 0) {
+        } else if (strcmp("q", comando) == 0) {
             nova_figura = ler_quadra(linha);
-        } else if (strcmp("h", tipo_figura) == 0) {
+        } else if (strcmp("h", comando) == 0) {
             nova_figura = ler_hidrante(linha);
-        } else if (strcmp("s", tipo_figura) == 0) {
+        } else if (strcmp("s", comando) == 0) {
             nova_figura = ler_semaforo(linha);
-        } else if (strcmp("rb", tipo_figura) == 0) {
+        } else if (strcmp("rb", comando) == 0) {
             nova_figura = ler_radio(linha);
-        } else if (strcmp("t", tipo_figura) == 0) {
+        } else if (strcmp("t", comando) == 0) {
             nova_figura = ler_texto(linha);
-        } else if (strcmp("nx", tipo_figura) == 0) {
+        } else if (strcmp("nx", comando) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);
             printf("Novo valor máximo: %d\n", lista_max_figs);
         }
