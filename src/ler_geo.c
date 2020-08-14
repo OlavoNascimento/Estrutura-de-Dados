@@ -3,13 +3,51 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "circulo.h"
 #include "figuras.h"
+#include "hidrante.h"
+#include "linha.h"
 #include "lista.h"
+#include "quadra.h"
+#include "radio_base.h"
+#include "retangulo.h"
+#include "semaforo.h"
+#include "texto.h"
 
 // Tamanho maxímo de um comando do arquivo de descrição.
 #define LINHA_MAX 300
 // Tamanho maxímo da abreviação do tipo de uma figura
 #define TIPO_FIGURA_TAMANHO 100
+
+Figura ler_circulo(const char *linha) {
+    Circulo cir = circulo_ler(linha);
+    return figura_criar(cir, TIPO_CIRCULO);
+}
+
+Figura ler_hidrante(const char *linha) {
+    Hidrante hid = hidrante_ler(linha);
+    return figura_criar(hid, TIPO_HIDRANTE);
+}
+
+Figura ler_quadra(const char *linha) {
+    Quadra qua = quadra_ler(linha);
+    return figura_criar(qua, TIPO_QUADRA);
+}
+
+Figura ler_retangulo(const char *linha) {
+    Retangulo ret = retangulo_ler(linha);
+    return figura_criar(ret, TIPO_RETANGULO);
+}
+
+Figura ler_radio(const char *linha) {
+    Radio rad = radio_ler(linha);
+    return figura_criar(rad, TIPO_RADIO);
+}
+
+Figura ler_texto(const char *linha) {
+    Texto tex = texto_ler(linha);
+    return figura_criar(tex, TIPO_TEXTO);
+}
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
 // elementos de uma lista.
@@ -30,31 +68,31 @@ Lista *ler_geo(const char *caminho_geo) {
 
         Figura nova_figura;
         if (strcmp("c", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_CIRCULO);
+            nova_figura = ler_circulo(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("r", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_RETANGULO);
+            nova_figura = ler_retangulo(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("q", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_QUADRA);
+            nova_figura = ler_quadra(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("h", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_HIDRANTE);
+            nova_figura = ler_hidrante(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("s", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_SEMAFORO);
+            nova_figura = ler_semaforo(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("rb", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_RADIO);
+            nova_figura = ler_radio(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("t", tipo_figura) == 0) {
-            nova_figura = figura_ler(linha, TIPO_TEXTO);
+            nova_figura = ler_texto(linha);
             lista_insert_final(lista, nova_figura);
             figuras_criadas++;
         } else if (strcmp("nx", tipo_figura) == 0) {

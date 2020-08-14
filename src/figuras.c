@@ -72,39 +72,6 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
     return fig;
 }
 
-// Cria uma figura com base nos dados fornecidos por uma linha e no tipo de figura que essa linha
-// representa.
-Figura figura_ler(const char *linha, TiposFigura tipo) {
-    if (linha == NULL) {
-        fprintf(stderr, "ERRO: Linha nula passada a função ler figura!\n");
-        return NULL;
-    }
-
-    switch (tipo) {
-        case TIPO_CIRCULO:;
-            Circulo cir = circulo_ler(linha);
-            return figura_criar(cir, tipo);
-        case TIPO_HIDRANTE:;
-            Hidrante hid = hidrante_ler(linha);
-            return figura_criar(hid, tipo);
-        case TIPO_QUADRA:;
-            Quadra qua = quadra_ler(linha);
-            return figura_criar(qua, tipo);
-        case TIPO_RETANGULO:;
-            Retangulo ret = retangulo_ler(linha);
-            return figura_criar(ret, tipo);
-        case TIPO_RADIO:;
-            Radio rad = radio_ler(linha);
-            return figura_criar(rad, tipo);
-        case TIPO_TEXTO:;
-            Texto tex = texto_ler(linha);
-            return figura_criar(tex, tipo);
-        default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para ler figura: %d!\n", tipo);
-            return NULL;
-    }
-}
-
 // Escreve todos os dados de uma figura em um arquivo passado a função.
 void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
     if (arquivo == NULL) {
