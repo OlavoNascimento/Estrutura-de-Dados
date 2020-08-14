@@ -66,38 +66,29 @@ Lista *ler_geo(const char *caminho_geo) {
         char tipo_figura[TIPO_FIGURA_TAMANHO];
         sscanf(linha, "%s", tipo_figura);
 
-        Figura nova_figura;
+        Figura nova_figura = NULL;
         if (strcmp("c", tipo_figura) == 0) {
             nova_figura = ler_circulo(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("r", tipo_figura) == 0) {
             nova_figura = ler_retangulo(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("q", tipo_figura) == 0) {
             nova_figura = ler_quadra(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("h", tipo_figura) == 0) {
             nova_figura = ler_hidrante(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("s", tipo_figura) == 0) {
             nova_figura = ler_semaforo(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("rb", tipo_figura) == 0) {
             nova_figura = ler_radio(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("t", tipo_figura) == 0) {
             nova_figura = ler_texto(linha);
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
         } else if (strcmp("nx", tipo_figura) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);
             printf("Novo valor máximo: %d\n", lista_max_figs);
+        }
+
+        if (nova_figura != NULL) {
+            lista_insert_final(lista, nova_figura);
+            figuras_criadas++;
         }
     }
     fclose(arquivo_descricao);
