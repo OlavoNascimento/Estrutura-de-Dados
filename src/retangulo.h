@@ -11,8 +11,7 @@ typedef void *Retangulo;
 
 // Cria e inicializa um struct Retangulo com os valores passados.
 Retangulo retangulo_criar(char id[100], double largura, double altura, double x, double y,
-                          char cor_borda[20], char cor_preenchimento[20], int tracejado_tamanho,
-                          int tracejado_espaco);
+                          char cor_borda[20], char cor_preenchimento[20]);
 // Cria e inicializa um struct Retangulo a partir de um texto obtido no arquivo .geo.
 // O parâmetro linha não pode ser nulo.
 Retangulo retangulo_ler(const char *linha);
@@ -62,18 +61,19 @@ void retangulo_definir_cor_borda(Retangulo ret, const char *cor_borda);
 
 // Retorna a cor de preenchimento de um retângulo.
 const char *retangulo_obter_cor_preenchimento(Retangulo ret);
-// Define a cor de preenchimento de um retângulo. O parâmetro cor_preenchimento não pode ser nulo.
+// Define a cor de preenchimento de um retângulo. O parâmetro cor_preenchimento não pode ser
+// nulo.
 void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchimento);
 
-// Retorna o tamanho do tracejado da borda de um retângulo.
-int retangulo_obter_tracejado_tamanho(Retangulo ret);
-// Define o tamanho do tracejado da borda de um retângulo.
-void retangulo_definir_tracejado_tamanho(Retangulo ret, int tracejado_tamanho);
+// Retorna o tamanho da borda de um retângulo.
+int retangulo_obter_espessura_borda(Retangulo ret);
+// Define o tamanho da borda de um retângulo.
+void retangulo_definir_espessura_borda(Retangulo ret, int espessura_borda);
 
-// Retorna o espaçamento do tracejado da borda de um retângulo.
-int retangulo_obter_tracejado_espaco(Retangulo ret);
-// Define o espaçamento do tracejado da borda de um retângulo.
-void retangulo_definir_tracejado_espaco(Retangulo ret, int tracejado_espaco);
+// Retorna o espaçamento da borda de um retângulo.
+int retangulo_obter_espassamento_borda(Retangulo ret);
+// Define o espaçamento da borda de um retângulo.
+void retangulo_definir_espassamento_borda(Retangulo ret, int espassamento_borda);
 
 void retangulo_destruir(Retangulo ret);
 

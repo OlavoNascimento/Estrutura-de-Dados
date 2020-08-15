@@ -14,11 +14,9 @@ typedef struct {
 
 // Cria e inicializa um struct SemaforoImp com os valores passados.
 Semaforo semaforo_criar(char id[100], double largura, double altura, double x, double y,
-                        char cor_borda[20], char cor_preenchimento[20], int tracejado_tamanho,
-                        int tracejado_espaco) {
+                        char cor_borda[20], char cor_preenchimento[20]) {
     SemaforoImp *semaImp = malloc(sizeof(SemaforoImp));
-    semaImp->sema = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento,
-                                    tracejado_tamanho, tracejado_espaco);
+    semaImp->sema = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
     return semaImp;
 }
 
@@ -30,7 +28,7 @@ Semaforo semaforo_ler(const char *linha) {
     char cor_borda[20] = "red";
     char cor_preenchimento[20] = "green";
     sscanf(linha, "%*c %s %lf %lf", id, &x, &y);
-    return semaforo_criar(id, 20, 40, x, y, cor_borda, cor_preenchimento, 10, 0);
+    return semaforo_criar(id, 20, 40, x, y, cor_borda, cor_preenchimento);
 }
 
 // Define a cor da borda de um semaforo.

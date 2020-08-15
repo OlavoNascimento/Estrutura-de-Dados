@@ -210,8 +210,8 @@ TiposFigura figura_obter_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    const char *valores[] = {"Círculo", "Hidrante",  "Linha",    "Quadra",
-                             "Rádio",   "Retângulo", "Semáforo", "Texto"};
+    const char *valores[] = {"círculo", "hidrante",  "linha",    "quadra",
+                             "rádio",   "retângulo", "semáforo", "texto"};
     return valores[figuraImp->tipo];
 }
 

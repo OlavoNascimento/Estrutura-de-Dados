@@ -11,7 +11,6 @@
 #include "utils.h"
 
 int main(int argc, const char *argv[]) {
-    printf("Executando \n");
     const Parametros params = parametros_ler(argc, argv);
     if (!parametros_checar_obrigatorios(params))
         return 1;

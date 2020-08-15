@@ -35,7 +35,7 @@ Figura *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
         min(figura_obter_x_inicio(figura1), figura_obter_x_inicio(figura2)) - MARGEM_CONTORNO,
         // Coordenada y do contorno é a menor coordenada y entre as duas figuras.
         min(figura_obter_y_inicio(figura1), figura_obter_y_inicio(figura2)) - MARGEM_CONTORNO,
-        "black", "none", 0, 0);
+        "black", "none");
 
     // Largura do contorno é a distancia entre o x do contorno e a coordenada x onde o fim da figura
     // mais longe se encontra.
@@ -73,10 +73,8 @@ void checar_interseccao(Lista lista, const char *linha, FILE *arquivo_log) {
         lista_insert_final(lista, aviso);
     } else {
         // Adiciona traços a borda do retângulo de contorno caso as figuras não se intersectem.
-        retangulo_definir_tracejado_tamanho(figura_obter_figura(contorno),
-                                            CONTORNO_TRACEJADO_TAMANHO);
-        retangulo_definir_tracejado_espaco(figura_obter_figura(contorno),
-                                           CONTORNO_TRACEJADO_TAMANHO);
+        retangulo_definir_espassamento_borda(figura_obter_figura(contorno),
+                                             CONTORNO_TRACEJADO_TAMANHO);
     }
     lista_insert_final(lista, contorno);
 

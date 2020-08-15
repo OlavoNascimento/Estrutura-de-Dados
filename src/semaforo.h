@@ -10,9 +10,7 @@ typedef void *Semaforo;
 
 // Cria e inicializa um struct Semaforo com os valores passados.
 Semaforo semaforo_criar(char id[100], double largura, double altura, double x, double y,
-                        char cor_borda[20], char cor_preenchimento[20], int tracejado_tamanho,
-                        int tracejado_espaco);
-
+                        char cor_borda[20], char cor_preenchimento[20]);
 // Cria e inicializa um struct Semaforo(igual ao retângulo) a partir de um texto obtido no arquivo
 // .geo. O parâmetro linha não pode ser nulo.
 Semaforo semaforo_ler(const char *linha);

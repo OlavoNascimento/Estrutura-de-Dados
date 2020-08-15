@@ -25,8 +25,8 @@ void circulo_escrever_svg(FILE *arquivo, Circulo cir);
 
 // Recebe dois circulos e retorna verdadeiro caso se intersectem.
 bool circulo_checar_interseccao(Circulo cir1, Circulo cir2);
-// Recebe um círculo e as coordenadas de um ponto, retorna verdadeiro caso o ponto esteja dentro do
-// círculo.
+// Recebe um círculo e as coordenadas de um ponto, retorna verdadeiro caso o ponto esteja dentro
+// do círculo.
 bool circulo_checar_ponto_interno(Circulo cir, double ponto_x, double ponto_y);
 
 // Retorna o id de um círculo.
@@ -58,6 +58,11 @@ void circulo_definir_cor_borda(Circulo cir, const char *cor_borda);
 const char *circulo_obter_cor_preenchimento(Circulo cir);
 // Define a cor de preenchimento de um círculo. O parâmetros cor_preenchimento não pode ser nulo.
 void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento);
+
+// Retorna a espessura da borda de um círculo.
+int circulo_obter_espessura_borda(Circulo cir);
+// Define a espessura da borda de um círculo.
+void circulo_definir_espessura_borda(Circulo cir, int espessura_borda);
 
 // Libera a memória alocada por um círculo.
 void circulo_destruir(Circulo cir);

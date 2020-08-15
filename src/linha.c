@@ -16,14 +16,14 @@ typedef struct {
 // Cria e inicializa um struct Linha com os valores passados.
 Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
                   const char cor_preenchimento[20]) {
-    LinhaImp *lin = malloc(sizeof(LinhaImp));
-    lin->x1 = x1;
-    lin->y1 = y1;
-    lin->x2 = x2;
-    lin->y2 = y2;
-    strcpy(lin->cor_borda, cor_borda);
-    strcpy(lin->cor_preenchimento, cor_preenchimento);
-    return lin;
+    LinhaImp *linImp = malloc(sizeof(LinhaImp));
+    linImp->x1 = x1;
+    linImp->y1 = y1;
+    linImp->x2 = x2;
+    linImp->y2 = y2;
+    strcpy(linImp->cor_borda, cor_borda);
+    strcpy(linImp->cor_preenchimento, cor_preenchimento);
+    return linImp;
 }
 
 // Escreve o código svg que representa uma linha em um arquivo.

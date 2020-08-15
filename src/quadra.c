@@ -13,11 +13,9 @@ typedef struct {
 } QuadraImp;
 
 Quadra quadra_criar(char id[100], double largura, double altura, double x, double y,
-                    char cor_borda[20], char cor_preenchimento[20], int tracejado_tamanho,
-                    int tracejado_espaco) {
+                    char cor_borda[20], char cor_preenchimento[20]) {
     QuadraImp *quadImp = malloc(sizeof(QuadraImp));
-    quadImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento,
-                                   tracejado_tamanho, tracejado_espaco);
+    quadImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
     return quadImp;
 }
 
@@ -30,7 +28,7 @@ Quadra quadra_ler(const char *linha) {
     char cor_borda[20] = "black";
     char cor_preenchimento[20] = "black";
     sscanf(linha, "%*c %s %lf %lf %lf %lf", id, &largura, &altura, &x, &y);
-    return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento, 0, 0);
+    return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
 void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {

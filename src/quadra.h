@@ -10,8 +10,7 @@ typedef void *Quadra;
 // Cria e inicializa um struct Quadra com os valores passados.
 // retorna o endereço para a struct criada
 Quadra quadra_criar(char id[100], double largura, double altura, double x, double y,
-                    char cor_borda[20], char cor_preenchimento[20], int tracejado_tamanho,
-                    int tracejado_espaco);
+                    char cor_borda[20], char cor_preenchimento[20]);
 
 // Cria e inicializa um struct Quadra(igual ao retângulo) a partir de um texto obtido no arquivo
 // .geo. O parâmetro linha não pode ser nulo.

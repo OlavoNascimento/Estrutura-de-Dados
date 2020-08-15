@@ -16,14 +16,14 @@ typedef struct {
 // Cria e inicializa um struct Texto com os valores passados.
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
                   const char cor_preenchimento[20], const char conteudo[500]) {
-    TextoImp *tex = malloc(sizeof(TextoImp));
-    strcpy(tex->id, id);
-    tex->x = x;
-    tex->y = y;
-    strcpy(tex->cor_borda, cor_borda);
-    strcpy(tex->cor_preenchimento, cor_preenchimento);
-    strcpy(tex->conteudo, conteudo);
-    return tex;
+    TextoImp *texImp = malloc(sizeof(TextoImp));
+    strcpy(texImp->id, id);
+    texImp->x = x;
+    texImp->y = y;
+    strcpy(texImp->cor_borda, cor_borda);
+    strcpy(texImp->cor_preenchimento, cor_preenchimento);
+    strcpy(texImp->conteudo, conteudo);
+    return texImp;
 }
 
 // Cria um texto com base em informações de uma linha.

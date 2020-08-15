@@ -12,6 +12,7 @@ typedef struct {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
+    int espessura_borda;
 } CirculoImp;
 
 // Cria e inicializa um struct CirculoImp com os valores passados.
@@ -24,6 +25,7 @@ Circulo circulo_criar(char id[100], double raio, double x, double y, char cor_bo
     cirImp->y = y;
     strcpy(cirImp->cor_borda, cor_borda);
     strcpy(cirImp->cor_preenchimento, cor_preenchimento);
+    cirImp->espessura_borda = 0;
     return cirImp;
 }
 
@@ -165,6 +167,18 @@ void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchiment
     }
     CirculoImp *cirImp = (CirculoImp *) cir;
     strcpy(cirImp->cor_preenchimento, cor_preenchimento);
+}
+
+// Retorna a espessura da borda de um círculo.
+int circulo_obter_espessura_borda(Circulo cir) {
+    CirculoImp *cirImp = (CirculoImp *) cir;
+    return cirImp->espessura_borda;
+}
+
+// Define a espessura da borda de um círculo.
+void circulo_definir_espessura_borda(Circulo cir, int espessura_borda) {
+    CirculoImp *cirImp = (CirculoImp *) cir;
+    cirImp->espessura_borda = espessura_borda;
 }
 
 // Libera a memória alocada por um círculo.
