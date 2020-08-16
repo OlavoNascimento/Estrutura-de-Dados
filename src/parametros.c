@@ -89,6 +89,9 @@ char *parametros_obter_caminho_descricao(const Parametros params) {
 
 char *parametros_obter_caminho_consulta(const Parametros params) {
     ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_consulta == NULL)
+        return NULL;
+
     char *caminho_consulta = NULL;
     // Adiciona o diretório de entrada ao caminho do arquivo de descrição caso necessário.
     if (paramsImp->nome_dir_entrada != NULL) {
