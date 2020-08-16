@@ -34,7 +34,7 @@ Texto texto_ler(const char *linha) {
     char cor_borda[20];
     char cor_preenchimento[20];
     char conteudo[500];
-    sscanf(linha, "%*c %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
+    sscanf(linha, "%*s %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
            conteudo);
     return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo);
 }

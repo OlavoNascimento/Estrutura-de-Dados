@@ -27,7 +27,7 @@ Hidrante hidrante_ler(const char *linha) {
     double y;
     char cor_borda[20] = "red";          // será alterado com outro comando
     char cor_preenchimento[20] = "red";  // será alterado com outro comando
-    sscanf(linha, "%*c %s %lf %lf", id, &x, &y);
+    sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
     return hidrante_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 

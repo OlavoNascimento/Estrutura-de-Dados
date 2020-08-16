@@ -34,8 +34,13 @@ double semaforo_obter_y(Semaforo sem);
 
 double semaforo_obter_x(Semaforo sem);
 
-const char *semaforo_obter_cor_preenchimento(Semaforo sem);
-
 const char *semaforo_obter_cor_borda(Semaforo sem);
+void semaforo_definir_cor_borda(Semaforo sema, const char *cor_borda);
+
+const char *semaforo_obter_cor_preenchimento(Semaforo sem);
+void semaforo_definir_cor_preenchimento(Semaforo sema, const char *cor_preenchimento);
+
+int semaforo_obter_espessura_borda(Semaforo sem);
+void semaforo_definir_espessura_borda(Semaforo sem, int espessura_borda);
 
 #endif

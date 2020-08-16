@@ -101,16 +101,22 @@ Figura ler_radio(const char *linha, PropriedadesRadios prop) {
     return figura_criar(rad, TIPO_RADIO);
 }
 
-void definir_propriedades_radio(const char *linha, PropriedadesRadios *prop) {
-    int espessura_borda;
-    char cor_borda[20];
-    char cor_preenchimento[20];
+void definir_propriedades_radios(const char *linha, PropriedadesRadios *prop) {
     sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_borda, prop->cor_preenchimento);
 }
 
-Figura ler_semaforo(const char *linha) {
+Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
     Semaforo sem = semaforo_ler(linha);
+    if (prop.espessura_borda != 0) {
+        semaforo_definir_espessura_borda(sem, prop.espessura_borda);
+        semaforo_definir_cor_borda(sem, prop.cor_borda);
+        semaforo_definir_cor_preenchimento(sem, prop.cor_preenchimento);
+    }
     return figura_criar(sem, TIPO_SEMAFORO);
+}
+
+void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *prop) {
+    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_borda, prop->cor_preenchimento);
 }
 
 Figura ler_texto(const char *linha) {
@@ -147,13 +153,15 @@ Lista *ler_geo(const char *caminho_geo) {
         } else if (strcmp("h", comando) == 0) {
             nova_figura = ler_hidrante(linha);
         } else if (strcmp("s", comando) == 0) {
-            nova_figura = ler_semaforo(linha);
+            nova_figura = ler_semaforo(linha, propriedades.sem);
         } else if (strcmp("rb", comando) == 0) {
             nova_figura = ler_radio(linha, propriedades.rad);
         } else if (strcmp("t", comando) == 0) {
             nova_figura = ler_texto(linha);
         } else if (strcmp("cr", comando) == 0) {
-            definir_propriedades_radio(linha, &propriedades.rad);
+            definir_propriedades_radios(linha, &propriedades.rad);
+        } else if (strcmp("cs", comando) == 0) {
+            definir_propriedades_semaforos(linha, &propriedades.sem);
         } else if (strcmp("nx", comando) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);
             printf("Novo valor máximo: %d\n", lista_max_figs);
