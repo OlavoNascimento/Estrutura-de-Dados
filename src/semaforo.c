@@ -43,6 +43,8 @@ void semaforo_escrever_svg(FILE *arquivo, Semaforo sema) {
     retangulo_escrever_svg(arquivo, semaImp->sema);
 }
 
+// TODO Definir obter_id
+
 double semaforo_obter_y(Semaforo sem) {
     SemaforoImp *semImp = (SemaforoImp *) sem;
     return retangulo_obter_y(semImp->sema);

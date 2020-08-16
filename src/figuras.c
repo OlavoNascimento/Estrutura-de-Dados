@@ -218,6 +218,7 @@ const char *figura_obter_string_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura.
 void *figura_obter_figura(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
+    // TODO Adicionar todas as figura
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return figuraImp->cir;
@@ -297,12 +298,15 @@ double figura_obter_x_fim(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
+            // TODO Corrigir, fim = x + raio
             return hidrante_obter_x(figuraImp->hid);  // feito
         case TIPO_QUADRA:
             return quadra_obter_x(figuraImp->qua) + quadra_obter_largura(figuraImp->qua);  // feito
         case TIPO_RADIO:
+            // TODO Corrigir, fim = x + raio
             return radio_obter_x(figuraImp->rad);  // feito
         case TIPO_SEMAFORO:
+            // TODO Corrigir, fim = x + largura
             return semaforo_obter_x(figuraImp->sem);  // feito
         case TIPO_LINHA:
             return max(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
@@ -326,12 +330,15 @@ double figura_obter_y_fim(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
+            // TODO Corrigir, fim = y + raio
             return hidrante_obter_y(figuraImp->hid);  // feito
         case TIPO_QUADRA:
             return quadra_obter_y(figuraImp->qua) + quadra_obter_altura(figuraImp->qua);  // feito
         case TIPO_RADIO:
+            // TODO Corrigir, fim = y + raio
             return radio_obter_y(figuraImp->rad);  // feito
         case TIPO_SEMAFORO:
+            // TODO Corrigir, fim = y + altura
             return semaforo_obter_y(figuraImp->sem);  // feito
         case TIPO_LINHA:
             return max(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
@@ -360,6 +367,7 @@ double figura_obter_centro_x(Figura figura) {
         case TIPO_RADIO:
             return radio_obter_x(figuraImp->rad);
         case TIPO_SEMAFORO:
+            // TODO Corrigir, fim = x + largura/2
             return semaforo_obter_x(figuraImp->sem);
         case TIPO_RETANGULO:
             return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret) / 2;
@@ -383,6 +391,7 @@ double figura_obter_centro_y(Figura figura) {
         case TIPO_RADIO:
             return radio_obter_y(figuraImp->rad);
         case TIPO_SEMAFORO:
+            // TODO Corrigir, fim = y + altura/2
             return semaforo_obter_y(figuraImp->sem);
         case TIPO_RETANGULO:
             return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret) / 2;
@@ -397,9 +406,9 @@ double figura_obter_centro_y(Figura figura) {
 const char *figura_obter_id(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        // TODO Adicionar todas as figuras
         case TIPO_CIRCULO:
             return circulo_obter_id(figuraImp->cir);
-
         case TIPO_RETANGULO:
             return retangulo_obter_id(figuraImp->ret);
         case TIPO_TEXTO:

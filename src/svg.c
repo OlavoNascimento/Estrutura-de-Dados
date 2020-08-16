@@ -80,6 +80,7 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
         if (figura_obter_id(figura_atual) != NULL) {
             // Adiciona um texto com o id no canto superior esquerdo da figura.
             Figura rotulo = svg_criar_rotulo(figura_atual);
+            // TODO Considerar tamanho do rótulo ao definir proporções do svg
             figura_escrever_svg(arquivo_tmp, rotulo);
             figura_destruir(rotulo);
         }

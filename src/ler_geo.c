@@ -62,6 +62,7 @@ typedef struct {
 
 PropriedadesFiguras criar_propriedades() {
     PropriedadesFiguras prop;
+    // Inicializa todas as propriedades como vazias (0 para int e NULL para char[]).
     prop.cir = (PropriedadesCirculos){0};
     prop.hid = (PropriedadesHidrantes){0};
     prop.qua = (PropriedadesQuadras){0};
@@ -71,9 +72,16 @@ PropriedadesFiguras criar_propriedades() {
     return prop;
 }
 
-Figura ler_circulo(const char *linha) {
+Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
     Circulo cir = circulo_ler(linha);
+    if (prop.espessura_borda != 0) {
+        circulo_definir_espessura_borda(cir, prop.espessura_borda);
+    }
     return figura_criar(cir, TIPO_CIRCULO);
+}
+
+void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop) {
+    sscanf(linha, "%*s %d", &prop->espessura_borda);
 }
 
 Figura ler_hidrante(const char *linha) {
@@ -86,9 +94,16 @@ Figura ler_quadra(const char *linha) {
     return figura_criar(qua, TIPO_QUADRA);
 }
 
-Figura ler_retangulo(const char *linha) {
+Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
     Retangulo ret = retangulo_ler(linha);
+    if (prop.espessura_borda != 0) {
+        retangulo_definir_espessura_borda(ret, prop.espessura_borda);
+    }
     return figura_criar(ret, TIPO_RETANGULO);
+}
+
+void definir_propriedades_retangulos(const char *linha, PropriedadesRetangulos *prop) {
+    sscanf(linha, "%*s %d", &prop->espessura_borda);
 }
 
 Figura ler_radio(const char *linha, PropriedadesRadios prop) {
@@ -145,9 +160,9 @@ Lista *ler_geo(const char *caminho_geo) {
 
         Figura nova_figura = NULL;
         if (strcmp("c", comando) == 0) {
-            nova_figura = ler_circulo(linha);
+            nova_figura = ler_circulo(linha, propriedades.cir);
         } else if (strcmp("r", comando) == 0) {
-            nova_figura = ler_retangulo(linha);
+            nova_figura = ler_retangulo(linha, propriedades.ret);
         } else if (strcmp("q", comando) == 0) {
             nova_figura = ler_quadra(linha);
         } else if (strcmp("h", comando) == 0) {
@@ -162,6 +177,9 @@ Lista *ler_geo(const char *caminho_geo) {
             definir_propriedades_radios(linha, &propriedades.rad);
         } else if (strcmp("cs", comando) == 0) {
             definir_propriedades_semaforos(linha, &propriedades.sem);
+        } else if (strcmp("sw", comando) == 0) {
+            definir_propriedades_circulos(linha, &propriedades.cir);
+            definir_propriedades_retangulos(linha, &propriedades.ret);
         } else if (strcmp("nx", comando) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);
             printf("Novo valor máximo: %d\n", lista_max_figs);

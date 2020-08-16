@@ -31,24 +31,7 @@ Hidrante hidrante_ler(const char *linha) {
     return hidrante_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
-// Define a cor da borda de um hidrante.
-void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
-    circulo_definir_cor_borda(hidImp->circ, cor_borda);
-}
-
-// Define a cor de preenchimento de um hidrante.
-void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
-    circulo_definir_cor_preenchimento(hidImp->circ, cor_preenchimento);
-}
-
-// Libera a memória alocada por um hidrante.
-void hidrante_destruir(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
-    circulo_destruir(hidImp->circ);
-    free(hid);
-}
+// TODO Definir obter_id
 
 // escreve as informações de um hidrante
 void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid) {
@@ -79,7 +62,26 @@ const char *hidrante_obter_cor_preenchimento(Hidrante hid) {
     return circulo_obter_cor_preenchimento(hidImp->circ);
 }
 
+// Define a cor de preenchimento de um hidrante.
+void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    circulo_definir_cor_preenchimento(hidImp->circ, cor_preenchimento);
+}
+
 const char *hidrante_obter_cor_borda(Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;
     return circulo_obter_cor_borda(hidImp->circ);
+}
+
+// Define a cor da borda de um hidrante.
+void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    circulo_definir_cor_borda(hidImp->circ, cor_borda);
+}
+
+// Libera a memória alocada por um hidrante.
+void hidrante_destruir(Hidrante hid) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    circulo_destruir(hidImp->circ);
+    free(hid);
 }

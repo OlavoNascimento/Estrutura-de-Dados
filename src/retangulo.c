@@ -69,6 +69,10 @@ void retangulo_escrever_svg(FILE *arquivo, Retangulo ret) {
             retImp->largura, retImp->altura, retImp->x, retImp->y, retImp->cor_borda,
             retImp->cor_preenchimento);
 
+    // Caso a borda do retângulo seja diferente do padrão
+    if (retImp->espessura_borda != 0)
+        fprintf(arquivo, " stroke-width='%d'", retImp->espessura_borda);
+
     // Caso o retângulo deva ser tracejado
     if (retImp->espassamento_borda != 0)
         fprintf(arquivo, " style='stroke-dasharray: %d'", retImp->espassamento_borda);

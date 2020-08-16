@@ -31,19 +31,7 @@ Quadra quadra_ler(const char *linha) {
     return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
-void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
-    QuadraImp *quadImp = (QuadraImp *) quad;
-    retangulo_definir_cor_borda(quadImp->ret, cor_borda);
-}
-
-void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento) {
-    QuadraImp *quadImp = (QuadraImp *) quad;
-    retangulo_definir_cor_preenchimento(quadImp->ret, cor_preenchimento);
-}
-
-void quadra_destruir(Quadra quad) {
-    free(quad);
-}
+// TODO Definir obter_id
 
 // escreve as informações de uma radio base
 void quadra_escrever_informacoes(FILE *arquivo, Quadra quad) {
@@ -84,7 +72,21 @@ const char *quadra_obter_cor_preenchimento(Quadra quad) {
     return retangulo_obter_cor_preenchimento(quadImp->ret);
 }
 
+void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_definir_cor_preenchimento(quadImp->ret, cor_preenchimento);
+}
+
 const char *quadra_obter_cor_borda(Quadra quad) {
     QuadraImp *quadImp = (QuadraImp *) quad;
     return retangulo_obter_cor_borda(quadImp->ret);
+}
+
+void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_definir_cor_borda(quadImp->ret, cor_borda);
+}
+
+void quadra_destruir(Quadra quad) {
+    free(quad);
 }

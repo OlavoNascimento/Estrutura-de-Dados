@@ -58,8 +58,14 @@ void circulo_escrever_svg(FILE *arquivo, Circulo cir) {
     // Um circulo pode não ter um id
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, "id='%s' ", cirImp->id);
-    fprintf(arquivo, "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'/>\n", cirImp->raio, cirImp->x,
+
+    fprintf(arquivo, "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'", cirImp->raio, cirImp->x,
             cirImp->y, cirImp->cor_borda, cirImp->cor_preenchimento);
+
+    // Caso a borda do círculo seja diferente do padrão
+    if (cirImp->espessura_borda != 0)
+        fprintf(arquivo, " stroke-width='%d'", cirImp->espessura_borda);
+    fprintf(arquivo, "/>\n");
 }
 
 // Retorna verdadeiro se dois círculos se intersectam.
