@@ -17,13 +17,11 @@ int main(int argc, const char *argv[]) {
 
     criar_diretorio(parametros_obter_diretorio_saida(params));
     char *caminho_descricao = parametros_obter_caminho_descricao(params);
-
     char *caminho_consulta = parametros_obter_caminho_consulta(params);
-
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
 
     printf("Arquivo descrição: %s\n", caminho_descricao);
-    printf("Arquivo svg: %s\n", caminho_svg_descricao);
+    printf("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
     Lista *lista = ler_geo(caminho_descricao);
     svg_lista_para_svg(lista, caminho_svg_descricao);

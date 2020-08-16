@@ -30,29 +30,13 @@ Radio radio_ler(const char *linha) {
     return radio_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
-void radio_definir_cor_preenchimento(Radio rad, const char *cor_preenchimento) {
-    RadioBaseImp *radImp = (RadioBaseImp *) rad;
-    circulo_definir_cor_preenchimento(radImp->circ, cor_preenchimento);
-}
-
-void radio_definir_cor_borda(Radio rad, const char *cor_borda) {
-    RadioBaseImp *radImp = (RadioBaseImp *) rad;
-    circulo_definir_cor_borda(radImp->circ, cor_borda);
-}
-
-// Libera a memória alocada por um radio base.
-void radio_destruir(Radio rad) {
-    RadioBaseImp *radImp = (RadioBaseImp *) rad;
-    circulo_destruir(radImp->circ);
-    free(rad);
-}
-// escreve as informações de uma radio base
+// Escreve as informações de uma radio base
 void radio_escrever_informacoes(FILE *arquivo, Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     circulo_escrever_informacoes(arquivo, radImp->circ);
 }
 
-// escreve no svg as informações de uma radio base
+// Escreve no svg as informações de uma radio base
 void radio_escrever_svg(FILE *arquivo, Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     circulo_escrever_svg(arquivo, radImp->circ);
@@ -63,6 +47,7 @@ double radio_obter_y(Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     return circulo_obter_y(radImp->circ);
 }
+
 // Retorna a coordenada y de uma radio base. A radio base é considerada apenas um ponto.
 double radio_obter_x(Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
@@ -74,7 +59,36 @@ const char *radio_obter_cor_preenchimento(Radio rad) {
     return circulo_obter_cor_preenchimento(radImp->circ);
 }
 
+void radio_definir_cor_preenchimento(Radio rad, const char *cor_preenchimento) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    circulo_definir_cor_preenchimento(radImp->circ, cor_preenchimento);
+}
+
 const char *radio_obter_cor_borda(Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     return circulo_obter_cor_borda(radImp->circ);
+}
+
+void radio_definir_cor_borda(Radio rad, const char *cor_borda) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    circulo_definir_cor_borda(radImp->circ, cor_borda);
+}
+
+// Retorna a espessura da borda de uma rádio base.
+int radio_obter_espessura_borda(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_espessura_borda(radImp->circ);
+}
+
+// Define a espessura da borda de uma rádio base.
+void radio_definir_espessura_borda(Radio rad, int espessura_borda) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    circulo_definir_espessura_borda(radImp->circ, espessura_borda);
+}
+
+// Libera a memória alocada por uma radio base.
+void radio_destruir(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    circulo_destruir(radImp->circ);
+    free(rad);
 }

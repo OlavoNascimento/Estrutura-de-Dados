@@ -54,11 +54,22 @@ typedef struct {
 typedef struct {
     PropriedadesCirculos cir;
     PropriedadesHidrantes hid;
-    PropriedadesQuadras quad;
+    PropriedadesQuadras qua;
     PropriedadesRetangulos ret;
     PropriedadesSemaforos sem;
     PropriedadesRadios rad;
 } PropriedadesFiguras;
+
+PropriedadesFiguras criar_propriedades() {
+    PropriedadesFiguras prop;
+    prop.cir = (PropriedadesCirculos){0};
+    prop.hid = (PropriedadesHidrantes){0};
+    prop.qua = (PropriedadesQuadras){0};
+    prop.ret = (PropriedadesRetangulos){0};
+    prop.sem = (PropriedadesSemaforos){0};
+    prop.rad = (PropriedadesRadios){0};
+    return prop;
+}
 
 Figura ler_circulo(const char *linha) {
     Circulo cir = circulo_ler(linha);
@@ -80,9 +91,21 @@ Figura ler_retangulo(const char *linha) {
     return figura_criar(ret, TIPO_RETANGULO);
 }
 
-Figura ler_radio(const char *linha) {
+Figura ler_radio(const char *linha, PropriedadesRadios prop) {
     Radio rad = radio_ler(linha);
+    if (prop.espessura_borda != 0) {
+        radio_definir_espessura_borda(rad, prop.espessura_borda);
+        radio_definir_cor_borda(rad, prop.cor_borda);
+        radio_definir_cor_preenchimento(rad, prop.cor_preenchimento);
+    }
     return figura_criar(rad, TIPO_RADIO);
+}
+
+void definir_propriedades_radio(const char *linha, PropriedadesRadios *prop) {
+    int espessura_borda;
+    char cor_borda[20];
+    char cor_preenchimento[20];
+    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_borda, prop->cor_preenchimento);
 }
 
 Figura ler_semaforo(const char *linha) {
@@ -107,6 +130,8 @@ Lista *ler_geo(const char *caminho_geo) {
 
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
+    PropriedadesFiguras propriedades = criar_propriedades();
+
     char linha[LINHA_MAX];
     while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL && figuras_criadas < lista_max_figs) {
         char comando[TIPO_FIGURA_TAMANHO];
@@ -124,9 +149,11 @@ Lista *ler_geo(const char *caminho_geo) {
         } else if (strcmp("s", comando) == 0) {
             nova_figura = ler_semaforo(linha);
         } else if (strcmp("rb", comando) == 0) {
-            nova_figura = ler_radio(linha);
+            nova_figura = ler_radio(linha, propriedades.rad);
         } else if (strcmp("t", comando) == 0) {
             nova_figura = ler_texto(linha);
+        } else if (strcmp("cr", comando) == 0) {
+            definir_propriedades_radio(linha, &propriedades.rad);
         } else if (strcmp("nx", comando) == 0) {
             sscanf(linha, "nx %d", &lista_max_figs);
             printf("Novo valor máximo: %d\n", lista_max_figs);

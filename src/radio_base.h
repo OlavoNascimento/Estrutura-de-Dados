@@ -17,17 +17,6 @@ Radio radio_criar(char id[100], double raio, double x, double y, char cor_borda[
 // .geo. O parâmetro linha não pode ser nulo.
 Radio radio_ler(const char* linha);
 
-// Define a cor de preenchimento de uma RadioBase.
-// O parâmetros cor_preenchimento não pode ser nulo.
-void radio_definir_cor_preenchimento(Radio rad, const char* cor_preenchimento);
-
-// Define a cor de borda de um RadioBase.
-// O parâmetros cor_borda não pode ser nulo.
-void radio_definir_cor_borda(Radio rad, const char* cor_borda);
-
-// Libera a memória alocada por um radio base.
-void radio_destruir(Radio rad);
-
 void radio_escrever_informacoes(FILE* arquivo, Radio rad);
 
 void radio_escrever_svg(FILE* arquivo, Radio rad);
@@ -37,7 +26,21 @@ double radio_obter_y(Radio rad);
 double radio_obter_x(Radio rad);
 
 const char* radio_obter_cor_preenchimento(Radio rad);
+// Define a cor de preenchimento de uma RadioBase.
+// O parâmetros cor_preenchimento não pode ser nulo.
+void radio_definir_cor_preenchimento(Radio rad, const char* cor_preenchimento);
 
 const char* radio_obter_cor_borda(Radio rad);
+// Define a cor de borda de um RadioBase.
+// O parâmetros cor_borda não pode ser nulo.
+void radio_definir_cor_borda(Radio rad, const char* cor_borda);
+
+// Retorna a espessura da borda de um rádio base.
+int radio_obter_espessura_borda(Radio rad);
+// Define a espessura da borda de um rádio base.
+void radio_definir_espessura_borda(Radio rad, int espessura_borda);
+
+// Libera a memória alocada por um radio base.
+void radio_destruir(Radio rad);
 
 #endif

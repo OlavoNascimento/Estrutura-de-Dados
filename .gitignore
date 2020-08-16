@@ -9,6 +9,9 @@ siguel
 *.qry
 *.txt
 
+# Valgrind files
+vgcore*
+
 # Prerequisites
 *.d
 
