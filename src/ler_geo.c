@@ -81,7 +81,7 @@ Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
 }
 
 void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop) {
-    sscanf(linha, "%*s %d", &prop->espessura_borda);
+    sscanf(linha, "%*s %d %*d", &prop->espessura_borda);
 }
 
 Figura ler_hidrante(const char *linha) {
@@ -103,7 +103,7 @@ Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
 }
 
 void definir_propriedades_retangulos(const char *linha, PropriedadesRetangulos *prop) {
-    sscanf(linha, "%*s %d", &prop->espessura_borda);
+    sscanf(linha, "%*s %*d %d", &prop->espessura_borda);
 }
 
 Figura ler_radio(const char *linha, PropriedadesRadios prop) {
