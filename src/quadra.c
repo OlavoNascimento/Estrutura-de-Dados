@@ -87,6 +87,11 @@ void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
     retangulo_definir_cor_borda(quadImp->ret, cor_borda);
 }
 
+void quadra_definir_espessura_borda(Quadra quad, int espessura_borda) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_definir_espessura_borda(quadImp->ret, espessura_borda);
+}
+
 void quadra_destruir(Quadra quad) {
     free(quad);
 }

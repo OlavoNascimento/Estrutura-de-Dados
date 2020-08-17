@@ -79,6 +79,12 @@ void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda) {
     circulo_definir_cor_borda(hidImp->circ, cor_borda);
 }
 
+// Define a espessura da borda de um hidrante.
+void hidrante_definir_espessura_borda(Hidrante hid, int espessura_borda) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    circulo_definir_espessura_borda(hidImp->circ, espessura_borda);
+}
+
 // Libera a memória alocada por um hidrante.
 void hidrante_destruir(Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;

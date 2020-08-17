@@ -84,14 +84,32 @@ void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop
     sscanf(linha, "%*s %d %*d", &prop->espessura_borda);
 }
 
-Figura ler_hidrante(const char *linha) {
+Figura ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
     Hidrante hid = hidrante_ler(linha);
+    if (prop.espessura_borda != 0) {
+        hidrante_definir_espessura_borda(hid, prop.espessura_borda);
+        hidrante_definir_cor_borda(hid, prop.cor_borda);
+        hidrante_definir_cor_preenchimento(hid, prop.cor_preenchimento);
+    }
     return figura_criar(hid, TIPO_HIDRANTE);
 }
 
-Figura ler_quadra(const char *linha) {
+void definir_propriedades_hidrantes(const char *linha, PropriedadesHidrantes *prop) {
+    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+}
+
+Figura ler_quadra(const char *linha, PropriedadesQuadras prop) {
     Quadra qua = quadra_ler(linha);
+    if (prop.espessura_borda != 0) {
+        quadra_definir_espessura_borda(qua, prop.espessura_borda);
+        quadra_definir_cor_borda(qua, prop.cor_borda);
+        quadra_definir_cor_preenchimento(qua, prop.cor_preenchimento);
+    }
     return figura_criar(qua, TIPO_QUADRA);
+}
+
+void definir_propriedades_quadras(const char *linha, PropriedadesQuadras *prop) {
+    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
 }
 
 Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
@@ -117,7 +135,7 @@ Figura ler_radio(const char *linha, PropriedadesRadios prop) {
 }
 
 void definir_propriedades_radios(const char *linha, PropriedadesRadios *prop) {
-    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_borda, prop->cor_preenchimento);
+    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
 }
 
 Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
@@ -131,7 +149,7 @@ Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
 }
 
 void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *prop) {
-    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_borda, prop->cor_preenchimento);
+    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
 }
 
 Figura ler_texto(const char *linha) {
@@ -164,15 +182,19 @@ Lista *ler_geo(const char *caminho_geo) {
         } else if (strcmp("r", comando) == 0) {
             nova_figura = ler_retangulo(linha, propriedades.ret);
         } else if (strcmp("q", comando) == 0) {
-            nova_figura = ler_quadra(linha);
+            nova_figura = ler_quadra(linha, propriedades.qua);
         } else if (strcmp("h", comando) == 0) {
-            nova_figura = ler_hidrante(linha);
+            nova_figura = ler_hidrante(linha, propriedades.hid);
         } else if (strcmp("s", comando) == 0) {
             nova_figura = ler_semaforo(linha, propriedades.sem);
         } else if (strcmp("rb", comando) == 0) {
             nova_figura = ler_radio(linha, propriedades.rad);
         } else if (strcmp("t", comando) == 0) {
             nova_figura = ler_texto(linha);
+        } else if (strcmp("cq", comando) == 0) {
+            definir_propriedades_quadras(linha, &propriedades.qua);
+        } else if (strcmp("ch", comando) == 0) {
+            definir_propriedades_hidrantes(linha, &propriedades.hid);
         } else if (strcmp("cr", comando) == 0) {
             definir_propriedades_radios(linha, &propriedades.rad);
         } else if (strcmp("cs", comando) == 0) {

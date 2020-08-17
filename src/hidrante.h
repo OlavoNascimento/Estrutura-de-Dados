@@ -39,4 +39,6 @@ const char *hidrante_obter_cor_preenchimento(Hidrante hid);
 
 const char *hidrante_obter_cor_borda(Hidrante hid);
 
+void hidrante_definir_espessura_borda(Hidrante hid, int espessura_borda);
+
 #endif

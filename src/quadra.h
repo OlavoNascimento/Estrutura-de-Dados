@@ -42,4 +42,6 @@ const char *quadra_obter_cor_preenchimento(Quadra quad);
 
 const char *quadra_obter_cor_borda(Quadra quad);
 
+void quadra_definir_espessura_borda(Quadra quad, int espessura_borda);
+
 #endif
