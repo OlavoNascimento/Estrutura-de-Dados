@@ -241,6 +241,8 @@ void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista li
                 case TIPO_SEMAFORO:
                     lista_insert_final(lista_semaforos, nova_figura);
                     break;
+                default:
+                    break;
             }
             figuras_criadas++;
         }

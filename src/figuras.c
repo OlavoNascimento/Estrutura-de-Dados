@@ -79,8 +79,6 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
         return;
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    // TODO Remover , e espaço, generalizando a função
-    fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figuraImp));
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_escrever_informacoes(arquivo, figuraImp->cir);

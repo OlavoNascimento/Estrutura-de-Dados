@@ -49,34 +49,14 @@ Figura svg_criar_rotulo(Figura figura) {
     return figura_criar(rotulo, TIPO_TEXTO);
 }
 
-// Transforma as figuras de uma lista em um código svg que as representam, salvando o resultado
-// em um arquivo localizado no caminho específicado.
-void svg_lista_para_svg(Lista lista, Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
-                        Lista lista_semaforos, const char *caminho_svg) {
-    if (caminho_svg == NULL) {
-        fprintf(stderr, "ERRO: Caminho de nulo passado para lista para svg!\n");
-        return;
-    }
-
-    char *caminho_tmp = alterar_sufixo(caminho_svg, 1, ".tmp");
-    FILE *arquivo_tmp = fopen(caminho_tmp, "w");
-    if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado!\n", caminho_tmp);
-        return;
-    }
-
-    // Mantem informações sobre as proporções da imagem svg.
-    ExibicaoSVG exibicao = svg_criar_exibicao();
-
-    // Escreve as informações em um arquivo temporário, já que o parâmetro viewbow precisa ser
-    // substituido após a criação do arquivo.
-    fprintf(arquivo_tmp, "<svg>\n");
+// Escreve uma lista genérica em um arquivo.
+void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
     struct No *atual = lista_get_first(lista);
     while (atual != NULL) {
         Figura figura_atual = lista_get_figura(atual);
         figura_escrever_svg(arquivo_tmp, figura_atual);
         // Atualiza as proporções do svg caso necessário.
-        svg_atualizar_exibicao(&exibicao, figura_atual);
+        svg_atualizar_exibicao(exibicao, figura_atual);
 
         // Checa se a figura atual possui um id.
         if (figura_obter_id(figura_atual) != NULL) {
@@ -89,107 +69,61 @@ void svg_lista_para_svg(Lista lista, Lista lista_quadras, Lista lista_hidrantes,
 
         atual = lista_get_next(lista, atual);
     }
-    // lista_quadras
-    atual = lista_get_first(lista_quadras);
-    while (atual != NULL) {
-        Figura figura_atual = lista_get_figura(atual);
-        figura_escrever_svg(arquivo_tmp, figura_atual);
-        // Atualiza as proporções do svg caso necessário.
-        svg_atualizar_exibicao(&exibicao, figura_atual);
+}
 
-        // Checa se a figura atual possui um id.
-        if (figura_obter_id(figura_atual) != NULL) {
-            // Adiciona um texto com o id no canto superior esquerdo da figura.
-            Figura rotulo = svg_criar_rotulo(figura_atual);
-            // TODO Considerar tamanho do rótulo ao definir proporções do svg
-            figura_escrever_svg(arquivo_tmp, rotulo);
-            figura_destruir(rotulo);
-        }
-
-        atual = lista_get_next(lista_quadras, atual);
-    }
-    // lista_hidrantes
-    atual = lista_get_first(lista_hidrantes);
-    while (atual != NULL) {
-        Figura figura_atual = lista_get_figura(atual);
-        figura_escrever_svg(arquivo_tmp, figura_atual);
-        // Atualiza as proporções do svg caso necessário.
-        svg_atualizar_exibicao(&exibicao, figura_atual);
-
-        // Checa se a figura atual possui um id.
-        if (figura_obter_id(figura_atual) != NULL) {
-            // Adiciona um texto com o id no canto superior esquerdo da figura.
-            Figura rotulo = svg_criar_rotulo(figura_atual);
-            // TODO Considerar tamanho do rótulo ao definir proporções do svg
-            figura_escrever_svg(arquivo_tmp, rotulo);
-            figura_destruir(rotulo);
-        }
-
-        atual = lista_get_next(lista_hidrantes, atual);
-    }
-    // lista_radios
-    atual = lista_get_first(lista_radios);
-    while (atual != NULL) {
-        Figura figura_atual = lista_get_figura(atual);
-        figura_escrever_svg(arquivo_tmp, figura_atual);
-        // Atualiza as proporções do svg caso necessário.
-        svg_atualizar_exibicao(&exibicao, figura_atual);
-
-        // Checa se a figura atual possui um id.
-        if (figura_obter_id(figura_atual) != NULL) {
-            // Adiciona um texto com o id no canto superior esquerdo da figura.
-            Figura rotulo = svg_criar_rotulo(figura_atual);
-            // TODO Considerar tamanho do rótulo ao definir proporções do svg
-            figura_escrever_svg(arquivo_tmp, rotulo);
-            figura_destruir(rotulo);
-        }
-
-        atual = lista_get_next(lista_radios, atual);
-    }
-    // lista_semaforos
-    atual = lista_get_first(lista_semaforos);
-    while (atual != NULL) {
-        Figura figura_atual = lista_get_figura(atual);
-        figura_escrever_svg(arquivo_tmp, figura_atual);
-        // Atualiza as proporções do svg caso necessário.
-        svg_atualizar_exibicao(&exibicao, figura_atual);
-
-        // Checa se a figura atual possui um id.
-        if (figura_obter_id(figura_atual) != NULL) {
-            // Adiciona um texto com o id no canto superior esquerdo da figura.
-            Figura rotulo = svg_criar_rotulo(figura_atual);
-            // TODO Considerar tamanho do rótulo ao definir proporções do svg
-            figura_escrever_svg(arquivo_tmp, rotulo);
-            figura_destruir(rotulo);
-        }
-
-        atual = lista_get_next(lista_semaforos, atual);
-    }
-    fprintf(arquivo_tmp, "</svg>\n");
-    fclose(arquivo_tmp);
-    arquivo_tmp = fopen(caminho_tmp, "r");
+// Escreve as listas passadas para um arquivo svg temporário.
+void escrever_svg_temporario(Lista lista_formas, Lista lista_quadras, Lista lista_hidrantes,
+                             Lista lista_radios, Lista lista_semaforos, const char *caminho_svg_tmp,
+                             ExibicaoSVG *exibicao) {
+    FILE *arquivo_tmp = fopen(caminho_svg_tmp, "w");
     if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser lido!\n", caminho_tmp);
+        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para escrita!\n",
+                caminho_svg_tmp);
         return;
     }
+    // Escreve as informações em um arquivo temporário, já que o parâmetro viewbow precisa ser
+    // substituido após a criação do arquivo.
+    fprintf(arquivo_tmp, "<svg>\n");
 
+    // Escreve todas as listas no arquivo temporário
+    escrever_lista(lista_formas, arquivo_tmp, exibicao);
+    escrever_lista(lista_quadras, arquivo_tmp, exibicao);
+    escrever_lista(lista_hidrantes, arquivo_tmp, exibicao);
+    escrever_lista(lista_radios, arquivo_tmp, exibicao);
+    escrever_lista(lista_semaforos, arquivo_tmp, exibicao);
+
+    fprintf(arquivo_tmp, "</svg>\n");
+    fclose(arquivo_tmp);
+}
+
+// Copia o arquivo temporário com exceção de sua primeira linha, a qual é substituida por uma tag
+// <svg> com o atributo viewbox definido.
+void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho_svg_tmp,
+                              ExibicaoSVG *exibicao) {
     // Abre o arquivo final para escrita
-    FILE *arquivo_svg = fopen(caminho_svg, "w");
+    FILE *arquivo_svg = fopen(caminho_svg_final, "w");
     if (arquivo_svg == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado!\n", caminho_svg);
+        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado!\n", caminho_svg_final);
+        return;
+    }
+    // Abre o arquivo temporario para leitura
+    FILE *arquivo_tmp = fopen(caminho_svg_tmp, "r");
+    if (arquivo_tmp == NULL) {
+        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para leitura!\n",
+                caminho_svg_tmp);
         return;
     }
 
     // Coordenada x da origem é a figura mais a esquerda.
-    double svg_origem_x = exibicao.origem_x - SVG_MARGEM;
+    double svg_origem_x = exibicao->origem_x - SVG_MARGEM;
     // Coordenada y da origem é a figura mais acima.
-    double svg_origem_y = exibicao.origem_y - SVG_MARGEM;
-    // Largura é a figura mais a direita. A largura do svg deve ser alterada para utilizar a nova
-    // origem como base.
-    double svg_largura = exibicao.largura - exibicao.origem_x + 2 * SVG_MARGEM;
-    // Altura é a figura mais abaixo. A largura do svg deve ser alterada para utilizar a nova origem
-    // como base.
-    double svg_altura = exibicao.altura - exibicao.origem_y + 2 * SVG_MARGEM;
+    double svg_origem_y = exibicao->origem_y - SVG_MARGEM;
+    // Coordenada largura é a figura mais a direita. A largura do svg deve ser alterada para
+    // utilizar a nova origem como base.
+    double svg_largura = exibicao->largura - exibicao->origem_x + 2 * SVG_MARGEM;
+    // Coordenada altura é a figura mais a abaixo. A largura do svg deve ser alterada para utilizar
+    // a nova origem como base.
+    double svg_altura = exibicao->altura - exibicao->origem_y + 2 * SVG_MARGEM;
 
     // Utiliza o atributo viewbox para garantir que todas as figuras possam ser vistas no arquivo
     // svg.
@@ -207,9 +141,32 @@ void svg_lista_para_svg(Lista lista, Lista lista_quadras, Lista lista_hidrantes,
     }
 
     fclose(arquivo_tmp);
+    fclose(arquivo_svg);
+}
+
+// Transforma as figuras das listas em um código svg que as representam, salvando o resultado em um
+// arquivo .svg localizado no caminho específicado.
+void svg_lista_para_svg(Lista lista_formas, Lista lista_quadras, Lista lista_hidrantes,
+                        Lista lista_radios, Lista lista_semaforos, const char *caminho_svg) {
+    if (caminho_svg == NULL) {
+        fprintf(stderr, "ERRO: Caminho de nulo passado para lista para svg!\n");
+        return;
+    }
+
+    // Mantem informações sobre as proporções da imagem svg.
+    ExibicaoSVG exibicao = svg_criar_exibicao();
+
+    // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
+    char *caminho_tmp = alterar_sufixo(caminho_svg, 1, ".tmp");
+    // Svg temporário criado para anotar as proporções necessárias pelo svg final.
+    escrever_svg_temporario(lista_formas, lista_quadras, lista_hidrantes, lista_radios,
+                            lista_semaforos, caminho_tmp, &exibicao);
+
+    // Svg final com a propriedade viewbox definida.
+    escrever_svg_com_viewbox(caminho_svg, caminho_tmp, &exibicao);
+
     // Deleta o arquivo temporário
     remove(caminho_tmp);
     free(caminho_tmp);
-
-    fclose(arquivo_svg);
 }
+
