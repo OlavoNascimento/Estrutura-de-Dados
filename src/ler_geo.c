@@ -179,7 +179,6 @@ void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista li
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
         return;
     }
-    int tipo = -2;
 
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
@@ -222,40 +221,28 @@ void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista li
         }
 
         if (nova_figura != NULL) {
-            tipo = figura_obter_tipo(nova_figura);
+            TiposFigura tipo = figura_obter_tipo(nova_figura);
             switch (tipo) {
-                case 0:  // circulo
+                case TIPO_CIRCULO:
+                case TIPO_LINHA:
+                case TIPO_RETANGULO:
+                case TIPO_TEXTO:
                     lista_insert_final(lista, nova_figura);
-                    figuras_criadas++;
                     break;
-                case 1:  // hidrante
+                case TIPO_HIDRANTE:
                     lista_insert_final(lista_hidrantes, nova_figura);
                     break;
-                case 2:  // linha
-                    lista_insert_final(lista, nova_figura);
-                    figuras_criadas++;
-                    break;
-                case 3:  // quadra
+                case TIPO_QUADRA:
                     lista_insert_final(lista_quadras, nova_figura);
                     break;
-                case 4:  // radio
+                case TIPO_RADIO:
                     lista_insert_final(lista_radios, nova_figura);
                     break;
-                case 5:  // retangulo
-                    lista_insert_final(lista, nova_figura);
-                    figuras_criadas++;
-                    break;
-                case 6:  // semaforo
+                case TIPO_SEMAFORO:
                     lista_insert_final(lista_semaforos, nova_figura);
-                    figuras_criadas++;
-                    break;
-                case 7:  // texto
-                    lista_insert_final(lista, nova_figura);
-                    figuras_criadas++;
-                    break;
-                default:
                     break;
             }
+            figuras_criadas++;
         }
     }
     fclose(arquivo_descricao);
