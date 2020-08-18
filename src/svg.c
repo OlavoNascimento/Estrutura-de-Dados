@@ -51,7 +51,8 @@ Figura svg_criar_rotulo(Figura figura) {
 
 // Transforma as figuras de uma lista em um código svg que as representam, salvando o resultado
 // em um arquivo localizado no caminho específicado.
-void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
+void svg_lista_para_svg(Lista lista, Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
+                        Lista lista_semaforos, const char *caminho_svg) {
     if (caminho_svg == NULL) {
         fprintf(stderr, "ERRO: Caminho de nulo passado para lista para svg!\n");
         return;
@@ -87,6 +88,82 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
         }
 
         atual = lista_get_next(lista, atual);
+    }
+    // lista_quadras
+    atual = lista_get_first(lista_quadras);
+    while (atual != NULL) {
+        Figura figura_atual = lista_get_figura(atual);
+        figura_escrever_svg(arquivo_tmp, figura_atual);
+        // Atualiza as proporções do svg caso necessário.
+        svg_atualizar_exibicao(&exibicao, figura_atual);
+
+        // Checa se a figura atual possui um id.
+        if (figura_obter_id(figura_atual) != NULL) {
+            // Adiciona um texto com o id no canto superior esquerdo da figura.
+            Figura rotulo = svg_criar_rotulo(figura_atual);
+            // TODO Considerar tamanho do rótulo ao definir proporções do svg
+            figura_escrever_svg(arquivo_tmp, rotulo);
+            figura_destruir(rotulo);
+        }
+
+        atual = lista_get_next(lista_quadras, atual);
+    }
+    // lista_hidrantes
+    atual = lista_get_first(lista_hidrantes);
+    while (atual != NULL) {
+        Figura figura_atual = lista_get_figura(atual);
+        figura_escrever_svg(arquivo_tmp, figura_atual);
+        // Atualiza as proporções do svg caso necessário.
+        svg_atualizar_exibicao(&exibicao, figura_atual);
+
+        // Checa se a figura atual possui um id.
+        if (figura_obter_id(figura_atual) != NULL) {
+            // Adiciona um texto com o id no canto superior esquerdo da figura.
+            Figura rotulo = svg_criar_rotulo(figura_atual);
+            // TODO Considerar tamanho do rótulo ao definir proporções do svg
+            figura_escrever_svg(arquivo_tmp, rotulo);
+            figura_destruir(rotulo);
+        }
+
+        atual = lista_get_next(lista_hidrantes, atual);
+    }
+    // lista_radios
+    atual = lista_get_first(lista_radios);
+    while (atual != NULL) {
+        Figura figura_atual = lista_get_figura(atual);
+        figura_escrever_svg(arquivo_tmp, figura_atual);
+        // Atualiza as proporções do svg caso necessário.
+        svg_atualizar_exibicao(&exibicao, figura_atual);
+
+        // Checa se a figura atual possui um id.
+        if (figura_obter_id(figura_atual) != NULL) {
+            // Adiciona um texto com o id no canto superior esquerdo da figura.
+            Figura rotulo = svg_criar_rotulo(figura_atual);
+            // TODO Considerar tamanho do rótulo ao definir proporções do svg
+            figura_escrever_svg(arquivo_tmp, rotulo);
+            figura_destruir(rotulo);
+        }
+
+        atual = lista_get_next(lista_radios, atual);
+    }
+    // lista_semaforos
+    atual = lista_get_first(lista_semaforos);
+    while (atual != NULL) {
+        Figura figura_atual = lista_get_figura(atual);
+        figura_escrever_svg(arquivo_tmp, figura_atual);
+        // Atualiza as proporções do svg caso necessário.
+        svg_atualizar_exibicao(&exibicao, figura_atual);
+
+        // Checa se a figura atual possui um id.
+        if (figura_obter_id(figura_atual) != NULL) {
+            // Adiciona um texto com o id no canto superior esquerdo da figura.
+            Figura rotulo = svg_criar_rotulo(figura_atual);
+            // TODO Considerar tamanho do rótulo ao definir proporções do svg
+            figura_escrever_svg(arquivo_tmp, rotulo);
+            figura_destruir(rotulo);
+        }
+
+        atual = lista_get_next(lista_semaforos, atual);
     }
     fprintf(arquivo_tmp, "</svg>\n");
     fclose(arquivo_tmp);

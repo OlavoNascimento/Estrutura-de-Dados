@@ -172,13 +172,14 @@ Figura ler_texto(const char *linha) {
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
 // elementos de uma lista.
-Lista *ler_geo(const char *caminho_geo) {
+void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista lista_hidrantes,
+             Lista lista_radios, Lista lista_semaforos) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
-        return NULL;
+        return;
     }
-    Lista *lista = lista_create();
+    int tipo = -2;
 
     int figuras_criadas = 0;
     int lista_max_figs = 1000;
@@ -221,11 +222,41 @@ Lista *ler_geo(const char *caminho_geo) {
         }
 
         if (nova_figura != NULL) {
-            lista_insert_final(lista, nova_figura);
-            figuras_criadas++;
+            tipo = figura_obter_tipo(nova_figura);
+            switch (tipo) {
+                case 0:  // circulo
+                    lista_insert_final(lista, nova_figura);
+                    figuras_criadas++;
+                    break;
+                case 1:  // hidrante
+                    lista_insert_final(lista_hidrantes, nova_figura);
+                    break;
+                case 2:  // linha
+                    lista_insert_final(lista, nova_figura);
+                    figuras_criadas++;
+                    break;
+                case 3:  // quadra
+                    lista_insert_final(lista_quadras, nova_figura);
+                    break;
+                case 4:  // radio
+                    lista_insert_final(lista_radios, nova_figura);
+                    break;
+                case 5:  // retangulo
+                    lista_insert_final(lista, nova_figura);
+                    figuras_criadas++;
+                    break;
+                case 6:  // semaforo
+                    lista_insert_final(lista_semaforos, nova_figura);
+                    figuras_criadas++;
+                    break;
+                case 7:  // texto
+                    lista_insert_final(lista, nova_figura);
+                    figuras_criadas++;
+                    break;
+                default:
+                    break;
+            }
         }
     }
     fclose(arquivo_descricao);
-
-    return lista;
 }
