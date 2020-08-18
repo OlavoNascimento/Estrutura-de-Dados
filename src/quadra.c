@@ -31,15 +31,19 @@ Quadra quadra_ler(const char *linha) {
     return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
-// TODO Definir obter_id
+// Retorna o id de uma quadra
+const char *quadra_obter_id(Quadra qua) {
+    QuadraImp *quaImp = (QuadraImp *) qua;
+    return retangulo_obter_id(quaImp->ret);
+}
 
-// escreve as informações de uma radio base
+// Escreve as informações de uma radio base
 void quadra_escrever_informacoes(FILE *arquivo, Quadra quad) {
     QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_escrever_informacoes(arquivo, quadImp->ret);
 }
 
-// escreve no svg as informações de uma radio base
+// Escreve no svg as informações de uma radio base
 void quadra_escrever_svg(FILE *arquivo, Quadra quad) {
     QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_escrever_svg(arquivo, quadImp->ret);

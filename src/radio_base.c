@@ -30,7 +30,11 @@ Radio radio_ler(const char *linha) {
     return radio_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
-// TODO Definir obter_id
+// Retorna o id de um rádio base.
+const char *radio_obter_id(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_id(radImp->circ);
+}
 
 // Escreve as informações de uma radio base
 void radio_escrever_informacoes(FILE *arquivo, Radio rad) {

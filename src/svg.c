@@ -42,6 +42,7 @@ void svg_atualizar_exibicao(ExibicaoSVG *exi, Figura figura) {
 
 // Cria um texto igual ao id de uma figura.
 Figura svg_criar_rotulo(Figura figura) {
+    // TODO Melhorar a posição do rótulo em relação a figura.
     Texto rotulo = texto_criar("\0", figura_obter_x_inicio(figura) - ROTULO_MARGEM,
                                figura_obter_y_inicio(figura) - ROTULO_MARGEM, "black", "black",
                                figura_obter_id(figura));
@@ -80,7 +81,7 @@ void svg_lista_para_svg(Lista lista, const char *caminho_svg) {
         if (figura_obter_id(figura_atual) != NULL) {
             // Adiciona um texto com o id no canto superior esquerdo da figura.
             Figura rotulo = svg_criar_rotulo(figura_atual);
-            // TODO Considerar tamanho do rótulo ao definir proporções do svg
+            // TODO Considerar tamanho do rótulo ao definir proporções do svg.
             figura_escrever_svg(arquivo_tmp, rotulo);
             figura_destruir(rotulo);
         }

@@ -17,28 +17,29 @@ Hidrante hidrante_criar(char id[100], double raio, double x, double y, char cor_
 // .geo. O parâmetro linha não pode ser nulo.
 Hidrante hidrante_ler(const char *linha);
 
-// Define a cor de borda de um hidrante.
-// O parâmetros cor_borda não pode ser nulo.
-void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda);
-
-// Define a cor de preenchimento de um hidrante.
-// O parâmetros cor_preenchimento não pode ser nulo.
-void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento);
-
-void hidrante_destruir(Hidrante hid);
-
 void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid);
 
 void hidrante_escrever_svg(FILE *arquivo, Hidrante hid);
+
+// Retorna o id de um hidrante
+const char *hidrante_obter_id(Hidrante hid);
 
 double hidrante_obter_y(Hidrante hid);
 
 double hidrante_obter_x(Hidrante hid);
 
 const char *hidrante_obter_cor_preenchimento(Hidrante hid);
+// Define a cor de preenchimento de um hidrante.
+// O parâmetros cor_preenchimento não pode ser nulo.
+void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento);
 
 const char *hidrante_obter_cor_borda(Hidrante hid);
+// Define a cor de borda de um hidrante.
+// O parâmetros cor_borda não pode ser nulo.
+void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda);
 
 void hidrante_definir_espessura_borda(Hidrante hid, int espessura_borda);
+
+void hidrante_destruir(Hidrante hid);
 
 #endif

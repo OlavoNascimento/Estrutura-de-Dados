@@ -1,4 +1,3 @@
-
 #include "semaforo.h"
 
 #include <stdbool.h>
@@ -43,7 +42,11 @@ void semaforo_escrever_svg(FILE *arquivo, Semaforo sema) {
     retangulo_escrever_svg(arquivo, semaImp->sema);
 }
 
-// TODO Definir obter_id
+// Retorna o id de um semaforo.
+const char *semaforo_obter_id(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_id(semImp->sema);
+}
 
 double semaforo_obter_y(Semaforo sem) {
     SemaforoImp *semImp = (SemaforoImp *) sem;

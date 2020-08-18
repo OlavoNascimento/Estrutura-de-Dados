@@ -31,7 +31,11 @@ Hidrante hidrante_ler(const char *linha) {
     return hidrante_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
-// TODO Definir obter_id
+// Retorna o id de um hidrante
+const char *hidrante_obter_id(Hidrante hid) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    return circulo_obter_id(hidImp->circ);
+}
 
 // escreve as informações de um hidrante
 void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid) {

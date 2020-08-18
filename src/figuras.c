@@ -406,11 +406,18 @@ double figura_obter_centro_y(Figura figura) {
 const char *figura_obter_id(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
-        // TODO Adicionar todas as figuras
         case TIPO_CIRCULO:
             return circulo_obter_id(figuraImp->cir);
+        case TIPO_HIDRANTE:
+            return hidrante_obter_id(figuraImp->hid);
+        case TIPO_QUADRA:
+            return quadra_obter_id(figuraImp->qua);
+        case TIPO_RADIO:
+            return radio_obter_id(figuraImp->rad);
         case TIPO_RETANGULO:
             return retangulo_obter_id(figuraImp->ret);
+        case TIPO_SEMAFORO:
+            return semaforo_obter_id(figuraImp->sem);
         case TIPO_TEXTO:
             return texto_obter_id(figuraImp->tex);
         default:
