@@ -182,6 +182,7 @@ void remover_elemento(Lista lista, const char *linha, FILE *arquivo_log) {
     Figura fig = lista_get_figura(no);
 
     fprintf(arquivo_log, "delf %s\n", id);
+    fprintf(arquivo_log, "tipo: %s, ", figura_obter_string_tipo(fig));
     figura_escrever_informacoes(arquivo_log, fig);
     fprintf(arquivo_log, "\n");
     lista_remove_no(lista, no);
@@ -200,6 +201,7 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
         const char *id_atual = figura_obter_id(fig);
 
         fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
+        fprintf(arquivo_log, "tipo: %s, ", figura_obter_string_tipo(fig));
         figura_escrever_informacoes(arquivo_log, fig);
         fprintf(arquivo_log, "\n");
 

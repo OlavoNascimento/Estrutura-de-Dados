@@ -155,11 +155,11 @@ bool circulo_retangulo_checar_interseccao(Circulo cir, Retangulo ret) {
     double deltaX =
         circulo_obter_x(cir) -
         max(retangulo_obter_x(ret),
-            min(circulo_obter_x(ret), retangulo_obter_x(ret) + retangulo_obter_largura(ret)));
+            min(circulo_obter_x(cir), retangulo_obter_x(ret) + retangulo_obter_largura(ret)));
     double deltaY =
         circulo_obter_y(cir) -
         max(retangulo_obter_y(ret),
-            min(circulo_obter_y(ret), retangulo_obter_y(ret) + retangulo_obter_altura(ret)));
+            min(circulo_obter_y(cir), retangulo_obter_y(ret) + retangulo_obter_altura(ret)));
     return (deltaX * deltaX + deltaY * deltaY) <=
            (circulo_obter_raio(cir) * circulo_obter_raio(cir));
 }
