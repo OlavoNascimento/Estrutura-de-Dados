@@ -216,14 +216,19 @@ const char *figura_obter_string_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura.
 void *figura_obter_figura(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    // TODO Adicionar todas as figura
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return figuraImp->cir;
-        case TIPO_LINHA:
-            return figuraImp->lin;
+        case TIPO_HIDRANTE:
+            return figuraImp->hid;
+        case TIPO_QUADRA:
+            return figuraImp->qua;
+        case TIPO_RADIO:
+            return figuraImp->rad;
         case TIPO_RETANGULO:
             return figuraImp->ret;
+        case TIPO_SEMAFORO:
+            return figuraImp->sem;
         case TIPO_TEXTO:
             return figuraImp->tex;
         default:

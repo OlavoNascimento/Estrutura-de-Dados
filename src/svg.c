@@ -72,9 +72,9 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
 }
 
 // Escreve as listas passadas para um arquivo svg temporário.
-void escrever_svg_temporario(Lista lista_formas, Lista lista_quadras, Lista lista_hidrantes,
-                             Lista lista_radios, Lista lista_semaforos, const char *caminho_svg_tmp,
-                             ExibicaoSVG *exibicao) {
+void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao, Lista lista_formas,
+                             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
+                             Lista lista_semaforos) {
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "w");
     if (arquivo_tmp == NULL) {
         fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para escrita!\n",
@@ -109,8 +109,7 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
     // Abre o arquivo temporario para leitura
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "r");
     if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para leitura!\n",
-                caminho_svg_tmp);
+        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser lido!\n", caminho_svg_tmp);
         return;
     }
 
@@ -127,17 +126,17 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
 
     // Utiliza o atributo viewbox para garantir que todas as figuras possam ser vistas no arquivo
     // svg.
-    int count = 0;
+    int numero_linha = 0;
     char linha[LINHA_MAX];
     while ((fgets(linha, LINHA_MAX, arquivo_tmp)) != NULL) {
         // Substitui a primeira linha, no caso a tag <svg> com uma nova tag <svg> que possui o
         // atributo viewbox definido.
-        if (count == 0)
+        if (numero_linha == 0)
             fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf'>\n", svg_origem_x, svg_origem_y,
                     svg_largura, svg_altura);
         else
             fprintf(arquivo_svg, "%s", linha);
-        count++;
+        numero_linha++;
     }
 
     fclose(arquivo_tmp);
@@ -146,8 +145,8 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
 
 // Transforma as figuras das listas em um código svg que as representam, salvando o resultado em um
 // arquivo .svg localizado no caminho específicado.
-void svg_lista_para_svg(Lista lista_formas, Lista lista_quadras, Lista lista_hidrantes,
-                        Lista lista_radios, Lista lista_semaforos, const char *caminho_svg) {
+void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista_quadras,
+                        Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
     if (caminho_svg == NULL) {
         fprintf(stderr, "ERRO: Caminho de nulo passado para lista para svg!\n");
         return;
@@ -159,8 +158,8 @@ void svg_lista_para_svg(Lista lista_formas, Lista lista_quadras, Lista lista_hid
     // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
     char *caminho_tmp = alterar_sufixo(caminho_svg, 1, ".tmp");
     // Svg temporário criado para anotar as proporções necessárias pelo svg final.
-    escrever_svg_temporario(lista_formas, lista_quadras, lista_hidrantes, lista_radios,
-                            lista_semaforos, caminho_tmp, &exibicao);
+    escrever_svg_temporario(caminho_tmp, &exibicao, lista_formas, lista_quadras, lista_hidrantes,
+                            lista_radios, lista_semaforos);
 
     // Svg final com a propriedade viewbox definida.
     escrever_svg_com_viewbox(caminho_svg, caminho_tmp, &exibicao);

@@ -1,5 +1,6 @@
 #include "ler_qry.h"
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -214,9 +215,43 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     }
 }
 
+void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arquivo_log) {
+    double cirX, cirY, raio;
+    char cor_borda[20];
+    sscanf(linha, "cbq %lf %lf %lf %s", &cirX, &cirY, &raio, cor_borda);
+
+    No atual = lista_get_first(lista_quadras);
+    while (atual != NULL) {
+        Figura quadra = lista_get_figura(atual);
+
+        bool contido = true;
+        if (figura_obter_x_inicio(quadra) < cirX - raio || figura_obter_x_fim(quadra) > cirX + raio)
+            contido = false;
+        if (figura_obter_y_inicio(quadra) < cirY - raio || figura_obter_y_fim(quadra) > cirY + raio)
+            contido = false;
+
+        double diagonal_quadra =
+            sqrt(pow(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra), 2) +
+                 pow(figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra), 2));
+        // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
+        if (diagonal_quadra > 2 * raio) {
+            contido = false;
+        }
+
+        if (contido) {
+            figura_definir_cor_borda(quadra, cor_borda);
+            fprintf(arquivo_log, "%s\n", figura_obter_id(quadra));
+        }
+
+        atual = lista_get_next(lista_quadras, atual);
+    }
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
-void ler_qry(Lista lista, const char *caminho_qry, const char *caminho_log) {
+void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_formas,
+             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
+             Lista lista_semaforos) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
@@ -230,20 +265,22 @@ void ler_qry(Lista lista, const char *caminho_qry, const char *caminho_log) {
 
     char linha[LINHA_MAX];
     while (fgets(linha, LINHA_MAX, arquivo_consulta) != NULL) {
-        char comando[100];
+        char comando[LINHA_MAX];
         sscanf(linha, "%s", comando);
         if (strcmp("o?", comando) == 0) {
-            checar_interseccao(lista, linha, arquivo_log);
+            checar_interseccao(lista_formas, linha, arquivo_log);
         } else if (strcmp("i?", comando) == 0) {
-            checar_ponto_interno(lista, linha, arquivo_log);
+            checar_ponto_interno(lista_formas, linha, arquivo_log);
         } else if (strcmp("pnt", comando) == 0) {
-            alterar_cor(lista, linha, arquivo_log);
+            alterar_cor(lista_formas, linha, arquivo_log);
         } else if (strcmp("pnt*", comando) == 0) {
-            alterar_cores(lista, linha, arquivo_log);
+            alterar_cores(lista_formas, linha, arquivo_log);
         } else if (strcmp("delf", comando) == 0) {
-            remover_elemento(lista, linha, arquivo_log);
+            remover_elemento(lista_formas, linha, arquivo_log);
         } else if (strcmp("delf*", comando) == 0) {
-            remover_elementos(lista, linha, arquivo_log);
+            remover_elementos(lista_formas, linha, arquivo_log);
+        } else if (strcmp("cbq", comando) == 0) {
+            circulo_contem_quadras(lista_quadras, linha, arquivo_log);
         }
     }
 

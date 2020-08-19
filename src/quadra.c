@@ -25,9 +25,9 @@ Quadra quadra_ler(const char *linha) {
     double altura;
     double x;
     double y;
-    char cor_borda[20] = "black";
-    char cor_preenchimento[20] = "black";
-    sscanf(linha, "%*s %s %lf %lf %lf %lf", id, &largura, &altura, &x, &y);
+    char cor_borda[20] = "saddlebrown";
+    char cor_preenchimento[20] = "coral";
+    sscanf(linha, "%*s %s %lf %lf %lf %lf", id, &x, &y, &largura, &altura);
     return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
@@ -97,5 +97,7 @@ void quadra_definir_espessura_borda(Quadra quad, int espessura_borda) {
 }
 
 void quadra_destruir(Quadra quad) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_destruir(quadImp->ret);
     free(quad);
 }

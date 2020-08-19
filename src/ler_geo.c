@@ -22,11 +22,13 @@
 
 typedef struct {
     bool definido;
+    // Alterar para char*
     int espessura_borda;
 } PropriedadesCirculos;
 
 typedef struct {
     bool definido;
+    // Alterar para char*
     int espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
@@ -34,6 +36,7 @@ typedef struct {
 
 typedef struct {
     bool definido;
+    // Alterar para char*
     int espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
@@ -41,11 +44,13 @@ typedef struct {
 
 typedef struct {
     bool definido;
+    // Alterar para char*
     int espessura_borda;
 } PropriedadesRetangulos;
 
 typedef struct {
     bool definido;
+    // Alterar para char*
     int espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
@@ -53,6 +58,7 @@ typedef struct {
 
 typedef struct {
     bool definido;
+    // Alterar para char*
     int espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
@@ -172,8 +178,8 @@ Figura ler_texto(const char *linha) {
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
 // elementos de uma lista.
-void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista lista_hidrantes,
-             Lista lista_radios, Lista lista_semaforos) {
+void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
+             Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
@@ -227,7 +233,7 @@ void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista li
                 case TIPO_LINHA:
                 case TIPO_RETANGULO:
                 case TIPO_TEXTO:
-                    lista_insert_final(lista, nova_figura);
+                    lista_insert_final(lista_formas, nova_figura);
                     break;
                 case TIPO_HIDRANTE:
                     lista_insert_final(lista_hidrantes, nova_figura);

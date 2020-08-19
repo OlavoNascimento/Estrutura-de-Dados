@@ -6,6 +6,7 @@ CC = gcc
 
 # Flags de compilação
 CFLAGS = -fstack-protector-all -std=c99 -W -Wall
+LDFLAGS = -lm
 
 # Recebe todos os arquivos .c
 SOURCES = $(wildcard *.c)
@@ -20,7 +21,7 @@ debug: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	@echo "Criando executável..."
-	$(CC) -o $@ $(OBJECTS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJECTS)
 
 # Específica que cada arquivo .o deve ser gerado a partir
 # de seu correspondente .c
