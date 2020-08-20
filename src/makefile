@@ -21,7 +21,7 @@ debug: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	@echo "Criando executável..."
-	$(CC) $(LDFLAGS) -o $@ $(OBJECTS)
+	$(CC) -o $@ $(OBJECTS) $(LDFLAGS)
 
 # Específica que cada arquivo .o deve ser gerado a partir
 # de seu correspondente .c
@@ -33,3 +33,4 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f *.o
+
