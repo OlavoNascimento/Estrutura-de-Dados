@@ -95,6 +95,9 @@ const char *figura_obter_cor_preenchimento(Figura figura);
 // Nenhum dos argumentos pode ser nulo.
 void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimento);
 
+// Determina o arredondamento da borda de uma figura
+void figura_definir_arredondamento_borda(Figura fig, double raio_borda);
+
 // Libera a memória alocada por uma figura.
 void figura_destruir(Figura figura);
 

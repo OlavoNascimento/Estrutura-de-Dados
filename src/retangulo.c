@@ -8,6 +8,7 @@
 typedef struct {
     char id[100];
     double largura;
+    double rx;
     double altura;
     double x;
     double y;
@@ -26,6 +27,7 @@ Retangulo retangulo_criar(char id[100], double largura, double altura, double x,
     retImp->altura = altura;
     retImp->x = x;
     retImp->y = y;
+    retImp->rx = 0;
     strcpy(retImp->cor_borda, cor_borda);
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
     retImp->espassamento_borda = 0;
@@ -65,9 +67,9 @@ void retangulo_escrever_svg(FILE *arquivo, Retangulo ret) {
     if (strlen(retImp->id) > 0)
         fprintf(arquivo, " id='%s'", retImp->id);
 
-    fprintf(arquivo, " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s'",
+    fprintf(arquivo, " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf'",
             retImp->largura, retImp->altura, retImp->x, retImp->y, retImp->cor_borda,
-            retImp->cor_preenchimento);
+            retImp->cor_preenchimento, retImp->rx);
 
     // Caso a borda do retângulo seja diferente do padrão
     if (retImp->espessura_borda != 0)
@@ -201,6 +203,11 @@ int retangulo_obter_espassamento_borda(Retangulo ret) {
 void retangulo_definir_espassamento_borda(Retangulo ret, int espassamento_borda) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->espassamento_borda = espassamento_borda;
+}
+
+void retangulo_definir_arredondamento_borda(Retangulo ret, double raio_borda) {
+    RetanguloImp *retImp = (RetanguloImp *) ret;
+    retImp->rx = raio_borda;
 }
 
 void retangulo_destruir(Retangulo ret) {

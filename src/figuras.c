@@ -565,6 +565,11 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
     }
 }
 
+void figura_definir_arredondamento_borda(Figura fig, double raio_borda) {
+    FiguraImp *figuraImp = (FiguraImp *) fig;
+    quadra_definir_arredondamento_borda(figuraImp->qua, raio_borda);
+}
+
 // Libera a memória alocada por uma figura.
 void figura_destruir(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;

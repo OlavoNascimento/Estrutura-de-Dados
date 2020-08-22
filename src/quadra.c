@@ -96,6 +96,11 @@ void quadra_definir_espessura_borda(Quadra quad, int espessura_borda) {
     retangulo_definir_espessura_borda(quadImp->ret, espessura_borda);
 }
 
+void quadra_definir_arredondamento_borda(Quadra quad, double raio_borda) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    retangulo_definir_arredondamento_borda(quadImp->ret, raio_borda);
+}
+
 void quadra_destruir(Quadra quad) {
     QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_destruir(quadImp->ret);

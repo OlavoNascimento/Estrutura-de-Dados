@@ -75,6 +75,9 @@ int retangulo_obter_espassamento_borda(Retangulo ret);
 // Define o espaçamento da borda de um retângulo.
 void retangulo_definir_espassamento_borda(Retangulo ret, int espassamento_borda);
 
+// Define o raio de arredondamento da borda do retangulo
+void retangulo_definir_arredondamento_borda(Retangulo ret, double raio_borda);
+
 void retangulo_destruir(Retangulo ret);
 
 #endif

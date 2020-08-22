@@ -8,4 +8,7 @@ double max(double a, double b);
 // Retorna o menor valor de dois parâmetros
 double min(double a, double b);
 
+// calcula a hipotenusa com dois catetos passados por parametro
+// retorna a hipotenusa
+double pitagoras(double cat1, double cat2);
 #endif
