@@ -24,22 +24,28 @@ void hidrante_escrever_svg(FILE *arquivo, Hidrante hid);
 // Retorna o id de um hidrante
 const char *hidrante_obter_id(Hidrante hid);
 
+// Retorna a coordenada y de um hidrante.
 double hidrante_obter_y(Hidrante hid);
-
+// Retorna a coordenada x de um hidrante.
 double hidrante_obter_x(Hidrante hid);
 
+// Retorna a cor de preenchimento de um hidrante.
 const char *hidrante_obter_cor_preenchimento(Hidrante hid);
 // Define a cor de preenchimento de um hidrante.
 // O parâmetros cor_preenchimento não pode ser nulo.
 void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento);
 
+// Retorna a cor da borda de um hidrante.
 const char *hidrante_obter_cor_borda(Hidrante hid);
 // Define a cor de borda de um hidrante.
 // O parâmetros cor_borda não pode ser nulo.
 void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda);
 
+// Define a espessura da borda de um hidrante.
+// O parâmetro espessura_borda não pode ser nulo.
 void hidrante_definir_espessura_borda(Hidrante hid, int espessura_borda);
 
+// Libera a memória alocado para um hidrante.
 void hidrante_destruir(Hidrante hid);
 
 #endif

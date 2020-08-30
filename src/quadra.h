@@ -52,10 +52,9 @@ void quadra_definir_cor_borda(Quadra quad, const char *cor_borda);
 // define a espessura da borda de uma quadra
 void quadra_definir_espessura_borda(Quadra quad, int espessura_borda);
 
-// libera o espaço de memória alocado para uma quadra
-void quadra_destruir(Quadra quad);
-
 // Define o raio de arredondamento da borda de uma quadra
 void quadra_definir_arredondamento_borda(Quadra quad, double raio_borda);
 
+// libera a memória alocado para uma quadra
+void quadra_destruir(Quadra quad);
 #endif

@@ -22,8 +22,8 @@
 
 // Cria o texto "sobrepoe" no centro de um retângulo.
 Figura criar_texto_sobreposicao(Figura contorno) {
-    Texto aviso = texto_criar("\0", figura_obter_centro_x(contorno),
-                              figura_obter_centro_y(contorno), "None", "Black", "sobrepoe");
+    Texto aviso = texto_criar("", figura_obter_centro_x(contorno), figura_obter_centro_y(contorno),
+                              "None", "Black", "sobrepoe");
 
     return figura_criar(aviso, TIPO_TEXTO);
 }
@@ -31,7 +31,7 @@ Figura criar_texto_sobreposicao(Figura contorno) {
 // Cria um retângulo com coordenadas e dimensões necessárias para envolver duas figuras.
 Figura *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
     Retangulo contorno = retangulo_criar(
-        "\0", 0, 0,
+        "", 0, 0,
         // Coordenada x do contorno é a menor coordenada x entre as duas figuras.
         min(figura_obter_x_inicio(figura1), figura_obter_x_inicio(figura2)) - MARGEM_CONTORNO,
         // Coordenada y do contorno é a menor coordenada y entre as duas figuras.
@@ -86,7 +86,7 @@ void checar_interseccao(Lista lista, const char *linha, FILE *arquivo_log) {
 
 // Cria um círculo com as coordenadas especificadas e com cores que dependem de um valor booleano.
 Figura criar_ponto(double ponto_x, double ponto_y, bool interno) {
-    Circulo ponto = circulo_criar("\0", 1, ponto_x, ponto_y, interno ? "blue" : "magenta",
+    Circulo ponto = circulo_criar("", 1, ponto_x, ponto_y, interno ? "blue" : "magenta",
                                   interno ? "blue" : "magenta");
     return figura_criar(ponto, TIPO_CIRCULO);
 }
@@ -215,24 +215,276 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     }
 }
 
+void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *lista_semaforos,
+                         Lista *lista_radios, Lista *lista_formas, const char *linha,
+                         FILE *arquivo_log) {
+    double raio;
+    double cir_x, cir_y;
+    char id[100];
+    char id_remove[100];
+    char c;
+    No figura_id = NULL;
+    No no_remove;
+    Figura figura;
+
+    sscanf(linha, "%*s %c", &c);
+
+    No atual = lista_get_first(lista_quadras);
+    if (c == '#') {
+        sscanf(linha, "%*s %*c %s %lf ", id, &raio);
+
+        No figura_id = lista_get_no(lista_hidrantes, id);
+        if (figura_id == NULL)
+            figura_id = lista_get_no(lista_radios, id);
+        if (figura_id == NULL)
+            figura_id = lista_get_no(lista_semaforos, id);
+        if (figura_id == NULL) {
+            fprintf(
+                stderr,
+                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
+                id);
+            return;
+        }
+        figura = lista_get_figura(figura_id);
+        cir_x = figura_obter_centro_x(figura);
+        cir_y = figura_obter_centro_y(figura);
+
+        while (atual != NULL) {
+            Figura quadra = lista_get_figura(atual);
+
+            bool contido = true;
+            if (figura_obter_y_fim(quadra) <= cir_y) {
+                // primeiro e segundo quadrante
+                if (figura_obter_x_inicio(quadra) >= cir_x) {
+                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
+                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                } else if (figura_obter_x_fim(quadra) <= cir_x) {
+                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
+                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                }
+            } else if (figura_obter_y_inicio(quadra) >= cir_y) {
+                // terceiro e quarto quadrante
+                if (figura_obter_x_fim(quadra) <= cir_x) {
+                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
+                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                } else if (figura_obter_x_inicio(quadra) >= cir_x) {
+                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
+                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                }
+            }
+
+            double diagonal_quadra =
+                pitagoras(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra),
+                          figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra));
+            // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
+            if (diagonal_quadra > 2 * raio) {
+                contido = false;
+            }
+
+            if (contido) {
+                figura_definir_cor_borda(quadra, "olive");
+                figura_definir_cor_preenchimento(quadra, "beige");
+                figura_definir_arredondamento_borda(quadra, 20);
+                fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
+                        figura_obter_id(figura), cir_x, cir_y);
+            }
+
+            atual = lista_get_next(lista_quadras, atual);
+        }
+    } else {
+        sscanf(linha, "%*s %s %lf ", id, &raio);
+
+        do {
+            figura_id = lista_get_no(lista_hidrantes, id);
+            if (figura_id != NULL)
+                break;
+            figura_id = lista_get_no(lista_semaforos, id);
+            if (figura_id != NULL)
+                break;
+            figura_id = lista_get_no(lista_radios, id);
+            if (figura_id != NULL)
+                break;
+            figura_id = NULL;
+            fprintf(
+                stderr,
+                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
+                id);
+            return;
+        } while (figura_id != NULL);
+        figura = lista_get_figura(figura_id);
+        cir_x = figura_obter_centro_x(figura);
+        cir_y = figura_obter_centro_y(figura);
+
+        while (atual != NULL) {
+            Figura quadra = lista_get_figura(atual);
+
+            bool contido = true;
+            if (figura_obter_y_fim(quadra) <= cir_y) {
+                // primeiro e segundo quadrante
+                if (figura_obter_x_inicio(quadra) >= cir_x) {
+                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
+                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                } else if (figura_obter_x_fim(quadra) <= cir_x) {
+                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
+                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                }
+            } else if (figura_obter_y_inicio(quadra) >= cir_y) {
+                // terceiro e quarto quadrante
+                if (figura_obter_x_fim(quadra) <= cir_x) {
+                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
+                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                } else if (figura_obter_x_inicio(quadra) >= cir_x) {
+                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
+                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+
+                    double hipotenusa = pitagoras(cateto1, cateto2);
+                    if (hipotenusa > raio) {
+                        contido = false;
+                    }
+                }
+            }
+
+            double diagonal_quadra =
+                pitagoras(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra),
+                          figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra));
+            // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
+            if (diagonal_quadra > 2 * raio) {
+                contido = false;
+            }
+
+            if (contido) {
+                strcpy(id_remove, figura_obter_id(quadra));
+                no_remove = lista_get_no(lista_quadras, id_remove);
+                lista_remove_no(lista_quadras, no_remove);
+
+                fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
+                        figura_obter_id(figura), cir_x, cir_y);
+            }
+
+            atual = lista_get_next(lista_quadras, atual);
+        }
+    }
+    Figura nova_figura;
+    Circulo desenho_raio = circulo_criar("", raio, cir_x, cir_y, "black", "none");
+    circulo_definir_espessura_borda(desenho_raio, 2);
+    nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
+    lista_insert_final(lista_formas, nova_figura);
+}
+
+void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *lista_hidrantes,
+                               Lista *lista_semaforos, Lista *lista_radios, Lista *lista_formas,
+                               FILE *arquivo_log) {
+    char id[100];
+    sscanf(linha, "del %s\n", id);
+    No figura_id;
+    Figura figura;
+    TiposFigura tipo;
+
+    No no_id = lista_get_no(lista_quadras, id);
+    if (no_id == NULL)
+        no_id = lista_get_no(lista_hidrantes, id);
+    if (no_id == NULL)
+        no_id = lista_get_no(lista_radios, id);
+    if (no_id == NULL)
+        no_id = lista_get_no(lista_semaforos, id);
+    if (no_id == NULL) {
+        fprintf(stderr,
+                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
+                id);
+        return;
+    }
+    figura = lista_get_figura(figura_id);
+
+    double centro_x = figura_obter_centro_x(figura);
+    double centro_y = figura_obter_centro_y(figura);
+
+    double x_inicio = figura_obter_x_inicio(figura);
+    double y_inicio = figura_obter_y_inicio(figura);
+    fprintf(arquivo_log, "id = %s, x = %lf, y = %lf\n", id, x_inicio, y_inicio);
+
+    tipo = figura_obter_tipo(figura);
+
+    switch (tipo) {
+        case TIPO_SEMAFORO:
+            lista_remove_no(lista_semaforos, figura_id);
+            break;
+        case TIPO_QUADRA:
+            lista_remove_no(lista_quadras, figura_id);
+            break;
+        case TIPO_RADIO:
+            lista_remove_no(lista_radios, figura_id);
+            break;
+        case TIPO_HIDRANTE:
+            lista_remove_no(lista_hidrantes, figura_id);
+            break;
+        default:
+            break;
+    }
+
+    Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black", "black");
+    Figura nova_figura = figura_criar(linha_vertical, TIPO_LINHA);
+    lista_insert_final(lista_formas, nova_figura);
+
+    Texto rotulo = texto_criar("", centro_x + 1, 0, "black", "black", id);
+    Figura texto_figura = figura_criar(rotulo, TIPO_TEXTO);
+    lista_insert_final(lista_formas, texto_figura);
+}
+
 void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arquivo_log) {
-    double cirX, cirY, raio;
+    double cir_x, cir_y, raio;
     char cor_borda[20];
-    sscanf(linha, "cbq %lf %lf %lf %s", &cirX, &cirY, &raio, cor_borda);
+    sscanf(linha, "cbq %lf %lf %lf %s", &cir_x, &cir_y, &raio, cor_borda);
 
     No atual = lista_get_first(lista_quadras);
     while (atual != NULL) {
         Figura quadra = lista_get_figura(atual);
 
         bool contido = true;
-        if (figura_obter_x_inicio(quadra) < cirX - raio || figura_obter_x_fim(quadra) > cirX + raio)
+        if (figura_obter_x_inicio(quadra) < cir_x - raio ||
+            figura_obter_x_fim(quadra) > cir_x + raio)
             contido = false;
-        if (figura_obter_y_inicio(quadra) < cirY - raio || figura_obter_y_fim(quadra) > cirY + raio)
+        if (figura_obter_y_inicio(quadra) < cir_y - raio ||
+            figura_obter_y_fim(quadra) > cir_y + raio)
             contido = false;
 
         double diagonal_quadra =
-            sqrt(pow(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra), 2) +
-                 pow(figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra), 2));
+            pitagoras(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra),
+                      figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra));
         // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
         if (diagonal_quadra > 2 * raio) {
             contido = false;
@@ -247,203 +499,29 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
     }
 }
 
-void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *lista_semaforos,
-                         Lista *lista_radios, Lista *lista_formas, const char *linha,
-                         FILE *arquivo_log) {
-    double raio;
-    double cirX, cirY;
+void informacoes_equipamento_urbano(Lista lista_formas, Lista lista_quadras, Lista lista_hidrantes,
+                                    Lista lista_radios, Lista lista_semaforos, const char *linha,
+                                    FILE *arquivo_log) {
     char id[100];
-    char id_remove[100];
-    char c;
-    No figura_id = NULL;
-    No no_remove;
-    Figura figura;
+    sscanf(linha, "crd? %s", id);
 
-    sscanf(linha, "%*s %c", &c);
-
-    No atual = lista_get_first(lista_quadras);
-    if (c == '#') {
-        sscanf(linha, "%*s %*c %s %lf ", id, &raio);
-
-        do {
-            figura_id = lista_get_no(lista_hidrantes, id);
-            if (figura_id != NULL) {
-                break;
-            }
-            figura_id = lista_get_no(lista_semaforos, id);
-            if (figura_id != NULL) {
-                break;
-            }
-            figura_id = lista_get_no(lista_radios, id);
-            if (figura_id != NULL) {
-                break;
-            }
-            figura_id = NULL;
-            // TODO adicionar erro, figura não encontrada nos equipamentos urbanos
-            return;
-        } while (figura_id != NULL);
-        figura = lista_get_figura(figura_id);
-        cirX = figura_obter_centro_x(figura);
-        cirY = figura_obter_centro_y(figura);
-
-        while (atual != NULL) {
-            Figura quadra = lista_get_figura(atual);
-
-            bool contido = true;
-            if (figura_obter_y_fim(quadra) <= cirY) {
-                // primeiro e segundo quadrante
-                if (figura_obter_x_inicio(quadra) >= cirX) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cirX;
-                    double cateto2 = cirY - figura_obter_y_inicio(quadra);
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_fim(quadra) <= cirX) {
-                    double cateto1 = cirX - figura_obter_x_inicio(quadra);
-                    double cateto2 = cirY - figura_obter_y_inicio(quadra);
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
-            } else if (figura_obter_y_inicio(quadra) >= cirY) {
-                // terceiro e quarto quadrante
-                if (figura_obter_x_fim(quadra) <= cirX) {
-                    double cateto1 = cirX - figura_obter_x_inicio(quadra);
-                    double cateto2 = figura_obter_y_fim(quadra) - cirY;
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_inicio(quadra) >= cirX) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cirX;
-                    double cateto2 = figura_obter_y_fim(quadra) - cirY;
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
-            }
-
-            double diagonal_quadra =
-                sqrt(pow(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra), 2) +
-                     pow(figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra), 2));
-            // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
-            if (diagonal_quadra > 2 * raio) {
-                contido = false;
-            }
-
-            if (contido) {
-                figura_definir_cor_borda(quadra, "olive");
-                figura_definir_cor_preenchimento(quadra, "beige");
-                figura_definir_arredondamento_borda(quadra, 20);
-                fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
-                        figura_obter_id(figura), cirX, cirY);
-            }
-
-            atual = lista_get_next(lista_quadras, atual);
-        }
-    } else {
-        sscanf(linha, "%*s %s %lf ", id, &raio);
-
-        do {
-            figura_id = lista_get_no(lista_hidrantes, id);
-            if (figura_id != NULL) {
-                printf("hidrante\n");
-                break;
-            }
-            figura_id = lista_get_no(lista_semaforos, id);
-            if (figura_id != NULL) {
-                printf("semaforo\n");
-                break;
-            }
-            figura_id = lista_get_no(lista_radios, id);
-            if (figura_id != NULL) {
-                printf("radios\n");
-                break;
-            }
-            figura_id = NULL;
-            // TODO adicionar erro, figura não encontrada nos equipamentos urbanos
-            return;
-        } while (figura_id != NULL);
-        figura = lista_get_figura(figura_id);
-        cirX = figura_obter_centro_x(figura);
-        cirY = figura_obter_centro_y(figura);
-
-        while (atual != NULL) {
-            Figura quadra = lista_get_figura(atual);
-
-            bool contido = true;
-            if (figura_obter_y_fim(quadra) <= cirY) {
-                // primeiro e segundo quadrante
-                if (figura_obter_x_inicio(quadra) >= cirX) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cirX;
-                    double cateto2 = cirY - figura_obter_y_inicio(quadra);
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_fim(quadra) <= cirX) {
-                    double cateto1 = cirX - figura_obter_x_inicio(quadra);
-                    double cateto2 = cirY - figura_obter_y_inicio(quadra);
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
-            } else if (figura_obter_y_inicio(quadra) >= cirY) {
-                // terceiro e quarto quadrante
-                if (figura_obter_x_fim(quadra) <= cirX) {
-                    double cateto1 = cirX - figura_obter_x_inicio(quadra);
-                    double cateto2 = figura_obter_y_fim(quadra) - cirY;
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_inicio(quadra) >= cirX) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cirX;
-                    double cateto2 = figura_obter_y_fim(quadra) - cirY;
-
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
-            }
-
-            double diagonal_quadra =
-                sqrt(pow(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra), 2) +
-                     pow(figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra), 2));
-            // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
-            if (diagonal_quadra > 2 * raio) {
-                contido = false;
-            }
-
-            if (contido) {
-                strcpy(id_remove, figura_obter_id(quadra));
-                no_remove = lista_get_no(lista_quadras, id_remove);
-                lista_remove_no(lista_quadras, no_remove);
-
-                fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
-                        figura_obter_id(figura), cirX, cirY);
-            }
-
-            atual = lista_get_next(lista_quadras, atual);
-        }
+    No no_id = lista_get_no(lista_quadras, id);
+    if (no_id == NULL)
+        no_id = lista_get_no(lista_hidrantes, id);
+    if (no_id == NULL)
+        no_id = lista_get_no(lista_radios, id);
+    if (no_id == NULL)
+        no_id = lista_get_no(lista_semaforos, id);
+    if (no_id == NULL) {
+        fprintf(stderr,
+                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
+                id);
+        return;
     }
-    Figura nova_figura;
-    Circulo desenho_raio = circulo_criar("", raio, cirX, cirY, "black", "none");
-    circulo_definir_espessura_borda(desenho_raio, 2);
-    nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
-    lista_insert_final(lista_formas, nova_figura);
+
+    Figura equipamento = lista_get_figura(no_id);
+    fprintf(arquivo_log, "x: %lf, y: %ld, tipo: %s\n", figura_obter_x_inicio(equipamento),
+            figura_obter_y_inicio(equipamento), figura_obter_string_tipo(equipamento));
 }
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
@@ -478,11 +556,17 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
             remover_elemento(lista_formas, linha, arquivo_log);
         } else if (strcmp("delf*", comando) == 0) {
             remover_elementos(lista_formas, linha, arquivo_log);
-        } else if (strcmp("cbq", comando) == 0) {
-            circulo_contem_quadras(lista_quadras, linha, arquivo_log);
         } else if (strcmp("dq", comando) == 0) {
             raio_remove_quadras(lista_quadras, lista_hidrantes, lista_semaforos, lista_radios,
                                 lista_formas, linha, arquivo_log);
+        } else if (strcmp("del", comando) == 0) {
+            remove_equipamento_urbano(linha, lista_quadras, lista_hidrantes, lista_semaforos,
+                                      lista_radios, lista_formas, arquivo_log);
+        } else if (strcmp("cbq", comando) == 0) {
+            circulo_contem_quadras(lista_quadras, linha, arquivo_log);
+        } else if (strcmp("crd?", comando) == 0) {
+            informacoes_equipamento_urbano(lista_formas, lista_quadras, lista_hidrantes,
+                                           lista_radios, lista_semaforos, linha, arquivo_log);
         }
     }
 

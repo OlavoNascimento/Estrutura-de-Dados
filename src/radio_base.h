@@ -24,15 +24,18 @@ void radio_escrever_svg(FILE* arquivo, Radio rad);
 // Retorna o id de um rádio base.
 const char* radio_obter_id(Radio rad);
 
+// Retorna a coordenada y de uma rádio-base.
 double radio_obter_y(Radio rad);
-
+// Define a coordenada x de uma rádio-base.
 double radio_obter_x(Radio rad);
 
+// Retorna a cor de preenchimento de uma rádio-base.
 const char* radio_obter_cor_preenchimento(Radio rad);
 // Define a cor de preenchimento de uma RadioBase.
 // O parâmetros cor_preenchimento não pode ser nulo.
 void radio_definir_cor_preenchimento(Radio rad, const char* cor_preenchimento);
 
+// Retorna a cor da borda de uma rádio-base.
 const char* radio_obter_cor_borda(Radio rad);
 // Define a cor de borda de um RadioBase.
 // O parâmetros cor_borda não pode ser nulo.
