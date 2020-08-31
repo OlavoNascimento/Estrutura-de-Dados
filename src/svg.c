@@ -3,6 +3,7 @@
 #include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "figuras.h"
 #include "lista.h"
@@ -59,7 +60,8 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
         svg_atualizar_exibicao(exibicao, figura_atual);
 
         // Checa se a figura atual possui um id.
-        if (figura_obter_id(figura_atual) != NULL) {
+        if (figura_obter_id(figura_atual) != NULL &&
+            strcmp(figura_obter_id(figura_atual), "") != 0) {
             // Adiciona um texto com o id no canto superior esquerdo da figura.
             Figura rotulo = svg_criar_rotulo(figura_atual);
             // TODO Considerar tamanho do rótulo ao definir proporções do svg.

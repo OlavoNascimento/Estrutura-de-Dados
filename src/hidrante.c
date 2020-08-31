@@ -31,22 +31,29 @@ Hidrante hidrante_ler(const char *linha) {
     return hidrante_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
-// Retorna o id de um hidrante
+// Retorna o id de um hidrante.
 const char *hidrante_obter_id(Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;
     return circulo_obter_id(hidImp->circ);
 }
 
-// escreve as informações de um hidrante
+// Escreve as informações de um hidrante.
 void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;
     circulo_escrever_informacoes(arquivo, hidImp->circ);
 }
 
-// escreve no svg as informações de um hidrante
+// Escreve no svg as informações de um hidrante.
 void hidrante_escrever_svg(FILE *arquivo, Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;
     circulo_escrever_svg(arquivo, hidImp->circ);
+}
+
+// Retorna o raio de um hidrante. Usado apenas para cálculo interno, já que o hidrante é considerado
+// um ponto.
+double hidrante_obter_raio(Hidrante hid) {
+    HidranteImp *hidImp = (HidranteImp *) hid;
+    return circulo_obter_raio(hidImp->circ);
 }
 
 // Retorna a coordenada y de um hidrante. O hidrante é considerado apenas um ponto.
@@ -61,6 +68,7 @@ double hidrante_obter_x(Hidrante hid) {
     return circulo_obter_x(hidImp->circ);
 }
 
+// Retorna a cor de preenchimento de um hidrante.
 const char *hidrante_obter_cor_preenchimento(Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;
     return circulo_obter_cor_preenchimento(hidImp->circ);
@@ -72,6 +80,7 @@ void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchime
     circulo_definir_cor_preenchimento(hidImp->circ, cor_preenchimento);
 }
 
+// Retorna a cor da borda de um hidrante.
 const char *hidrante_obter_cor_borda(Hidrante hid) {
     HidranteImp *hidImp = (HidranteImp *) hid;
     return circulo_obter_cor_borda(hidImp->circ);

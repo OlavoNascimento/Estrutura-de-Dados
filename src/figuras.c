@@ -245,13 +245,13 @@ double figura_obter_x_inicio(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
-            return hidrante_obter_x(figuraImp->hid);  // feito
+            return hidrante_obter_x(figuraImp->hid);
         case TIPO_QUADRA:
-            return quadra_obter_x(figuraImp->qua);  // feito
+            return quadra_obter_x(figuraImp->qua);
         case TIPO_RADIO:
-            return radio_obter_x(figuraImp->rad);  // feito
+            return radio_obter_x(figuraImp->rad);
         case TIPO_SEMAFORO:
-            return semaforo_obter_x(figuraImp->sem);  // feito
+            return semaforo_obter_x(figuraImp->sem);
         case TIPO_LINHA:
             return min(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
         case TIPO_RETANGULO:
@@ -273,13 +273,13 @@ double figura_obter_y_inicio(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
-            return hidrante_obter_y(figuraImp->hid);  // feito
+            return hidrante_obter_y(figuraImp->hid);
         case TIPO_QUADRA:
-            return quadra_obter_y(figuraImp->qua);  // feito
+            return quadra_obter_y(figuraImp->qua);
         case TIPO_RADIO:
-            return radio_obter_y(figuraImp->rad);  // feito
+            return radio_obter_y(figuraImp->rad);
         case TIPO_SEMAFORO:
-            return semaforo_obter_y(figuraImp->sem);  // feito
+            return semaforo_obter_y(figuraImp->sem);
         case TIPO_LINHA:
             return min(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
         case TIPO_RETANGULO:
@@ -301,16 +301,13 @@ double figura_obter_x_fim(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
-            // TODO Corrigir, fim = x + raio
-            return hidrante_obter_x(figuraImp->hid);  // feito
+            return hidrante_obter_x(figuraImp->hid) + hidrante_obter_raio(figuraImp->hid);
         case TIPO_QUADRA:
-            return quadra_obter_x(figuraImp->qua) + quadra_obter_largura(figuraImp->qua);  // feito
+            return quadra_obter_x(figuraImp->qua) + quadra_obter_largura(figuraImp->qua);
         case TIPO_RADIO:
-            // TODO Corrigir, fim = x + raio
-            return radio_obter_x(figuraImp->rad);  // feito
+            return radio_obter_x(figuraImp->rad) + radio_obter_raio(figuraImp->rad);
         case TIPO_SEMAFORO:
-            // TODO Corrigir, fim = x + largura
-            return semaforo_obter_x(figuraImp->sem);  // feito
+            return semaforo_obter_x(figuraImp->sem) + semaforo_obter_largura(figuraImp->sem);
         case TIPO_LINHA:
             return max(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
         case TIPO_RETANGULO:
@@ -333,16 +330,13 @@ double figura_obter_y_fim(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
-            // TODO Corrigir, fim = y + raio
-            return hidrante_obter_y(figuraImp->hid);  // feito
+            return hidrante_obter_y(figuraImp->hid) + hidrante_obter_raio(figuraImp->hid);
         case TIPO_QUADRA:
-            return quadra_obter_y(figuraImp->qua) + quadra_obter_altura(figuraImp->qua);  // feito
+            return quadra_obter_y(figuraImp->qua) + quadra_obter_altura(figuraImp->qua);
         case TIPO_RADIO:
-            // TODO Corrigir, fim = y + raio
-            return radio_obter_y(figuraImp->rad);  // feito
+            return radio_obter_y(figuraImp->rad) + radio_obter_raio(figuraImp->rad);
         case TIPO_SEMAFORO:
-            // TODO Corrigir, fim = y + altura
-            return semaforo_obter_y(figuraImp->sem);  // feito
+            return semaforo_obter_y(figuraImp->sem) + semaforo_obter_altura(figuraImp->sem);
         case TIPO_LINHA:
             return max(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
         case TIPO_RETANGULO:
@@ -370,8 +364,7 @@ double figura_obter_centro_x(Figura figura) {
         case TIPO_RADIO:
             return radio_obter_x(figuraImp->rad);
         case TIPO_SEMAFORO:
-            // TODO Corrigir, fim = x + largura/2
-            return semaforo_obter_x(figuraImp->sem);
+            return semaforo_obter_x(figuraImp->sem) + semaforo_obter_largura(figuraImp->sem) / 2;
         case TIPO_RETANGULO:
             return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret) / 2;
         default:
@@ -394,8 +387,7 @@ double figura_obter_centro_y(Figura figura) {
         case TIPO_RADIO:
             return radio_obter_y(figuraImp->rad);
         case TIPO_SEMAFORO:
-            // TODO Corrigir, fim = y + altura/2
-            return semaforo_obter_y(figuraImp->sem);
+            return semaforo_obter_y(figuraImp->sem) + semaforo_obter_altura(figuraImp->sem) / 2;
         case TIPO_RETANGULO:
             return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret) / 2;
         default:

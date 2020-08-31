@@ -24,6 +24,9 @@ void hidrante_escrever_svg(FILE *arquivo, Hidrante hid);
 // Retorna o id de um hidrante
 const char *hidrante_obter_id(Hidrante hid);
 
+// Retorna o raio de um hidrante. Usado apenas para cálculo interno, já que o hidrante é considerado
+// um ponto.
+double hidrante_obter_raio(Hidrante hid);
 // Retorna a coordenada y de um hidrante.
 double hidrante_obter_y(Hidrante hid);
 // Retorna a coordenada x de um hidrante.

@@ -8,12 +8,12 @@
 typedef struct {
     char id[100];
     double largura;
-    double rx;
     double altura;
     double x;
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
+    double rx;
     int espessura_borda;
     int espassamento_borda;
 } RetanguloImp;
@@ -27,9 +27,9 @@ Retangulo retangulo_criar(char id[100], double largura, double altura, double x,
     retImp->altura = altura;
     retImp->x = x;
     retImp->y = y;
-    retImp->rx = 0;
     strcpy(retImp->cor_borda, cor_borda);
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
+    retImp->rx = 0;
     retImp->espassamento_borda = 0;
     retImp->espessura_borda = 0;
     return retImp;
@@ -121,9 +121,9 @@ double retangulo_obter_largura(Retangulo ret) {
     return retImp->largura;
 }
 
-void retangulo_definir_largura(Retangulo ret, double x1) {
+void retangulo_definir_largura(Retangulo ret, double largura) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    retImp->largura = x1;
+    retImp->largura = largura;
 }
 
 double retangulo_obter_altura(Retangulo ret) {
@@ -131,9 +131,9 @@ double retangulo_obter_altura(Retangulo ret) {
     return retImp->altura;
 }
 
-void retangulo_definir_altura(Retangulo ret, double x1) {
+void retangulo_definir_altura(Retangulo ret, double altura) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    retImp->altura = x1;
+    retImp->altura = altura;
 }
 
 double retangulo_obter_x(Retangulo ret) {
@@ -141,9 +141,9 @@ double retangulo_obter_x(Retangulo ret) {
     return retImp->x;
 }
 
-void retangulo_definir_x(Retangulo ret, double x1) {
+void retangulo_definir_x(Retangulo ret, double x) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    retImp->x = x1;
+    retImp->x = x;
 }
 
 double retangulo_obter_y(Retangulo ret) {
@@ -151,9 +151,9 @@ double retangulo_obter_y(Retangulo ret) {
     return retImp->y;
 }
 
-void retangulo_definir_y(Retangulo ret, double x1) {
+void retangulo_definir_y(Retangulo ret, double y) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    retImp->y = x1;
+    retImp->y = y;
 }
 
 const char *retangulo_obter_cor_borda(Retangulo ret) {

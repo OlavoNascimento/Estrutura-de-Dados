@@ -27,6 +27,11 @@ double semaforo_obter_y(Semaforo sem);
 // Retorna a coordenada x de um semaforo.
 double semaforo_obter_x(Semaforo sem);
 
+// Retorna a largura de um semaforo.
+double semaforo_obter_largura(Semaforo sem);
+// Retorna a altura de um semaforo.
+double semaforo_obter_altura(Semaforo sem);
+
 // Retorna a cor da borda de um semaforo
 const char *semaforo_obter_cor_borda(Semaforo sem);
 // Define a cor de borda de um semaforo.

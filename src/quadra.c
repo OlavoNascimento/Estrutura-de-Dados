@@ -49,16 +49,16 @@ void quadra_escrever_svg(FILE *arquivo, Quadra quad) {
     retangulo_escrever_svg(arquivo, quadImp->ret);
 }
 
-// Retorna a coordenada y de uma quadra.
-double quadra_obter_y(Quadra quad) {
-    QuadraImp *quadImp = (QuadraImp *) quad;
-    return retangulo_obter_y(quadImp->ret);
-}
-
 // Retorna a coordenada x de uma quadra.
 double quadra_obter_x(Quadra quad) {
     QuadraImp *quadImp = (QuadraImp *) quad;
     return retangulo_obter_x(quadImp->ret);
+}
+
+// Retorna a coordenada y de uma quadra.
+double quadra_obter_y(Quadra quad) {
+    QuadraImp *quadImp = (QuadraImp *) quad;
+    return retangulo_obter_y(quadImp->ret);
 }
 
 double quadra_obter_largura(Quadra quad) {

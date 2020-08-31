@@ -24,6 +24,9 @@ void radio_escrever_svg(FILE* arquivo, Radio rad);
 // Retorna o id de um rádio base.
 const char* radio_obter_id(Radio rad);
 
+// Retorna o raio de um radio base. Usado apenas para cálculo interno, já que o radio base é
+// considerado um ponto.
+double radio_obter_raio(Radio rad);
 // Retorna a coordenada y de uma rádio-base.
 double radio_obter_y(Radio rad);
 // Define a coordenada x de uma rádio-base.

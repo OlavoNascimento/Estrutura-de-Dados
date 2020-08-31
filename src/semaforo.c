@@ -30,13 +30,13 @@ Semaforo semaforo_ler(const char *linha) {
     return semaforo_criar(id, 20, 40, x, y, cor_borda, cor_preenchimento);
 }
 
-// escreve as informações de uma radio base
+// Escreve as informações de uma radio base
 void semaforo_escrever_informacoes(FILE *arquivo, Semaforo sema) {
     SemaforoImp *semaImp = (SemaforoImp *) sema;
     retangulo_escrever_informacoes(arquivo, semaImp->sema);
 }
 
-// escreve no svg as informações de uma radio base
+// Escreve no svg as informações de uma radio base
 void semaforo_escrever_svg(FILE *arquivo, Semaforo sema) {
     SemaforoImp *semaImp = (SemaforoImp *) sema;
     retangulo_escrever_svg(arquivo, semaImp->sema);
@@ -48,14 +48,24 @@ const char *semaforo_obter_id(Semaforo sem) {
     return retangulo_obter_id(semImp->sema);
 }
 
+double semaforo_obter_x(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_x(semImp->sema);
+}
+
 double semaforo_obter_y(Semaforo sem) {
     SemaforoImp *semImp = (SemaforoImp *) sem;
     return retangulo_obter_y(semImp->sema);
 }
 
-double semaforo_obter_x(Semaforo sem) {
+double semaforo_obter_largura(Semaforo sem) {
     SemaforoImp *semImp = (SemaforoImp *) sem;
-    return retangulo_obter_x(semImp->sema);
+    return retangulo_obter_largura(semImp->sema);
+}
+
+double semaforo_obter_altura(Semaforo sem) {
+    SemaforoImp *semImp = (SemaforoImp *) sem;
+    return retangulo_obter_altura(semImp->sema);
 }
 
 const char *semaforo_obter_cor_borda(Semaforo sem) {

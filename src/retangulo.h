@@ -37,22 +37,22 @@ void retangulo_definir_id(Retangulo ret, const char *id);
 // Retorna a largura de um retângulo.
 double retangulo_obter_largura(Retangulo ret);
 // Define a largura de um retângulo.
-void retangulo_definir_largura(Retangulo ret, double x1);
+void retangulo_definir_largura(Retangulo ret, double largura);
 
 // Retorna a altura de um retângulo.
 double retangulo_obter_altura(Retangulo ret);
 // Define a largura de um retângulo.
-void retangulo_definir_altura(Retangulo ret, double x1);
+void retangulo_definir_altura(Retangulo ret, double altura);
 
 // Retorna a coordenada x de um retângulo.
 double retangulo_obter_x(Retangulo ret);
 // Define a coordenada x de um retângulo.
-void retangulo_definir_x(Retangulo ret, double x1);
+void retangulo_definir_x(Retangulo ret, double x);
 
 // Retorna a coordenada y de um retângulo.
 double retangulo_obter_y(Retangulo ret);
 // Define a coordenada y de um retângulo.
-void retangulo_definir_y(Retangulo ret, double x1);
+void retangulo_definir_y(Retangulo ret, double y);
 
 // Retorna a cor da borda de um retângulo.
 const char *retangulo_obter_cor_borda(Retangulo ret);

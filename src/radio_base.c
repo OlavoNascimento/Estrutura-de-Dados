@@ -54,6 +54,13 @@ double radio_obter_y(Radio rad) {
     return circulo_obter_y(radImp->circ);
 }
 
+// Retorna o raio de um radio base. Usado apenas para cálculo interno, já que o radio base é
+// considerado um ponto.
+double radio_obter_raio(Radio rad) {
+    RadioBaseImp *radImp = (RadioBaseImp *) rad;
+    return circulo_obter_raio(radImp->circ);
+}
+
 // Retorna a coordenada y de uma radio base. A radio base é considerada apenas um ponto.
 double radio_obter_x(Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;

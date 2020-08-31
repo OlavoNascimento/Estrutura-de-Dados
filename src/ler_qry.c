@@ -10,6 +10,8 @@
 #include "linha.h"
 #include "lista.h"
 #include "matematica.h"
+#include "retangulo.h"
+#include "texto.h"
 
 // Tamanho maxímo de um comando do arquivo de consulta.
 #define LINHA_MAX 300
@@ -238,13 +240,8 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             figura_id = lista_get_no(lista_radios, id);
         if (figura_id == NULL)
             figura_id = lista_get_no(lista_semaforos, id);
-        if (figura_id == NULL) {
-            fprintf(
-                stderr,
-                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
-                id);
+        if (figura_id == NULL)
             return;
-        }
         figura = lista_get_figura(figura_id);
         cir_x = figura_obter_centro_x(figura);
         cir_y = figura_obter_centro_y(figura);
@@ -325,10 +322,6 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             if (figura_id != NULL)
                 break;
             figura_id = NULL;
-            fprintf(
-                stderr,
-                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
-                id);
             return;
         } while (figura_id != NULL);
         figura = lista_get_figura(figura_id);
@@ -387,16 +380,17 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
                 contido = false;
             }
 
+            atual = lista_get_next(lista_quadras, atual);
+
             if (contido) {
                 strcpy(id_remove, figura_obter_id(quadra));
                 no_remove = lista_get_no(lista_quadras, id_remove);
-                lista_remove_no(lista_quadras, no_remove);
 
                 fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
                         figura_obter_id(figura), cir_x, cir_y);
-            }
 
-            atual = lista_get_next(lista_quadras, atual);
+                lista_remove_no(lista_quadras, no_remove);
+            }
         }
     }
     Figura nova_figura;
@@ -415,19 +409,15 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
     Figura figura;
     TiposFigura tipo;
 
-    No no_id = lista_get_no(lista_quadras, id);
-    if (no_id == NULL)
-        no_id = lista_get_no(lista_hidrantes, id);
-    if (no_id == NULL)
-        no_id = lista_get_no(lista_radios, id);
-    if (no_id == NULL)
-        no_id = lista_get_no(lista_semaforos, id);
-    if (no_id == NULL) {
-        fprintf(stderr,
-                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
-                id);
+    figura_id = lista_get_no(lista_quadras, id);
+    if (figura_id == NULL)
+        figura_id = lista_get_no(lista_hidrantes, id);
+    if (figura_id == NULL)
+        figura_id = lista_get_no(lista_radios, id);
+    if (figura_id == NULL)
+        figura_id = lista_get_no(lista_semaforos, id);
+    if (figura_id == NULL)
         return;
-    }
     figura = lista_get_figura(figura_id);
 
     double centro_x = figura_obter_centro_x(figura);
@@ -435,7 +425,7 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
 
     double x_inicio = figura_obter_x_inicio(figura);
     double y_inicio = figura_obter_y_inicio(figura);
-    fprintf(arquivo_log, "id = %s, x = %lf, y = %lf\n", id, x_inicio, y_inicio);
+    fprintf(arquivo_log, "id: %s, x: %lf, y: %lf\n", id, x_inicio, y_inicio);
 
     tipo = figura_obter_tipo(figura);
 
@@ -465,6 +455,8 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
     lista_insert_final(lista_formas, texto_figura);
 }
 
+// Encontra todas as quadras contidas dentro de um círculo e muda a corda da borda e escreve o id no
+// arquivo de log
 void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arquivo_log) {
     double cir_x, cir_y, raio;
     char cor_borda[20];
@@ -499,9 +491,9 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
     }
 }
 
-void informacoes_equipamento_urbano(Lista lista_formas, Lista lista_quadras, Lista lista_hidrantes,
-                                    Lista lista_radios, Lista lista_semaforos, const char *linha,
-                                    FILE *arquivo_log) {
+// Encontra um equipamento urbano em uma lista e escreve suas coordenadas e tipo no arquivo de log.
+void informacoes_equipamento_urbano(Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
+                                    Lista lista_semaforos, const char *linha, FILE *arquivo_log) {
     char id[100];
     sscanf(linha, "crd? %s", id);
 
@@ -512,16 +504,68 @@ void informacoes_equipamento_urbano(Lista lista_formas, Lista lista_quadras, Lis
         no_id = lista_get_no(lista_radios, id);
     if (no_id == NULL)
         no_id = lista_get_no(lista_semaforos, id);
-    if (no_id == NULL) {
-        fprintf(stderr,
-                "ERRO: Figura de id %s não encontrada em nenhuma lista de equipamento urbano!\n",
-                id);
+    if (no_id == NULL)
         return;
-    }
 
     Figura equipamento = lista_get_figura(no_id);
-    fprintf(arquivo_log, "x: %lf, y: %ld, tipo: %s\n", figura_obter_x_inicio(equipamento),
+    fprintf(arquivo_log, "x: %lf, y: %lf, tipo: %s\n", figura_obter_x_inicio(equipamento),
             figura_obter_y_inicio(equipamento), figura_obter_string_tipo(equipamento));
+}
+
+// Encontra o total das áreas das quadras contidas dentro de um retângulo
+void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const char *linha,
+                                  FILE *arquivo_log) {
+    double x, y, largura, altura;
+    sscanf(linha, "car %lf %lf %lf %lf", &x, &y, &largura, &altura);
+
+    double area_total = 0;
+
+    No atual = lista_get_first(lista_quadras);
+    while (atual != NULL) {
+        Figura figura = lista_get_figura(atual);
+        double figura_x_inicio = figura_obter_x_inicio(figura);
+        double figura_y_inicio = figura_obter_y_inicio(figura);
+        double figura_x_fim = figura_obter_x_fim(figura);
+        double figura_y_fim = figura_obter_y_fim(figura);
+
+        if (figura_x_inicio >= x && figura_y_inicio >= y && figura_x_fim <= x + largura &&
+            figura_y_fim <= y + altura) {
+            double area_figura =
+                (figura_x_fim - figura_x_inicio) * (figura_y_fim - figura_y_inicio);
+            area_total += area_figura;
+
+            Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "black");
+            Figura fig_contorno = figura_criar(contorno, TIPO_RETANGULO);
+            lista_insert_final(lista_formas, fig_contorno);
+
+            char texto_area_figura[100];
+            // Converte o valor da área da figura para string
+            snprintf(texto_area_figura, 100, "%lf", area_figura);
+
+            Texto area_quadra =
+                texto_criar("", figura_obter_centro_x(figura), figura_obter_centro_y(figura),
+                            "black", "black", texto_area_figura);
+            Figura fig_area_quadra = figura_criar(area_quadra, TIPO_TEXTO);
+            lista_insert_final(lista_formas, fig_area_quadra);
+
+            fprintf(arquivo_log, "Área %s: %lf\n", figura_obter_id(figura), area_figura);
+        }
+        atual = lista_get_next(lista_quadras, atual);
+    }
+
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black", "black");
+    Figura fig_linha = figura_criar(linha_vertical, TIPO_LINHA);
+    lista_insert_final(lista_formas, fig_linha);
+
+    char texto_area_total[100];
+    // Converte o valor total da área para string
+    snprintf(texto_area_total, 100, "%lf", area_total);
+
+    Texto area_linha = texto_criar("", x + 1, 0, "black", "black", texto_area_total);
+    Figura fig_area_linha = figura_criar(area_linha, TIPO_TEXTO);
+    lista_insert_final(lista_formas, fig_area_linha);
+
+    fprintf(arquivo_log, "Área total: %lf\n", area_total);
 }
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
@@ -565,8 +609,10 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
         } else if (strcmp("cbq", comando) == 0) {
             circulo_contem_quadras(lista_quadras, linha, arquivo_log);
         } else if (strcmp("crd?", comando) == 0) {
-            informacoes_equipamento_urbano(lista_formas, lista_quadras, lista_hidrantes,
-                                           lista_radios, lista_semaforos, linha, arquivo_log);
+            informacoes_equipamento_urbano(lista_quadras, lista_hidrantes, lista_radios,
+                                           lista_semaforos, linha, arquivo_log);
+        } else if (strcmp("car", comando) == 0) {
+            retangulo_area_total_contida(lista_formas, lista_quadras, linha, arquivo_log);
         }
     }
 
