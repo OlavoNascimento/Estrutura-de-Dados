@@ -45,9 +45,9 @@ const char* radio_obter_cor_borda(Radio rad);
 void radio_definir_cor_borda(Radio rad, const char* cor_borda);
 
 // Retorna a espessura da borda de um rádio base.
-int radio_obter_espessura_borda(Radio rad);
+const char* radio_obter_espessura_borda(Radio rad);
 // Define a espessura da borda de um rádio base.
-void radio_definir_espessura_borda(Radio rad, int espessura_borda);
+void radio_definir_espessura_borda(Radio rad, char* espessura_borda);
 
 // Libera a memória alocada por um radio base.
 void radio_destruir(Radio rad);

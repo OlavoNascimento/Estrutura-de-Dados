@@ -14,7 +14,7 @@ typedef struct {
     char cor_borda[20];
     char cor_preenchimento[20];
     double rx;
-    int espessura_borda;
+    char espessura_borda[20];
     int espassamento_borda;
 } RetanguloImp;
 
@@ -31,7 +31,7 @@ Retangulo retangulo_criar(char id[100], double largura, double altura, double x,
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
     retImp->rx = 0;
     retImp->espassamento_borda = 0;
-    retImp->espessura_borda = 0;
+    strcpy(retImp->espessura_borda, "1px");
     return retImp;
 }
 
@@ -67,13 +67,11 @@ void retangulo_escrever_svg(FILE *arquivo, Retangulo ret) {
     if (strlen(retImp->id) > 0)
         fprintf(arquivo, " id='%s'", retImp->id);
 
-    fprintf(arquivo, " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf'",
+    fprintf(arquivo,
+            " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf' "
+            "stroke-width='%s'",
             retImp->largura, retImp->altura, retImp->x, retImp->y, retImp->cor_borda,
-            retImp->cor_preenchimento, retImp->rx);
-
-    // Caso a borda do retângulo seja diferente do padrão
-    if (retImp->espessura_borda != 0)
-        fprintf(arquivo, " stroke-width='%d'", retImp->espessura_borda);
+            retImp->cor_preenchimento, retImp->rx, retImp->espessura_borda);
 
     // Caso o retângulo deva ser tracejado
     if (retImp->espassamento_borda != 0)
@@ -185,14 +183,20 @@ void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchi
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
 }
 
-int retangulo_obter_espessura_borda(Retangulo ret) {
+const char *retangulo_obter_espessura_borda(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->espessura_borda;
 }
 
-void retangulo_definir_espessura_borda(Retangulo ret, int espessura_borda) {
+void retangulo_definir_espessura_borda(Retangulo ret, char *espessura_borda) {
+    if (espessura_borda == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "retângulo!\n");
+        return;
+    }
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    retImp->espessura_borda = espessura_borda;
+    strcpy(retImp->espessura_borda, espessura_borda);
 }
 
 int retangulo_obter_espassamento_borda(Retangulo ret) {

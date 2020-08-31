@@ -66,9 +66,9 @@ const char *retangulo_obter_cor_preenchimento(Retangulo ret);
 void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchimento);
 
 // Retorna o tamanho da borda de um retângulo.
-int retangulo_obter_espessura_borda(Retangulo ret);
+const char *retangulo_obter_espessura_borda(Retangulo ret);
 // Define o tamanho da borda de um retângulo.
-void retangulo_definir_espessura_borda(Retangulo ret, int espessura_borda);
+void retangulo_definir_espessura_borda(Retangulo ret, char *espessura_borda);
 
 // Retorna o espaçamento da borda de um retângulo.
 int retangulo_obter_espassamento_borda(Retangulo ret);

@@ -559,7 +559,17 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
 
 void figura_definir_arredondamento_borda(Figura fig, double raio_borda) {
     FiguraImp *figuraImp = (FiguraImp *) fig;
-    quadra_definir_arredondamento_borda(figuraImp->qua, raio_borda);
+    switch (figuraImp->tipo) {
+        case TIPO_QUADRA:
+            quadra_definir_arredondamento_borda(figuraImp->qua, raio_borda);
+            break;
+        default:
+            fprintf(stderr,
+                    "ERRO: Tipo de figura inválido passado para definir arredondamento borda "
+                    "figura: %d!\n",
+                    figuraImp->tipo);
+            break;
+    }
 }
 
 // Libera a memória alocada por uma figura.

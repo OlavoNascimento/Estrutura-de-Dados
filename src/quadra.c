@@ -91,7 +91,13 @@ void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
     retangulo_definir_cor_borda(quadImp->ret, cor_borda);
 }
 
-void quadra_definir_espessura_borda(Quadra quad, int espessura_borda) {
+void quadra_definir_espessura_borda(Quadra quad, char *espessura_borda) {
+    if (espessura_borda == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "quadra!\n");
+        return;
+    }
     QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_definir_espessura_borda(quadImp->ret, espessura_borda);
 }

@@ -22,44 +22,38 @@
 
 typedef struct {
     bool definido;
-    // Alterar para char*
-    int espessura_borda;
+    char espessura_borda[20];
 } PropriedadesCirculos;
 
 typedef struct {
     bool definido;
-    // Alterar para char*
-    int espessura_borda;
+    char espessura_borda[20];
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesHidrantes;
 
 typedef struct {
     bool definido;
-    // Alterar para char*
-    int espessura_borda;
+    char espessura_borda[20];
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesQuadras;
 
 typedef struct {
     bool definido;
-    // Alterar para char*
-    int espessura_borda;
+    char espessura_borda[20];
 } PropriedadesRetangulos;
 
 typedef struct {
     bool definido;
-    // Alterar para char*
-    int espessura_borda;
+    char espessura_borda[20];
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesSemaforos;
 
 typedef struct {
     bool definido;
-    // Alterar para char*
-    int espessura_borda;
+    char espessura_borda[20];
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesRadios;
@@ -94,7 +88,7 @@ Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
 }
 
 void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop) {
-    sscanf(linha, "%*s %d %*d", &prop->espessura_borda);
+    sscanf(linha, "%*s %s %*s", prop->espessura_borda);
     prop->definido = true;
 }
 
@@ -109,7 +103,7 @@ Figura ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
 }
 
 void definir_propriedades_hidrantes(const char *linha, PropriedadesHidrantes *prop) {
-    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
@@ -124,7 +118,7 @@ Figura ler_quadra(const char *linha, PropriedadesQuadras prop) {
 }
 
 void definir_propriedades_quadras(const char *linha, PropriedadesQuadras *prop) {
-    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
@@ -137,7 +131,7 @@ Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
 }
 
 void definir_propriedades_retangulos(const char *linha, PropriedadesRetangulos *prop) {
-    sscanf(linha, "%*s %*d %d", &prop->espessura_borda);
+    sscanf(linha, "%*s %*s %s", prop->espessura_borda);
     prop->definido = true;
 }
 
@@ -152,7 +146,7 @@ Figura ler_radio(const char *linha, PropriedadesRadios prop) {
 }
 
 void definir_propriedades_radios(const char *linha, PropriedadesRadios *prop) {
-    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
@@ -167,7 +161,7 @@ Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
 }
 
 void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *prop) {
-    sscanf(linha, "%*s %d %s %s", &prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
@@ -248,7 +242,8 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
                     lista_insert_final(lista_semaforos, nova_figura);
                     break;
                 default:
-                    break;
+                    fprintf(stderr, "ERRO: Tipo de figura desconhecido ao ler geo!\n");
+                    return;
             }
             figuras_criadas++;
         }

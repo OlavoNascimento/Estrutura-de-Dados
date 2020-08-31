@@ -12,7 +12,7 @@ typedef struct {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    int espessura_borda;
+    char espessura_borda[20];
 } CirculoImp;
 
 // Cria e inicializa um struct CirculoImp com os valores passados.
@@ -25,7 +25,7 @@ Circulo circulo_criar(char id[100], double raio, double x, double y, char cor_bo
     cirImp->y = y;
     strcpy(cirImp->cor_borda, cor_borda);
     strcpy(cirImp->cor_preenchimento, cor_preenchimento);
-    cirImp->espessura_borda = 0;
+    strcpy(cirImp->espessura_borda, "1px");
     return cirImp;
 }
 
@@ -59,12 +59,9 @@ void circulo_escrever_svg(FILE *arquivo, Circulo cir) {
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, "id='%s' ", cirImp->id);
 
-    fprintf(arquivo, "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s'", cirImp->raio, cirImp->x,
-            cirImp->y, cirImp->cor_borda, cirImp->cor_preenchimento);
-
-    // Caso a borda do círculo seja diferente do padrão
-    if (cirImp->espessura_borda != 0)
-        fprintf(arquivo, " stroke-width='%d'", cirImp->espessura_borda);
+    fprintf(arquivo, "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s' stroke-width='%s'",
+            cirImp->raio, cirImp->x, cirImp->y, cirImp->cor_borda, cirImp->cor_preenchimento,
+            cirImp->espessura_borda);
     fprintf(arquivo, "/>\n");
 }
 
@@ -176,15 +173,21 @@ void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchiment
 }
 
 // Retorna a espessura da borda de um círculo.
-int circulo_obter_espessura_borda(Circulo cir) {
+const char *circulo_obter_espessura_borda(Circulo cir) {
     CirculoImp *cirImp = (CirculoImp *) cir;
     return cirImp->espessura_borda;
 }
 
 // Define a espessura da borda de um círculo.
-void circulo_definir_espessura_borda(Circulo cir, int espessura_borda) {
+void circulo_definir_espessura_borda(Circulo cir, char *espessura_borda) {
+    if (espessura_borda == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "círculo!\n");
+        return;
+    }
     CirculoImp *cirImp = (CirculoImp *) cir;
-    cirImp->espessura_borda = espessura_borda;
+    strcpy(cirImp->espessura_borda, espessura_borda);
 }
 
 // Libera a memória alocada por um círculo.

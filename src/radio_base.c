@@ -88,13 +88,19 @@ void radio_definir_cor_borda(Radio rad, const char *cor_borda) {
 }
 
 // Retorna a espessura da borda de uma rádio base.
-int radio_obter_espessura_borda(Radio rad) {
+const char *radio_obter_espessura_borda(Radio rad) {
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     return circulo_obter_espessura_borda(radImp->circ);
 }
 
 // Define a espessura da borda de uma rádio base.
-void radio_definir_espessura_borda(Radio rad, int espessura_borda) {
+void radio_definir_espessura_borda(Radio rad, char *espessura_borda) {
+    if (espessura_borda == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "radio!\n");
+        return;
+    }
     RadioBaseImp *radImp = (RadioBaseImp *) rad;
     circulo_definir_espessura_borda(radImp->circ, espessura_borda);
 }

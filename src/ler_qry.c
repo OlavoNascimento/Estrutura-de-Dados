@@ -395,7 +395,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     }
     Figura nova_figura;
     Circulo desenho_raio = circulo_criar("", raio, cir_x, cir_y, "black", "none");
-    circulo_definir_espessura_borda(desenho_raio, 2);
+    circulo_definir_espessura_borda(desenho_raio, "2px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
     lista_insert_final(lista_formas, nova_figura);
 }
@@ -534,7 +534,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
                 (figura_x_fim - figura_x_inicio) * (figura_y_fim - figura_y_inicio);
             area_total += area_figura;
 
-            Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "black");
+            Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
             Figura fig_contorno = figura_criar(contorno, TIPO_RETANGULO);
             lista_insert_final(lista_formas, fig_contorno);
 

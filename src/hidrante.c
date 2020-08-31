@@ -93,7 +93,13 @@ void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda) {
 }
 
 // Define a espessura da borda de um hidrante.
-void hidrante_definir_espessura_borda(Hidrante hid, int espessura_borda) {
+void hidrante_definir_espessura_borda(Hidrante hid, char *espessura_borda) {
+    if (espessura_borda == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "hidrante!\n");
+        return;
+    }
     HidranteImp *hidImp = (HidranteImp *) hid;
     circulo_definir_espessura_borda(hidImp->circ, espessura_borda);
 }

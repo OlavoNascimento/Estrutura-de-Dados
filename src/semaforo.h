@@ -46,10 +46,10 @@ const char *semaforo_obter_cor_preenchimento(Semaforo sem);
 void semaforo_definir_cor_preenchimento(Semaforo sema, const char *cor_preenchimento);
 
 // Retorna o valor da espessura da borda de um semaforo.
-int semaforo_obter_espessura_borda(Semaforo sem);
+const char *semaforo_obter_espessura_borda(Semaforo sem);
 // Define a espessura da borda de um semaforo.
 // O parâmetros espessura_borda não pode ser nulo.
-void semaforo_definir_espessura_borda(Semaforo sem, int espessura_borda);
+void semaforo_definir_espessura_borda(Semaforo sem, char *espessura_borda);
 
 // Libera a memória alocada por um semáforo.
 void semaforo_destruir(Semaforo sema);

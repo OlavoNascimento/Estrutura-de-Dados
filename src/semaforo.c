@@ -90,12 +90,18 @@ void semaforo_definir_cor_preenchimento(Semaforo sema, const char *cor_preenchim
     retangulo_definir_cor_preenchimento(semaImp->sema, cor_preenchimento);
 }
 
-int semaforo_obter_espessura_borda(Semaforo sem) {
+const char *semaforo_obter_espessura_borda(Semaforo sem) {
     SemaforoImp *semImp = (SemaforoImp *) sem;
     return retangulo_obter_espessura_borda(semImp->sema);
 }
 
-void semaforo_definir_espessura_borda(Semaforo sem, int espessura_borda) {
+void semaforo_definir_espessura_borda(Semaforo sem, char *espessura_borda) {
+    if (espessura_borda == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "semaforo!\n");
+        return;
+    }
     SemaforoImp *semImp = (SemaforoImp *) sem;
     retangulo_definir_espessura_borda(semImp->sema, espessura_borda);
 }

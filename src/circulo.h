@@ -60,9 +60,9 @@ const char *circulo_obter_cor_preenchimento(Circulo cir);
 void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento);
 
 // Retorna a espessura da borda de um círculo.
-int circulo_obter_espessura_borda(Circulo cir);
+const char *circulo_obter_espessura_borda(Circulo cir);
 // Define a espessura da borda de um círculo.
-void circulo_definir_espessura_borda(Circulo cir, int espessura_borda);
+void circulo_definir_espessura_borda(Circulo cir, char *espessura_borda);
 
 // Libera a memória alocada por um círculo.
 void circulo_destruir(Circulo cir);
