@@ -393,8 +393,23 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             }
         }
     }
+
+    // desenhar o raio
     Figura nova_figura;
     Circulo desenho_raio = circulo_criar("", raio, cir_x, cir_y, "black", "none");
+    circulo_definir_espessura_borda(desenho_raio, "2px");
+    nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
+    lista_insert_final(lista_formas, nova_figura);
+
+    // desenhar anel de duas cores
+    // primeiro anel
+    desenho_raio = circulo_criar("", 20, cir_x, cir_y, "blue", "blue");
+    circulo_definir_espessura_borda(desenho_raio, "2px");
+    nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
+    lista_insert_final(lista_formas, nova_figura);
+
+    // segundo anel
+    desenho_raio = circulo_criar("", 15, cir_x, cir_y, "yellow", "yellow");
     circulo_definir_espessura_borda(desenho_raio, "2px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
     lista_insert_final(lista_formas, nova_figura);
