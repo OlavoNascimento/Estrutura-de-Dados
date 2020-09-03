@@ -59,6 +59,11 @@ typedef struct {
 } PropriedadesRadios;
 
 typedef struct {
+    int lista_max_quadras;
+    int lista_max_semaforos;
+    int lista_max_hidrantes;
+    int lista_max_bases;
+    int lista_max_figuras;
     PropriedadesCirculos cir;
     PropriedadesHidrantes hid;
     PropriedadesQuadras qua;
@@ -66,6 +71,24 @@ typedef struct {
     PropriedadesSemaforos sem;
     PropriedadesRadios rad;
 } PropriedadesFiguras;
+
+typedef struct {
+    int lista_max_quadras;
+    int lista_max_semaforos;
+    int lista_max_hidrantes;
+    int lista_max_bases;
+    int lista_max_figuras;
+} NumerosMaximos;
+
+NumerosMaximos criar_maximos() {
+    NumerosMaximos propMax;
+    propMax.lista_max_bases = 1000;
+    propMax.lista_max_figuras = 1000;
+    propMax.lista_max_hidrantes = 1000;
+    propMax.lista_max_quadras = 1000;
+    propMax.lista_max_semaforos = 1000;
+    return propMax;
+}
 
 PropriedadesFiguras criar_propriedades() {
     PropriedadesFiguras prop;
@@ -77,6 +100,11 @@ PropriedadesFiguras criar_propriedades() {
     prop.sem = (PropriedadesSemaforos){0};
     prop.rad = (PropriedadesRadios){0};
     return prop;
+}
+
+void definir_max_figuras(const char *linha, NumerosMaximos *propMax) {
+    sscanf(linha, "%*s %d %d %d %d %d", &propMax->lista_max_figuras, &propMax->lista_max_quadras,
+           &propMax->lista_max_hidrantes, &propMax->lista_max_semaforos, &propMax->lista_max_bases);
 }
 
 Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
@@ -181,29 +209,46 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
     }
 
     int figuras_criadas = 0;
-    int lista_max_figs = 1000;
+    int quadras_criadas = 0;
+    int semaforos_criados = 0;
+    int hidrantes_criados = 0;
+    int bases_criadas = 0;
     PropriedadesFiguras propriedades = criar_propriedades();
-
+    NumerosMaximos maximo = criar_maximos();
     char linha[LINHA_MAX];
-    while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL && figuras_criadas < lista_max_figs) {
+    while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL) {
         char comando[TIPO_FIGURA_TAMANHO];
         sscanf(linha, "%s", comando);
 
         Figura nova_figura = NULL;
         if (strcmp("c", comando) == 0) {
-            nova_figura = ler_circulo(linha, propriedades.cir);
+            if (figuras_criadas <= maximo.lista_max_figuras) {
+                nova_figura = ler_circulo(linha, propriedades.cir);
+            }
         } else if (strcmp("r", comando) == 0) {
-            nova_figura = ler_retangulo(linha, propriedades.ret);
+            if (figuras_criadas <= maximo.lista_max_figuras) {
+                nova_figura = ler_retangulo(linha, propriedades.ret);
+            }
         } else if (strcmp("q", comando) == 0) {
-            nova_figura = ler_quadra(linha, propriedades.qua);
+            if (quadras_criadas <= maximo.lista_max_quadras) {
+                nova_figura = ler_quadra(linha, propriedades.qua);
+            }
         } else if (strcmp("h", comando) == 0) {
-            nova_figura = ler_hidrante(linha, propriedades.hid);
+            if (hidrantes_criados <= maximo.lista_max_hidrantes) {
+                nova_figura = ler_hidrante(linha, propriedades.hid);
+            }
         } else if (strcmp("s", comando) == 0) {
-            nova_figura = ler_semaforo(linha, propriedades.sem);
+            if (semaforos_criados <= maximo.lista_max_semaforos) {
+                nova_figura = ler_semaforo(linha, propriedades.sem);
+            }
         } else if (strcmp("rb", comando) == 0) {
-            nova_figura = ler_radio(linha, propriedades.rad);
+            if (bases_criadas <= maximo.lista_max_bases) {
+                nova_figura = ler_radio(linha, propriedades.rad);
+            }
         } else if (strcmp("t", comando) == 0) {
-            nova_figura = ler_texto(linha);
+            if (figuras_criadas <= maximo.lista_max_figuras) {
+                nova_figura = ler_texto(linha);
+            }
         } else if (strcmp("cq", comando) == 0) {
             definir_propriedades_quadras(linha, &propriedades.qua);
         } else if (strcmp("ch", comando) == 0) {
@@ -216,8 +261,12 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
             definir_propriedades_circulos(linha, &propriedades.cir);
             definir_propriedades_retangulos(linha, &propriedades.ret);
         } else if (strcmp("nx", comando) == 0) {
-            sscanf(linha, "nx %d", &lista_max_figs);
-            printf("Novo valor máximo: %d\n", lista_max_figs);
+            definir_max_figuras(linha, &maximo);
+            printf("Novo valor máximo de figuras: %d\n", maximo.lista_max_figuras);
+            printf("Novo valor máximo de quadras: %d\n", maximo.lista_max_quadras);
+            printf("Novo valor máximo de hidrantes: %d\n", maximo.lista_max_hidrantes);
+            printf("Novo valor máximo de semaforos: %d\n", maximo.lista_max_semaforos);
+            printf("Novo valor máximo de radio-bases: %d\n", maximo.lista_max_bases);
         }
 
         if (nova_figura != NULL) {
@@ -228,18 +277,23 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
                 case TIPO_RETANGULO:
                 case TIPO_TEXTO:
                     lista_insert_final(lista_formas, nova_figura);
+                    figuras_criadas++;
                     break;
                 case TIPO_HIDRANTE:
                     lista_insert_final(lista_hidrantes, nova_figura);
+                    hidrantes_criados++;
                     break;
                 case TIPO_QUADRA:
                     lista_insert_final(lista_quadras, nova_figura);
+                    quadras_criadas++;
                     break;
                 case TIPO_RADIO:
                     lista_insert_final(lista_radios, nova_figura);
+                    bases_criadas++;
                     break;
                 case TIPO_SEMAFORO:
                     lista_insert_final(lista_semaforos, nova_figura);
+                    semaforos_criados++;
                     break;
                 default:
                     fprintf(stderr, "ERRO: Tipo de figura desconhecido ao ler geo!\n");
