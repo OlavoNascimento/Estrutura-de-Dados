@@ -79,13 +79,13 @@ Nenhum dos parâmetros podem ser nulos.
 void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char *cor_preenchimento);
 
 /*
-Obtém a espessura da borda de um hidrante.
+Obtém a cor da borda de um hidrante.
 O parâmetro hidrante não pode ser nulo.
-Retorna a espessura da borda de um hidrante.
+Retorna a cor da borda de um hidrante.
 */
 const char *hidrante_obter_cor_borda(Hidrante hidrante);
 /*
-Define a espessura da borda de um hidrante.
+Define a cor da borda de um hidrante.
 Nenhum dos parâmetros podem ser nulos.
 */
 void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda);
