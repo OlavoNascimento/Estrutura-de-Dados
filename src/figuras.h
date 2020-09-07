@@ -30,7 +30,7 @@ typedef enum {
 typedef void *Figura;
 
 /*
-Cria um struct figura que recebe um dos possíveis tipos de figura a ser armazenada e a representação
+Cria um struct Figura que recebe um dos possíveis tipos de figura a ser armazenada e a representação
 de seu tipo no enum TiposFiguras.
 Nenhum dos parâmetros podem ser nulos e seu tipo deve estar contido no enum TiposFigura, sendo
 considerado inválidos os tipos TIPOS_FIGURA_MIN e TIPOS_FIGURA_MAX.
