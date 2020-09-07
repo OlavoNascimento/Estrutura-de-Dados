@@ -1,3 +1,4 @@
+
 #include "circulo.h"
 
 #include <stdbool.h>
@@ -54,8 +55,8 @@ Circulo circulo_ler(const char *linha) {
 }
 
 // Escreve todos os dados de um círculo em um arquivo.
-void circulo_escrever_informacoes(FILE *arquivo, Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+void circulo_escrever_informacoes(FILE *arquivo, Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     // Um circulo pode não ter um id
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, "id: %s, ", cirImp->id);
@@ -64,8 +65,8 @@ void circulo_escrever_informacoes(FILE *arquivo, Circulo cir) {
 }
 
 // Escreve o código svg que representa um círculo em um arquivo.
-void circulo_escrever_svg(FILE *arquivo, Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+void circulo_escrever_svg(FILE *arquivo, Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     fprintf(arquivo, "\t<circle ");
     // Um circulo pode não ter um id
     if (strlen(cirImp->id) > 0)
@@ -90,8 +91,8 @@ bool circulo_checar_interseccao(Circulo cir1, Circulo cir2) {
 }
 
 // Retorna verdadeiro se um ponto se encontra dentro de um círculo.
-bool circulo_checar_ponto_interno(Circulo cir, double ponto_x, double ponto_y) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     if (ponto_x <= cirImp->x - cirImp->raio || ponto_x >= cirImp->x + cirImp->raio)
         return false;
     if (ponto_y <= cirImp->y - cirImp->raio || ponto_y >= cirImp->y + cirImp->raio)
@@ -100,109 +101,110 @@ bool circulo_checar_ponto_interno(Circulo cir, double ponto_x, double ponto_y) {
 }
 
 // Retorna o id de um círculo.
-const char *circulo_obter_id(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+const char *circulo_obter_id(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->id;
 }
 
 // Define o id de um círculo.
-void circulo_definir_id(Circulo cir, const char *id) {
+void circulo_definir_id(Circulo circulo, const char *id) {
     if (id == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir NULL como id de um círculo!\n");
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) cir;
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     strcpy(cirImp->id, id);
 }
 
 // Retorna o raio de um círculo.
-double circulo_obter_raio(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+double circulo_obter_raio(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->raio;
 }
 
 // Define o raio de um círculo.
-void circulo_definir_raio(Circulo cir, double raio) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+void circulo_definir_raio(Circulo circulo, double raio) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     cirImp->raio = raio;
 }
 
 // Retorna a coordenada x de um círculo.
-double circulo_obter_x(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+double circulo_obter_x(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->x;
 }
 
 // Define a coordenada x de um círculo.
-void circulo_definir_x(Circulo cir, double x) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+void circulo_definir_x(Circulo circulo, double x) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     cirImp->x = x;
 }
 
 // Retorna a coordenada y de um círculo.
-double circulo_obter_y(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+double circulo_obter_y(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->y;
 }
 
 // Define a coordenada y de um círculo.
-void circulo_definir_y(Circulo cir, double y) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+void circulo_definir_y(Circulo circulo, double y) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     cirImp->y = y;
 }
 
 // Retorna a cor da borda de um círculo.
-const char *circulo_obter_cor_borda(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+const char *circulo_obter_cor_borda(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->cor_borda;
 }
 
 // Define a cor da borda de um círculo.
-void circulo_definir_cor_borda(Circulo cir, const char *cor_borda) {
+void circulo_definir_cor_borda(Circulo circulo, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um círculo!\n");
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) cir;
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     strcpy(cirImp->cor_borda, cor_borda);
 }
 
 // Retorna a cor de preenchimento de um círculo..
-const char *circulo_obter_cor_preenchimento(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+const char *circulo_obter_cor_preenchimento(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->cor_preenchimento;
 }
 
 // Define a cor de preenchimento de um círculo.
-void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento) {
+void circulo_definir_cor_preenchimento(Circulo circulo, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr,
                 "ERRO: Não é possível definir NULL como cor de preenchimento de um círculo!\n");
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) cir;
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     strcpy(cirImp->cor_preenchimento, cor_preenchimento);
 }
 
 // Retorna a espessura da borda de um círculo.
-const char *circulo_obter_espessura_borda(Circulo cir) {
-    CirculoImp *cirImp = (CirculoImp *) cir;
+const char *circulo_obter_espessura_borda(Circulo circulo) {
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     return cirImp->espessura_borda;
 }
 
 // Define a espessura da borda de um círculo.
-void circulo_definir_espessura_borda(Circulo cir, const char *espessura_borda) {
+void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         fprintf(stderr,
                 "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
                 "círculo!\n");
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) cir;
+    CirculoImp *cirImp = (CirculoImp *) circulo;
     strcpy(cirImp->espessura_borda, espessura_borda);
 }
 
 // Libera a memória alocada por um círculo.
-void circulo_destruir(Circulo cir) {
-    free(cir);
+void circulo_destruir(Circulo circulo) {
+    free(circulo);
 }
+

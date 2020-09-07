@@ -1,3 +1,4 @@
+
 #include "figuras.h"
 
 #include <stdbool.h>
@@ -453,7 +454,7 @@ const char *figura_obter_cor_borda(Figura figura) {
     return NULL;
 }
 
-// Substitui a cor da borda de uma figura.
+// Define a cor da borda de uma figura.
 void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Tentando alterar cor da borda de uma figura para nulo!\n");
@@ -521,7 +522,7 @@ const char *figura_obter_cor_preenchimento(Figura figura) {
     return NULL;
 }
 
-// Substitui a cor de preenchimento de uma figura.
+// Define a cor de preenchimento de uma figura.
 void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr, "ERRO: Tentando alterar cor de preenchimento de uma figura para nulo!\n");
@@ -561,6 +562,7 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
     }
 }
 
+// Define o arrendondamento da borda de uma figura.
 void figura_definir_arredondamento_borda(Figura fig, double raio_borda) {
     FiguraImp *figuraImp = (FiguraImp *) fig;
     switch (figuraImp->tipo) {
