@@ -27,82 +27,82 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
 }
 
 // Escreve o código svg que representa uma linha em um arquivo.
-void linha_escrever_svg(FILE *arquivo, Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+void linha_escrever_svg(FILE *arquivo, Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     fprintf(arquivo, "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' fill='%s'/>\n",
             linImp->x1, linImp->y1, linImp->x2, linImp->y2, linImp->cor_borda,
             linImp->cor_preenchimento);
 }
 
-double linha_obter_x1(Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+double linha_obter_x1(Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     return linImp->x1;
 }
 
-void linha_definir_x1(Linha lin, double x1) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+void linha_definir_x1(Linha linha, double x1) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     linImp->x1 = x1;
 }
 
-double linha_obter_y1(Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+double linha_obter_y1(Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     return linImp->y1;
 }
 
-void linha_definir_y1(Linha lin, double y1) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+void linha_definir_y1(Linha linha, double y1) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     linImp->y1 = y1;
 }
 
-double linha_obter_x2(Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+double linha_obter_x2(Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     return linImp->x2;
 }
 
-void linha_definir_x2(Linha lin, double x2) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+void linha_definir_x2(Linha linha, double x2) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     linImp->x2 = x2;
 }
 
-double linha_obter_y2(Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+double linha_obter_y2(Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     return linImp->y2;
 }
 
-void linha_definir_y2(Linha lin, double y2) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+void linha_definir_y2(Linha linha, double y2) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     linImp->y2 = y2;
 }
 
-const char *linha_obter_cor_borda(Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+const char *linha_obter_cor_borda(Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     return linImp->cor_borda;
 }
 
-void linha_definir_cor_borda(Linha lin, const char *cor_borda) {
+void linha_definir_cor_borda(Linha linha, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de uma linha!\n");
         return;
     }
-    LinhaImp *linImp = (LinhaImp *) lin;
+    LinhaImp *linImp = (LinhaImp *) linha;
     strcpy(linImp->cor_borda, cor_borda);
 }
 
-const char *linha_obter_cor_preenchimento(Linha lin) {
-    LinhaImp *linImp = (LinhaImp *) lin;
+const char *linha_obter_cor_preenchimento(Linha linha) {
+    LinhaImp *linImp = (LinhaImp *) linha;
     return linImp->cor_preenchimento;
 }
 
-void linha_definir_cor_preenchimento(Linha lin, const char *cor_preenchimento) {
+void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr,
                 "ERRO: Não é possível definir NULL como cor de preenchimento de uma linha!\n");
         return;
     }
-    LinhaImp *linImp = (LinhaImp *) lin;
+    LinhaImp *linImp = (LinhaImp *) linha;
     strcpy(linImp->cor_preenchimento, cor_preenchimento);
 }
 
-void linha_destruir(Linha lin) {
-    free(lin);
+void linha_destruir(Linha linha) {
+    free(linha);
 }

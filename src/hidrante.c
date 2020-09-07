@@ -44,90 +44,90 @@ Hidrante hidrante_ler(const char *linha) {
 }
 
 // Retorna o id de um hidrante.
-const char *hidrante_obter_id(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+const char *hidrante_obter_id(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     return circulo_obter_id(hidImp->circ);
 }
 
 // Escreve as informações de um hidrante.
-void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_escrever_informacoes(arquivo, hidImp->circ);
 }
 
 // Escreve no svg as informações de um hidrante.
-void hidrante_escrever_svg(FILE *arquivo, Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+void hidrante_escrever_svg(FILE *arquivo, Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_escrever_svg(arquivo, hidImp->circ);
 }
 
 // Retorna o raio de um hidrante. Usado apenas para cálculo interno, já que o hidrante é considerado
 // um ponto.
-double hidrante_obter_raio(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+double hidrante_obter_raio(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     return circulo_obter_raio(hidImp->circ);
 }
 
 // Retorna a coordenada y de um hidrante. O hidrante é considerado apenas um ponto.
-double hidrante_obter_y(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+double hidrante_obter_y(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     return circulo_obter_y(hidImp->circ);
 }
 
 // Retorna a coordenada x de um hidrante. O hidrante é considerado apenas um ponto.
-double hidrante_obter_x(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+double hidrante_obter_x(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     return circulo_obter_x(hidImp->circ);
 }
 
 // Retorna a cor de preenchimento de um hidrante.
-const char *hidrante_obter_cor_preenchimento(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+const char *hidrante_obter_cor_preenchimento(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     return circulo_obter_cor_preenchimento(hidImp->circ);
 }
 
 // Define a cor de preenchimento de um hidrante.
-void hidrante_definir_cor_preenchimento(Hidrante hid, const char *cor_preenchimento) {
+void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr,
                 "ERRO: Não é possível definir NULL como cor de preenchimento de um hidrante!\n");
         return;
     }
-    HidranteImp *hidImp = (HidranteImp *) hid;
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_definir_cor_preenchimento(hidImp->circ, cor_preenchimento);
 }
 
 // Retorna a cor da borda de um hidrante.
-const char *hidrante_obter_cor_borda(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+const char *hidrante_obter_cor_borda(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     return circulo_obter_cor_borda(hidImp->circ);
 }
 
 // Define a cor da borda de um hidrante.
-void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda) {
+void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um hidrante!\n");
         return;
     }
-    HidranteImp *hidImp = (HidranteImp *) hid;
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_definir_cor_borda(hidImp->circ, cor_borda);
 }
 
 // Define a espessura da borda de um hidrante.
-void hidrante_definir_espessura_borda(Hidrante hid, const char *espessura_borda) {
+void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         fprintf(stderr,
                 "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
                 "hidrante!\n");
         return;
     }
-    HidranteImp *hidImp = (HidranteImp *) hid;
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_definir_espessura_borda(hidImp->circ, espessura_borda);
 }
 
 // Libera a memória alocada por um hidrante.
-void hidrante_destruir(Hidrante hid) {
-    HidranteImp *hidImp = (HidranteImp *) hid;
+void hidrante_destruir(Hidrante hidrante) {
+    HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_destruir(hidImp->circ);
-    free(hid);
+    free(hidrante);
 }

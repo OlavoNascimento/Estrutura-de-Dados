@@ -1,4 +1,3 @@
-
 #ifndef CIRCULO_H
 #define CIRCULO_H
 
@@ -142,4 +141,3 @@ Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado ap�
 void circulo_destruir(Circulo circulo);
 
 #endif
-

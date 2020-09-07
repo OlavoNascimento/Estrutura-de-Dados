@@ -1,4 +1,3 @@
-
 #include "figuras.h"
 
 #include <stdbool.h>

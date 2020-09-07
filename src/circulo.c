@@ -1,4 +1,3 @@
-
 #include "circulo.h"
 
 #include <stdbool.h>
@@ -207,4 +206,3 @@ void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_bord
 void circulo_destruir(Circulo circulo) {
     free(circulo);
 }
-

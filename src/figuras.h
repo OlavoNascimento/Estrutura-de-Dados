@@ -1,4 +1,3 @@
-
 #ifndef FIGURAS_H
 #define FIGURAS_H
 
@@ -162,4 +161,3 @@ void figura_definir_arredondamento_borda(Figura figura, double raio_borda);
 void figura_destruir(Figura figura);
 
 #endif
-
