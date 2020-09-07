@@ -59,12 +59,13 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
         // Atualiza as proporções do svg caso necessário.
         svg_atualizar_exibicao(exibicao, figura_atual);
 
-        // Checa se a figura atual possui um id.
-        if (figura_obter_id(figura_atual) != NULL &&
-            strcmp(figura_obter_id(figura_atual), "") != 0) {
+        const char *id_figura = figura_obter_id(figura_atual);
+        TiposFigura tipo_figura = figura_obter_tipo(figura_atual);
+        // Adiciona um rótulo para todos os círculos e retângulos que tem id.
+        if ((tipo_figura == TIPO_CIRCULO || tipo_figura == TIPO_RETANGULO) &&
+            strcmp(id_figura, "") != 0) {
             // Adiciona um texto com o id no canto superior esquerdo da figura.
             Figura rotulo = svg_criar_rotulo(figura_atual);
-            // TODO Considerar tamanho do rótulo ao definir proporções do svg.
             figura_escrever_svg(arquivo_tmp, rotulo);
             figura_destruir(rotulo);
         }
@@ -150,7 +151,7 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
 void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista_quadras,
                         Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
     if (caminho_svg == NULL) {
-        fprintf(stderr, "ERRO: Caminho de nulo passado para lista para svg!\n");
+        fprintf(stderr, "ERRO: Caminho nulo passado a lista para svg!\n");
         return;
     }
 

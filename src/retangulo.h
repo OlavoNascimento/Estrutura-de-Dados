@@ -10,8 +10,8 @@
 typedef void *Retangulo;
 
 // Cria e inicializa um struct Retangulo com os valores passados.
-Retangulo retangulo_criar(char id[100], double largura, double altura, double x, double y,
-                          char cor_borda[20], char cor_preenchimento[20]);
+Retangulo retangulo_criar(const char id[100], double largura, double altura, double x, double y,
+                          const char cor_borda[20], const char cor_preenchimento[20]);
 // Cria e inicializa um struct Retangulo a partir de um texto obtido no arquivo .geo.
 // O parâmetro linha não pode ser nulo.
 Retangulo retangulo_ler(const char *linha);
@@ -68,7 +68,7 @@ void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchi
 // Retorna o tamanho da borda de um retângulo.
 const char *retangulo_obter_espessura_borda(Retangulo ret);
 // Define o tamanho da borda de um retângulo.
-void retangulo_definir_espessura_borda(Retangulo ret, char *espessura_borda);
+void retangulo_definir_espessura_borda(Retangulo ret, const char *espessura_borda);
 
 // Retorna o espaçamento da borda de um retângulo.
 int retangulo_obter_espassamento_borda(Retangulo ret);

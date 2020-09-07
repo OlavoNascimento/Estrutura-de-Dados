@@ -39,7 +39,7 @@ void lista_remove_no(Lista lista, No no_selecionado);
 //  utilizada para ter acesso a um nó da lista
 //  o id passado tem q ser válido
 //  retorna o endereço do nó
-No lista_get_no(Lista lista, char id[100]);
+No lista_get_no(Lista lista, const char id[100]);
 
 //  pega o último elemento da lista
 //  a lista não pode estar vazia

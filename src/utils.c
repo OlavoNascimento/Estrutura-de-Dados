@@ -16,7 +16,7 @@
 #endif
 
 // Cria todos os diretórios especificados no caminho passado a função.
-void criar_diretorio(char const *diretorio) {
+void criar_diretorio(const char *diretorio) {
     char *caminho = malloc((strlen(diretorio) + 1) * sizeof(char));
     strcpy(caminho, diretorio);
     // Avança caractere por caractere até encontrar o separador de diretórios do sistema, quando o

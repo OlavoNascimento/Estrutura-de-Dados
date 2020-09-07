@@ -403,6 +403,8 @@ const char *figura_obter_id(Figura figura) {
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return circulo_obter_id(figuraImp->cir);
+        case TIPO_LINHA:
+            return "";
         case TIPO_HIDRANTE:
             return hidrante_obter_id(figuraImp->hid);
         case TIPO_QUADRA:
@@ -416,6 +418,8 @@ const char *figura_obter_id(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_id(figuraImp->tex);
         default:
+            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter id: %d!\n",
+                    figuraImp->tipo);
             break;
     }
     return NULL;
@@ -428,13 +432,13 @@ const char *figura_obter_cor_borda(Figura figura) {
         case TIPO_CIRCULO:
             return circulo_obter_cor_borda(figuraImp->cir);
         case TIPO_HIDRANTE:
-            return hidrante_obter_cor_borda(figuraImp->hid);  // don
+            return hidrante_obter_cor_borda(figuraImp->hid);
         case TIPO_QUADRA:
-            return quadra_obter_cor_borda(figuraImp->qua);  // n
+            return quadra_obter_cor_borda(figuraImp->qua);
         case TIPO_RADIO:
-            return radio_obter_cor_borda(figuraImp->rad);  // n
+            return radio_obter_cor_borda(figuraImp->rad);
         case TIPO_SEMAFORO:
-            return semaforo_obter_cor_borda(figuraImp->sem);  // n
+            return semaforo_obter_cor_borda(figuraImp->sem);
         case TIPO_LINHA:
             return linha_obter_cor_borda(figuraImp->lin);
         case TIPO_RETANGULO:

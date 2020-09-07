@@ -10,8 +10,8 @@ typedef void* Radio;
 
 // Cria e inicializa uma struct RadioBase com os valores passados.
 // retorna o endereço para a struct criada
-Radio radio_criar(char id[100], double raio, double x, double y, char cor_borda[20],
-                  char cor_preenchimento[20]);
+Radio radio_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
+                  const char cor_preenchimento[20]);
 
 // Cria e inicializa uma struct RadioBase(igual ao circulo) a partir de um texto obtido no arquivo
 // .geo. O parâmetro linha não pode ser nulo.
@@ -47,7 +47,7 @@ void radio_definir_cor_borda(Radio rad, const char* cor_borda);
 // Retorna a espessura da borda de um rádio base.
 const char* radio_obter_espessura_borda(Radio rad);
 // Define a espessura da borda de um rádio base.
-void radio_definir_espessura_borda(Radio rad, char* espessura_borda);
+void radio_definir_espessura_borda(Radio rad, const char* espessura_borda);
 
 // Libera a memória alocada por um radio base.
 void radio_destruir(Radio rad);

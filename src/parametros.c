@@ -73,6 +73,9 @@ char *parametros_obter_diretorio_saida(const Parametros params) {
 
 char *parametros_obter_caminho_descricao(const Parametros params) {
     ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_descricao == NULL)
+        return NULL;
+
     char *caminho_descricao = NULL;
     // Adiciona o diretório de entrada ao caminho do arquivo de descrição caso necessário.
     if (paramsImp->nome_dir_entrada != NULL) {
@@ -108,6 +111,9 @@ char *parametros_obter_caminho_consulta(const Parametros params) {
 // Usa o nome do arquivo de descrição para criar o nome do svg.
 char *parametros_obter_caminho_svg_descricao(const Parametros params) {
     ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_descricao == NULL || paramsImp->nome_dir_saida == NULL)
+        return NULL;
+
     // Extrai o nome base do arquivo e altera sua extensão
     char *nome_svg_descricao = alterar_sufixo(paramsImp->caminho_descricao, 1, ".svg");
     char *caminho_svg_descricao = unir_caminhos(paramsImp->nome_dir_saida, nome_svg_descricao);
@@ -119,6 +125,10 @@ char *parametros_obter_caminho_svg_descricao(const Parametros params) {
 // arquivoDescrição-arquivoConsulta.svg
 char *parametros_obter_caminho_svg_consulta(const Parametros params) {
     ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_descricao == NULL || paramsImp->caminho_consulta == NULL ||
+        paramsImp->nome_dir_saida == NULL)
+        return NULL;
+
     // Extrai o nome base da consulta atual
     char *nome_base_consulta = extrair_nome_base(paramsImp->caminho_consulta);
     // Adiciona o nome da consulta como sufixo do nome do registro
@@ -134,6 +144,10 @@ char *parametros_obter_caminho_svg_consulta(const Parametros params) {
 // arquivoDescrição-arquivoConsulta.txt
 char *parametros_obter_caminho_registro_consulta(const Parametros params) {
     ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_descricao == NULL || paramsImp->caminho_consulta == NULL ||
+        paramsImp->nome_dir_saida == NULL)
+        return NULL;
+
     // Extrai o nome base da consulta atual
     char *nome_base_consulta = extrair_nome_base(paramsImp->caminho_consulta);
     // Adiciona o nome da consulta como sufixo do nome do registro

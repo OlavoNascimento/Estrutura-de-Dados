@@ -10,8 +10,8 @@ typedef void *Quadra;
 
 // Cria e inicializa um struct Quadra com os valores passados.
 // retorna o endereço para a struct criada
-Quadra quadra_criar(char id[100], double largura, double altura, double x, double y,
-                    char cor_borda[20], char cor_preenchimento[20]);
+Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y,
+                    const char cor_borda[20], const char cor_preenchimento[20]);
 
 // Cria e inicializa um struct Quadra(igual ao retângulo) a partir de um texto obtido no arquivo
 // .geo. O parâmetro linha não pode ser nulo.
@@ -51,7 +51,7 @@ const char *quadra_obter_cor_borda(Quadra quad);
 void quadra_definir_cor_borda(Quadra quad, const char *cor_borda);
 
 // define a espessura da borda de uma quadra
-void quadra_definir_espessura_borda(Quadra quad, char *espessura_borda);
+void quadra_definir_espessura_borda(Quadra quad, const char *espessura_borda);
 
 // Define o raio de arredondamento da borda de uma quadra
 void quadra_definir_arredondamento_borda(Quadra quad, double raio_borda);

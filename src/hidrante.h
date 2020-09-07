@@ -10,8 +10,8 @@ typedef void *Hidrante;
 
 // Cria e inicializa um struct Hidrante com os valores passados.
 // retorna o endereço para a struct criada
-Hidrante hidrante_criar(char id[100], double raio, double x, double y, char cor_borda[20],
-                        char cor_preenchimento[20]);
+Hidrante hidrante_criar(const char id[100], double raio, double x, double y,
+                        const char cor_borda[20], const char cor_preenchimento[20]);
 
 // Cria e inicializa um struct Hidrante(igual ao circulo) a partir de um texto obtido no arquivo
 // .geo. O parâmetro linha não pode ser nulo.
@@ -46,7 +46,7 @@ void hidrante_definir_cor_borda(Hidrante hid, const char *cor_borda);
 
 // Define a espessura da borda de um hidrante.
 // O parâmetro espessura_borda não pode ser nulo.
-void hidrante_definir_espessura_borda(Hidrante hid, char *espessura_borda);
+void hidrante_definir_espessura_borda(Hidrante hid, const char *espessura_borda);
 
 // Libera a memória alocado para um hidrante.
 void hidrante_destruir(Hidrante hid);

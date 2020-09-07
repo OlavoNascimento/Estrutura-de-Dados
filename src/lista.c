@@ -160,12 +160,12 @@ void lista_remove_no(Lista lista, No no_selecionado) {
     lista_auxiliar->tamanho--;
 }
 
-No lista_get_no(Lista lista, char id[100]) {
+No lista_get_no(Lista lista, const char id[100]) {
     list *lista_auxiliar = (list *) lista;
     no *no_auxiliar = lista_auxiliar->primeiro;
 
     while (true) {
-        char const *id_atual = figura_obter_id(no_auxiliar->figura);
+        const char *id_atual = figura_obter_id(no_auxiliar->figura);
 
         if (strcmp(id_atual, id) == 0) {
             return no_auxiliar;
@@ -176,8 +176,6 @@ No lista_get_no(Lista lista, char id[100]) {
 
         no_auxiliar = no_auxiliar->proximo;
     }
-
-    // fprintf(stderr, "ERRO: Id não encontrado na lista: %s!\n", id);
     return NULL;
 }
 

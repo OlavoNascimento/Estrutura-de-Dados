@@ -6,6 +6,7 @@ CC = gcc
 
 # Flags de compilação
 CFLAGS = -fstack-protector-all -std=c99 -W -Wall
+# Flags de linking
 LDFLAGS = -lm
 
 # Recebe todos os arquivos .c
@@ -33,4 +34,3 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f *.o
-

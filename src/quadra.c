@@ -12,8 +12,20 @@ typedef struct {
     Retangulo ret;
 } QuadraImp;
 
-Quadra quadra_criar(char id[100], double largura, double altura, double x, double y,
-                    char cor_borda[20], char cor_preenchimento[20]) {
+Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y,
+                    const char cor_borda[20], const char cor_preenchimento[20]) {
+    if (id == NULL) {
+        fprintf(stderr, "ERRO: Não é possível criar uma quadra com id NULL!\n");
+        return NULL;
+    }
+    if (cor_borda == NULL) {
+        fprintf(stderr, "ERRO: Não é possível criar uma quadra com cor de borda NULL!\n");
+        return NULL;
+    }
+    if (cor_preenchimento == NULL) {
+        fprintf(stderr, "ERRO: Não é possível criar uma quadra com cor de preenchimento NULL!\n");
+        return NULL;
+    }
     QuadraImp *quadImp = malloc(sizeof(QuadraImp));
     quadImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
     return quadImp;
@@ -77,6 +89,11 @@ const char *quadra_obter_cor_preenchimento(Quadra quad) {
 }
 
 void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento) {
+    if (cor_preenchimento == NULL) {
+        fprintf(stderr,
+                "ERRO: Não é possível definir NULL como cor de preenchimento de uma quadra!\n");
+        return;
+    }
     QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_definir_cor_preenchimento(quadImp->ret, cor_preenchimento);
 }
@@ -87,14 +104,18 @@ const char *quadra_obter_cor_borda(Quadra quad) {
 }
 
 void quadra_definir_cor_borda(Quadra quad, const char *cor_borda) {
+    if (cor_borda == NULL) {
+        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de uma quadra!\n");
+        return;
+    }
     QuadraImp *quadImp = (QuadraImp *) quad;
     retangulo_definir_cor_borda(quadImp->ret, cor_borda);
 }
 
-void quadra_definir_espessura_borda(Quadra quad, char *espessura_borda) {
+void quadra_definir_espessura_borda(Quadra quad, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         fprintf(stderr,
-                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
                 "quadra!\n");
         return;
     }

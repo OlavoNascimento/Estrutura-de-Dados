@@ -16,8 +16,20 @@ typedef struct {
 } CirculoImp;
 
 // Cria e inicializa um struct CirculoImp com os valores passados.
-Circulo circulo_criar(char id[100], double raio, double x, double y, char cor_borda[20],
-                      char cor_preenchimento[20]) {
+Circulo circulo_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
+                      const char cor_preenchimento[20]) {
+    if (id == NULL) {
+        fprintf(stderr, "ERRO: Não é possível criar um círculo com id NULL!\n");
+        return NULL;
+    }
+    if (cor_borda == NULL) {
+        fprintf(stderr, "ERRO: Não é possível criar um círculo com cor de borda NULL!\n");
+        return NULL;
+    }
+    if (cor_preenchimento == NULL) {
+        fprintf(stderr, "ERRO: Não é possível criar um círculo com cor de preenchimento NULL!\n");
+        return NULL;
+    }
     CirculoImp *cirImp = malloc(sizeof(CirculoImp));
     strcpy(cirImp->id, id);
     cirImp->raio = raio;
@@ -96,7 +108,7 @@ const char *circulo_obter_id(Circulo cir) {
 // Define o id de um círculo.
 void circulo_definir_id(Circulo cir, const char *id) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como id de um círculo!\n");
+        fprintf(stderr, "ERRO: Não é possível definir NULL como id de um círculo!\n");
         return;
     }
     CirculoImp *cirImp = (CirculoImp *) cir;
@@ -148,7 +160,7 @@ const char *circulo_obter_cor_borda(Circulo cir) {
 // Define a cor da borda de um círculo.
 void circulo_definir_cor_borda(Circulo cir, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir null como cor da borda de um círculo!\n");
+        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um círculo!\n");
         return;
     }
     CirculoImp *cirImp = (CirculoImp *) cir;
@@ -165,7 +177,7 @@ const char *circulo_obter_cor_preenchimento(Circulo cir) {
 void circulo_definir_cor_preenchimento(Circulo cir, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr,
-                "ERRO: Não é possível definir null como cor de preenchimento de um círculo!\n");
+                "ERRO: Não é possível definir NULL como cor de preenchimento de um círculo!\n");
         return;
     }
     CirculoImp *cirImp = (CirculoImp *) cir;
@@ -179,10 +191,10 @@ const char *circulo_obter_espessura_borda(Circulo cir) {
 }
 
 // Define a espessura da borda de um círculo.
-void circulo_definir_espessura_borda(Circulo cir, char *espessura_borda) {
+void circulo_definir_espessura_borda(Circulo cir, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         fprintf(stderr,
-                "ERRO: Não é possível definir null como tamanho da espessura da borda de um "
+                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
                 "círculo!\n");
         return;
     }
