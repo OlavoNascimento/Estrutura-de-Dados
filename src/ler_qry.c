@@ -217,6 +217,13 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     }
 }
 
+bool checar_arestas_dq(double cir_x, double cir_y, double raio, double aresta_x, double aresta_y) {
+    if (pitagoras(fabs(aresta_x - cir_x), fabs(aresta_y - cir_y)) > raio) {
+        return false;
+    }
+    return true;
+}
+
 void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *lista_semaforos,
                          Lista *lista_radios, Lista *lista_formas, const char *linha,
                          FILE *arquivo_log) {
@@ -225,7 +232,6 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     char id[100];
     char id_remove[100];
     char c;
-    No figura_id = NULL;
     No no_remove;
     Figura figura;
 
@@ -250,44 +256,32 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             Figura quadra = lista_get_figura(atual);
 
             bool contido = true;
-            if (figura_obter_y_fim(quadra) <= cir_y) {
-                // Primeiro e segundo quadrante
-                if (figura_obter_x_inicio(quadra) >= cir_x) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
-                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+            double aresta1_x = figura_obter_x_inicio(quadra);
+            double aresta1_y = figura_obter_y_inicio(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_fim(quadra) <= cir_x) {
-                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
-                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+            double aresta2_x = figura_obter_x_fim(quadra);
+            double aresta2_y = figura_obter_y_inicio(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
-            } else if (figura_obter_y_inicio(quadra) >= cir_y) {
-                // Terceiro e quarto quadrante
-                if (figura_obter_x_fim(quadra) <= cir_x) {
-                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
-                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+            double aresta3_x = figura_obter_x_inicio(quadra);
+            double aresta3_y = figura_obter_y_fim(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_inicio(quadra) >= cir_x) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
-                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+            double aresta4_x = figura_obter_x_fim(quadra);
+            double aresta4_y = figura_obter_y_fim(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta1_x, aresta1_y) == false) {
+                contido = false;
+            }
+
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta2_x, aresta2_y) == false) {
+                contido = false;
+            }
+
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta3_x, aresta3_y) == false) {
+                contido = false;
+            }
+
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y) == false) {
+                contido = false;
             }
 
             double diagonal_quadra =
@@ -311,19 +305,13 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     } else {
         sscanf(linha, "%*s %s %lf ", id, &raio);
 
-        do {
-            figura_id = lista_get_no(lista_hidrantes, id);
-            if (figura_id != NULL)
-                break;
-            figura_id = lista_get_no(lista_semaforos, id);
-            if (figura_id != NULL)
-                break;
+        No figura_id = lista_get_no(lista_hidrantes, id);
+        if (figura_id == NULL)
             figura_id = lista_get_no(lista_radios, id);
-            if (figura_id != NULL)
-                break;
-            figura_id = NULL;
+        if (figura_id == NULL)
+            figura_id = lista_get_no(lista_semaforos, id);
+        if (figura_id == NULL)
             return;
-        } while (figura_id != NULL);
         figura = lista_get_figura(figura_id);
         cir_x = figura_obter_centro_x(figura);
         cir_y = figura_obter_centro_y(figura);
@@ -332,44 +320,32 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             Figura quadra = lista_get_figura(atual);
 
             bool contido = true;
-            if (figura_obter_y_fim(quadra) <= cir_y) {
-                // Primeiro e segundo quadrante
-                if (figura_obter_x_inicio(quadra) >= cir_x) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
-                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+            double aresta1_x = figura_obter_x_inicio(quadra);
+            double aresta1_y = figura_obter_y_inicio(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_fim(quadra) <= cir_x) {
-                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
-                    double cateto2 = cir_y - figura_obter_y_inicio(quadra);
+            double aresta2_x = figura_obter_x_fim(quadra);
+            double aresta2_y = figura_obter_y_inicio(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
-            } else if (figura_obter_y_inicio(quadra) >= cir_y) {
-                // terceiro e quarto quadrante
-                if (figura_obter_x_fim(quadra) <= cir_x) {
-                    double cateto1 = cir_x - figura_obter_x_inicio(quadra);
-                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+            double aresta3_x = figura_obter_x_inicio(quadra);
+            double aresta3_y = figura_obter_y_fim(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                } else if (figura_obter_x_inicio(quadra) >= cir_x) {
-                    double cateto1 = figura_obter_x_fim(quadra) - cir_x;
-                    double cateto2 = figura_obter_y_fim(quadra) - cir_y;
+            double aresta4_x = figura_obter_x_fim(quadra);
+            double aresta4_y = figura_obter_y_fim(quadra);
 
-                    double hipotenusa = pitagoras(cateto1, cateto2);
-                    if (hipotenusa > raio) {
-                        contido = false;
-                    }
-                }
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta1_x, aresta1_y) == false) {
+                contido = false;
+            }
+
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta2_x, aresta2_y) == false) {
+                contido = false;
+            }
+
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta3_x, aresta3_y) == false) {
+                contido = false;
+            }
+
+            if (checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y) == false) {
+                contido = false;
             }
 
             double diagonal_quadra =
