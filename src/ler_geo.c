@@ -75,6 +75,7 @@ typedef struct {
     int lista_max_figuras;
 } NumerosMaximos;
 
+// Inicializa os valores máximo de cada tipo de figura inicialmente como 1000.
 NumerosMaximos criar_maximos() {
     NumerosMaximos propMax;
     propMax.lista_max_bases = 1000;
@@ -85,6 +86,7 @@ NumerosMaximos criar_maximos() {
     return propMax;
 }
 
+// Inicializa as propriedades de cada tipo de figura inicialmente como vazias.
 PropriedadesFiguras criar_propriedades() {
     PropriedadesFiguras prop;
     // Inicializa todas as propriedades como vazias (0 para int e NULL para char[]).
@@ -97,11 +99,13 @@ PropriedadesFiguras criar_propriedades() {
     return prop;
 }
 
+// Define o máximo de figuras que devem ser criadas para cada tipo de figura.
 void definir_max_figuras(const char *linha, NumerosMaximos *propMax) {
     sscanf(linha, "%*s %d %d %d %d %d", &propMax->lista_max_figuras, &propMax->lista_max_quadras,
            &propMax->lista_max_hidrantes, &propMax->lista_max_semaforos, &propMax->lista_max_bases);
 }
 
+// Cria uma figura contendo um círculo com base em uma linha e as propriedades definidas.
 Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
     Circulo cir = circulo_ler(linha);
     if (prop.definido) {
@@ -110,11 +114,13 @@ Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
     return figura_criar(cir, TIPO_CIRCULO);
 }
 
+// Define as propriedades que devem ser aplicadas a todos os círculos com base em uma linha.
 void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop) {
     sscanf(linha, "%*s %s %*s", prop->espessura_borda);
     prop->definido = true;
 }
 
+// Cria uma figura contendo um hidrante com base em uma linha e as propriedades definidas.
 Figura ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
     Hidrante hid = hidrante_ler(linha);
     if (prop.definido) {
@@ -125,11 +131,13 @@ Figura ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
     return figura_criar(hid, TIPO_HIDRANTE);
 }
 
+// Define as propriedades que devem ser aplicadas a todos os hidrantes com base em uma linha.
 void definir_propriedades_hidrantes(const char *linha, PropriedadesHidrantes *prop) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
+// Cria uma figura contendo uma quadra com base em uma linha e as propriedades definidas.
 Figura ler_quadra(const char *linha, PropriedadesQuadras prop) {
     Quadra qua = quadra_ler(linha);
     if (prop.definido) {
@@ -140,11 +148,13 @@ Figura ler_quadra(const char *linha, PropriedadesQuadras prop) {
     return figura_criar(qua, TIPO_QUADRA);
 }
 
+// Define as propriedades que devem ser aplicadas a todos as quadras com base em uma linha.
 void definir_propriedades_quadras(const char *linha, PropriedadesQuadras *prop) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
+// Cria uma figura contendo um retângulo com base em uma linha e as propriedades definidas.
 Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
     Retangulo ret = retangulo_ler(linha);
     if (prop.definido) {
@@ -153,11 +163,13 @@ Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
     return figura_criar(ret, TIPO_RETANGULO);
 }
 
+// Define as propriedades que devem ser aplicadas a todos os retângulos com base em uma linha.
 void definir_propriedades_retangulos(const char *linha, PropriedadesRetangulos *prop) {
     sscanf(linha, "%*s %*s %s", prop->espessura_borda);
     prop->definido = true;
 }
 
+// Cria uma figura contendo um rádio com base em uma linha e as propriedades definidas.
 Figura ler_radio(const char *linha, PropriedadesRadios prop) {
     Radio rad = radio_ler(linha);
     if (prop.definido) {
@@ -168,11 +180,13 @@ Figura ler_radio(const char *linha, PropriedadesRadios prop) {
     return figura_criar(rad, TIPO_RADIO);
 }
 
+// Define as propriedades que devem ser aplicadas a todos os rádios com base em uma linha.
 void definir_propriedades_radios(const char *linha, PropriedadesRadios *prop) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
+// Cria uma figura contendo um semáforo com base em uma linha e as propriedades definidas.
 Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
     Semaforo sem = semaforo_ler(linha);
     if (prop.definido) {
@@ -183,11 +197,13 @@ Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
     return figura_criar(sem, TIPO_SEMAFORO);
 }
 
+// Define as propriedades que devem ser aplicadas a todos os semáforos com base em uma linha.
 void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *prop) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
+// Cria uma figura contendo um texto com base em uma linha e as propriedades definidas.
 Figura ler_texto(const char *linha) {
     Texto tex = texto_ler(linha);
     return figura_criar(tex, TIPO_TEXTO);

@@ -104,7 +104,7 @@ void quadra_definir_cor_borda(Quadra quad, const char *cor_borda);
 Define a espessura da borda de uma quadra.
 Nenhum dos parâmetros podem ser nulos.
 */
-void quadra_definir_espessura_borda(Quadra quad, char *espessura_borda);
+void quadra_definir_espessura_borda(Quadra quad, const char *espessura_borda);
 
 /*
 Define o arredondamento de uma determinada quadra.
@@ -119,4 +119,5 @@ O parâmetro quad não pode ser nulo e deve apontar para um espaço de memória 
 Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado após isso!
 */
 void quadra_destruir(Quadra quad);
+
 #endif
