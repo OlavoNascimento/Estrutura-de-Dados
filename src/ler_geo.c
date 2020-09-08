@@ -216,7 +216,7 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
              Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
-        LOG_ERROR("Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
+        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
         return;
     }
 

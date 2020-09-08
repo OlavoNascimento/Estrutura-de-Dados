@@ -562,8 +562,7 @@ void figura_definir_arredondamento_borda(Figura fig, double raio_borda) {
             break;
         default:
             LOG_ERROR(
-                "Tipo de figura inválido passado para definir arredondamento borda "
-                "figura: %d!\n",
+                "Tipo de figura inválido passado para definir arredondamento borda figura: %d!\n",
                 figuraImp->tipo);
             break;
     }

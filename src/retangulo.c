@@ -220,8 +220,7 @@ const char *retangulo_obter_espessura_borda(Retangulo ret) {
 void retangulo_definir_espessura_borda(Retangulo ret, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         LOG_ERROR(
-            "Não é possível definir NULL como tamanho da espessura da borda de um "
-            "retângulo!\n");
+            "Não é possível definir NULL como tamanho da espessura da borda de um retângulo!\n");
         return;
     }
     RetanguloImp *retImp = (RetanguloImp *) ret;

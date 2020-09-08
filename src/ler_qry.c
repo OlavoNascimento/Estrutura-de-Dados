@@ -297,7 +297,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
                 figura_definir_cor_borda(quadra, "olive");
                 figura_definir_cor_preenchimento(quadra, "beige");
                 figura_definir_arredondamento_borda(quadra, 20);
-                fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
+                fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
                         figura_obter_id(figura), cir_x, cir_y);
             }
 
@@ -363,7 +363,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
                 strcpy(id_remove, figura_obter_id(quadra));
                 no_remove = lista_get_no(lista_quadras, id_remove);
 
-                fprintf(arquivo_log, "%s %s %lf %lf\n", figura_obter_id(quadra),
+                fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
                         figura_obter_id(figura), cir_x, cir_y);
 
                 lista_remove_no(lista_quadras, no_remove);
@@ -417,7 +417,7 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
 
     double x_inicio = figura_obter_x_inicio(figura);
     double y_inicio = figura_obter_y_inicio(figura);
-    fprintf(arquivo_log, "id: %s, x: %lf, y: %lf\n", id, x_inicio, y_inicio);
+    fprintf(arquivo_log, "id: %s, x: %lf, y: %lf\n\n", id, x_inicio, y_inicio);
 
     tipo = figura_obter_tipo(figura);
 
@@ -476,7 +476,7 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
 
         if (contido) {
             figura_definir_cor_borda(quadra, cor_borda);
-            fprintf(arquivo_log, "%s\n", figura_obter_id(quadra));
+            fprintf(arquivo_log, "%s\n\n", figura_obter_id(quadra));
         }
 
         atual = lista_get_next(lista_quadras, atual);
@@ -500,7 +500,7 @@ void informacoes_equipamento_urbano(Lista lista_quadras, Lista lista_hidrantes, 
         return;
 
     Figura equipamento = lista_get_figura(no_id);
-    fprintf(arquivo_log, "x: %lf, y: %lf, tipo: %s\n", figura_obter_x_inicio(equipamento),
+    fprintf(arquivo_log, "x: %lf, y: %lf, tipo: %s\n\n", figura_obter_x_inicio(equipamento),
             figura_obter_y_inicio(equipamento), figura_obter_string_tipo(equipamento));
 }
 
@@ -540,7 +540,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
             Figura fig_area_quadra = figura_criar(area_quadra, TIPO_TEXTO);
             lista_insert_final(lista_formas, fig_area_quadra);
 
-            fprintf(arquivo_log, "Área %s: %lf\n", figura_obter_id(figura), area_figura);
+            fprintf(arquivo_log, "Área %s: %lf\n\n", figura_obter_id(figura), area_figura);
         }
         atual = lista_get_next(lista_quadras, atual);
     }
@@ -557,7 +557,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
     Figura fig_area_linha = figura_criar(area_linha, TIPO_TEXTO);
     lista_insert_final(lista_formas, fig_area_linha);
 
-    fprintf(arquivo_log, "Área total: %lf\n", area_total);
+    fprintf(arquivo_log, "Área total: %lf\n\n", area_total);
 }
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
@@ -567,12 +567,12 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
              Lista lista_semaforos) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {
-        LOG_ERROR("Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
+        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
         return;
     }
     FILE *arquivo_log = fopen(caminho_log, "w");
     if (arquivo_log == NULL) {
-        LOG_ERROR("Falha ao criar arquivo de log: %s!\n", caminho_log);
+        fprintf(stderr, "ERRO: Falha ao criar arquivo de log: %s!\n", caminho_log);
         return;
     }
 

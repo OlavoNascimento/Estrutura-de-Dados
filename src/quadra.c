@@ -123,9 +123,7 @@ void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimen
 // Define a espessura da borda de uma quadra.
 void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        LOG_ERROR(
-            "Não é possível definir NULL como tamanho da espessura da borda de um "
-            "quadra!\n");
+        LOG_ERROR("Não é possível definir NULL como tamanho da espessura da borda de um quadra!\n");
         return;
     }
     QuadraImp *quadImp = (QuadraImp *) quadra;

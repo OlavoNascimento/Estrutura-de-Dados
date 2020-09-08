@@ -119,8 +119,7 @@ const char *semaforo_obter_espessura_borda(Semaforo sem) {
 void semaforo_definir_espessura_borda(Semaforo sem, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         LOG_ERROR(
-            "Não é possível definir NULL como tamanho da espessura da borda de um "
-            "semaforo!\n");
+            "Não é possível definir NULL como tamanho da espessura da borda de um semaforo!\n");
         return;
     }
     SemaforoImp *semImp = (SemaforoImp *) sem;

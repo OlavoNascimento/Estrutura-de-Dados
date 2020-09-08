@@ -117,9 +117,7 @@ const char *radio_obter_espessura_borda(Radio radio) {
 // Define a espessura da borda de uma rádio base.
 void radio_definir_espessura_borda(Radio radio, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        LOG_ERROR(
-            "Não é possível definir NULL como tamanho da espessura da borda de um "
-            "radio!\n");
+        LOG_ERROR("Não é possível definir NULL como tamanho da espessura da borda de um radio!\n");
         return;
     }
     RadioBaseImp *radImp = (RadioBaseImp *) radio;

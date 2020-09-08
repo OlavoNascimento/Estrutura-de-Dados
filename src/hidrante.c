@@ -117,8 +117,7 @@ void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda) {
 void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         LOG_ERROR(
-            "Não é possível definir NULL como tamanho da espessura da borda de um "
-            "hidrante!\n");
+            "Não é possível definir NULL como tamanho da espessura da borda de um hidrante!\n");
         return;
     }
     HidranteImp *hidImp = (HidranteImp *) hidrante;

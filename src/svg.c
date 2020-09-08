@@ -42,14 +42,6 @@ void svg_atualizar_exibicao(ExibicaoSVG *exi, Figura figura) {
     exi->altura = max(exi->altura, figura_obter_y_fim(figura) - ROTULO_MARGEM);
 }
 
-// Cria um texto igual ao id de uma figura.
-Figura svg_criar_rotulo(Figura figura) {
-    Texto rotulo = texto_criar("", figura_obter_x_inicio(figura) - ROTULO_MARGEM,
-                               figura_obter_y_inicio(figura) - ROTULO_MARGEM, "black", "black",
-                               figura_obter_id(figura));
-    return figura_criar(rotulo, TIPO_TEXTO);
-}
-
 // Escreve uma lista genérica em um arquivo.
 void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
     struct No *atual = lista_get_first(lista);
@@ -58,17 +50,6 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
         figura_escrever_svg(arquivo_tmp, figura_atual);
         // Atualiza as proporções do svg caso necessário.
         svg_atualizar_exibicao(exibicao, figura_atual);
-
-        const char *id_figura = figura_obter_id(figura_atual);
-        TiposFigura tipo_figura = figura_obter_tipo(figura_atual);
-        // Adiciona um rótulo para todos os círculos e retângulos que tem id.
-        if ((tipo_figura == TIPO_CIRCULO || tipo_figura == TIPO_RETANGULO) &&
-            strcmp(id_figura, "") != 0) {
-            // Adiciona um texto com o id no canto superior esquerdo da figura.
-            Figura rotulo = svg_criar_rotulo(figura_atual);
-            figura_escrever_svg(arquivo_tmp, rotulo);
-            figura_destruir(rotulo);
-        }
 
         atual = lista_get_next(lista, atual);
     }
@@ -80,7 +61,8 @@ void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao,
                              Lista lista_semaforos) {
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "w");
     if (arquivo_tmp == NULL) {
-        LOG_ERROR("Arquivo svg temporário %s não pode ser criado para escrita!\n", caminho_svg_tmp);
+        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para escrita!\n",
+                caminho_svg_tmp);
         return;
     }
     // Escreve as informações em um arquivo temporário, já que o parâmetro viewbow precisa ser
@@ -105,13 +87,13 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
     // Abre o arquivo final para escrita
     FILE *arquivo_svg = fopen(caminho_svg_final, "w");
     if (arquivo_svg == NULL) {
-        LOG_ERROR("Arquivo svg %s não pode ser criado!\n", caminho_svg_final);
+        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado!\n", caminho_svg_final);
         return;
     }
     // Abre o arquivo temporario para leitura
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "r");
     if (arquivo_tmp == NULL) {
-        LOG_ERROR("Arquivo svg temporário %s não pode ser lido!\n", caminho_svg_tmp);
+        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser lido!\n", caminho_svg_tmp);
         return;
     }
 

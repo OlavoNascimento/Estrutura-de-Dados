@@ -195,8 +195,7 @@ const char *circulo_obter_espessura_borda(Circulo circulo) {
 void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         LOG_ERROR(
-            "Não é possível definir NULL como tamanho da espessura da borda de um "
-            "círculo!\n");
+            "Não é possível definir NULL como tamanho da espessura da borda de um círculo!\n");
         return;
     }
     CirculoImp *cirImp = (CirculoImp *) circulo;
