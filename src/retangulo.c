@@ -112,11 +112,13 @@ bool retangulo_checar_ponto_interno(Retangulo ret, double ponto_x, double ponto_
     return true;
 }
 
+// Retorna o id de retângulo.
 const char *retangulo_obter_id(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->id;
 }
 
+// Define o id de retângulo.
 void retangulo_definir_id(Retangulo ret, const char *id) {
     if (id == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir NULL como id de um retângulo!\n");
@@ -126,51 +128,61 @@ void retangulo_definir_id(Retangulo ret, const char *id) {
     strcpy(retImp->id, id);
 }
 
+// Retorna a largura de retângulo.
 double retangulo_obter_largura(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->largura;
 }
 
+// Define a largura de retângulo.
 void retangulo_definir_largura(Retangulo ret, double largura) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->largura = largura;
 }
 
+// Retorna a altura de retângulo.
 double retangulo_obter_altura(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->altura;
 }
 
+// Define a altura de retângulo.
 void retangulo_definir_altura(Retangulo ret, double altura) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->altura = altura;
 }
 
+// Retorna a coordenada x de retângulo.
 double retangulo_obter_x(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->x;
 }
 
+// Define a coordenada x de retângulo.
 void retangulo_definir_x(Retangulo ret, double x) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->x = x;
 }
 
+// Retorna a coordenada y de retângulo.
 double retangulo_obter_y(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->y;
 }
 
+// Define a coordenada y de retângulo.
 void retangulo_definir_y(Retangulo ret, double y) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->y = y;
 }
 
+// Retorna a cor da borda de retângulo.
 const char *retangulo_obter_cor_borda(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->cor_borda;
 }
 
+// Define a cor da borda de retângulo.
 void retangulo_definir_cor_borda(Retangulo ret, const char *cor_borda) {
     if (cor_borda == NULL) {
         fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um retângulo!\n");
@@ -180,11 +192,13 @@ void retangulo_definir_cor_borda(Retangulo ret, const char *cor_borda) {
     strcpy(retImp->cor_borda, cor_borda);
 }
 
+// Retorna a cor de preenchimento de retângulo.
 const char *retangulo_obter_cor_preenchimento(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->cor_preenchimento;
 }
 
+// Define a cor de preenchimento de retângulo.
 void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
         fprintf(stderr,
@@ -195,11 +209,13 @@ void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchi
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
 }
 
+// Retorna a espessura da borda de retângulo.
 const char *retangulo_obter_espessura_borda(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->espessura_borda;
 }
 
+// Define a espessura da borda de retângulo.
 void retangulo_definir_espessura_borda(Retangulo ret, const char *espessura_borda) {
     if (espessura_borda == NULL) {
         fprintf(stderr,
@@ -211,21 +227,25 @@ void retangulo_definir_espessura_borda(Retangulo ret, const char *espessura_bord
     strcpy(retImp->espessura_borda, espessura_borda);
 }
 
+// Retorna o espassamento da borda de retângulo.
 int retangulo_obter_espassamento_borda(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     return retImp->espassamento_borda;
 }
 
+// Define o espassamento da borda de retângulo.
 void retangulo_definir_espassamento_borda(Retangulo ret, int espassamento_borda) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->espassamento_borda = espassamento_borda;
 }
 
+// Define o arredondamento da borda de retângulo.
 void retangulo_definir_arredondamento_borda(Retangulo ret, double raio_borda) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
     retImp->rx = raio_borda;
 }
 
+// Libera a memória alocada por.retângulo.
 void retangulo_destruir(Retangulo ret) {
     free(ret);
 }

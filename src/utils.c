@@ -17,6 +17,11 @@
 
 // Cria todos os diretórios especificados no caminho passado a função.
 void criar_diretorio(const char *diretorio) {
+    if (diretorio == NULL) {
+        fprintf(stderr, "ERRO: Diretório nulo fornecida ao criar diretório!\n");
+        return NULL;
+    }
+
     char *caminho = malloc((strlen(diretorio) + 1) * sizeof(char));
     strcpy(caminho, diretorio);
     // Avança caractere por caractere até encontrar o separador de diretórios do sistema, quando o
@@ -85,7 +90,7 @@ char *extrair_nome_base(const char *caminho_arquivo) {
 
 // Cria uma string baseado em um nome de arquivo passado a função, porém sua extensão é substituida
 // por sufixos adicionais.
-char *alterar_sufixo(const char *nome_arquivo, int num_sufixos, ...) {
+char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
     char *sufixo_final = malloc(sizeof(char));
     sufixo_final[0] = '\0';
 
@@ -109,10 +114,12 @@ char *alterar_sufixo(const char *nome_arquivo, int num_sufixos, ...) {
     va_end(sufixos);
 
     // Recebe o nome do arquivo, sem os diretórios que compõem seu caminho e sua extensão
-    char *nome_base = extrair_nome_base(nome_arquivo);
-    char *novo_nome = malloc((strlen(nome_base) + strlen(sufixo_final) + 1) * sizeof(char));
-    sprintf(novo_nome, "%s%s", nome_base, sufixo_final);
-    free(nome_base);
+    char *nome_arquivo = extrair_nome_base(caminho_arquivo);
+
+    char *novo_nome = malloc((strlen(nome_arquivo) + strlen(sufixo_final) + 1) * sizeof(char));
+    sprintf(novo_nome, "%s%s", nome_arquivo, sufixo_final);
+
+    free(nome_arquivo);
     free(sufixo_final);
     return novo_nome;
 }

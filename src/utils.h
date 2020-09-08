@@ -1,12 +1,39 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-// Este módulo define funções auxiliares, em sua maioria relacionadas a caminhos de arquivos e
-// diretórios.
+/*
+Este módulo define funções auxiliares relacionadas a caminhos de arquivos e diretórios.
+*/
 
+/*
+Cria todos os diretórios especificados em um caminho.
+O parâmetro diretorio não pode ser nulo.
+*/
 void criar_diretorio(const char *diretorio);
+
+/*
+Une um diretório e um arquivo em um caminho.
+Nenhum dos parâmetros podem ser nulos.
+Retorna uma string contendo o caminho do diretório e do arquivo concatenados, utilizando o
+separador de arquivos padrão do sistema. O usuário é responsável por liberar a memória alocada!
+*/
 char *unir_caminhos(const char *diretorio, const char *nome_arquivo);
+
+/*
+Recebe um caminho para um arquivo e extrai apenas o nome do arquivo sem sua extensão.
+O parâmetro caminho_arquivo não pode ser nulo.
+Retorna uma string contendo o nome do arquivo presente no caminho passado. O usuário é responsável
+por liberar a memória alocada!
+*/
 char *extrair_nome_base(const char *caminho_arquivo);
-char *alterar_sufixo(const char *nome_arquivo, int num_sufixos, ...);
+
+/*
+Recebe um caminho de um arquivo, um número de sufixos e um número variável de sufixos que substituem
+a extensão do arquivo.
+O parâmetro caminho_arquivo não pode ser nulo.
+Retorna uma string contendo o nome do arquivo com sua extensão substituida pelos sufixos passados. O
+usuário é responsável por liberar a memória alocada!
+*/
+char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...);
 
 #endif

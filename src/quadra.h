@@ -7,9 +7,9 @@
 #include "retangulo.h"
 
 /*
-Este módulo define o tipo Quadra, assim como funções que criam, acessam suas propriedades e
-realizam operações entre variáveis deste tipo.
+Este módulo define o tipo Quadra, assim como funções que criam e acessam suas propriedades.
 */
+
 typedef void *Quadra;
 
 /*
@@ -31,93 +31,93 @@ Quadra quadra_ler(const char *linha);
 Escreve todas as informações presentes em uma quadra em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
-void quadra_escrever_informacoes(FILE *arquivo, Quadra quad);
+void quadra_escrever_informacoes(FILE *arquivo, Quadra quadra);
 
 /*
 Escreve o código svg necessário para representar uma quadra em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
-void quadra_escrever_svg(FILE *arquivo, Quadra quad);
+void quadra_escrever_svg(FILE *arquivo, Quadra quadra);
 
 /*
 Obtém o id de uma quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna o id de uma quadra.
 */
-const char *quadra_obter_id(Quadra quad);
+const char *quadra_obter_id(Quadra quadra);
 
 /*
 Obtém a coordenada y de uma quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna o raio de uma quadra.
 */
-double quadra_obter_y(Quadra quad);
+double quadra_obter_y(Quadra quadra);
 
 /*
 Obtém a coordenada x de um quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna a coordenada x de uma quadra.
 */
-double quadra_obter_x(Quadra quad);
+double quadra_obter_x(Quadra quadra);
 
 /*
 Obtém a largura de uma quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna a largura de uma quadra.
 */
-double quadra_obter_largura(Quadra quad);
+double quadra_obter_largura(Quadra quadra);
 
 /*
 Obtém a altura de uma quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna a altura de uma quadra.
 */
-double quadra_obter_altura(Quadra quad);
+double quadra_obter_altura(Quadra quadra);
 
 /*
 Obtém a cor de preenchimento de uma quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna a cor de preenchimento de uma quadra.
 */
-const char *quadra_obter_cor_preenchimento(Quadra quad);
+const char *quadra_obter_cor_preenchimento(Quadra quadra);
 
 /*
 Define a cor de preenchimento de uma quadra.
 Nenhum dos parâmetros podem ser nulos.
 */
-void quadra_definir_cor_preenchimento(Quadra quad, const char *cor_preenchimento);
+void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimento);
 
 /*
 Obtém a cor da borda de uma quadra.
-O parâmetro quad não pode ser nulo.
+O parâmetro quadra não pode ser nulo.
 Retorna a cor da borda de uma quadra.
 */
-const char *quadra_obter_cor_borda(Quadra quad);
+const char *quadra_obter_cor_borda(Quadra quadra);
 
 /*
 Define a cor da borda de uma quadra.
 Nenhum dos parâmetros podem ser nulos.
 */
-void quadra_definir_cor_borda(Quadra quad, const char *cor_borda);
+void quadra_definir_cor_borda(Quadra quadra, const char *cor_borda);
 
 /*
 Define a espessura da borda de uma quadra.
 Nenhum dos parâmetros podem ser nulos.
 */
-void quadra_definir_espessura_borda(Quadra quad, const char *espessura_borda);
+void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda);
 
 /*
 Define o arredondamento de uma determinada quadra.
-O parâmetro quad não pode ser nulo, deve ser uma quadra existente e $espessura_borda não pode
+O parâmetro quadra não pode ser nulo, deve ser uma quadra existente e $espessura_borda não pode
 ser nulo.
 */
-void quadra_definir_arredondamento_borda(Quadra quad, double raio_borda);
+void quadra_definir_arredondamento_borda(Quadra quadra, double raio_borda);
 
 /*
 Libera a memória alocada por uma quadra.
-O parâmetro quad não pode ser nulo e deve apontar para um espaço de memória reservada.
+O parâmetro quadra não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado após isso!
 */
-void quadra_destruir(Quadra quad);
+void quadra_destruir(Quadra quadra);
 
 #endif

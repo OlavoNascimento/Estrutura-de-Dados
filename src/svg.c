@@ -43,7 +43,6 @@ void svg_atualizar_exibicao(ExibicaoSVG *exi, Figura figura) {
 
 // Cria um texto igual ao id de uma figura.
 Figura svg_criar_rotulo(Figura figura) {
-    // TODO Melhorar a posição do rótulo em relação a figura.
     Texto rotulo = texto_criar("", figura_obter_x_inicio(figura) - ROTULO_MARGEM,
                                figura_obter_y_inicio(figura) - ROTULO_MARGEM, "black", "black",
                                figura_obter_id(figura));
