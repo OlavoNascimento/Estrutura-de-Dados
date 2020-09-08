@@ -11,9 +11,3 @@ double max(double a, double b) {
 double min(double a, double b) {
     return a < b ? a : b;
 }
-
-// Retorna a hipotenusa de dois catetos
-double pitagoras(double cat1, double cat2) {
-    double hipotenusa = sqrt(pow(cat1, 2) + pow(cat2, 2));
-    return hipotenusa;
-}

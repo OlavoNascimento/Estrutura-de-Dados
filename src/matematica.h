@@ -17,10 +17,4 @@ Retorna o menor valor.
 */
 double min(double a, double b);
 
-/*
-Calcula a hipotenusa com dois catetos passados por parâmetro.
-Retorna a hipotenusa.
-*/
-double pitagoras(double cat1, double cat2);
-
 #endif

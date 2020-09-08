@@ -218,11 +218,14 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     }
 }
 
-bool checar_arestas_dq(double cir_x, double cir_y, double raio, double aresta_x, double aresta_y) {
-    if (pitagoras(fabs(aresta_x - cir_x), fabs(aresta_y - cir_y)) > raio) {
-        return false;
-    }
-    return true;
+bool circulo_contem_retângulo(Figura retangulo, double cir_x, double cir_y, double raio) {
+    // Distância entre o círculo e o ponto x mais longe do círculo
+    double dx =
+        max(cir_x - figura_obter_x_inicio(retangulo), figura_obter_x_fim(retangulo) - cir_x);
+    // Distância entre o círculo e o ponto y mais longe do círculo
+    double dy =
+        max(cir_y - figura_obter_y_inicio(retangulo), figura_obter_y_fim(retangulo) - cir_y);
+    return dx * dx + dy * dy <= raio * raio;
 }
 
 void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *lista_semaforos,
@@ -231,126 +234,46 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     double raio;
     double cir_x, cir_y;
     char id[100];
-    char id_remove[100];
     char c;
-    No no_remove;
     Figura figura;
+    bool remover_quadras = false;
 
     sscanf(linha, "%*s %c", &c);
-
-    No atual = lista_get_first(lista_quadras);
     if (c == '#') {
         sscanf(linha, "%*s %*c %s %lf ", id, &raio);
+        remover_quadras = true;
+    } else {
+        sscanf(linha, "%*s %s %lf ", id, &raio);
+    }
 
-        No figura_id = lista_get_no(lista_hidrantes, id);
-        if (figura_id == NULL)
-            figura_id = lista_get_no(lista_radios, id);
-        if (figura_id == NULL)
-            figura_id = lista_get_no(lista_semaforos, id);
-        if (figura_id == NULL)
-            return;
-        figura = lista_get_figura(figura_id);
-        cir_x = figura_obter_centro_x(figura);
-        cir_y = figura_obter_centro_y(figura);
+    No figura_id = lista_get_no(lista_hidrantes, id);
+    if (figura_id == NULL)
+        figura_id = lista_get_no(lista_radios, id);
+    if (figura_id == NULL)
+        figura_id = lista_get_no(lista_semaforos, id);
+    if (figura_id == NULL)
+        return;
+    figura = lista_get_figura(figura_id);
+    cir_x = figura_obter_centro_x(figura);
+    cir_y = figura_obter_centro_y(figura);
 
-        while (atual != NULL) {
-            Figura quadra = lista_get_figura(atual);
+    No atual = lista_get_first(lista_quadras);
+    while (atual != NULL) {
+        Figura quadra = lista_get_figura(atual);
 
-            bool contido = true;
-            double aresta1_x = figura_obter_x_inicio(quadra);
-            double aresta1_y = figura_obter_y_inicio(quadra);
+        atual = lista_get_next(lista_quadras, atual);
 
-            double aresta2_x = figura_obter_x_fim(quadra);
-            double aresta2_y = figura_obter_y_inicio(quadra);
-
-            double aresta3_x = figura_obter_x_inicio(quadra);
-            double aresta3_y = figura_obter_y_fim(quadra);
-
-            double aresta4_x = figura_obter_x_fim(quadra);
-            double aresta4_y = figura_obter_y_fim(quadra);
-
-            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta1_x, aresta1_y)) {
-                contido = false;
-            }
-
-            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta2_x, aresta2_y)) {
-                contido = false;
-            }
-
-            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta3_x, aresta3_y)) {
-                contido = false;
-            }
-
-            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y)) {
-                contido = false;
-            }
-
-            if (contido) {
+        bool contido = circulo_contem_retângulo(quadra, cir_x, cir_y, raio);
+        if (contido) {
+            fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
+                    figura_obter_id(figura), cir_x, cir_y);
+            if (remover_quadras) {
+                No no_remove = lista_get_no(lista_quadras, figura_obter_id(quadra));
+                lista_remove_no(lista_quadras, no_remove);
+            } else {
                 figura_definir_cor_borda(quadra, "olive");
                 figura_definir_cor_preenchimento(quadra, "beige");
                 figura_definir_arredondamento_borda(quadra, 20);
-                fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
-                        figura_obter_id(figura), cir_x, cir_y);
-            }
-
-            atual = lista_get_next(lista_quadras, atual);
-        }
-    } else {
-        sscanf(linha, "%*s %s %lf ", id, &raio);
-
-        No figura_id = lista_get_no(lista_hidrantes, id);
-        if (figura_id == NULL)
-            figura_id = lista_get_no(lista_radios, id);
-        if (figura_id == NULL)
-            figura_id = lista_get_no(lista_semaforos, id);
-        if (figura_id == NULL)
-            return;
-        figura = lista_get_figura(figura_id);
-        cir_x = figura_obter_centro_x(figura);
-        cir_y = figura_obter_centro_y(figura);
-
-        while (atual != NULL) {
-            Figura quadra = lista_get_figura(atual);
-
-            bool contido = true;
-            double aresta1_x = figura_obter_x_inicio(quadra);
-            double aresta1_y = figura_obter_y_inicio(quadra);
-
-            double aresta2_x = figura_obter_x_fim(quadra);
-            double aresta2_y = figura_obter_y_inicio(quadra);
-
-            double aresta3_x = figura_obter_x_inicio(quadra);
-            double aresta3_y = figura_obter_y_fim(quadra);
-
-            double aresta4_x = figura_obter_x_fim(quadra);
-            double aresta4_y = figura_obter_y_fim(quadra);
-
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta1_x, aresta1_y) == false) {
-                contido = false;
-            }
-
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta2_x, aresta2_y) == false) {
-                contido = false;
-            }
-
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta3_x, aresta3_y) == false) {
-                contido = false;
-            }
-
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y) == false) {
-                contido = false;
-            }
-
-            atual = lista_get_next(lista_quadras, atual);
-
-            if (contido) {
-                strcpy(id_remove, figura_obter_id(quadra));
-                no_remove = lista_get_no(lista_quadras, id_remove);
-
-                fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
-                        figura_obter_id(figura), cir_x, cir_y);
-
-                lista_remove_no(lista_quadras, no_remove);
             }
         }
     }
@@ -442,12 +365,7 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
     while (atual != NULL) {
         Figura quadra = lista_get_figura(atual);
 
-        // Distância entre o círculo e o ponto x mais próximo do círculo
-        double dx = max(cir_x - figura_obter_x_inicio(quadra), figura_obter_x_fim(quadra) - cir_x);
-        // Distância entre o círculo e o ponto y mais próximo do círculo
-        double dy = max(cir_y - figura_obter_y_inicio(quadra), figura_obter_y_fim(quadra) - cir_y);
-
-        if (dx * dx + dy * dy < raio * raio) {
+        if (circulo_contem_retângulo(quadra, cir_x, cir_y, raio)) {
             figura_definir_cor_borda(quadra, cor_borda);
             fprintf(arquivo_log, "%s\n\n", figura_obter_id(quadra));
         }
