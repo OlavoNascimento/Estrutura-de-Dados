@@ -5,6 +5,7 @@
 #include "ler_geo.h"
 #include "ler_qry.h"
 #include "lista.h"
+#include "logging.h"
 #include "parametros.h"
 #include "retangulo.h"
 #include "svg.h"
@@ -20,8 +21,8 @@ int main(int argc, const char *argv[]) {
     char *caminho_consulta = parametros_obter_caminho_consulta(params);
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
 
-    printf("Arquivo descrição: %s\n", caminho_descricao);
-    printf("Arquivo svg descrição: %s\n", caminho_svg_descricao);
+    LOG_INFO("Arquivo descrição: %s\n", caminho_descricao);
+    LOG_INFO("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
     Lista *lista_formas = lista_create();
     Lista *lista_quadras = lista_create();
@@ -37,9 +38,9 @@ int main(int argc, const char *argv[]) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
         char *caminho_svg_consulta = parametros_obter_caminho_svg_consulta(params);
 
-        printf("Arquivo consulta: %s\n", caminho_consulta);
-        printf("Arquivo log: %s\n", caminho_registro_consulta);
-        printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
+        LOG_INFO("Arquivo consulta: %s\n", caminho_consulta);
+        LOG_INFO("Arquivo log: %s\n", caminho_registro_consulta);
+        LOG_INFO("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
         ler_qry(caminho_consulta, caminho_registro_consulta, lista_formas, lista_quadras,
                 lista_hidrantes, lista_radios, lista_semaforos);

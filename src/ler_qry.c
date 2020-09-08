@@ -9,6 +9,7 @@
 #include "figuras.h"
 #include "linha.h"
 #include "lista.h"
+#include "logging.h"
 #include "matematica.h"
 #include "retangulo.h"
 #include "texto.h"
@@ -566,12 +567,12 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
              Lista lista_semaforos) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
+        LOG_ERROR("Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
         return;
     }
     FILE *arquivo_log = fopen(caminho_log, "w");
     if (arquivo_log == NULL) {
-        fprintf(stderr, "ERRO: Falha ao criar arquivo de log: %s!\n", caminho_log);
+        LOG_ERROR("Falha ao criar arquivo de log: %s!\n", caminho_log);
         return;
     }
 

@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "circulo.h"
+#include "logging.h"
 
 typedef struct {
     Circulo circ;
@@ -15,15 +16,15 @@ typedef struct {
 Radio radio_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
                   const char cor_preenchimento[20]) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um rádio com id NULL!\n");
+        LOG_ERROR("Não é possível criar um rádio com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um rádio com cor de borda NULL!\n");
+        LOG_ERROR("Não é possível criar um rádio com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um rádio com cor de preenchimento NULL!\n");
+        LOG_ERROR("Não é possível criar um rádio com cor de preenchimento NULL!\n");
         return NULL;
     }
     RadioBaseImp *radImp = malloc(sizeof(RadioBaseImp));
@@ -86,8 +87,7 @@ const char *radio_obter_cor_preenchimento(Radio radio) {
 
 void radio_definir_cor_preenchimento(Radio radio, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de um radio!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de um radio!\n");
         return;
     }
     RadioBaseImp *radImp = (RadioBaseImp *) radio;
@@ -101,7 +101,7 @@ const char *radio_obter_cor_borda(Radio radio) {
 
 void radio_definir_cor_borda(Radio radio, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um radio!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de um radio!\n");
         return;
     }
     RadioBaseImp *radImp = (RadioBaseImp *) radio;
@@ -117,9 +117,9 @@ const char *radio_obter_espessura_borda(Radio radio) {
 // Define a espessura da borda de uma rádio base.
 void radio_definir_espessura_borda(Radio radio, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
-                "radio!\n");
+        LOG_ERROR(
+            "Não é possível definir NULL como tamanho da espessura da borda de um "
+            "radio!\n");
         return;
     }
     RadioBaseImp *radImp = (RadioBaseImp *) radio;

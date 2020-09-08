@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logging.h"
+
 typedef struct {
     double x1;
     double y1;
@@ -91,7 +93,7 @@ const char *linha_obter_cor_borda(Linha linha) {
 // Define a cor da borda de uma linha.
 void linha_definir_cor_borda(Linha linha, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de uma linha!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de uma linha!\n");
         return;
     }
     LinhaImp *linImp = (LinhaImp *) linha;
@@ -107,8 +109,7 @@ const char *linha_obter_cor_preenchimento(Linha linha) {
 // Define a cor de preenchimento de uma linha.
 void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de uma linha!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de uma linha!\n");
         return;
     }
     LinhaImp *linImp = (LinhaImp *) linha;

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logging.h"
 #include "retangulo.h"
 
 typedef struct {
@@ -15,15 +16,15 @@ typedef struct {
 Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y,
                         const char cor_borda[20], const char cor_preenchimento[20]) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um semaforo com id NULL!\n");
+        LOG_ERROR("Não é possível criar um semaforo com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um semaforo com cor de borda NULL!\n");
+        LOG_ERROR("Não é possível criar um semaforo com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um semaforo com cor de preenchimento NULL!\n");
+        LOG_ERROR("Não é possível criar um semaforo com cor de preenchimento NULL!\n");
         return NULL;
     }
     SemaforoImp *semaImp = malloc(sizeof(SemaforoImp));
@@ -88,7 +89,7 @@ const char *semaforo_obter_cor_borda(Semaforo sem) {
 // Define a cor da borda de um semaforo.
 void semaforo_definir_cor_borda(Semaforo semaforo, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um semaforo!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de um semaforo!\n");
         return;
     }
     SemaforoImp *semaImp = (SemaforoImp *) semaforo;
@@ -103,8 +104,7 @@ const char *semaforo_obter_cor_preenchimento(Semaforo sem) {
 // Define a cor de preenchimento de um semaforo.
 void semaforo_definir_cor_preenchimento(Semaforo semaforo, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de um semaforo!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de um semaforo!\n");
         return;
     }
     SemaforoImp *semaImp = (SemaforoImp *) semaforo;
@@ -118,9 +118,9 @@ const char *semaforo_obter_espessura_borda(Semaforo sem) {
 
 void semaforo_definir_espessura_borda(Semaforo sem, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
-                "semaforo!\n");
+        LOG_ERROR(
+            "Não é possível definir NULL como tamanho da espessura da borda de um "
+            "semaforo!\n");
         return;
     }
     SemaforoImp *semImp = (SemaforoImp *) sem;

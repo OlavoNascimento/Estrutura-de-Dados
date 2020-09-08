@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "figuras.h"
+#include "logging.h"
 
 typedef struct N {
     Figura figura;
@@ -21,7 +22,7 @@ typedef struct lista {
 Lista lista_create() {
     list *lista = (list *) malloc(sizeof(list));
     if (lista == NULL) {
-        fprintf(stderr, "ERRO: Erro ao alocar espaço para a lista!\n");
+        LOG_ERROR("Erro ao alocar espaço para a lista!\n");
         return NULL;
     }
 
@@ -88,7 +89,7 @@ No lista_insert_after(Lista lista, Figura figura, No p) {
         lista_aux->tamanho++;
     }
     if (tam_aux == lista_aux->tamanho) {
-        fprintf(stderr, "ERRO: Erro ao inserir elemento (insert_after)\n");
+        LOG_ERROR("Erro ao inserir elemento (insert_after)\n");
         return NULL;
     }
 
@@ -122,7 +123,7 @@ No lista_insert_before(Lista lista, Figura figura, No p) {
         lista_aux->tamanho++;
     }
     if (tam_aux == lista_aux->tamanho) {
-        fprintf(stderr, "ERRO: Erro ao inserir elemento (insert_before)!\n");
+        LOG_ERROR("Erro ao inserir elemento (insert_before)!\n");
         return NULL;
     }
 
@@ -136,7 +137,7 @@ void lista_remove_no(Lista lista, No no_selecionado) {
     no *no_proximo = NULL;
 
     if (no_auxiliar == NULL) {
-        fprintf(stderr, "ERRO: Nó possui ID inválido\n");
+        LOG_ERROR("Nó possui ID inválido\n");
         return;
     }
     if (no_auxiliar == lista_auxiliar->primeiro) {  // se for o primeiro elemento da lista
@@ -200,7 +201,7 @@ Figura lista_get_figura(No p) {
     no *node_auxiliar;
     node_auxiliar = p;
     if (p == NULL) {
-        fprintf(stderr, "ERRO: Erro ao obter informações do nó especificado\n");
+        LOG_ERROR("Erro ao obter informações do nó especificado\n");
         return NULL;
     }
     return node_auxiliar->figura;
@@ -241,5 +242,5 @@ void lista_libera_lista(Lista lista) {
     free(lista_aux);
     lista_aux = NULL;
 
-    printf("Lista liberada\n");
+    LOG_INFO("Lista liberada\n");
 }

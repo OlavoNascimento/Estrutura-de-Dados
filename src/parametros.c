@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logging.h"
 #include "utils.h"
 
 typedef struct {
@@ -55,12 +56,12 @@ Parametros parametros_ler(int argc, const char *argv[]) {
 bool parametros_checar_obrigatorios(const Parametros params) {
     ParametrosImp *paramsImp = (ParametrosImp *) params;
     if (paramsImp->caminho_descricao == NULL) {
-        fprintf(stderr, "ERRO: Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
+        LOG_ERROR("Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
         return false;
     }
 
     if (paramsImp->nome_dir_saida == NULL) {
-        fprintf(stderr, "ERRO: Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
+        LOG_ERROR("Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
         return false;
     }
     return true;

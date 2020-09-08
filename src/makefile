@@ -17,7 +17,9 @@ OBJECTS = $(SOURCES:.c=.o)
 all: $(EXECUTABLE)
 
 # Opções para debug
-debug: CFLAGS += -g
+# -g inclui informação de debug, permite o valgrind exibir informações de linha e nome de função.
+# -D DEBUG_SIGUEL habilita os macros de debug do programa.
+debug: CFLAGS += -g -D DEBUG_SIGUEL
 debug: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
@@ -34,3 +36,4 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f *.o
+

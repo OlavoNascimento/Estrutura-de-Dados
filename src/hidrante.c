@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "circulo.h"
+#include "logging.h"
 
 typedef struct {
     Circulo circ;
@@ -15,15 +16,15 @@ typedef struct {
 Hidrante hidrante_criar(const char id[100], double raio, double x, double y,
                         const char cor_borda[20], const char cor_preenchimento[20]) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um hidrânte com id NULL!\n");
+        LOG_ERROR("Não é possível criar um hidrânte com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um hidrânte com cor de borda NULL!\n");
+        LOG_ERROR("Não é possível criar um hidrânte com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um hidrânte com cor de preenchimento NULL!\n");
+        LOG_ERROR("Não é possível criar um hidrânte com cor de preenchimento NULL!\n");
         return NULL;
     }
     HidranteImp *hidImp = malloc(sizeof(HidranteImp));
@@ -89,8 +90,7 @@ const char *hidrante_obter_cor_preenchimento(Hidrante hidrante) {
 // Define a cor de preenchimento de um hidrante.
 void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de um hidrante!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de um hidrante!\n");
         return;
     }
     HidranteImp *hidImp = (HidranteImp *) hidrante;
@@ -106,7 +106,7 @@ const char *hidrante_obter_cor_borda(Hidrante hidrante) {
 // Define a cor da borda de um hidrante.
 void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um hidrante!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de um hidrante!\n");
         return;
     }
     HidranteImp *hidImp = (HidranteImp *) hidrante;
@@ -116,9 +116,9 @@ void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda) {
 // Define a espessura da borda de um hidrante.
 void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
-                "hidrante!\n");
+        LOG_ERROR(
+            "Não é possível definir NULL como tamanho da espessura da borda de um "
+            "hidrante!\n");
         return;
     }
     HidranteImp *hidImp = (HidranteImp *) hidrante;

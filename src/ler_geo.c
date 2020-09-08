@@ -9,6 +9,7 @@
 #include "hidrante.h"
 #include "linha.h"
 #include "lista.h"
+#include "logging.h"
 #include "quadra.h"
 #include "radio_base.h"
 #include "retangulo.h"
@@ -215,7 +216,7 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
              Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
+        LOG_ERROR("Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
         return;
     }
 
@@ -260,11 +261,11 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
             definir_propriedades_retangulos(linha, &propriedades.ret);
         } else if (strcmp("nx", comando) == 0) {
             definir_max_figuras(linha, &maximo);
-            printf("Novo valor máximo de figuras: %d\n", maximo.lista_max_figuras);
-            printf("Novo valor máximo de quadras: %d\n", maximo.lista_max_quadras);
-            printf("Novo valor máximo de hidrantes: %d\n", maximo.lista_max_hidrantes);
-            printf("Novo valor máximo de semaforos: %d\n", maximo.lista_max_semaforos);
-            printf("Novo valor máximo de radio-bases: %d\n", maximo.lista_max_bases);
+            LOG_INFO("Novo valor máximo de figuras: %d\n", maximo.lista_max_figuras);
+            LOG_INFO("Novo valor máximo de quadras: %d\n", maximo.lista_max_quadras);
+            LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximo.lista_max_hidrantes);
+            LOG_INFO("Novo valor máximo de semaforos: %d\n", maximo.lista_max_semaforos);
+            LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximo.lista_max_bases);
         }
 
         if (nova_figura != NULL) {
@@ -293,9 +294,8 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
                     semaforos_criados++;
                     break;
                 default:
-                    fprintf(stderr,
-                            "ERRO: Tipo de figura desconhecido ao ler arquivo de descrição: %d!\n",
-                            tipo);
+                    LOG_ERROR("Tipo de figura desconhecido ao ler arquivo de descrição: %d!\n",
+                              tipo);
                     return;
             }
         }

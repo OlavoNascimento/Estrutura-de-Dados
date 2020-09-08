@@ -7,6 +7,7 @@
 #include "circulo.h"
 #include "hidrante.h"
 #include "linha.h"
+#include "logging.h"
 #include "matematica.h"
 #include "quadra.h"
 #include "radio_base.h"
@@ -31,11 +32,11 @@ typedef struct {
 // Cria um struct figura que recebe uma figura a ser armazenada e o tipo dessa figura.
 Figura figura_criar(void *figura, TiposFigura tipo) {
     if (figura == NULL) {
-        fprintf(stderr, "ERRO: Figura nula passada ao criar figura!\n");
+        LOG_ERROR("Figura nula passada ao criar figura!\n");
         return NULL;
     }
     if (tipo <= TIPOS_FIGURA_MIN || tipo >= TIPOS_FIGURA_MAX) {
-        fprintf(stderr, "ERRO: Tipo de figura inválido passado para criar figura: %d!\n", tipo);
+        LOG_ERROR("Tipo de figura inválido passado para criar figura: %d!\n", tipo);
         return NULL;
     }
     FiguraImp *fig = malloc(sizeof(FiguraImp));
@@ -66,7 +67,7 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
             fig->lin = figura;
             break;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para criar figura: %d!\n", tipo);
+            LOG_ERROR("Tipo de figura inválido passado para criar figura: %d!\n", tipo);
             break;
     }
     return fig;
@@ -75,7 +76,7 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
 // Escreve todos os dados de uma figura em um arquivo passado a função.
 void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
     if (arquivo == NULL) {
-        fprintf(stderr, "ERRO: Arquivo nulo recebido ao escrever informações!\n");
+        LOG_ERROR("Arquivo nulo recebido ao escrever informações!\n");
         return;
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
@@ -102,9 +103,8 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
             texto_escrever_informacoes(arquivo, figuraImp->tex);
             break;
         default:
-            fprintf(stderr,
-                    "ERRO: Tipo de figura inválido passado para escrever informações: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para escrever informações: %d!\n",
+                      figuraImp->tipo);
             break;
     }
 }
@@ -112,7 +112,7 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
 // Escreve o código svg que representa uma figura em um arquivo.
 void figura_escrever_svg(FILE *arquivo, Figura figura) {
     if (arquivo == NULL) {
-        fprintf(stderr, "ERRO: Arquivo nulo recebido ao transformar figura em svg!\n");
+        LOG_ERROR("Arquivo nulo recebido ao transformar figura em svg!\n");
         return;
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
@@ -142,8 +142,7 @@ void figura_escrever_svg(FILE *arquivo, Figura figura) {
             texto_escrever_svg(arquivo, figuraImp->tex);
             break;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para escrever svg: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para escrever svg: %d!\n", figuraImp->tipo);
             break;
     }
 }
@@ -191,9 +190,8 @@ bool figura_checar_ponto_interno(Figura figura, double ponto_x, double ponto_y) 
             interno = retangulo_checar_ponto_interno(figuraImp->ret, ponto_x, ponto_y);
             break;
         default:
-            fprintf(stderr,
-                    "ERRO: Tipo de figura inválido passado para checar ponto interno: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para checar ponto interno: %d!\n",
+                      figuraImp->tipo);
             break;
     }
     return interno;
@@ -232,8 +230,7 @@ void *figura_obter_figura(Figura figura) {
         case TIPO_TEXTO:
             return figuraImp->tex;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter figura: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter figura: %d!\n", figuraImp->tipo);
             return NULL;
     }
 }
@@ -259,8 +256,8 @@ double figura_obter_x_inicio(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_x(figuraImp->tex);
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter x inicio: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter x inicio: %d!\n",
+                      figuraImp->tipo);
             break;
     }
     return 0;
@@ -287,8 +284,8 @@ double figura_obter_y_inicio(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_y(figuraImp->tex);
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter y inicio: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter y inicio: %d!\n",
+                      figuraImp->tipo);
             break;
     }
     return 0;
@@ -316,8 +313,7 @@ double figura_obter_x_fim(Figura figura) {
             // Usa uma largura estimada para o texto
             return texto_obter_x(figuraImp->tex) + strlen(texto_obter_conteudo(figuraImp->tex)) * 4;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter x fim: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter x fim: %d!\n", figuraImp->tipo);
             break;
     }
     return 0;
@@ -344,8 +340,7 @@ double figura_obter_y_fim(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_y(figuraImp->tex);
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter y fim: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter y fim: %d!\n", figuraImp->tipo);
             break;
     }
     return 0;
@@ -368,8 +363,8 @@ double figura_obter_centro_x(Figura figura) {
         case TIPO_RETANGULO:
             return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret) / 2;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter centro x: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter centro x: %d!\n",
+                      figuraImp->tipo);
             return 0;
     }
 }
@@ -391,8 +386,8 @@ double figura_obter_centro_y(Figura figura) {
         case TIPO_RETANGULO:
             return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret) / 2;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter centro y: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter centro y: %d!\n",
+                      figuraImp->tipo);
             return 0;
     }
 }
@@ -418,8 +413,7 @@ const char *figura_obter_id(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_id(figuraImp->tex);
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter id: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter id: %d!\n", figuraImp->tipo);
             break;
     }
     return NULL;
@@ -446,8 +440,8 @@ const char *figura_obter_cor_borda(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_cor_borda(figuraImp->tex);
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para obter cor borda: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter cor borda: %d!\n",
+                      figuraImp->tipo);
             break;
     }
     return NULL;
@@ -456,7 +450,7 @@ const char *figura_obter_cor_borda(Figura figura) {
 // Define a cor da borda de uma figura.
 void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Tentando alterar cor da borda de uma figura para nulo!\n");
+        LOG_ERROR("Tentando alterar cor da borda de uma figura para nulo!\n");
         return;
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
@@ -486,8 +480,8 @@ void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
             texto_definir_cor_borda(figuraImp->tex, cor_borda);
             break;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para definir cor borda: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para definir cor borda: %d!\n",
+                      figuraImp->tipo);
             break;
     }
 }
@@ -513,9 +507,8 @@ const char *figura_obter_cor_preenchimento(Figura figura) {
         case TIPO_TEXTO:
             return texto_obter_cor_preenchimento(figuraImp->tex);
         default:
-            fprintf(stderr,
-                    "ERRO: Tipo de figura inválido passado para obter cor preenchimento: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para obter cor preenchimento: %d!\n",
+                      figuraImp->tipo);
             break;
     }
     return NULL;
@@ -524,7 +517,7 @@ const char *figura_obter_cor_preenchimento(Figura figura) {
 // Define a cor de preenchimento de uma figura.
 void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Tentando alterar cor de preenchimento de uma figura para nulo!\n");
+        LOG_ERROR("Tentando alterar cor de preenchimento de uma figura para nulo!\n");
         return;
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
@@ -554,9 +547,8 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
             texto_definir_cor_preenchimento(figuraImp->tex, cor_preenchimento);
             break;
         default:
-            fprintf(stderr,
-                    "ERRO: Tipo de figura inválido passado para definir cor preenchimento: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para definir cor preenchimento: %d!\n",
+                      figuraImp->tipo);
             break;
     }
 }
@@ -569,10 +561,10 @@ void figura_definir_arredondamento_borda(Figura fig, double raio_borda) {
             quadra_definir_arredondamento_borda(figuraImp->qua, raio_borda);
             break;
         default:
-            fprintf(stderr,
-                    "ERRO: Tipo de figura inválido passado para definir arredondamento borda "
-                    "figura: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR(
+                "Tipo de figura inválido passado para definir arredondamento borda "
+                "figura: %d!\n",
+                figuraImp->tipo);
             break;
     }
 }
@@ -606,8 +598,8 @@ void figura_destruir(Figura figura) {
             texto_destruir(figuraImp->tex);
             break;
         default:
-            fprintf(stderr, "ERRO: Tipo de figura inválido passado para destruir figura: %d!\n",
-                    figuraImp->tipo);
+            LOG_ERROR("Tipo de figura inválido passado para destruir figura: %d!\n",
+                      figuraImp->tipo);
             break;
     }
     free(figura);

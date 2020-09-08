@@ -7,6 +7,7 @@
 
 #include "figuras.h"
 #include "lista.h"
+#include "logging.h"
 #include "matematica.h"
 #include "texto.h"
 #include "utils.h"
@@ -79,8 +80,7 @@ void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao,
                              Lista lista_semaforos) {
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "w");
     if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para escrita!\n",
-                caminho_svg_tmp);
+        LOG_ERROR("Arquivo svg temporário %s não pode ser criado para escrita!\n", caminho_svg_tmp);
         return;
     }
     // Escreve as informações em um arquivo temporário, já que o parâmetro viewbow precisa ser
@@ -105,13 +105,13 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
     // Abre o arquivo final para escrita
     FILE *arquivo_svg = fopen(caminho_svg_final, "w");
     if (arquivo_svg == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado!\n", caminho_svg_final);
+        LOG_ERROR("Arquivo svg %s não pode ser criado!\n", caminho_svg_final);
         return;
     }
     // Abre o arquivo temporario para leitura
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "r");
     if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser lido!\n", caminho_svg_tmp);
+        LOG_ERROR("Arquivo svg temporário %s não pode ser lido!\n", caminho_svg_tmp);
         return;
     }
 
@@ -150,7 +150,7 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
 void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista_quadras,
                         Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
     if (caminho_svg == NULL) {
-        fprintf(stderr, "ERRO: Caminho nulo passado a lista para svg!\n");
+        LOG_ERROR("Caminho nulo passado a lista para svg!\n");
         return;
     }
 

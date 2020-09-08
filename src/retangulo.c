@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logging.h"
+
 typedef struct {
     char id[100];
     double largura;
@@ -22,15 +24,15 @@ typedef struct {
 Retangulo retangulo_criar(const char id[100], double largura, double altura, double x, double y,
                           const char cor_borda[20], const char cor_preenchimento[20]) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um retângulo com id NULL!\n");
+        LOG_ERROR("Não é possível criar um retângulo com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um retângulo com cor de borda NULL!\n");
+        LOG_ERROR("Não é possível criar um retângulo com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar um retângulo com cor de preenchimento NULL!\n");
+        LOG_ERROR("Não é possível criar um retângulo com cor de preenchimento NULL!\n");
         return NULL;
     }
     RetanguloImp *retImp = malloc(sizeof(RetanguloImp));
@@ -121,7 +123,7 @@ const char *retangulo_obter_id(Retangulo ret) {
 // Define o id de retângulo.
 void retangulo_definir_id(Retangulo ret, const char *id) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como id de um retângulo!\n");
+        LOG_ERROR("Não é possível definir NULL como id de um retângulo!\n");
         return;
     }
     RetanguloImp *retImp = (RetanguloImp *) ret;
@@ -185,7 +187,7 @@ const char *retangulo_obter_cor_borda(Retangulo ret) {
 // Define a cor da borda de retângulo.
 void retangulo_definir_cor_borda(Retangulo ret, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um retângulo!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de um retângulo!\n");
         return;
     }
     RetanguloImp *retImp = (RetanguloImp *) ret;
@@ -201,8 +203,7 @@ const char *retangulo_obter_cor_preenchimento(Retangulo ret) {
 // Define a cor de preenchimento de retângulo.
 void retangulo_definir_cor_preenchimento(Retangulo ret, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de um retângulo!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de um retângulo!\n");
         return;
     }
     RetanguloImp *retImp = (RetanguloImp *) ret;
@@ -218,9 +219,9 @@ const char *retangulo_obter_espessura_borda(Retangulo ret) {
 // Define a espessura da borda de retângulo.
 void retangulo_definir_espessura_borda(Retangulo ret, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
-                "retângulo!\n");
+        LOG_ERROR(
+            "Não é possível definir NULL como tamanho da espessura da borda de um "
+            "retângulo!\n");
         return;
     }
     RetanguloImp *retImp = (RetanguloImp *) ret;

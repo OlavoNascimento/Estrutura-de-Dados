@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logging.h"
+
 typedef struct {
     char id[100];
     double x;
@@ -65,7 +67,7 @@ const char *texto_obter_id(Texto tex) {
 
 void texto_definir_id(Texto tex, const char *id) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como id de um texto!\n");
+        LOG_ERROR("Não é possível definir NULL como id de um texto!\n");
         return;
     }
     TextoImp *texImp = (TextoImp *) tex;
@@ -99,7 +101,7 @@ const char *texto_obter_cor_borda(Texto tex) {
 
 void texto_definir_cor_borda(Texto tex, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de um texto!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de um texto!\n");
         return;
     }
     TextoImp *texImp = (TextoImp *) tex;
@@ -113,8 +115,7 @@ const char *texto_obter_cor_preenchimento(Texto tex) {
 
 void texto_definir_cor_preenchimento(Texto tex, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de um texto!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de um texto!\n");
         return;
     }
     TextoImp *texImp = (TextoImp *) tex;
@@ -128,7 +129,7 @@ const char *texto_obter_conteudo(Texto tex) {
 
 void texto_definir_conteudo(Texto tex, const char *conteudo) {
     if (conteudo == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como conteúdo de um texto!\n");
+        LOG_ERROR("Não é possível definir NULL como conteúdo de um texto!\n");
         return;
     }
     TextoImp *texImp = (TextoImp *) tex;

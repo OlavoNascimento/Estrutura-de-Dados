@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logging.h"
 #include "retangulo.h"
 
 typedef struct {
@@ -16,15 +17,15 @@ typedef struct {
 Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y,
                     const char cor_borda[20], const char cor_preenchimento[20]) {
     if (id == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar uma quadra com id NULL!\n");
+        LOG_ERROR("Não é possível criar uma quadra com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar uma quadra com cor de borda NULL!\n");
+        LOG_ERROR("Não é possível criar uma quadra com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        fprintf(stderr, "ERRO: Não é possível criar uma quadra com cor de preenchimento NULL!\n");
+        LOG_ERROR("Não é possível criar uma quadra com cor de preenchimento NULL!\n");
         return NULL;
     }
     QuadraImp *quadImp = malloc(sizeof(QuadraImp));
@@ -96,7 +97,7 @@ const char *quadra_obter_cor_borda(Quadra quadra) {
 // Define a cor da borda de uma quadra.
 void quadra_definir_cor_borda(Quadra quadra, const char *cor_borda) {
     if (cor_borda == NULL) {
-        fprintf(stderr, "ERRO: Não é possível definir NULL como cor da borda de uma quadra!\n");
+        LOG_ERROR("Não é possível definir NULL como cor da borda de uma quadra!\n");
         return;
     }
     QuadraImp *quadImp = (QuadraImp *) quadra;
@@ -112,8 +113,7 @@ const char *quadra_obter_cor_preenchimento(Quadra quadra) {
 // Define a cor de preenchimento de uma quadra.
 void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como cor de preenchimento de uma quadra!\n");
+        LOG_ERROR("Não é possível definir NULL como cor de preenchimento de uma quadra!\n");
         return;
     }
     QuadraImp *quadImp = (QuadraImp *) quadra;
@@ -123,9 +123,9 @@ void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimen
 // Define a espessura da borda de uma quadra.
 void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        fprintf(stderr,
-                "ERRO: Não é possível definir NULL como tamanho da espessura da borda de um "
-                "quadra!\n");
+        LOG_ERROR(
+            "Não é possível definir NULL como tamanho da espessura da borda de um "
+            "quadra!\n");
         return;
     }
     QuadraImp *quadImp = (QuadraImp *) quadra;
