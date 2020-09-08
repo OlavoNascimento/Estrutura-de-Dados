@@ -58,6 +58,11 @@ char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
 // Extrai o nome do arquivo sem sua extensão e o diretórios que compõem seu caminho de uma string no
 // formato: /diretório/.../nome-arquivo.ext
 char *extrair_nome_base(const char *caminho_arquivo) {
+    if (caminho_arquivo == NULL) {
+        fprintf(stderr, "ERRO: Caminho de arquivo nulo fornecida ao extrair nome base!\n");
+        return NULL;
+    }
+
     // Avança até a última / ou \ no caminho do arquivo.
     char *nome_arquivo = strrchr(caminho_arquivo, SEPARADOR_DE_DIRETORIOS);
 
@@ -91,6 +96,11 @@ char *extrair_nome_base(const char *caminho_arquivo) {
 // Cria uma string baseado em um nome de arquivo passado a função, porém sua extensão é substituida
 // por sufixos adicionais.
 char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
+    if (caminho_arquivo == NULL) {
+        fprintf(stderr, "ERRO: Caminho de arquivo nulo fornecida ao alterar sufixo!\n");
+        return NULL;
+    }
+
     char *sufixo_final = malloc(sizeof(char));
     sufixo_final[0] = '\0';
 

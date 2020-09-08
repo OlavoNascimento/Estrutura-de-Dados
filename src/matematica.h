@@ -1,15 +1,26 @@
 #ifndef MATEMATICA_H
 #define MATEMATICA_H
 
-// Este módulo define funções matemáticas que são utilizadas por mais de um módulo
+/*
+Este módulo define funções matemáticas que são utilizadas por mais de um módulo.
+*/
 
-// Retorna o maior valor de dois parâmetros
+/*
+Calcula o maior valor de dois parâmetros.
+Retorna o maior valor.
+*/
 double max(double a, double b);
-// Retorna o menor valor de dois parâmetros
+
+/*
+Calcula o menor valor de dois parâmetros.
+Retorna o menor valor.
+*/
 double min(double a, double b);
 
-// calcula a hipotenusa com dois catetos passados por parametro
-// retorna a hipotenusa
+/*
+Calcula a hipotenusa com dois catetos passados por parâmetro.
+Retorna a hipotenusa.
+*/
 double pitagoras(double cat1, double cat2);
 
 #endif

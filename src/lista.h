@@ -5,6 +5,7 @@
 
 typedef void* Lista;
 typedef void* No;
+
 /*
 Cria o ponteiro inicial de lista dinamica duplamente encadeada.
 Não é passado nenhum parâmetro.
