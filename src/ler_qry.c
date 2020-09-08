@@ -251,7 +251,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
 
             bool contido = true;
             if (figura_obter_y_fim(quadra) <= cir_y) {
-                // primeiro e segundo quadrante
+                // Primeiro e segundo quadrante
                 if (figura_obter_x_inicio(quadra) >= cir_x) {
                     double cateto1 = figura_obter_x_fim(quadra) - cir_x;
                     double cateto2 = cir_y - figura_obter_y_inicio(quadra);
@@ -270,7 +270,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
                     }
                 }
             } else if (figura_obter_y_inicio(quadra) >= cir_y) {
-                // terceiro e quarto quadrante
+                // Terceiro e quarto quadrante
                 if (figura_obter_x_fim(quadra) <= cir_x) {
                     double cateto1 = cir_x - figura_obter_x_inicio(quadra);
                     double cateto2 = figura_obter_y_fim(quadra) - cir_y;
@@ -333,7 +333,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
 
             bool contido = true;
             if (figura_obter_y_fim(quadra) <= cir_y) {
-                // primeiro e segundo quadrante
+                // Primeiro e segundo quadrante
                 if (figura_obter_x_inicio(quadra) >= cir_x) {
                     double cateto1 = figura_obter_x_fim(quadra) - cir_x;
                     double cateto2 = cir_y - figura_obter_y_inicio(quadra);
@@ -394,21 +394,21 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
         }
     }
 
-    // desenhar o raio
+    // Desenhar o raio
     Figura nova_figura;
     Circulo desenho_raio = circulo_criar("", raio, cir_x, cir_y, "black", "none");
     circulo_definir_espessura_borda(desenho_raio, "2px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
     lista_insert_final(lista_formas, nova_figura);
 
-    // desenhar anel de duas cores
-    // primeiro anel
+    // Desenhar anel de duas cores
+    // Primeiro anel
     desenho_raio = circulo_criar("", 20, cir_x, cir_y, "blue", "blue");
     circulo_definir_espessura_borda(desenho_raio, "2px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
     lista_insert_final(lista_formas, nova_figura);
 
-    // segundo anel
+    // Segundo anel
     desenho_raio = circulo_criar("", 15, cir_x, cir_y, "yellow", "yellow");
     circulo_definir_espessura_borda(desenho_raio, "2px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);

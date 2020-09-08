@@ -11,7 +11,7 @@ fornecido ao programa e executar os comandos especificados.
 /*
 Abre um arquivo .geo no caminho passado a função e interpreta seus comando afim de criar uma
 lista com os elementos especificados no arquivo.
-Nenhum dos parâmetros podem ser nulos.
+Nenhum dos parâmetros podem ser nulos e o caminho do arquivo de descrição deve ser válido.
 A listas são preenchidas com as figuras e equipamentos urbanos descritos no arquivo.
 */
 void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista lista_hidrantes,
