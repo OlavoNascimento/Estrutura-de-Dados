@@ -51,7 +51,7 @@ Acessa  um nó da lista.
 O id passado deve ser válido.
 Retorna o endereço do nó.
 */
-No lista_get_no(Lista lista, char id[100]);
+No lista_get_no(Lista lista, const char id[100]);
 
 /*
 Acessa o último elemento da lista.
