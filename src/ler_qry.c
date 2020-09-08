@@ -269,27 +269,19 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             double aresta4_x = figura_obter_x_fim(quadra);
             double aresta4_y = figura_obter_y_fim(quadra);
 
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta1_x, aresta1_y) == false) {
+            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta1_x, aresta1_y)) {
                 contido = false;
             }
 
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta2_x, aresta2_y) == false) {
+            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta2_x, aresta2_y)) {
                 contido = false;
             }
 
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta3_x, aresta3_y) == false) {
+            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta3_x, aresta3_y)) {
                 contido = false;
             }
 
-            if (checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y) == false) {
-                contido = false;
-            }
-
-            double diagonal_quadra =
-                pitagoras(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra),
-                          figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra));
-            // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
-            if (diagonal_quadra > 2 * raio) {
+            if (!checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y)) {
                 contido = false;
             }
 
@@ -346,14 +338,6 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
             }
 
             if (checar_arestas_dq(cir_x, cir_y, raio, aresta4_x, aresta4_y) == false) {
-                contido = false;
-            }
-
-            double diagonal_quadra =
-                pitagoras(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra),
-                          figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra));
-            // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
-            if (diagonal_quadra > 2 * raio) {
                 contido = false;
             }
 
@@ -458,23 +442,12 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
     while (atual != NULL) {
         Figura quadra = lista_get_figura(atual);
 
-        bool contido = true;
-        if (figura_obter_x_inicio(quadra) < cir_x - raio ||
-            figura_obter_x_fim(quadra) > cir_x + raio)
-            contido = false;
-        if (figura_obter_y_inicio(quadra) < cir_y - raio ||
-            figura_obter_y_fim(quadra) > cir_y + raio)
-            contido = false;
+        // Distância entre o círculo e o ponto x mais próximo do círculo
+        double dx = max(cir_x - figura_obter_x_inicio(quadra), figura_obter_x_fim(quadra) - cir_x);
+        // Distância entre o círculo e o ponto y mais próximo do círculo
+        double dy = max(cir_y - figura_obter_y_inicio(quadra), figura_obter_y_fim(quadra) - cir_y);
 
-        double diagonal_quadra =
-            pitagoras(figura_obter_x_fim(quadra) - figura_obter_x_inicio(quadra),
-                      figura_obter_y_fim(quadra) - figura_obter_y_inicio(quadra));
-        // Verifica se a distância diagonal do retângulo é maior que o diâmetro do círculo.
-        if (diagonal_quadra > 2 * raio) {
-            contido = false;
-        }
-
-        if (contido) {
+        if (dx * dx + dy * dy < raio * raio) {
             figura_definir_cor_borda(quadra, cor_borda);
             fprintf(arquivo_log, "%s\n\n", figura_obter_id(quadra));
         }

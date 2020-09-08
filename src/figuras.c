@@ -378,7 +378,7 @@ double figura_obter_centro_y(Figura figura) {
         case TIPO_HIDRANTE:
             return hidrante_obter_y(figuraImp->hid);
         case TIPO_QUADRA:
-            return quadra_obter_y(figuraImp->qua) + quadra_obter_altura(figuraImp->qua);
+            return quadra_obter_y(figuraImp->qua) + quadra_obter_altura(figuraImp->qua) / 2;
         case TIPO_RADIO:
             return radio_obter_y(figuraImp->rad);
         case TIPO_SEMAFORO:
