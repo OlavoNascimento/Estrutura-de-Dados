@@ -47,20 +47,6 @@ Retorna o id de uma quadra.
 const char *quadra_obter_id(Quadra quadra);
 
 /*
-Obtém a coordenada y de uma quadra.
-O parâmetro quadra não pode ser nulo.
-Retorna o raio de uma quadra.
-*/
-double quadra_obter_y(Quadra quadra);
-
-/*
-Obtém a coordenada x de um quadra.
-O parâmetro quadra não pode ser nulo.
-Retorna a coordenada x de uma quadra.
-*/
-double quadra_obter_x(Quadra quadra);
-
-/*
 Obtém a largura de uma quadra.
 O parâmetro quadra não pode ser nulo.
 Retorna a largura de uma quadra.
@@ -73,6 +59,20 @@ O parâmetro quadra não pode ser nulo.
 Retorna a altura de uma quadra.
 */
 double quadra_obter_altura(Quadra quadra);
+
+/*
+Obtém a coordenada x de um quadra.
+O parâmetro quadra não pode ser nulo.
+Retorna a coordenada x de uma quadra.
+*/
+double quadra_obter_x(Quadra quadra);
+
+/*
+Obtém a coordenada y de uma quadra.
+O parâmetro quadra não pode ser nulo.
+Retorna o raio de uma quadra.
+*/
+double quadra_obter_y(Quadra quadra);
 
 /*
 Obtém a cor de preenchimento de uma quadra.

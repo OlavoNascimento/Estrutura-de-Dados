@@ -39,7 +39,7 @@ void circulo_escrever_svg(FILE *arquivo, Circulo circulo);
 /*
 Verifica se dois círculos se intersectam.
 Nenhum dos parâmetros podem ser nulos.
-Retorna verdadeiro caso os dois circulos se intersectam, caso contrário retorna falso.
+Retorna verdadeiro caso os dois círculos se intersectam, caso contrário retorna falso.
 */
 bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2);
 /*
