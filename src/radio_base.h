@@ -17,8 +17,8 @@ Cria e inicializa um struct Radio com os valores passados.
 O raio deve ser maior que 0. O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
-Radio radio_criar(char id[100], double raio, double x, double y, char cor_borda[20],
-                  char cor_preenchimento[20]);
+Radio radio_criar(const char id[100], double raio, double x, double y,const char cor_borda[20],
+                  const char cor_preenchimento[20]);
 
 /*
 Cria e inicializa um struct Radio a partir de um texto obtido no arquivo .geo.
@@ -104,7 +104,7 @@ const char* radio_obter_espessura_borda(Radio rad);
 Define a espessura da borda de um rádio-base.
 Nenhum dos parâmetros podem ser nulos.
 */
-void radio_definir_espessura_borda(Radio rad, char* espessura_borda);
+void radio_definir_espessura_borda(Radio rad, const char* espessura_borda);
 
 /*
 Libera a memória alocada para um semáforo
