@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 /*
-Este módulo define o tipo Retângulo, assim como funções que criam, acessam suas propriedades e
+Este módulo define o tipo Retangulo, assim como funções que criam, acessam suas propriedades e
 realizam operações entre variáveis deste tipo.
 */
 

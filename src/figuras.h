@@ -43,6 +43,7 @@ Escreve todas as informações presentes em uma figura em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
 void figura_escrever_informacoes(FILE *arquivo, Figura figura);
+
 /*
 Escreve o código svg necessário para representar uma figura em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
@@ -55,6 +56,7 @@ Nenhum dos parâmetros podem ser nulos.
 Retorna verdadeiro caso as duas figura se intersectam, caso contrário retorna falso.
 */
 bool figura_checar_interseccao(Figura figura1, Figura figura2);
+
 /*
 Verifica se um ponto é contido por uma figura.
 O parâmetro figura não pode ser nulo.
@@ -68,6 +70,7 @@ O parâmetro figura não pode ser nulo.
 Retorna a figura armazenada no struct Figura.
 */
 void *figura_obter_figura(Figura figura);
+
 /*
 Obtém o tipo de uma figura.
 O parâmetro figura não pode ser nulo.
@@ -157,7 +160,11 @@ Nenhum dos parâmetros podem ser nulos.
 */
 void figura_definir_arredondamento_borda(Figura figura, double raio_borda);
 
-// Libera a memória alocada por uma figura.
+/*
+Libera a memória alocada por uma figura.
+O parâmetro figura não pode ser nulo e deve apontar para um espaço de memória reservada.
+Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado após isso!
+*/
 void figura_destruir(Figura figura);
 
 #endif

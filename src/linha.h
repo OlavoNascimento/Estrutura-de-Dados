@@ -17,6 +17,7 @@ Retorna um ponteiro para o struct. O usuário é responsável por liberar a mem�
 */
 Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
                   const char cor_preenchimento[20]);
+
 /*
 Escreve o código svg necessário para representar uma linha em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!

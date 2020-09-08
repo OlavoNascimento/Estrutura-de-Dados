@@ -33,6 +33,7 @@ Escreve todas as informações presentes em um hidrante em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
 void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hidrante);
+
 /*
 Escreve o código svg necessário para representar um hidrante em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!

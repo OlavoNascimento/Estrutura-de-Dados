@@ -18,6 +18,7 @@ Retorna um ponteiro para o struct. O usuário é responsável por liberar a mem�
 */
 Circulo circulo_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
                       const char cor_preenchimento[20]);
+
 /*
 Cria e inicializa um struct Circulo a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
@@ -30,6 +31,7 @@ Escreve todas as informações presentes em um círculo em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
 void circulo_escrever_informacoes(FILE *arquivo, Circulo circulo);
+
 /*
 Escreve o código svg necessário para representar um círculo em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!

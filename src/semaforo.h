@@ -15,6 +15,7 @@ Retorna o ponteiro para a struct criada. O usuário é responsável por liberar 
 */
 Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y,
                         const char cor_borda[20], const char cor_preenchimento[20]);
+
 /*
 Cria e inicializa um struct Semaforo a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
@@ -36,84 +37,86 @@ void semaforo_escrever_svg(FILE *arquivo, Semaforo sema);
 
 /*
 Obtém o id de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna o id do semáforo.
 */
-const char *semaforo_obter_id(Semaforo sem);
+const char *semaforo_obter_id(Semaforo semaforo);
 
 /*
 Obtém a coordenada y de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a coordenada y do semáforo.
 */
-double semaforo_obter_y(Semaforo sem);
+double semaforo_obter_y(Semaforo semaforo);
 
 /*
 Obtém a coordenada x de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a coordenada x do semáforo.
 */
-double semaforo_obter_x(Semaforo sem);
+double semaforo_obter_x(Semaforo semaforo);
 
 /*
 Obtém a largura de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a largura do semáforo.
 */
-double semaforo_obter_largura(Semaforo sem);
+double semaforo_obter_largura(Semaforo semaforo);
 
 /*
 Obtém a altura de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a altura do semáforo.
 */
-double semaforo_obter_altura(Semaforo sem);
+double semaforo_obter_altura(Semaforo semaforo);
 
 /*
 Obtém cor da borda de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a cor da borda do semáforo.
 */
-const char *semaforo_obter_cor_borda(Semaforo sem);
+const char *semaforo_obter_cor_borda(Semaforo semaforo);
 
 /*
 Define a cor da borda de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo, deve ser um semáforo existente e cor_borda não pode ser nulo.
+O parâmetro semaforo não pode ser nulo, deve ser um semáforo existente e cor_borda não pode ser
+nulo.
 */
 void semaforo_definir_cor_borda(Semaforo sema, const char *cor_borda);
 
 /*
 Obtém a cor de preenchimento de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a cor de preenchimento do semáforo.
 */
-const char *semaforo_obter_cor_preenchimento(Semaforo sem);
+const char *semaforo_obter_cor_preenchimento(Semaforo semaforo);
 
 /*
 Define a cor de preenchimento de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo, deve ser um semáforo existente e cor_preenchimento não pode
+O parâmetro semaforo não pode ser nulo, deve ser um semáforo existente e cor_preenchimento não pode
 ser nulo.
 */
 void semaforo_definir_cor_preenchimento(Semaforo sema, const char *cor_preenchimento);
 
 /*
 Obtém a espessura de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo e deve ser um semáforo existente.
+O parâmetro semaforo não pode ser nulo e deve ser um semáforo existente.
 Retorna a espessura do semáforo.
 */
-const char *semaforo_obter_espessura_borda(Semaforo sem);
+const char *semaforo_obter_espessura_borda(Semaforo semaforo);
 
 /*
 Define a espessura de um determinado semáforo.
-O parâmetro "sem" não pode ser nulo, deve ser um semáforo existente e espessura_borda não pode ser
-nulo.
+O parâmetro semaforo não pode ser nulo, deve ser um semáforo existente e espessura_borda não pode
+ser nulo.
 */
-void semaforo_definir_espessura_borda(Semaforo sem, const char *espessura_borda);
+void semaforo_definir_espessura_borda(Semaforo semaforo, const char *espessura_borda);
 
 /*
-Libera a memória alocada para um semáforo.
-O parâmetro "sem" não pode ser nulo, deve ser um semáforo existente.
+Libera a memória alocada por um semaforo.
+O parâmetro semaforo não pode ser nulo e deve apontar para um espaço de memória reservada.
+Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado após isso!
 */
-void semaforo_destruir(Semaforo sema);
+void semaforo_destruir(Semaforo semaforo);
 
 #endif
