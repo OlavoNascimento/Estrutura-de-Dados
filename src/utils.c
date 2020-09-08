@@ -19,7 +19,7 @@
 void criar_diretorio(const char *diretorio) {
     if (diretorio == NULL) {
         fprintf(stderr, "ERRO: Diretório nulo fornecida ao criar diretório!\n");
-        return NULL;
+        return;
     }
 
     char *caminho = malloc((strlen(diretorio) + 1) * sizeof(char));

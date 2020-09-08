@@ -7,9 +7,9 @@
 #include "circulo.h"
 
 /*
-Este módulo define o tipo Radio, assim como funções que criam, acessam suas propriedades e
-realizam operações entre variáveis deste tipo.
+Este módulo define o tipo Radio, assim como funções que criam e acessam suas propriedades.
 */
+
 typedef void* Radio;
 
 /*

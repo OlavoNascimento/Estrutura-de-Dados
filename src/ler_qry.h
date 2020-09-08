@@ -2,8 +2,8 @@
 #define LER_QRY_H
 
 /*
-Este módulo define o a função ler_qry, responsável por traduzir os comandos presentes no arquivo
-de consulta em operações nas figuras armazenadas em listas.
+Este módulo define a função ler_qry, responsável por traduzir os comandos presentes no arquivo de
+consulta em operações nas figuras armazenadas em listas.
 */
 
 #include "lista.h"

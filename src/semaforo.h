@@ -6,6 +6,10 @@
 
 #include "retangulo.h"
 
+/*
+Este módulo define o tipo Semaforo, assim como funções que criam e acessam suas propriedades.
+*/
+
 typedef void *Semaforo;
 
 /*

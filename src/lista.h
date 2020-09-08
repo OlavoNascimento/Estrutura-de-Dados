@@ -3,6 +3,11 @@
 
 #include "figuras.h"
 
+/*
+Este módulo define o tipo Lista, responsável por armazenar os diferentes tipos de figuras que
+existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a lista.
+*/
+
 typedef void* Lista;
 typedef void* No;
 

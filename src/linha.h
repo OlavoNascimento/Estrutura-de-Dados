@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 /*
-Este módulo define o tipo Linha, assim como funções que criam, acessam suas propriedades e
-realizam operações entre variáveis deste tipo.
+Este módulo define o tipo Linha, assim como funções que criam, acessam suas propriedades e realizam
+operações entre variáveis deste tipo.
 */
 
 typedef void *Linha;
