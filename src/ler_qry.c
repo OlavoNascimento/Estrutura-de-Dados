@@ -287,14 +287,14 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
 
     // Desenhar anel de duas cores
     // Primeiro anel
-    desenho_raio = circulo_criar("", 20, cir_x, cir_y, "blue", "blue");
-    circulo_definir_espessura_borda(desenho_raio, "2px");
+    desenho_raio = circulo_criar("", 17, cir_x, cir_y, "blue", "none");
+    circulo_definir_espessura_borda(desenho_raio, "5px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
     lista_insert_final(lista_formas, nova_figura);
 
     // Segundo anel
-    desenho_raio = circulo_criar("", 15, cir_x, cir_y, "yellow", "yellow");
-    circulo_definir_espessura_borda(desenho_raio, "2px");
+    desenho_raio = circulo_criar("", 12, cir_x, cir_y, "yellow", "none");
+    circulo_definir_espessura_borda(desenho_raio, "5px");
     nova_figura = figura_criar(desenho_raio, TIPO_CIRCULO);
     lista_insert_final(lista_formas, nova_figura);
 }
