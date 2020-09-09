@@ -140,6 +140,7 @@ void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista
     ExibicaoSVG exibicao = svg_criar_exibicao();
 
     // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
+    // TODO Usar caminho do svg como caminho_tmp
     char *caminho_tmp = alterar_sufixo(caminho_svg, 1, ".tmp");
     // Svg temporário criado para anotar as proporções necessárias pelo svg final.
     escrever_svg_temporario(caminho_tmp, &exibicao, lista_formas, lista_quadras, lista_hidrantes,

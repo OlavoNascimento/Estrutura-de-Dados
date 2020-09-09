@@ -46,20 +46,16 @@ No lista_insert_final(Lista lista, Figura figura) {
     if (listaAux->primeiro == NULL) {
         listaAux->primeiro = nodeInsert;
         nodeInsert->anterior = NULL;
-        nodeInsert->proximo = NULL;
-
-        listaAux->ultimo = nodeInsert;
-        listaAux->tamanho++;
-        return nodeInsert;
     } else {
         nodeAux = listaAux->ultimo;
         nodeAux->proximo = nodeInsert;
         nodeInsert->anterior = nodeAux;
-        nodeInsert->proximo = NULL;
-        listaAux->ultimo = nodeInsert;
-        listaAux->tamanho++;
-        return nodeInsert;
     }
+
+    nodeInsert->proximo = NULL;
+    listaAux->ultimo = nodeInsert;
+    listaAux->tamanho++;
+    return nodeInsert;
 }
 
 No lista_insert_after(Lista lista, Figura figura, No p) {
@@ -165,14 +161,11 @@ No lista_get_no(Lista lista, const char id[100]) {
     list *lista_auxiliar = (list *) lista;
     no *no_auxiliar = lista_auxiliar->primeiro;
 
-    while (true) {
+    while (no_auxiliar != NULL) {
         const char *id_atual = figura_obter_id(no_auxiliar->figura);
 
         if (strcmp(id_atual, id) == 0) {
             return no_auxiliar;
-        }
-        if (no_auxiliar == lista_auxiliar->ultimo) {
-            break;
         }
 
         no_auxiliar = no_auxiliar->proximo;

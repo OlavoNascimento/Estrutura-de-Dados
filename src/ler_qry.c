@@ -225,7 +225,7 @@ bool circulo_contem_retangulo(Figura retangulo, double cir_x, double cir_y, doub
     // Distância entre o círculo e o ponto y mais longe do círculo
     double dy =
         max(cir_y - figura_obter_y_inicio(retangulo), figura_obter_y_fim(retangulo) - cir_y);
-    return dx * dx + dy * dy <= raio * raio;
+    return dx * dx + dy * dy < raio * raio;
 }
 
 void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *lista_semaforos,
@@ -265,8 +265,11 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
 
         bool contido = circulo_contem_retangulo(quadra, cir_x, cir_y, raio);
         if (contido) {
-            fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
-                    figura_obter_id(figura), cir_x, cir_y);
+            fprintf(arquivo_log, "id %s: %s, equipamento tipo: %s, ",
+                    figura_obter_string_tipo(quadra), figura_obter_id(quadra),
+                    figura_obter_string_tipo(figura));
+            figura_escrever_informacoes(arquivo_log, figura);
+            fprintf(arquivo_log, "\n");
             if (remover_quadras) {
                 No no_remove = lista_get_no(lista_quadras, figura_obter_id(quadra));
                 lista_remove_no(lista_quadras, no_remove);
@@ -322,12 +325,11 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
     double centro_x = figura_obter_centro_x(figura);
     double centro_y = figura_obter_centro_y(figura);
 
-    double x_inicio = figura_obter_x_inicio(figura);
-    double y_inicio = figura_obter_y_inicio(figura);
-    fprintf(arquivo_log, "id: %s, x: %lf, y: %lf\n\n", id, x_inicio, y_inicio);
+    fprintf(arquivo_log, "tipo: %s, ", figura_obter_string_tipo(figura));
+    figura_escrever_informacoes(arquivo_log, figura);
+    fprintf(arquivo_log, "\n");
 
     tipo = figura_obter_tipo(figura);
-
     switch (tipo) {
         case TIPO_SEMAFORO:
             lista_remove_no(lista_semaforos, figura_id);
@@ -367,7 +369,7 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
 
         if (circulo_contem_retangulo(quadra, cir_x, cir_y, raio)) {
             figura_definir_cor_borda(quadra, cor_borda);
-            fprintf(arquivo_log, "%s\n\n", figura_obter_id(quadra));
+            fprintf(arquivo_log, "cep: %s\n\n", figura_obter_id(quadra));
         }
 
         atual = lista_get_next(lista_quadras, atual);
@@ -391,8 +393,8 @@ void informacoes_equipamento_urbano(Lista lista_quadras, Lista lista_hidrantes, 
         return;
 
     Figura equipamento = lista_get_figura(no_id);
-    fprintf(arquivo_log, "x: %lf, y: %lf, tipo: %s\n\n", figura_obter_x_inicio(equipamento),
-            figura_obter_y_inicio(equipamento), figura_obter_string_tipo(equipamento));
+    fprintf(arquivo_log, "tipo: %s, x: %lf, y: %lf\n\n", figura_obter_string_tipo(equipamento),
+            figura_obter_x_inicio(equipamento), figura_obter_y_inicio(equipamento));
 }
 
 // Encontra o total das áreas das quadras contidas dentro de um retângulo
@@ -431,7 +433,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
             Figura fig_area_quadra = figura_criar(area_quadra, TIPO_TEXTO);
             lista_insert_final(lista_formas, fig_area_quadra);
 
-            fprintf(arquivo_log, "Área %s: %lf\n\n", figura_obter_id(figura), area_figura);
+            fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(figura), area_figura);
         }
         atual = lista_get_next(lista_quadras, atual);
     }
