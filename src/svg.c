@@ -51,8 +51,6 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
         // Atualiza as proporções do svg caso necessário.
         svg_atualizar_exibicao(exibicao, figura_atual);
 
-        // TODO Adicionar cep quadra
-
         atual = lista_get_next(lista, atual);
     }
 }
@@ -142,8 +140,10 @@ void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista
     ExibicaoSVG exibicao = svg_criar_exibicao();
 
     // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
-    // TODO Usar caminho do svg como caminho_tmp
-    char *caminho_tmp = alterar_sufixo(caminho_svg, 1, ".tmp");
+    char *diretorio_saida = extrair_nome_diretorio(caminho_svg);
+    char *nome_svg_tmp = alterar_sufixo(caminho_svg, 2, ".svg", ".tmp");
+    char *caminho_tmp = unir_caminhos(diretorio_saida, nome_svg_tmp);
+
     // Svg temporário criado para anotar as proporções necessárias pelo svg final.
     escrever_svg_temporario(caminho_tmp, &exibicao, lista_formas, lista_quadras, lista_hidrantes,
                             lista_radios, lista_semaforos);
@@ -153,5 +153,7 @@ void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista
 
     // Deleta o arquivo temporário
     remove(caminho_tmp);
+    free(diretorio_saida);
+    free(nome_svg_tmp);
     free(caminho_tmp);
 }

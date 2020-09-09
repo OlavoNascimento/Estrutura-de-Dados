@@ -20,7 +20,7 @@ separador de arquivos padrão do sistema. O usuário é responsável por liberar
 char *unir_caminhos(const char *diretorio, const char *nome_arquivo);
 
 /*
-Recebe um caminho para um arquivo e extrai apenas o nome do arquivo sem sua extensão.
+Recebe um caminho para um arquivo e extrai apenas o nome do arquivo sem sua extensão e diretórios.
 O parâmetro caminho_arquivo não pode ser nulo.
 Retorna uma string contendo o nome do arquivo presente no caminho passado. O usuário é responsável
 por liberar a memória alocada!
@@ -28,11 +28,18 @@ por liberar a memória alocada!
 char *extrair_nome_base(const char *caminho_arquivo);
 
 /*
-Recebe um caminho de um arquivo, um número de sufixos e um número variável de sufixos que substituem
-a extensão do arquivo.
+Recebe um caminho para um arquivo e extrai apenas os diretórios que compõem o caminho.
 O parâmetro caminho_arquivo não pode ser nulo.
-Retorna uma string contendo o nome do arquivo com sua extensão substituida pelos sufixos passados. O
-usuário é responsável por liberar a memória alocada!
+Retorna uma string contendo os diretórios do caminho. O usuário é responsável por liberar a memória
+alocada!
+*/
+char *extrair_nome_diretorio(const char *caminho_arquivo);
+
+/*
+Recebe um caminho de um arquivo, um número de sufixos e um número variável de sufixos que
+substituem a extensão do arquivo. O parâmetro caminho_arquivo não pode ser nulo. Retorna uma
+string contendo o nome do arquivo com sua extensão substituida pelos sufixos passados. O usuário
+é responsável por liberar a memória alocada!
 */
 char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...);
 

@@ -446,7 +446,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
     Figura fig_area_linha = figura_criar(area_linha, TIPO_TEXTO);
     lista_insert_final(lista_formas, fig_area_linha);
 
-    fprintf(arquivo_log, "Área total: %lf\n\n", area_total);
+    fprintf(arquivo_log, "área total: %lf\n\n", area_total);
 }
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
