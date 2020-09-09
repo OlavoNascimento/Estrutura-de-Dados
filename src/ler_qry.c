@@ -218,7 +218,7 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     }
 }
 
-bool circulo_contem_retângulo(Figura retangulo, double cir_x, double cir_y, double raio) {
+bool circulo_contem_retangulo(Figura retangulo, double cir_x, double cir_y, double raio) {
     // Distância entre o círculo e o ponto x mais longe do círculo
     double dx =
         max(cir_x - figura_obter_x_inicio(retangulo), figura_obter_x_fim(retangulo) - cir_x);
@@ -263,7 +263,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
 
         atual = lista_get_next(lista_quadras, atual);
 
-        bool contido = circulo_contem_retângulo(quadra, cir_x, cir_y, raio);
+        bool contido = circulo_contem_retangulo(quadra, cir_x, cir_y, raio);
         if (contido) {
             fprintf(arquivo_log, "%s %s %lf %lf\n\n", figura_obter_id(quadra),
                     figura_obter_id(figura), cir_x, cir_y);
@@ -365,7 +365,7 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
     while (atual != NULL) {
         Figura quadra = lista_get_figura(atual);
 
-        if (circulo_contem_retângulo(quadra, cir_x, cir_y, raio)) {
+        if (circulo_contem_retangulo(quadra, cir_x, cir_y, raio)) {
             figura_definir_cor_borda(quadra, cor_borda);
             fprintf(arquivo_log, "%s\n\n", figura_obter_id(quadra));
         }
