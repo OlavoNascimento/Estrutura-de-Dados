@@ -51,6 +51,8 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
         // Atualiza as proporções do svg caso necessário.
         svg_atualizar_exibicao(exibicao, figura_atual);
 
+        // TODO Adicionar cep quadra
+
         atual = lista_get_next(lista, atual);
     }
 }

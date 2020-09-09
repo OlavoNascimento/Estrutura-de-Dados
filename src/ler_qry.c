@@ -186,7 +186,6 @@ void remover_elemento(Lista lista, const char *linha, FILE *arquivo_log) {
     Figura fig = lista_get_figura(no);
 
     fprintf(arquivo_log, "delf %s\n", id);
-    fprintf(arquivo_log, "tipo: %s, ", figura_obter_string_tipo(fig));
     figura_escrever_informacoes(arquivo_log, fig);
     fprintf(arquivo_log, "\n");
     lista_remove_no(lista, no);
@@ -205,7 +204,6 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
         const char *id_atual = figura_obter_id(fig);
 
         fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
-        fprintf(arquivo_log, "tipo: %s, ", figura_obter_string_tipo(fig));
         figura_escrever_informacoes(arquivo_log, fig);
         fprintf(arquivo_log, "\n");
 
@@ -241,9 +239,9 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     sscanf(linha, "%*s %c", &c);
     if (c == '#') {
         sscanf(linha, "%*s %*c %s %lf ", id, &raio);
-        remover_quadras = true;
     } else {
         sscanf(linha, "%*s %s %lf ", id, &raio);
+        remover_quadras = true;
     }
 
     No figura_id = lista_get_no(lista_hidrantes, id);
@@ -265,12 +263,11 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
 
         bool contido = circulo_contem_retangulo(quadra, cir_x, cir_y, raio);
         if (contido) {
-            fprintf(arquivo_log, "id %s: %s, equipamento tipo: %s, ",
-                    figura_obter_string_tipo(quadra), figura_obter_id(quadra),
-                    figura_obter_string_tipo(figura));
+            fprintf(arquivo_log, "id %s: %s, equipamento ", figura_obter_string_tipo(quadra),
+                    figura_obter_id(quadra));
             figura_escrever_informacoes(arquivo_log, figura);
             fprintf(arquivo_log, "\n");
-            if (!remover_quadras) {
+            if (remover_quadras) {
                 No no_remove = lista_get_no(lista_quadras, figura_obter_id(quadra));
                 lista_remove_no(lista_quadras, no_remove);
             } else {
@@ -325,7 +322,6 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
     double centro_x = figura_obter_centro_x(figura);
     double centro_y = figura_obter_centro_y(figura);
 
-    fprintf(arquivo_log, "tipo: %s, ", figura_obter_string_tipo(figura));
     figura_escrever_informacoes(arquivo_log, figura);
     fprintf(arquivo_log, "\n");
 
