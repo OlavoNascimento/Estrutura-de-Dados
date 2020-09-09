@@ -270,7 +270,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
                     figura_obter_string_tipo(figura));
             figura_escrever_informacoes(arquivo_log, figura);
             fprintf(arquivo_log, "\n");
-            if (remover_quadras) {
+            if (!remover_quadras) {
                 No no_remove = lista_get_no(lista_quadras, figura_obter_id(quadra));
                 lista_remove_no(lista_quadras, no_remove);
             } else {
