@@ -171,7 +171,7 @@ void alterar_cores(Lista lista, const char *linha, FILE *arquivo_log) {
         figura_definir_cor_preenchimento(fig, nova_corp);
         if (strcmp(id_atual, id_final) == 0)
             break;
-        atual = lista_get_next(lista, atual);
+        atual = lista_get_next(atual);
     }
 }
 
@@ -198,7 +198,7 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
     No atual = lista_get_no(lista, id_inicial);
-    No proximo = lista_get_next(lista, atual);
+    No proximo = lista_get_next(atual);
     while (atual != NULL) {
         Figura fig = lista_get_figura(atual);
         const char *id_atual = figura_obter_id(fig);
@@ -207,7 +207,7 @@ void remover_elementos(Lista lista, const char *linha, FILE *arquivo_log) {
         figura_escrever_informacoes(arquivo_log, fig);
         fprintf(arquivo_log, "\n");
 
-        proximo = lista_get_next(lista, atual);
+        proximo = lista_get_next(atual);
         if (strcmp(id_atual, id_final) == 0)
             proximo = NULL;
 
@@ -259,7 +259,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     while (atual != NULL) {
         Figura quadra = lista_get_figura(atual);
 
-        atual = lista_get_next(lista_quadras, atual);
+        atual = lista_get_next(atual);
 
         bool contido = circulo_contem_retangulo(quadra, cir_x, cir_y, raio);
         if (contido) {
@@ -368,7 +368,7 @@ void circulo_contem_quadras(Lista *lista_quadras, const char *linha, FILE *arqui
             fprintf(arquivo_log, "cep: %s\n\n", figura_obter_id(quadra));
         }
 
-        atual = lista_get_next(lista_quadras, atual);
+        atual = lista_get_next(atual);
     }
 }
 
@@ -431,7 +431,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
 
             fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(figura), area_figura);
         }
-        atual = lista_get_next(lista_quadras, atual);
+        atual = lista_get_next(atual);
     }
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black", "black");

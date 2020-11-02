@@ -191,30 +191,43 @@ No lista_get_last(Lista lista) {
 }
 
 Figura lista_get_figura(No p) {
-    no *node_auxiliar;
-    node_auxiliar = p;
     if (p == NULL) {
-        LOG_ERROR("Erro ao obter informações do nó especificado\n");
+        LOG_ERROR("Nó nulo passado para lista_get_figura\n");
         return NULL;
     }
+    no *node_auxiliar = (no *) p;
     return node_auxiliar->figura;
 }
 
-No lista_get_next(Lista lista, No p) {
-    list *lista_aux = (list *) lista;
-    no *node_aux = (no *) p;
-    if (node_aux == lista_aux->ultimo) {
+void lista_set_figura(No p, Figura figura) {
+    if (p == NULL) {
+        LOG_ERROR("Nó nulo passado para lista_set_figura!\n");
+        return;
+    }
+    if (figura == NULL) {
+        LOG_ERROR("Figura nula passada para lista_set_figura!\n");
+        return;
+    }
+
+    no *no_auxiliar = (no *) p;
+    no_auxiliar->figura = figura;
+}
+
+No lista_get_next(No p) {
+    if (p == NULL) {
+        LOG_ERROR("Nó nulo passado para lista_get_next!\n");
         return NULL;
     }
+    no *node_aux = (no *) p;
     return node_aux->proximo;
 }
 
-No lista_get_previous(Lista lista, No p) {
-    list *lista_aux = (list *) lista;
-    no *node_aux = (no *) p;
-    if (node_aux == lista_aux->primeiro) {
+No lista_get_previous(No p) {
+    if (p == NULL) {
+        LOG_ERROR("Nó nulo passado para lista_get_previous!\n");
         return NULL;
     }
+    no *node_aux = (no *) p;
     return node_aux->anterior;
 }
 

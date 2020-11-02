@@ -58,6 +58,7 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
             fig->hid = figura;
             break;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             fig->ret = figura;
             break;
         case TIPO_TEXTO:
@@ -98,6 +99,7 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
             semaforo_escrever_informacoes(arquivo, figuraImp->sem);
             break;
         case TIPO_RETANGULO:
+            // case TIPO_CASO:
             retangulo_escrever_informacoes(arquivo, figuraImp->ret);
             break;
         case TIPO_TEXTO:
@@ -137,6 +139,7 @@ void figura_escrever_svg(FILE *arquivo, Figura figura) {
             linha_escrever_svg(arquivo, figuraImp->lin);
             break;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             retangulo_escrever_svg(arquivo, figuraImp->ret);
             break;
         case TIPO_TEXTO:
@@ -207,7 +210,7 @@ TiposFigura figura_obter_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    const char *valores[] = {"círculo",    "hidrante",  "linha",    "quadra",
+    const char *valores[] = {"círculo",    "caso",      "hidrante", "linha", "quadra",
                              "rádio-base", "retângulo", "semáforo", "texto"};
     return valores[figuraImp->tipo];
 }
@@ -225,6 +228,7 @@ void *figura_obter_figura(Figura figura) {
         case TIPO_RADIO:
             return figuraImp->rad;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return figuraImp->ret;
         case TIPO_SEMAFORO:
             return figuraImp->sem;
@@ -253,6 +257,7 @@ double figura_obter_x_inicio(Figura figura) {
         case TIPO_LINHA:
             return min(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_x(figuraImp->ret);
         case TIPO_TEXTO:
             return texto_obter_x(figuraImp->tex);
@@ -281,6 +286,7 @@ double figura_obter_y_inicio(Figura figura) {
         case TIPO_LINHA:
             return min(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_y(figuraImp->ret);
         case TIPO_TEXTO:
             return texto_obter_y(figuraImp->tex);
@@ -309,6 +315,7 @@ double figura_obter_x_fim(Figura figura) {
         case TIPO_LINHA:
             return max(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret);
         case TIPO_TEXTO:
             // Usa uma largura estimada para o texto
@@ -337,6 +344,7 @@ double figura_obter_y_fim(Figura figura) {
         case TIPO_LINHA:
             return max(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret);
         case TIPO_TEXTO:
             return texto_obter_y(figuraImp->tex);
@@ -362,6 +370,7 @@ double figura_obter_centro_x(Figura figura) {
         case TIPO_SEMAFORO:
             return semaforo_obter_x(figuraImp->sem) + semaforo_obter_largura(figuraImp->sem) / 2;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret) / 2;
         default:
             LOG_ERROR("Tipo de figura inválido passado para obter centro x: %d!\n",
@@ -385,6 +394,7 @@ double figura_obter_centro_y(Figura figura) {
         case TIPO_SEMAFORO:
             return semaforo_obter_y(figuraImp->sem) + semaforo_obter_altura(figuraImp->sem) / 2;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret) / 2;
         default:
             LOG_ERROR("Tipo de figura inválido passado para obter centro y: %d!\n",
@@ -408,6 +418,7 @@ const char *figura_obter_id(Figura figura) {
         case TIPO_RADIO:
             return radio_obter_id(figuraImp->rad);
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_id(figuraImp->ret);
         case TIPO_SEMAFORO:
             return semaforo_obter_id(figuraImp->sem);
@@ -437,6 +448,7 @@ const char *figura_obter_cor_borda(Figura figura) {
         case TIPO_LINHA:
             return linha_obter_cor_borda(figuraImp->lin);
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_cor_borda(figuraImp->ret);
         case TIPO_TEXTO:
             return texto_obter_cor_borda(figuraImp->tex);
@@ -472,6 +484,7 @@ void figura_definir_cor_borda(Figura figura, const char *cor_borda) {
             radio_definir_cor_borda(figuraImp->rad, cor_borda);
             break;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             retangulo_definir_cor_borda(figuraImp->ret, cor_borda);
             break;
         case TIPO_SEMAFORO:
@@ -504,6 +517,7 @@ const char *figura_obter_cor_preenchimento(Figura figura) {
         case TIPO_LINHA:
             return linha_obter_cor_preenchimento(figuraImp->lin);
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             return retangulo_obter_cor_preenchimento(figuraImp->ret);
         case TIPO_TEXTO:
             return texto_obter_cor_preenchimento(figuraImp->tex);
@@ -539,6 +553,7 @@ void figura_definir_cor_preenchimento(Figura figura, const char *cor_preenchimen
             radio_definir_cor_preenchimento(figuraImp->rad, cor_preenchimento);
             break;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             retangulo_definir_cor_preenchimento(figuraImp->ret, cor_preenchimento);
             break;
         case TIPO_SEMAFORO:
@@ -589,6 +604,7 @@ void figura_destruir(Figura figura) {
             radio_destruir(figuraImp->rad);
             break;
         case TIPO_RETANGULO:
+        case TIPO_CASO:
             retangulo_destruir(figuraImp->ret);
             break;
         case TIPO_SEMAFORO:

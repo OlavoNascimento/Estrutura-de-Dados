@@ -81,12 +81,19 @@ Retorna o endereço para as informações do nó especificado por p.
 Figura lista_get_figura(No p);
 
 /*
+Substitui a figura armazena em um nó
+Ambos os parámetros não podem ser nulos.
+O nó tem sua figura original substituida pela figura passada como parâmetro para a função.
+*/
+void lista_set_figura(No p, Figura figura);
+
+/*
 Acessa o elemento posterior ao elemento p.
 Ambos parâmetros não podem ser nulos e o parâmetro p deve indicar um endereço válido que esteja na
 lista.
 Retorna o endereço do elemento posterior de p.
 */
-No lista_get_next(Lista lista, No p);
+No lista_get_next(No p);
 
 /*
 Acessa o elemento anterior ao elemento p.
@@ -94,7 +101,7 @@ Ambos parâmetros não podem ser nulos e o parâmetro p deve indicar um endereç
 lista.
 Retorna o endereço do elemento posterior de p.
 */
-No lista_get_previous(Lista lista, No p);
+No lista_get_previous(No p);
 
 /*
 Libera a memória alocada em todos os elementos da lista.

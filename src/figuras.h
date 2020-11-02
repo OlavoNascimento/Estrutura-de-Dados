@@ -17,6 +17,7 @@
 typedef enum {
     TIPOS_FIGURA_MIN = -1,
     TIPO_CIRCULO,
+    TIPO_CASO,
     TIPO_HIDRANTE,
     TIPO_LINHA,
     TIPO_QUADRA,

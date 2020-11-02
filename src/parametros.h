@@ -31,8 +31,7 @@ bool parametros_checar_obrigatorios(const Parametros params);
 /*
 Obtém o diretório de saída passado como argumento para o programa.
 O parâmetro params não pode ser nulo.
-Retorna o caminho do diretório de saída armazenado. O usuário é responsável por liberar a memória
-alocada!
+Retorna o caminho do diretório de saída armazenado.
 */
 char *parametros_obter_diretorio_saida(const Parametros params);
 
@@ -48,9 +47,9 @@ char *parametros_obter_caminho_descricao(const Parametros params);
 /*
 Obtém o caminho do arquivo de consulta (.qry) passado como argumento para o programa. O caminho é
 concatenado ao diretório de entrada caso necessário.
-O parâmetro params não pode ser nulo. Retorna o
-caminho do arquivo de consulta (.qry) armazenado. O usuário é responsável por liberar a memória
-alocada!
+O parâmetro params não pode ser nulo.
+Retorna o caminho do arquivo de consulta (.qry) armazenado. O usuário é responsável por liberar a
+memória alocada!
 */
 char *parametros_obter_caminho_consulta(const Parametros params);
 
