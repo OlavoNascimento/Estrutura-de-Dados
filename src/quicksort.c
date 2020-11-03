@@ -26,7 +26,6 @@ No particionar(Figura min, No inicio, No fim) {
     No j = fim;
 
     double angulo_pivo = angulo_polar(min, lista_get_figura(inicio));
-    // double angulo_pivo = angulo_polar(min, lista_get_figura(fim));
     // Itera até os ponteiros se encontrarem.
     while (true) {
         while (i != NULL && angulo_polar(min, lista_get_figura(i)) < angulo_pivo)

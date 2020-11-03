@@ -23,6 +23,7 @@ typedef enum {
     TIPO_QUADRA,
     TIPO_RADIO,
     TIPO_RETANGULO,
+    TIPO_POSTO,
     TIPO_SEMAFORO,
     TIPO_TEXTO,
     TIPOS_FIGURA_MAX,

@@ -10,6 +10,7 @@
 #include "linha.h"
 #include "lista.h"
 #include "logging.h"
+#include "posto.h"
 #include "quadra.h"
 #include "radio_base.h"
 #include "retangulo.h"
@@ -213,7 +214,7 @@ Figura ler_texto(const char *linha) {
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
 // elementos de uma lista.
 void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
-             Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos) {
+             Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos, Lista lista_postos) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
@@ -242,6 +243,8 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
             nova_figura = ler_quadra(linha, propriedades.qua);
         } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.lista_max_hidrantes) {
             nova_figura = ler_hidrante(linha, propriedades.hid);
+        } else if (strcmp("ps", comando) == 0) {
+            nova_figura = figura_criar(posto_ler(linha), TIPO_POSTO);
         } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.lista_max_semaforos) {
             nova_figura = ler_semaforo(linha, propriedades.sem);
         } else if (strcmp("rb", comando) == 0 && bases_criadas <= maximo.lista_max_bases) {
@@ -288,6 +291,9 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
                 case TIPO_RADIO:
                     lista_insert_final(lista_radios, nova_figura);
                     bases_criadas++;
+                    break;
+                case TIPO_POSTO:
+                    lista_insert_final(lista_postos, nova_figura);
                     break;
                 case TIPO_SEMAFORO:
                     lista_insert_final(lista_semaforos, nova_figura);

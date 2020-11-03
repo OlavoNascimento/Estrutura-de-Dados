@@ -14,6 +14,7 @@ Nenhum dos argumentos pode ser nulo e o caminho do arquivo de consulta deve ser 
 Altera as listas de acordo com os comandos presentes no arquivo de consulta.
 */
 void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_formas,
-             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos);
+             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
+             Lista lista_postos);
 
 #endif

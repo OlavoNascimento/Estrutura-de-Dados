@@ -15,6 +15,6 @@ Nenhum dos parâmetros podem ser nulos e o caminho do arquivo de descrição dev
 A listas são preenchidas com as figuras e equipamentos urbanos descritos no arquivo.
 */
 void ler_geo(const char *caminho_geo, Lista lista, Lista lista_quadras, Lista lista_hidrantes,
-             Lista lista_radios, Lista lista_semaforos);
+             Lista lista_radios, Lista lista_semaforos, Lista lista_postos);
 
 #endif

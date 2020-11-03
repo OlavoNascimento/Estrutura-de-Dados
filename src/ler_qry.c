@@ -452,8 +452,8 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_formas,
-             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
-             Lista lista_semaforos) {
+             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
+             Lista lista_postos) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);

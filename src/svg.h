@@ -15,6 +15,7 @@ svg devem existir.
 Cria um arquivo svg no caminho especificado.
 */
 void svg_lista_para_svg(const char *caminho_svg, Lista lista, Lista lista_quadras,
-                        Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos);
+                        Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
+                        Lista lista_postos);
 
 #endif
