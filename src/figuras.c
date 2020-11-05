@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "circulo.h"
+#include "densidade.h"
 #include "hidrante.h"
 #include "linha.h"
 #include "logging.h"
@@ -20,6 +21,7 @@ typedef struct {
     TiposFigura tipo;
     union {
         Circulo cir;
+        Densidade den;
         Hidrante hid;
         Linha lin;
         Quadra qua;
@@ -47,6 +49,8 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
         case TIPO_CIRCULO:
             fig->cir = figura;
             break;
+        case TIPO_DENSIDADE:
+            fig->den = figura;
         case TIPO_HIDRANTE:
             fig->hid = figura;
             break;
@@ -218,8 +222,8 @@ TiposFigura figura_obter_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    const char *valores[] = {"círculo",    "caso",      "hidrante", "linha",    "quadra",
-                             "rádio-base", "retângulo", "posto",    "semáforo", "texto"};
+    const char *valores[] = {"círculo",    "densidade", "caso",  "hidrante", "linha", "quadra",
+                             "rádio-base", "retângulo", "posto", "semáforo", "texto"};
     return valores[figuraImp->tipo];
 }
 
@@ -229,6 +233,8 @@ void *figura_obter_figura(Figura figura) {
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             return figuraImp->cir;
+        case TIPO_DENSIDADE:
+            return figuraImp->den;
         case TIPO_HIDRANTE:
             return figuraImp->hid;
         case TIPO_QUADRA:

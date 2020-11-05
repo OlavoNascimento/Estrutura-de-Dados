@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "circulo.h"
+#include "densidade.h"
 #include "figuras.h"
 #include "hidrante.h"
 #include "linha.h"
@@ -214,7 +215,8 @@ Figura ler_texto(const char *linha) {
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
 // elementos de uma lista.
 void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
-             Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos, Lista lista_postos) {
+             Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos, Lista lista_postos,
+             Lista lista_densidades) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
@@ -237,6 +239,8 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
         Figura nova_figura = NULL;
         if (strcmp("c", comando) == 0 && figuras_criadas <= maximo.lista_max_figuras) {
             nova_figura = ler_circulo(linha, propriedades.cir);
+        } else if (strcmp("dd", comando) == 0) {
+            nova_figura = figura_criar(densidade_ler(linha), TIPO_DENSIDADE);
         } else if (strcmp("r", comando) == 0 && figuras_criadas <= maximo.lista_max_figuras) {
             nova_figura = ler_retangulo(linha, propriedades.ret);
         } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.lista_max_quadras) {
@@ -274,6 +278,8 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
         if (nova_figura != NULL) {
             TiposFigura tipo = figura_obter_tipo(nova_figura);
             switch (tipo) {
+                case TIPO_DENSIDADE:
+                    lista_insert_final(lista_densidades, nova_figura);
                 case TIPO_CIRCULO:
                 case TIPO_RETANGULO:
                 case TIPO_TEXTO:
