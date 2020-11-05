@@ -10,6 +10,7 @@
 #include "linha.h"
 #include "logging.h"
 #include "matematica.h"
+#include "poligono.h"
 #include "posto.h"
 #include "quadra.h"
 #include "radio_base.h"
@@ -27,6 +28,7 @@ typedef struct {
         Quadra qua;
         Radio rad;
         Retangulo ret;
+        Poligono pol;
         Posto pos;
         Semaforo sem;
         Texto tex;
@@ -51,6 +53,7 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
             break;
         case TIPO_DENSIDADE:
             fig->den = figura;
+            break;
         case TIPO_HIDRANTE:
             fig->hid = figura;
             break;
@@ -65,6 +68,9 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
             break;
         case TIPO_RETANGULO:
             fig->ret = figura;
+            break;
+        case TIPO_POLIGONO:
+            fig->pol = figura;
             break;
         case TIPO_POSTO:
             fig->pos = figura;
@@ -141,6 +147,9 @@ void figura_escrever_svg(FILE *arquivo, Figura figura) {
             break;
         case TIPO_QUADRA:
             quadra_escrever_svg(arquivo, figuraImp->qua);
+            break;
+        case TIPO_POLIGONO:
+            poligono_escrever_svg(arquivo, figuraImp->pol);
             break;
         case TIPO_POSTO:
             posto_escrever_svg(arquivo, figuraImp->pos);
@@ -222,8 +231,9 @@ TiposFigura figura_obter_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    const char *valores[] = {"círculo",    "densidade", "caso",  "hidrante", "linha", "quadra",
-                             "rádio-base", "retângulo", "posto", "semáforo", "texto"};
+    const char *valores[] = {"círculo",  "densidade", "caso",       "hidrante",
+                             "linha",    "quadra",    "rádio-base", "retângulo",
+                             "polígono", "posto",     "semáforo",   "texto"};
     return valores[figuraImp->tipo];
 }
 
@@ -243,6 +253,8 @@ void *figura_obter_figura(Figura figura) {
             return figuraImp->rad;
         case TIPO_RETANGULO:
             return figuraImp->ret;
+        case TIPO_POLIGONO:
+            return figuraImp->pol;
         case TIPO_POSTO:
             return figuraImp->pos;
         case TIPO_SEMAFORO:
@@ -253,6 +265,64 @@ void *figura_obter_figura(Figura figura) {
             LOG_ERROR("Tipo de figura inválido passado para obter figura: %d!\n", figuraImp->tipo);
             return NULL;
     }
+}
+
+// Retorna a coordenada x de uma figura
+double figura_obter_x(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
+        case TIPO_CIRCULO:
+            return circulo_obter_x(figuraImp->cir);
+        case TIPO_HIDRANTE:
+            return hidrante_obter_x(figuraImp->hid);
+        case TIPO_LINHA:
+            return min(linha_obter_x1(figuraImp->lin), linha_obter_x2(figuraImp->lin));
+        case TIPO_QUADRA:
+            return quadra_obter_x(figuraImp->qua);
+        case TIPO_RADIO:
+            return radio_obter_x(figuraImp->rad);
+        case TIPO_RETANGULO:
+            return retangulo_obter_x(figuraImp->ret);
+        case TIPO_POSTO:
+            return posto_obter_x(figuraImp->pos);
+        case TIPO_SEMAFORO:
+            return semaforo_obter_x(figuraImp->sem);
+        case TIPO_TEXTO:
+            return texto_obter_x(figuraImp->tex);
+        default:
+            LOG_ERROR("Tipo de figura inválido passado para obter x: %d!\n", figuraImp->tipo);
+            break;
+    }
+    return 0;
+}
+
+// Retorna a coordenada y de uma figura
+double figura_obter_y(Figura figura) {
+    FiguraImp *figuraImp = (FiguraImp *) figura;
+    switch (figuraImp->tipo) {
+        case TIPO_CIRCULO:
+            return circulo_obter_y(figuraImp->cir);
+        case TIPO_HIDRANTE:
+            return hidrante_obter_y(figuraImp->hid);
+        case TIPO_LINHA:
+            return min(linha_obter_y1(figuraImp->lin), linha_obter_y2(figuraImp->lin));
+        case TIPO_QUADRA:
+            return quadra_obter_y(figuraImp->qua);
+        case TIPO_RADIO:
+            return radio_obter_y(figuraImp->rad);
+        case TIPO_RETANGULO:
+            return retangulo_obter_y(figuraImp->ret);
+        case TIPO_POSTO:
+            return posto_obter_y(figuraImp->pos);
+        case TIPO_SEMAFORO:
+            return semaforo_obter_y(figuraImp->sem);
+        case TIPO_TEXTO:
+            return texto_obter_y(figuraImp->tex);
+        default:
+            LOG_ERROR("Tipo de figura inválido passado para obter y: %d!\n", figuraImp->tipo);
+            break;
+    }
+    return 0;
 }
 
 // Retorna a coordenada x onde uma figura se inicia.
@@ -271,6 +341,8 @@ double figura_obter_x_inicio(Figura figura) {
             return radio_obter_x(figuraImp->rad) - radio_obter_raio(figuraImp->rad);
         case TIPO_RETANGULO:
             return retangulo_obter_x(figuraImp->ret);
+        case TIPO_POLIGONO:
+            return poligono_obter_x(figuraImp->pol);
         case TIPO_POSTO:
             return posto_obter_x(figuraImp->pos) - posto_obter_raio(figuraImp->pos);
         case TIPO_SEMAFORO:
@@ -301,6 +373,8 @@ double figura_obter_y_inicio(Figura figura) {
             return radio_obter_y(figuraImp->rad) - radio_obter_raio(figuraImp->rad);
         case TIPO_RETANGULO:
             return retangulo_obter_y(figuraImp->ret);
+        case TIPO_POLIGONO:
+            return poligono_obter_y(figuraImp->pol);
         case TIPO_POSTO:
             return posto_obter_y(figuraImp->pos) - posto_obter_raio(figuraImp->pos);
         case TIPO_SEMAFORO:
@@ -331,6 +405,8 @@ double figura_obter_x_fim(Figura figura) {
             return radio_obter_x(figuraImp->rad) + radio_obter_raio(figuraImp->rad);
         case TIPO_RETANGULO:
             return retangulo_obter_x(figuraImp->ret) + retangulo_obter_largura(figuraImp->ret);
+        case TIPO_POLIGONO:
+            return poligono_obter_x(figuraImp->pol) + poligono_obter_largura(figuraImp->pol);
         case TIPO_POSTO:
             return posto_obter_x(figuraImp->pos) + posto_obter_raio(figuraImp->pos);
         case TIPO_SEMAFORO:
@@ -361,6 +437,8 @@ double figura_obter_y_fim(Figura figura) {
             return radio_obter_y(figuraImp->rad) + radio_obter_raio(figuraImp->rad);
         case TIPO_RETANGULO:
             return retangulo_obter_y(figuraImp->ret) + retangulo_obter_altura(figuraImp->ret);
+        case TIPO_POLIGONO:
+            return poligono_obter_y(figuraImp->pol) + poligono_obter_altura(figuraImp->pol);
         case TIPO_POSTO:
             return posto_obter_y(figuraImp->pos) + posto_obter_raio(figuraImp->pos);
         case TIPO_SEMAFORO:
@@ -619,6 +697,9 @@ void figura_destruir(Figura figura) {
         case TIPO_CIRCULO:
             circulo_destruir(figuraImp->cir);
             break;
+        case TIPO_DENSIDADE:
+            densidade_destruir(figuraImp->den);
+            break;
         case TIPO_HIDRANTE:
             quadra_destruir(figuraImp->hid);
             break;
@@ -633,6 +714,9 @@ void figura_destruir(Figura figura) {
             break;
         case TIPO_RETANGULO:
             retangulo_destruir(figuraImp->ret);
+            break;
+        case TIPO_POLIGONO:
+            poligono_destruir(figuraImp->pol);
             break;
         case TIPO_POSTO:
             posto_destruir(figuraImp->pos);

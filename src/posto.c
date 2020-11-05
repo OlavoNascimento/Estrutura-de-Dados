@@ -13,34 +13,22 @@ typedef struct {
 } PostoImp;
 
 // Cria e inicializa um struct PostoImp com os valores passados.
-Posto posto_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20]) {
+Posto posto_criar(const char id[100], double x, double y) {
     if (id == NULL) {
         LOG_ERROR("Não é possível criar um posto com id NULL!\n");
         return NULL;
     }
-    if (cor_borda == NULL) {
-        LOG_ERROR("Não é possível criar um posto com cor de borda NULL!\n");
-        return NULL;
-    }
-    if (cor_preenchimento == NULL) {
-        LOG_ERROR("Não é possível criar um posto com cor de preenchimento NULL!\n");
-        return NULL;
-    }
     PostoImp *posImp = malloc(sizeof(PostoImp));
-    posImp->circ = circulo_criar(id, raio, x, y, cor_borda, cor_preenchimento);
+    posImp->circ = circulo_criar(id, 10, x, y, "blue", "green");
     return posImp;
 }
 
 // Cria um posto com base em informações de uma linha.
 Posto posto_ler(const char *linha) {
-    double raio = 10;  // valor simbólico, padrão para todos os postos
     double x;
     double y;
-    char cor_borda[20] = "blue";          // será alterado com outro comando
-    char cor_preenchimento[20] = "blue";  // será alterado com outro comando
     sscanf(linha, "%*s %lf %lf", &x, &y);
-    return posto_criar("", raio, x, y, cor_borda, cor_preenchimento);
+    return posto_criar("", x, y);
 }
 
 // Retorna o id de um posto.

@@ -8,19 +8,21 @@
 
 // Retorna o angulo entre dois pontos
 double angulo_polar(Figura min, Figura ponto) {
-    return atan2(figura_obter_y_inicio(ponto) - figura_obter_y_inicio(min),
-                 figura_obter_x_inicio(ponto) - figura_obter_x_inicio(min));
+    double angulo = atan2(figura_obter_y(ponto) - figura_obter_y(min),
+                          figura_obter_x(ponto) - figura_obter_x(min));
+    // Pontos colineares.
+    if (angulo == 0) {
+        if (figura_obter_x(ponto) == figura_obter_x(min)) {
+            return figura_obter_y(ponto) - figura_obter_y(min);
+        } else {
+            return figura_obter_x(ponto) - figura_obter_x(min);
+        }
+    }
+    return angulo * -1;
 }
 
-// Troca duas figuras em um nó de uma lista
-void trocar(No no1, No no2) {
-    Figura temp = lista_get_figura(no1);
-    lista_set_figura(no1, lista_get_figura(no2));
-    lista_set_figura(no2, temp);
-}
-
-// Particiona uma lista utilizando um pivô. Todos os valores menóres que o pivô são colocando antes
-// dele e todos os maiores após ele.
+// Particiona uma lista utilizando um pivô. Todos os valores menóres que o pivô são colocando
+// antes dele e todos os maiores após ele.
 No particionar(Figura min, No inicio, No fim) {
     No i = inicio;
     No j = fim;
@@ -39,9 +41,9 @@ No particionar(Figura min, No inicio, No fim) {
         if (i >= j) {
             return j;
         }
-        // Troca as figuras armazenadas nos nós i e j, já que o nó i é maior que o pivô ou o nó j é
-        // menor que o pivô.
-        trocar(i, j);
+        // Troca as figuras armazenadas nos nós i e j, já que o nó i é maior que o pivô ou o nó
+        // j é menor que o pivô.
+        lista_trocar_figuras(i, j);
         i = lista_get_next(i);
         j = lista_get_previous(j);
     }

@@ -4,9 +4,20 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "figuras.h"
 #include "lista.h"
-void insertionSort(Lista lista_postos, double x, double y);
-void shellSort(Lista lista_postos, int H, double x, double y);
+
+// retorna a distância entre o morador de coordenada x,y e o posto armazenado em no1
+double get_distance(No no1, double x, double y) {
+    Figura figura = lista_get_figura(no1);
+    double x_no = figura_obter_x_inicio(figura);
+    double y_no = figura_obter_y_inicio(figura);
+
+    double cat1 = fabs(x - x_no);
+    double cat2 = fabs(y - y_no);
+
+    return sqrt(pow(cat1, 2) + pow(cat2, 2));
+}
 
 void insertionSort(Lista lista_postos, double x, double y) {
     No no1 = lista_get_first;
@@ -19,7 +30,7 @@ void insertionSort(Lista lista_postos, double x, double y) {
         distance1 = get_distance(no1, x, y);
         distance2 = get_distance(no2, x, y);
         if (distance1 > distance2) {
-            trocar(no1, no2);
+            lista_trocar_figuras(no1, no2);
 
             // itera na direção contraria da lista comparando os nós anteriores
             aux = no1;
@@ -31,7 +42,7 @@ void insertionSort(Lista lista_postos, double x, double y) {
 
                 // se uma distancia maior está antes de uma distância menor, realiza a troca
                 if (distance1 < distance2) {
-                    trocar(aux, aux_prev);
+                    lista_trocar_figuras(aux, aux_prev);
                 }
 
                 // atualiza os nós para os anteriores
@@ -44,25 +55,6 @@ void insertionSort(Lista lista_postos, double x, double y) {
         no1 = lista_get_next(no1);
         no2 = lista_get_next(no1);
     }
-}
-
-// Troca duas figuras em um nó de uma lista
-void trocar(No no1, No no2) {
-    Figura temp = lista_get_figura(no1);
-    lista_set_figura(no1, lista_get_figura(no2));
-    lista_set_figura(no2, temp);
-}
-
-// retorna a distância entre o morador de coordenada x,y e o posto armazenado em no1
-double get_distance(No no1, double x, double y) {
-    Figura figura = lista_get_figura(no1);
-    double x_no = figura_obter_x_inicio(figura);
-    double y_no = figura_obter_y_inicio(figura);
-
-    double cat1 = fabs(x - x_no);
-    double cat2 = fabs(y - y_no);
-
-    return sqrt(pow(cat1, 2) + pow(cat2, 2));
 }
 
 void shellSort(Lista lista_postos, int H, double x, double y) {
@@ -84,7 +76,7 @@ void shellSort(Lista lista_postos, int H, double x, double y) {
             // se a distancia no noI for maior que a distância no noH, realiza a troca entre os dois
             // nós
             if (distanceI > distanceH) {
-                trocar(noI, noH);
+                lista_trocar_figuras(noI, noH);
             }
             noI = lista_get_next(noI);
             noH = lista_get_next(noH);

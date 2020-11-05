@@ -1,5 +1,8 @@
 #ifndef SHELLSORT_H
 #define SHELLSORT_H
+
+#include "lista.h"
+
 /*
 Este módulo define a função shellsort, responsável por ordenar um array em ordem crescente.
 */

@@ -22,6 +22,7 @@ Densidade densidade_criar(double x, double y, double largura, double altura, dou
     denImp->altura = altura;
     denImp->x = x;
     denImp->y = y;
+    denImp->densidade = densidade;
     return denImp;
 }
 
@@ -31,58 +32,31 @@ Densidade densidade_ler(const char *linha) {
     double y;
     double largura;
     double altura;
-    sscanf(linha, "%lf %lf %lf %lf %lf", &x, &y, &largura, &altura, &densidade);
+    sscanf(linha, "dd %lf %lf %lf %lf %lf", &x, &y, &largura, &altura, &densidade);
     return densidade_criar(x, y, largura, altura, densidade);
 }
 
-double densidade_obter_y(Densidade dens) {
-    DenImp *denImp = (DenImp *) dens;
-    return denImp->y;
+// Retorna o número de habitantes.
+double densidade_calcular_habitantes(DenImp *regiao) {
+    return regiao->densidade * (regiao->largura / 1000) * (regiao->altura / 1000);
 }
 
-double densidade_obter_y_final(Densidade dens) {
-    DenImp *denImp = (DenImp *) dens;
-    return denImp->y + denImp->altura;
-}
-
-double densidade_obter_x(Densidade dens) {
-    DenImp *denImp = (DenImp *) dens;
-    return denImp->x;
-}
-
-double densidade_obter_x_final(Densidade dens) {
-    DenImp *denImp = (DenImp *) dens;
-    return denImp->x + denImp->largura;
-}
-
-double buscar_densidade_coordenada(Lista lista_densidades, double x, double y) {
-    No noAux = lista_get_first(lista_densidades);
-    Figura regiao = lista_get_figura(noAux);
-    regiao = figura_obter_figura(regiao);
-    int tamanho = lista_get_length(lista_densidades);
-
-    for (int i = 0; i < tamanho; i++) {
-        DenImp *denImp = (DenImp *) regiao;
-        if (checarArea(regiao, x, y)) {
-            return denImp->densidade;
-            break;
-        }
-        noAux = lista_get_next(noAux);
-        regiao = lista_get_figura(noAux);
-        regiao = figura_obter_figura(regiao);
-    }
-
-    return 0;
-}
-
-bool checarArea(Densidade regiao, double x, double y) {
-    DenImp *denImp = (DenImp *) regiao;
-    if (x >= denImp->x && y >= denImp->y) {
-        if (x <= (denImp->x + denImp->largura) && y <= (denImp->y + denImp->altura)) {
+bool checarArea(DenImp *regiao, double x, double y) {
+    if (x >= regiao->x && y >= regiao->y) {
+        if (x <= (regiao->x + regiao->largura) && y <= (regiao->y + regiao->altura)) {
             return true;
         }
     }
     return false;
+}
+
+double densidade_buscar_coordenada(Lista lista_densidades, double x, double y) {
+    for (No i = lista_get_first(lista_densidades); i != NULL; i = lista_get_next(i)) {
+        DenImp *regiao = (DenImp *) figura_obter_figura(lista_get_figura(i));
+        if (checarArea(regiao, x, y))
+            return densidade_calcular_habitantes(regiao);
+    }
+    return 0;
 }
 
 void densidade_destruir(Densidade dens) {

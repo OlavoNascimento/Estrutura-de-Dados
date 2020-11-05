@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "lista.h"
+
 typedef void *Densidade;
 
 /*
@@ -21,35 +23,17 @@ Retorna um ponteiro para o struct. O usuário é responsável por liberar a mem�
 Densidade densidade_ler(const char *linha);
 
 /*
-Obtém a coordenada x de uma região de densidade x.
-O parâmetro dens não pode ser nulo.
-Retorna a coordenada x de uma região de densidade x.
+Verifica se um ponto está contido em uma densidade.
+O parâmetro lista_densidades não pode ser nulo.
+Retorna a densidade caso o ponto esteja contido.
 */
-double densidade_obter_x(Densidade dens);
-/*
-Obtém a coordenada y de uma região de densidade x.
-O parâmetro dens não pode ser nulo.
-Retorna a coordenada y de uma região de densidade x.
-*/
-double densidade_obter_y(Densidade dens);
+double densidade_buscar_coordenada(Lista lista_densidades, double x, double y);
 
 /*
-Obtém a coordenada x_final uma região de densidade x.
-O parâmetro dens não pode ser nulo.
-Retorna a coordenada x de uma região de densidade x.
-*/
-double densidade_obter_x_final(Densidade dens);
-/*
-Obtém a coordenada y de uma região de densidade x.
-O parâmetro dens não pode ser nulo.
-Retorna a coordenada y de uma região de densidade x.
-*/
-double densidade_obter_y_final(Densidade dens);
-
-/*
-Libera a memória alocada por um dens.
-O parâmetro dens não pode ser nulo e deve apontar para um espaço de memória reservada.
+Libera a memória alocada por uma densidade.
+O parâmetro densidade não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado após isso!
 */
-void densidade_destruir(Densidade dens);
+void densidade_destruir(Densidade densidade);
+
 #endif

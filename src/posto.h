@@ -18,8 +18,7 @@ Cria e inicializa um struct Posto com os valores passados.
 O raio deve ser maior que 0. O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
-Posto posto_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20]);
+Posto posto_criar(const char id[100], double x, double y);
 
 /*
 Cria e inicializa um struct Posto a partir de um texto obtido no arquivo .geo.

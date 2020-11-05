@@ -280,6 +280,7 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
             switch (tipo) {
                 case TIPO_DENSIDADE:
                     lista_insert_final(lista_densidades, nova_figura);
+                    break;
                 case TIPO_CIRCULO:
                 case TIPO_RETANGULO:
                 case TIPO_TEXTO:

@@ -104,6 +104,13 @@ Retorna o endereço do elemento posterior de p.
 No lista_get_previous(No p);
 
 /*
+Troca as figuras armazenadas em dois nós.
+Ambos os parâmetros não podem ser nulos.
+Os nós tem suas figuras trocadas.
+*/
+void lista_trocar_figuras(No no1, No no2);
+
+/*
 Libera a memória alocada em todos os elementos da lista.
 O parâmetro lista não pode ser nulo e deve ser uma lista existente.
 */

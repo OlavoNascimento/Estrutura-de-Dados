@@ -30,10 +30,12 @@ int main(int argc, const char *argv[]) {
     Lista *lista_semaforos = lista_create();
     Lista *lista_postos = lista_create();
     Lista *lista_densidades = lista_create();
+    Lista *lista_casos = lista_create();
+
     ler_geo(caminho_descricao, lista_formas, lista_quadras, lista_hidrantes, lista_radios,
             lista_semaforos, lista_formas, lista_densidades);
     svg_lista_para_svg(caminho_svg_descricao, lista_formas, lista_quadras, lista_hidrantes,
-                       lista_radios, lista_semaforos, lista_postos);
+                       lista_radios, lista_semaforos, lista_postos, lista_casos);
 
     if (caminho_consulta != NULL) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
@@ -44,9 +46,10 @@ int main(int argc, const char *argv[]) {
         LOG_INFO("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
         ler_qry(caminho_consulta, caminho_registro_consulta, lista_formas, lista_quadras,
-                lista_hidrantes, lista_radios, lista_semaforos, lista_postos, lista_densidades);
+                lista_hidrantes, lista_radios, lista_semaforos, lista_postos, lista_densidades,
+                lista_casos);
         svg_lista_para_svg(caminho_svg_consulta, lista_formas, lista_quadras, lista_hidrantes,
-                           lista_radios, lista_semaforos, lista_postos);
+                           lista_radios, lista_semaforos, lista_postos, lista_casos);
 
         free(caminho_registro_consulta);
         free(caminho_svg_consulta);
@@ -57,6 +60,9 @@ int main(int argc, const char *argv[]) {
     lista_libera_lista(lista_hidrantes);
     lista_libera_lista(lista_semaforos);
     lista_libera_lista(lista_radios);
+    lista_libera_lista(lista_postos);
+    lista_libera_lista(lista_densidades);
+    lista_libera_lista(lista_casos);
     free(caminho_descricao);
     free(caminho_consulta);
     free(caminho_svg_descricao);

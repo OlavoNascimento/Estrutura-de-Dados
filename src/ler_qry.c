@@ -1,16 +1,22 @@
 #include "ler_qry.h"
 
+#include <float.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "circulo.h"
+#include "densidade.h"
 #include "figuras.h"
 #include "linha.h"
 #include "lista.h"
 #include "logging.h"
 #include "matematica.h"
+#include "pilha.h"
+#include "poligono.h"
+#include "posto.h"
+#include "quicksort.h"
 #include "retangulo.h"
 #include "texto.h"
 
@@ -236,7 +242,7 @@ void raio_remove_quadras(Lista *lista_quadras, Lista *lista_hidrantes, Lista *li
     Figura figura;
     bool remover_quadras = false;
 
-    sscanf(linha, "%*s %c", &c);
+    sscanf(linha, "dq %c", &c);
     if (c == '#') {
         sscanf(linha, "%*s %*c %s %lf ", id, &raio);
     } else {
@@ -390,7 +396,7 @@ void informacoes_equipamento_urbano(Lista lista_quadras, Lista lista_hidrantes, 
 
     Figura equipamento = lista_get_figura(no_id);
     fprintf(arquivo_log, "tipo: %s, x: %lf, y: %lf\n\n", figura_obter_string_tipo(equipamento),
-            figura_obter_x_inicio(equipamento), figura_obter_y_inicio(equipamento));
+            figura_obter_x(equipamento), figura_obter_y(equipamento));
 }
 
 // Encontra o total das áreas das quadras contidas dentro de um retângulo
@@ -449,11 +455,192 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
     fprintf(arquivo_log, "área total: %lf\n\n", area_total);
 }
 
+// Verifica se uma curva é no sentido anti-horário.
+double checar_ante_horario(Figura a, Figura b, Figura c) {
+    double area =
+        (figura_obter_x(b) - figura_obter_x(a)) * (figura_obter_y(c) - figura_obter_y(a)) -
+        (figura_obter_y(b) - figura_obter_y(a)) * (figura_obter_x(c) - figura_obter_x(a));
+    // Anti-horário
+    if (area > 0)
+        return -1;
+    // Horário
+    if (area < 0)
+        return 1;
+    // Pontos são colineares
+    return 0;
+}
+
+// Devolve uma lista com os pontos de uma envoltória convexa.
+// A lista deve ser liberada pelo o usuário!
+Pilha graham_scan(Lista lista_casos) {
+    // Não é possível formar uma envoltória convexa com menos de 3 pontos.
+    if (lista_get_length(lista_casos) < 3) {
+        LOG_ERROR("Menos que 3 casos, não existe envoltória");
+        return NULL;
+    }
+
+    No no_min = NULL;
+    double min_y = DBL_MAX;
+    // Encontra o caso com menor y.
+    for (No i = lista_get_first(lista_casos); i != NULL; i = lista_get_next(i)) {
+        if (figura_obter_y(lista_get_figura(i)) < min_y) {
+            no_min = i;
+            min_y = figura_obter_y(lista_get_figura(i));
+        } else if (figura_obter_y(lista_get_figura(i)) == min_y &&
+                   figura_obter_x(lista_get_figura(i)) < figura_obter_x(lista_get_figura(no_min))) {
+            no_min = i;
+            min_y = figura_obter_y(lista_get_figura(i));
+        }
+    }
+    if (no_min == NULL) {
+        LOG_ERROR("Nenhum elemento maior encontrado!\n");
+        return NULL;
+    }
+
+    // Move a figura com menor y para a primeira posição da lista.
+    Figura temp = lista_get_figura(lista_get_first(lista_casos));
+    lista_set_figura(lista_get_first(lista_casos), lista_get_figura(no_min));
+    lista_set_figura(no_min, temp);
+
+    // Ordena a lista de casos de acordo como o ângulo formado com o ponto mínimo.
+    quicksort(lista_get_figura(lista_get_first(lista_casos)),
+              lista_get_next(lista_get_first(lista_casos)), lista_get_last(lista_casos));
+
+    Pilha pontos_envoltoria = pilha_create();
+    // Primeiro elemento está sempre dentro da envoltória.
+    pilha_push(pontos_envoltoria, lista_get_figura(lista_get_first(lista_casos)));
+    // Segundo elemento precisa ser verificado.
+    No segundo_elemento = lista_get_next(lista_get_first(lista_casos));
+    pilha_push(pontos_envoltoria, lista_get_figura(segundo_elemento));
+
+    for (No i = lista_get_next(segundo_elemento); i != NULL; i = lista_get_next(i)) {
+        Figura proximo_caso = lista_get_figura(i);
+        Figura ultimo_caso = pilha_pop(pontos_envoltoria);
+
+        // Remove casos até encontrar uma curva no sentido anti-horário.
+        while (!pilha_is_empty(pontos_envoltoria) &&
+               checar_ante_horario(pilha_peek(pontos_envoltoria), ultimo_caso, proximo_caso) <= 0) {
+            ultimo_caso = pilha_pop(pontos_envoltoria);
+        }
+
+        pilha_push(pontos_envoltoria, ultimo_caso);
+        pilha_push(pontos_envoltoria, proximo_caso);
+    }
+
+    Figura ultimo_ponto = pilha_pop(pontos_envoltoria);
+    // Verifica se o último ponto é inválido.
+    if (checar_ante_horario(pilha_peek(pontos_envoltoria), ultimo_ponto,
+                            lista_get_figura(lista_get_first(lista_casos))) > 0) {
+        pilha_push(pontos_envoltoria, ultimo_ponto);
+    }
+
+    return pontos_envoltoria;
+}
+
+void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades, Lista lista_casos,
+                                     Lista lista_postos, const char *linha, FILE *arquivo_log) {
+    double x, y, raio;
+    sscanf(linha, "ci %lf %lf %lf", &x, &y, &raio);
+
+    // Adiciona o círculo a lista de formas.
+    Circulo circ = circulo_criar("", raio, x, y, "green", "none");
+    circulo_definir_espessura_borda(circ, "4px");
+    Figura fig = figura_criar(circ, TIPO_CIRCULO);
+    lista_insert_final(lista_formas, fig);
+
+    Lista lista_casos_filtrados = lista_create();
+    int total_de_casos = 0;
+    // Filtra a lista de casos, mantendo apenas aqueles que estão totalmente contidos dentro do
+    // círculo.
+    fprintf(arquivo_log, "Pontos selecionados pelo círculo: \n");
+    for (No i = lista_get_first(lista_casos); i != NULL; i = lista_get_next(i)) {
+        if (circulo_contem_retangulo(lista_get_figura(i), x, y, raio)) {
+            lista_insert_final(lista_casos_filtrados, lista_get_figura(i));
+            total_de_casos += atoi(caso_obter_casos(figura_obter_figura(lista_get_figura(i))));
+            fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(lista_get_figura(i)),
+                    figura_obter_y(lista_get_figura(i)));
+        }
+    }
+
+    // Calcula a envoltória convexa.
+    Pilha pilha_pontos_envoltoria = graham_scan(lista_casos_filtrados);
+    if (pilha_pontos_envoltoria == NULL)
+        return;
+
+    double habitantes = densidade_buscar_coordenada(lista_densidades, x, y);
+    double incidencia = (total_de_casos / habitantes) * 100000;
+    char categoria = '\0';
+    char *cor_poligono = malloc(8 * sizeof(char));
+    cor_poligono[0] = '\0';
+
+    // Define a categoria e cor do polígono baseado na incidência.
+    if (incidencia < 0.1) {
+        categoria = 'A';
+        strcpy(cor_poligono, "#00FFFF");
+    } else if (incidencia < 5) {
+        categoria = 'B';
+        strcpy(cor_poligono, "#008080");
+    } else if (incidencia < 10) {
+        categoria = 'C';
+        strcpy(cor_poligono, "#FFFF00");
+    } else if (incidencia < 20) {
+        categoria = 'D';
+        strcpy(cor_poligono, "#FF0000");
+    } else {
+        categoria = 'E';
+        strcpy(cor_poligono, "#800080");
+    }
+
+    // Aloca uma matriz para armazenar os pontos encontrados.
+    double **pontos = malloc(pilha_get_tamanho(pilha_pontos_envoltoria) * sizeof(double *));
+    for (int i = 0; i < pilha_get_tamanho(pilha_pontos_envoltoria); i++)
+        pontos[i] = malloc(2 * sizeof(*pontos[i]));
+
+    int i = 0;
+    // Carrega os pontos encontrados na matriz.
+    while (!pilha_is_empty(pilha_pontos_envoltoria)) {
+        Figura fig = pilha_pop(pilha_pontos_envoltoria);
+        pontos[i][0] = figura_obter_centro_x(fig);
+        pontos[i][1] = figura_obter_centro_y(fig);
+        i++;
+    }
+
+    // Cria o polígono com os pontos encontrados e adiciona a lista de formas.
+    Poligono pol = poligono_criar(pontos, i, "red", cor_poligono, 0.4);
+    Figura poligono_figura = figura_criar(pol, TIPO_POLIGONO);
+    lista_insert_final(lista_formas, poligono_figura);
+
+    // Adiciona um posto de campanha caso necessário.
+    if (categoria == 'E') {
+        double x_centroide = poligono_calcular_x_centroide(pol);
+        double y_centroide = poligono_calcular_y_centroide(pol);
+        Figura centroide = figura_criar(posto_criar("", x_centroide, y_centroide), TIPO_POSTO);
+        lista_insert_final(lista_postos, centroide);
+    }
+
+    // Escreve as informações no arquivo de log
+    fprintf(arquivo_log, "Total de casos: %d\n", total_de_casos);
+    fprintf(arquivo_log, "Área da envoltória convexa: %lf\n", poligono_calcular_area(pol));
+    fprintf(arquivo_log, "Categoria de incidência: %c\n", categoria);
+
+    // Libera a memória alocada.
+    No atual = lista_get_first(lista_casos_filtrados);
+    No proximo = NULL;
+    while (atual != NULL) {
+        proximo = lista_get_next(atual);
+        free(atual);
+        atual = proximo;
+    }
+    free(lista_casos_filtrados);
+    free(cor_poligono);
+    pilha_destruir(pilha_pontos_envoltoria);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_formas,
              Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
-             Lista lista_postos, Lista lista_densidades) {
+             Lista lista_postos, Lista lista_densidades, Lista lista_casos) {
     FILE *arquivo_consulta = fopen(caminho_qry, "r");
     if (arquivo_consulta == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
@@ -494,6 +681,9 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
                                            lista_semaforos, linha, arquivo_log);
         } else if (strcmp("car", comando) == 0) {
             retangulo_area_total_contida(lista_formas, lista_quadras, linha, arquivo_log);
+        } else if (strcmp("ci", comando) == 0) {
+            determinar_regiao_de_incidencia(lista_formas, lista_densidades, lista_casos,
+                                            lista_postos, linha, arquivo_log);
         }
     }
 

@@ -58,7 +58,7 @@ void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
 // Escreve as listas passadas para um arquivo svg temporário.
 void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao, Lista lista_formas,
                              Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
-                             Lista lista_semaforos, Lista lista_postos) {
+                             Lista lista_semaforos, Lista lista_postos, Lista lista_casos) {
     FILE *arquivo_tmp = fopen(caminho_svg_tmp, "w");
     if (arquivo_tmp == NULL) {
         fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para escrita!\n",
@@ -74,8 +74,9 @@ void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao,
     escrever_lista(lista_hidrantes, arquivo_tmp, exibicao);
     escrever_lista(lista_radios, arquivo_tmp, exibicao);
     escrever_lista(lista_semaforos, arquivo_tmp, exibicao);
-    escrever_lista(lista_postos, arquivo_tmp, exibicao);
     escrever_lista(lista_formas, arquivo_tmp, exibicao);
+    escrever_lista(lista_casos, arquivo_tmp, exibicao);
+    escrever_lista(lista_postos, arquivo_tmp, exibicao);
 
     fprintf(arquivo_tmp, "</svg>\n");
     fclose(arquivo_tmp);
@@ -132,7 +133,7 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
 // arquivo .svg localizado no caminho específicado.
 void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista_quadras,
                         Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
-                        Lista lista_postos) {
+                        Lista lista_postos, Lista lista_casos) {
     if (caminho_svg == NULL) {
         LOG_ERROR("Caminho nulo passado a lista para svg!\n");
         return;
@@ -148,7 +149,7 @@ void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista
 
     // Svg temporário criado para anotar as proporções necessárias pelo svg final.
     escrever_svg_temporario(caminho_tmp, &exibicao, lista_formas, lista_quadras, lista_hidrantes,
-                            lista_radios, lista_semaforos, lista_postos);
+                            lista_radios, lista_semaforos, lista_postos, lista_casos);
 
     // Svg final com a propriedade viewbox definida.
     escrever_svg_com_viewbox(caminho_svg, caminho_tmp, &exibicao);

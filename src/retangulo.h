@@ -39,7 +39,7 @@ Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita
 void retangulo_escrever_svg(FILE *arquivo, Retangulo retangulo);
 
 /*
-Verifica se dois círculos se intersectam.
+Verifica se dois retângulos se intersectam.
 Nenhum dos parâmetros podem ser nulos.
 Retorna verdadeiro caso os dois retângulos se intersectam, caso contrário retorna falso.
 */

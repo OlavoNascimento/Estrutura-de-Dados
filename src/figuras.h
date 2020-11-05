@@ -24,6 +24,7 @@ typedef enum {
     TIPO_QUADRA,
     TIPO_RADIO,
     TIPO_RETANGULO,
+    TIPO_POLIGONO,
     TIPO_POSTO,
     TIPO_SEMAFORO,
     TIPO_TEXTO,
@@ -86,6 +87,19 @@ O parâmetro figura não pode ser nulo.
 Retorna o nome do tipo de uma figura como uma string.
 */
 const char *figura_obter_string_tipo(Figura figura);
+
+/*
+Obtém a coordenada x onde uma figura.
+O parâmetro figura não pode ser nulo.
+Retorna a coordenada x onde uma figura.
+*/
+double figura_obter_x(Figura figura);
+/*
+Obtém a coordenada y onde uma figura.
+O parâmetro figura não pode ser nulo.
+Retorna a coordenada y onde uma figura.
+*/
+double figura_obter_y(Figura figura);
 
 /*
 Obtém a coordenada x onde uma figura se inicia.
