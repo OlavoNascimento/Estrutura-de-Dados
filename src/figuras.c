@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "caso.h"
 #include "circulo.h"
 #include "densidade.h"
 #include "hidrante.h"
@@ -21,6 +22,7 @@
 typedef struct {
     TiposFigura tipo;
     union {
+        Caso cas;
         Circulo cir;
         Densidade den;
         Hidrante hid;
@@ -48,6 +50,9 @@ Figura figura_criar(void *figura, TiposFigura tipo) {
     FiguraImp *fig = malloc(sizeof(FiguraImp));
     fig->tipo = tipo;
     switch (tipo) {
+        case TIPO_CASO:
+            fig->cas = figura;
+            break;
         case TIPO_CIRCULO:
             fig->cir = figura;
             break;
@@ -97,6 +102,9 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figura));
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            caso_escrever_informacoes(arquivo, figuraImp->cas);
+            break;
         case TIPO_CIRCULO:
             circulo_escrever_informacoes(arquivo, figuraImp->cir);
             break;
@@ -136,6 +144,9 @@ void figura_escrever_svg(FILE *arquivo, Figura figura) {
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            caso_escrever_svg(arquivo, figuraImp->cas);
+            break;
         case TIPO_CIRCULO:
             circulo_escrever_svg(arquivo, figuraImp->cir);
             break;

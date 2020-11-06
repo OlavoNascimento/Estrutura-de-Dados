@@ -3,9 +3,11 @@
 #include <float.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "caso.h"
 #include "circulo.h"
 #include "densidade.h"
 #include "figuras.h"
@@ -636,6 +638,16 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
     pilha_destruir(pilha_pontos_envoltoria);
 }
 
+void escrever_numero_casos_centro(Lista lista_formas, Caso caso) {
+    double largura = caso_obter_x(caso);
+    double altura = caso_obter_x(caso);
+    double x = caso_obter_x(caso) + largura / 2;
+    double y = caso_obter_y(caso) + altura / 2;
+    Texto numero_casos = texto_criar("", x + 1, 0, "black", "black", itoa(caso_obter_casos(caso)));
+    Figura fig_numero_casos = figura_criar(numero_casos, TIPO_TEXTO);
+    lista_insert_final(lista_formas, fig_numero_casos);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_formas,
@@ -681,6 +693,11 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
                                            lista_semaforos, linha, arquivo_log);
         } else if (strcmp("car", comando) == 0) {
             retangulo_area_total_contida(lista_formas, lista_quadras, linha, arquivo_log);
+        } else if (strcmp("cv", comando) == 0) {
+            Figura nova_figura = NULL;
+            nova_figura = figura_criar(caso_ler(linha, lista_casos), TIPO_CASO);
+            lista_insert_final(lista_casos, nova_figura);
+            escrever_numero_casos_centro(lista_formas, nova_figura);
         } else if (strcmp("ci", comando) == 0) {
             determinar_regiao_de_incidencia(lista_formas, lista_densidades, lista_casos,
                                             lista_postos, linha, arquivo_log);
