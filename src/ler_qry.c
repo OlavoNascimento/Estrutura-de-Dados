@@ -20,6 +20,7 @@
 #include "posto.h"
 #include "quicksort.h"
 #include "retangulo.h"
+#include "shellsort.h"
 #include "texto.h"
 
 // Tamanho maxímo de um comando do arquivo de consulta.
@@ -457,6 +458,58 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
     fprintf(arquivo_log, "área total: %lf\n\n", area_total);
 }
 
+void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_formas,
+                          const char *linha, FILE *arquivo_log) {
+    int k;
+    int numero;
+    char face;
+    char cep[100];
+    sscanf(linha, "%*s %d %s %c %d", &k, cep, &face, &numero);
+
+    double x;
+    double y;
+    if (face == 'N') {
+        y = quadra_obter_casa_y_final(lista_quadras, cep);
+        x = quadra_obter_casa_x(lista_quadras, cep) + numero;
+    } else if (face == 'S') {
+        y = quadra_obter_casa_y(lista_quadras, cep);
+        x = quadra_obter_casa_x(lista_quadras, cep) + numero;
+    } else if (face == 'L') {
+        y = quadra_obter_casa_y(lista_quadras, cep) + numero;
+        x = quadra_obter_casa_x(lista_quadras, cep);
+    } else if (face == 'O') {
+        y = quadra_obter_casa_y(lista_quadras, cep) + numero;
+        x = quadra_obter_casa_x_final(lista_quadras, cep);
+    }
+
+    if (x == -1 || y == -1) {
+        LOG_ERROR("Não foi possível encontrar a quadra especificada pelo cep: %s\n", cep);
+        return NULL;
+    }
+
+    // Desenhar o quadrado azul
+    Figura nova_figura;
+    Retangulo desenho_quadrado = retangulo_criar("", 10, 10, x, y, "blue", "blue");
+    nova_figura = figura_criar(desenho_quadrado, TIPO_RETANGULO);
+    lista_insert_final(lista_formas, nova_figura);
+
+    shellSort(lista_postos, (lista_get_length(lista_postos) / 2), x, y);
+
+    No i = lista_get_first(lista_postos);
+    for (int j = 0; j < k; j++) {
+        figura_obter_centro_x(figura_obter_figura(lista_get_figura(i)));
+        Linha linha_posto = linha_criar(
+            x, y, figura_obter_centro_x(figura_obter_figura(lista_get_figura(i))),
+            figura_obter_centro_y(figura_obter_figura(lista_get_figura(i))), "black", "black");
+        Figura fig_linha = figura_criar(linha_posto, TIPO_LINHA);
+        lista_insert_final(lista_formas, fig_linha);
+
+        i = lista_get_next(i);
+
+        posto_escrever_informacoes(arquivo_log, figura_obter_figura(lista_get_figura(i)));
+    }
+}
+
 // Verifica se uma curva é no sentido anti-horário.
 double checar_ante_horario(Figura a, Figura b, Figura c) {
     double area =
@@ -701,6 +754,8 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
             nova_figura = figura_criar(caso_ler(linha, lista_casos), TIPO_CASO);
             lista_insert_final(lista_casos, nova_figura);
             escrever_numero_casos_centro(lista_formas, nova_figura);
+        } else if (strcmp("soc", comando) == 0) {
+            postos_mais_proximos(lista_postos, lista_quadras, lista_formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {
             determinar_regiao_de_incidencia(lista_formas, lista_densidades, lista_casos,
                                             lista_postos, linha, arquivo_log);
