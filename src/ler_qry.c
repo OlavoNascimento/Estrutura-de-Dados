@@ -472,7 +472,7 @@ double checar_ante_horario(Figura a, Figura b, Figura c) {
     return 0;
 }
 
-// Devolve uma lista com os pontos de uma envoltória convexa.
+// Devolve uma pilha com os pontos de uma envoltória convexa.
 // A lista deve ser liberada pelo o usuário!
 Pilha graham_scan(Lista lista_casos) {
     // Não é possível formar uma envoltória convexa com menos de 3 pontos.
@@ -539,6 +539,7 @@ Pilha graham_scan(Lista lista_casos) {
     return pontos_envoltoria;
 }
 
+// Utiliza um círculo para definir os casos que devem ser contidos por uma envoltória convexa.
 void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades, Lista lista_casos,
                                      Lista lista_postos, const char *linha, FILE *arquivo_log) {
     double x, y, raio;
@@ -558,7 +559,7 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
     for (No i = lista_get_first(lista_casos); i != NULL; i = lista_get_next(i)) {
         if (circulo_contem_retangulo(lista_get_figura(i), x, y, raio)) {
             lista_insert_final(lista_casos_filtrados, lista_get_figura(i));
-            total_de_casos += atoi(caso_obter_casos(figura_obter_figura(lista_get_figura(i))));
+            total_de_casos += caso_obter_casos(figura_obter_figura(lista_get_figura(i)));
             fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(lista_get_figura(i)),
                     figura_obter_y(lista_get_figura(i)));
         }
@@ -643,7 +644,9 @@ void escrever_numero_casos_centro(Lista lista_formas, Caso caso) {
     double altura = caso_obter_x(caso);
     double x = caso_obter_x(caso) + largura / 2;
     double y = caso_obter_y(caso) + altura / 2;
-    Texto numero_casos = texto_criar("", x + 1, 0, "black", "black", itoa(caso_obter_casos(caso)));
+    char conteudo[500];
+    snprintf(conteudo, 500, "%d", caso_obter_casos(caso));
+    Texto numero_casos = texto_criar("", x + 1, y, "black", "black", conteudo);
     Figura fig_numero_casos = figura_criar(numero_casos, TIPO_TEXTO);
     lista_insert_final(lista_formas, fig_numero_casos);
 }

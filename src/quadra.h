@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "lista.h"
 #include "retangulo.h"
 
 /*

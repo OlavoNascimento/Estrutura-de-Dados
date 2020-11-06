@@ -708,6 +708,9 @@ void figura_destruir(Figura figura) {
         case TIPO_CIRCULO:
             circulo_destruir(figuraImp->cir);
             break;
+        case TIPO_CASO:
+            caso_destruir(figuraImp->cas);
+            break;
         case TIPO_DENSIDADE:
             densidade_destruir(figuraImp->den);
             break;

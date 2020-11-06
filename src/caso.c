@@ -27,7 +27,7 @@ Caso caso_criar(double largura, double altura, double x, double y, const char co
         return NULL;
     }
     CasoImp *casoImp = malloc(sizeof(CasoImp));
-    // TODO definiar como será o id dos casos
+    // TODO definir como será o id dos casos
     char id[6] = "caso";  // apenas simbólico
     casoImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
     return casoImp;
@@ -69,13 +69,13 @@ Caso caso_ler(const char *linha, Lista lista_quadras) {
     return caso_criar(largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
-// Escreve as informações de uma radio base
+// Escreve as informações de um caso.
 void caso_escrever_informacoes(FILE *arquivo, Caso caso) {
     CasoImp *casoImp = (CasoImp *) caso;
     retangulo_escrever_informacoes(arquivo, casoImp->ret);
 }
 
-// Escreve no svg as informações de uma radio base
+// Escreve no svg as informações de um caso.
 void caso_escrever_svg(FILE *arquivo, Caso caso) {
     CasoImp *casoImp = (CasoImp *) caso;
     retangulo_escrever_svg(arquivo, casoImp->ret);
@@ -104,4 +104,11 @@ double caso_obter_altura(Caso caso) {
 int caso_obter_casos(Caso casos) {
     CasoImp *casoImp = (CasoImp *) casos;
     return casoImp->nCasos;
+}
+
+// Libera a memória alocada por um caso.
+void caso_destruir(Caso caso) {
+    CasoImp *casoImp = (CasoImp *) caso;
+    circulo_destruir(casoImp->ret);
+    free(caso);
 }
