@@ -15,7 +15,7 @@ typedef void* Caso;
 
 /*
 Cria e inicializa um struct Caso com os valores passados.
-As cores não podem ser nulos.
+As cores não podem ser nulas.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Caso caso_criar(double largura, double altura, double x, double y, const char cor_borda[20],
@@ -48,9 +48,9 @@ Retorna a coordenada x de um caso.
 double caso_obter_x(Caso caso);
 
 /*
-Obtém a coordenada x de um caso.
+Obtém a coordenada y de um caso.
 O parâmetro caso não pode ser nulo.
-Retorna a coordenada x de um caso.
+Retorna a coordenada y de um caso.
 */
 double caso_obter_y(Caso caso);
 
@@ -69,7 +69,7 @@ Retorna a altura do caso.
 double caso_obter_altura(Caso caso);
 
 /*
-Escreve o código svg necessário para representar um círculo em um arquivo.
+Obtém o número de casos de uma determinada struct caso.
 O parâmetro caso não pode ser nulo.
 Retorna o número de casos.
 */
