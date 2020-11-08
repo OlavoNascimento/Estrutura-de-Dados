@@ -15,11 +15,11 @@ typedef void* Caso;
 
 /*
 Cria e inicializa um struct Caso com os valores passados.
-As cores não podem ser nulas.
+Os casos devem ser maior que zero, as cores e a lista de quadras não podem ser nulas.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
-Caso caso_criar(int casos, double largura, double altura, double x, double y,
-                const char cor_borda[20], const char cor_preenchimento[20]);
+Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_borda[20],
+                const char cor_preenchimento[20], Lista lista_quadras);
 
 /*
 Cria e inicializa um struct Caso a partir de um texto obtido no arquivo .geo.

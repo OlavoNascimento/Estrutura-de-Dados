@@ -462,54 +462,31 @@ void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_f
     char cep[100];
     sscanf(linha, "soc %d %s %c %d", &k, cep, &face, &numero);
 
-    Figura quadra_buscada = NULL;
-    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
-        Figura quadra = lista_get_figura(i);
-        if (strcmp(cep, figura_obter_id(quadra)) == 0)
-            quadra_buscada = quadra;
-    }
-    if (quadra_buscada == NULL) {
-        LOG_ERROR(
-            "Não foi possível encontrar a quadra especificada pelo cep na lista de quadras: %s\n",
-            cep);
+    // Desenhar o caso azul
+    Caso caso = caso_criar(k, cep, face, numero, "white", "blue", lista_quadras);
+    if (caso == NULL)
+        return;
+
+    Figura fig_caso = figura_criar(caso, TIPO_CASO);
+    lista_insert_final(lista_formas, fig_caso);
+
+    if (lista_get_length(lista_postos) == 0) {
+        LOG_INFO("Nenhum posto encontrado!\n");
         return;
     }
-
-    double x = 0;
-    double y = 0;
-    if (face == 'N') {
-        y = figura_obter_y_fim(quadra_buscada);
-        x = figura_obter_x(quadra_buscada) + numero;
-    } else if (face == 'S') {
-        y = figura_obter_y(quadra_buscada);
-        x = figura_obter_x(quadra_buscada) + numero;
-    } else if (face == 'L') {
-        y = figura_obter_y(quadra_buscada) + numero;
-        x = figura_obter_x(quadra_buscada);
-    } else if (face == 'O') {
-        y = figura_obter_y(quadra_buscada) + numero;
-        x = figura_obter_x_fim(quadra_buscada);
-    }
-
-    // Desenhar o quadrado azul
-    Figura nova_figura;
-    Retangulo desenho_quadrado = retangulo_criar("", 10, 10, x, y, "blue", "blue");
-    nova_figura = figura_criar(desenho_quadrado, TIPO_RETANGULO);
-    lista_insert_final(lista_formas, nova_figura);
-
-    if (lista_get_length(lista_postos) == 0)
-        return;
-    shellSort(lista_postos, lista_get_length(lista_postos) / 2, x, y);
+    shellSort(lista_postos, lista_get_length(lista_postos) / 2, figura_obter_x(fig_caso),
+              figura_obter_y(fig_caso));
 
     No i = lista_get_first(lista_postos);
     for (int j = 0; j < k; j++) {
+        Figura posto = lista_get_figura(i);
         Linha linha_posto = linha_criar(
-            x, y, figura_obter_centro_x(figura_obter_figura(lista_get_figura(i))),
-            figura_obter_centro_y(figura_obter_figura(lista_get_figura(i))), "black", "black");
+            figura_obter_centro_x(fig_caso), figura_obter_centro_y(fig_caso),
+            figura_obter_centro_x(posto), figura_obter_centro_y(posto), "black", "black");
         Figura fig_linha = figura_criar(linha_posto, TIPO_LINHA);
         lista_insert_final(lista_formas, fig_linha);
 
-        posto_escrever_informacoes(arquivo_log, figura_obter_figura(lista_get_figura(i)));
+        fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(posto), figura_obter_y(posto));
 
         i = lista_get_next(i);
         if (i == NULL)
@@ -684,7 +661,7 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
         double x_centroide = poligono_calcular_x_centroide(pol);
         double y_centroide = poligono_calcular_y_centroide(pol);
         LOG_INFO("Centroide elementos: %d, x: %lf e y: %lf\n", i, x_centroide, y_centroide);
-        Figura centroide = figura_criar(posto_criar("", x_centroide, y_centroide), TIPO_POSTO);
+        Figura centroide = figura_criar(posto_criar(x_centroide, y_centroide), TIPO_POSTO);
         lista_insert_final(lista_postos, centroide);
     }
 
@@ -733,6 +710,7 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
     while (fgets(linha, LINHA_MAX, arquivo_consulta) != NULL) {
         char comando[LINHA_MAX];
         sscanf(linha, "%s", comando);
+
         if (strcmp("o?", comando) == 0) {
             checar_interseccao(lista_formas, linha, arquivo_log);
         } else if (strcmp("i?", comando) == 0) {

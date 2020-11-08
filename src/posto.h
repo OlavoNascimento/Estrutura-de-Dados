@@ -18,7 +18,7 @@ Cria e inicializa um struct Posto com os valores passados.
 O raio deve ser maior que 0. O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
-Posto posto_criar(const char id[100], double x, double y);
+Posto posto_criar(double x, double y);
 
 /*
 Cria e inicializa um struct Posto a partir de um texto obtido no arquivo .geo.
@@ -26,12 +26,6 @@ O parâmetro linha não pode ser nulo.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Posto posto_ler(const char *linha);
-
-/*
-Escreve todas as informações presentes em um posto em um arquivo.
-Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
-*/
-void posto_escrever_informacoes(FILE *arquivo, Posto posto);
 
 /*
 Escreve o código svg necessário para representar um posto em um arquivo.

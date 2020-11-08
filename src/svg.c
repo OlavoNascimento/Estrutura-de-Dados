@@ -14,8 +14,6 @@
 
 // Tamanho maxímo da linha de um arquivo svg
 #define LINHA_MAX 300
-// Margem entra a figura e seu rótulo.
-#define ROTULO_MARGEM 4
 // Margem entre o svg e as figuras mais próximas das bordas.
 #define SVG_MARGEM 14
 
@@ -36,10 +34,10 @@ ExibicaoSVG svg_criar_exibicao() {
 // Checa se é necessário atualizar os valores da struct ExibiçãoSVG para garantir que a figura
 // passada a função possa ser vista no arquivo svg.
 void svg_atualizar_exibicao(ExibicaoSVG *exi, Figura figura) {
-    exi->origem_x = min(exi->origem_x, figura_obter_x_inicio(figura) - ROTULO_MARGEM);
-    exi->origem_y = min(exi->origem_y, figura_obter_y_inicio(figura) - ROTULO_MARGEM);
-    exi->largura = max(exi->largura, figura_obter_x_fim(figura) - ROTULO_MARGEM);
-    exi->altura = max(exi->altura, figura_obter_y_fim(figura) - ROTULO_MARGEM);
+    exi->origem_x = min(exi->origem_x, figura_obter_x_inicio(figura));
+    exi->origem_y = min(exi->origem_y, figura_obter_y_inicio(figura));
+    exi->largura = max(exi->largura, figura_obter_x_fim(figura));
+    exi->altura = max(exi->altura, figura_obter_y_fim(figura));
 }
 
 // Escreve uma lista genérica em um arquivo.
@@ -75,8 +73,8 @@ void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao,
     escrever_lista(lista_radios, arquivo_tmp, exibicao);
     escrever_lista(lista_semaforos, arquivo_tmp, exibicao);
     escrever_lista(lista_casos, arquivo_tmp, exibicao);
-    escrever_lista(lista_formas, arquivo_tmp, exibicao);
     escrever_lista(lista_postos, arquivo_tmp, exibicao);
+    escrever_lista(lista_formas, arquivo_tmp, exibicao);
 
     fprintf(arquivo_tmp, "</svg>\n");
     fclose(arquivo_tmp);

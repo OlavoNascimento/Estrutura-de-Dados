@@ -13,13 +13,9 @@ typedef struct {
 } PostoImp;
 
 // Cria e inicializa um struct PostoImp com os valores passados.
-Posto posto_criar(const char id[100], double x, double y) {
-    if (id == NULL) {
-        LOG_ERROR("Não é possível criar um posto com id NULL!\n");
-        return NULL;
-    }
+Posto posto_criar(double x, double y) {
     PostoImp *posImp = malloc(sizeof(PostoImp));
-    posImp->circ = circulo_criar(id, 10, x, y, "blue", "green");
+    posImp->circ = circulo_criar("", 12, x, y, "blue", "green");
     return posImp;
 }
 
@@ -27,20 +23,14 @@ Posto posto_criar(const char id[100], double x, double y) {
 Posto posto_ler(const char *linha) {
     double x;
     double y;
-    sscanf(linha, "%*s %lf %lf", &x, &y);
-    return posto_criar("", x, y);
+    sscanf(linha, "ps %lf %lf", &x, &y);
+    return posto_criar(x, y);
 }
 
 // Retorna o id de um posto.
 const char *posto_obter_id(Posto posto) {
     PostoImp *posImp = (PostoImp *) posto;
     return circulo_obter_id(posImp->circ);
-}
-
-// Escreve as informações de um posto.
-void posto_escrever_informacoes(FILE *arquivo, Posto posto) {
-    PostoImp *posImp = (PostoImp *) posto;
-    circulo_escrever_informacoes(arquivo, posImp->circ);
 }
 
 // Escreve no svg as informações de um posto.

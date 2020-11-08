@@ -117,9 +117,6 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
         case TIPO_RETANGULO:
             retangulo_escrever_informacoes(arquivo, figuraImp->ret);
             break;
-        case TIPO_POSTO:
-            posto_escrever_informacoes(arquivo, figuraImp->pos);
-            break;
         case TIPO_SEMAFORO:
             semaforo_escrever_informacoes(arquivo, figuraImp->sem);
             break;
