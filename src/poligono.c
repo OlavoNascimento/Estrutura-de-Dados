@@ -72,7 +72,9 @@ void poligono_escrever_svg(FILE *arquivo, Poligono poligono) {
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
         if (i != 0)
             fprintf(arquivo, " ");
-        fprintf(arquivo, "%lf,%lf", polImp->pontos[i][0], polImp->pontos[i][1]);
+        double x = polImp->pontos[i][0];
+        double y = polImp->pontos[i][1];
+        fprintf(arquivo, "%lf,%lf", x, y);
     }
     fprintf(arquivo, "'");
 
@@ -88,9 +90,12 @@ void poligono_escrever_svg(FILE *arquivo, Poligono poligono) {
 double poligono_calcular_area(Poligono poligono) {
     PoligonoImp *polImp = (PoligonoImp *) poligono;
     double area = 0;
-    for (int i = 0; i < polImp->numero_de_pontos - 1; i++) {
-        area += polImp->pontos[i][0] * polImp->pontos[i + 1][1] -
-                polImp->pontos[i + 1][0] * polImp->pontos[i][1];
+    for (int i = 0; i < polImp->numero_de_pontos; i++) {
+        double x = polImp->pontos[i][0];
+        double y = polImp->pontos[i][1];
+        double x1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][0];
+        double y1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][1];
+        area += x * y1 - x1 * y;
     }
     return area / 2;
 }
@@ -99,10 +104,12 @@ double poligono_calcular_area(Poligono poligono) {
 double poligono_calcular_x_centroide(Poligono poligono) {
     PoligonoImp *polImp = (PoligonoImp *) poligono;
     double valor = 0;
-    for (int i = 0; i < polImp->numero_de_pontos - 1; i++) {
-        valor += (polImp->pontos[i][0] + polImp->pontos[i + 1][0]) *
-                 (polImp->pontos[i][0] * polImp->pontos[i + 1][1] -
-                  polImp->pontos[i + 1][0] * polImp->pontos[i][1]);
+    for (int i = 0; i < polImp->numero_de_pontos; i++) {
+        double x = polImp->pontos[i][0];
+        double y = polImp->pontos[i][1];
+        double x1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][0];
+        double y1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][1];
+        valor += (x + x1) * (x * y1 - x1 * y);
     }
     return valor / (6 * poligono_calcular_area(poligono));
 }
@@ -111,10 +118,12 @@ double poligono_calcular_x_centroide(Poligono poligono) {
 double poligono_calcular_y_centroide(Poligono poligono) {
     PoligonoImp *polImp = (PoligonoImp *) poligono;
     double valor = 0;
-    for (int i = 0; i < polImp->numero_de_pontos - 1; i++) {
-        valor += (polImp->pontos[i][1] + polImp->pontos[i + 1][1]) *
-                 (polImp->pontos[i][0] * polImp->pontos[i + 1][1] -
-                  polImp->pontos[i + 1][0] * polImp->pontos[i][1]);
+    for (int i = 0; i < polImp->numero_de_pontos; i++) {
+        double x = polImp->pontos[i][0];
+        double y = polImp->pontos[i][1];
+        double x1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][0];
+        double y1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][1];
+        valor += (y + y1) * (x * y1 - x1 * y);
     }
     return valor / (6 * poligono_calcular_area(poligono));
 }

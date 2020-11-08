@@ -87,11 +87,11 @@ No lista_insert_after(Lista lista, Figura figura, No p) {
         node_insert->proximo = node_proximo;
         node_insert->anterior = node_aux;
     }
-    lista_aux->tamanho++;
     if (tam_aux == lista_aux->tamanho) {
         LOG_ERROR("Erro ao inserir elemento (insert_after)\n");
         return NULL;
     }
+    lista_aux->tamanho++;
 
     return node_insert;
 }
@@ -125,11 +125,11 @@ No lista_insert_before(Lista lista, Figura figura, No p) {
         node_insert->proximo = node_aux;
         node_insert->anterior = node_anterior;
     }
-    lista_aux->tamanho++;
     if (tam_aux == lista_aux->tamanho) {
         LOG_ERROR("Erro ao inserir elemento (insert_before)!\n");
         return NULL;
     }
+    lista_aux->tamanho++;
 
     return node_insert;
 }

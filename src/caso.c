@@ -16,8 +16,8 @@ typedef struct {
 } CasoImp;
 
 // Cria e inicializa um struct CasoImp com os valores passados.
-Caso caso_criar(double largura, double altura, double x, double y, const char cor_borda[20],
-                const char cor_preenchimento[20], int n) {
+Caso caso_criar(int casos, double largura, double altura, double x, double y,
+                const char cor_borda[20], const char cor_preenchimento[20]) {
     if (cor_borda == NULL) {
         LOG_ERROR("Não é possível criar um caso com cor de borda NULL!\n");
         return NULL;
@@ -27,52 +27,49 @@ Caso caso_criar(double largura, double altura, double x, double y, const char co
         return NULL;
     }
     CasoImp *casoImp = malloc(sizeof(CasoImp));
-    // TODO definir como será o id dos casos
-    char id[6] = "caso";  // apenas simbólico
-    casoImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
-    casoImp->nCasos = n;
+    casoImp->ret = retangulo_criar("", largura, altura, x, y, cor_borda, cor_preenchimento);
+    casoImp->nCasos = casos;
     return casoImp;
 }
 
 // Cria uma quadra com base em informações de uma linha.
 Caso caso_ler(const char *linha, Lista lista_quadras) {
-    int n;
+    int casos;
     int numero;
     char face;
     char cep[100];
-    double largura = 10;
-    double altura = 10;
+    double largura = 12;
+    double altura = 12;
     char cor_borda[20] = "orange";
     char cor_preenchimento[20] = "orange";
-    sscanf(linha, "%*s %d %s %c %d", &n, cep, &face, &numero);
+    sscanf(linha, "cv %d %s %c %d", &casos, cep, &face, &numero);
 
-    double x;
-    double y;
-    if (face == 'N') {
-        y = quadra_obter_casa_y_final(lista_quadras, cep);
-        x = quadra_obter_casa_x(lista_quadras, cep) + numero - largura / 2;
-    } else if (face == 'S') {
-        y = quadra_obter_casa_y(lista_quadras, cep);
-        x = quadra_obter_casa_x(lista_quadras, cep) + numero - largura / 2;
-    } else if (face == 'L') {
-        y = quadra_obter_casa_y(lista_quadras, cep) + numero - altura / 2;
-        x = quadra_obter_casa_x(lista_quadras, cep);
-    } else if (face == 'O') {
-        y = quadra_obter_casa_y(lista_quadras, cep) + numero - altura / 2;
-        x = quadra_obter_casa_x_final(lista_quadras, cep);
+    Figura quadra_buscada = NULL;
+    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
+        Figura quadra = lista_get_figura(i);
+        if (strcmp(cep, figura_obter_id(quadra)) == 0)
+            quadra_buscada = quadra;
     }
-
-    if (x == -1 || y == -1) {
-        LOG_ERROR("Não foi possível encontrar a quadra especificada pelo cep: %s\n", cep);
+    if (quadra_buscada == NULL)
         return NULL;
-    }
-    return caso_criar(largura, altura, x, y, cor_borda, cor_preenchimento, n);
-}
 
-// Escreve as informações de um caso.
-void caso_escrever_informacoes(FILE *arquivo, Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
-    retangulo_escrever_informacoes(arquivo, casoImp->ret);
+    double x = 0;
+    double y = 0;
+    if (face == 'N') {
+        y = figura_obter_y_fim(quadra_buscada) - altura;
+        x = figura_obter_x(quadra_buscada) + numero;
+    } else if (face == 'S') {
+        y = figura_obter_y(quadra_buscada);
+        x = figura_obter_x(quadra_buscada) + numero;
+    } else if (face == 'L') {
+        y = figura_obter_y(quadra_buscada) + numero;
+        x = figura_obter_x(quadra_buscada);
+    } else if (face == 'O') {
+        y = figura_obter_y(quadra_buscada) + numero;
+        x = figura_obter_x_fim(quadra_buscada) - largura;
+    }
+
+    return caso_criar(casos, largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
 // Escreve no svg as informações de um caso.
@@ -109,6 +106,6 @@ int caso_obter_casos(Caso casos) {
 // Libera a memória alocada por um caso.
 void caso_destruir(Caso caso) {
     CasoImp *casoImp = (CasoImp *) caso;
-    circulo_destruir(casoImp->ret);
+    retangulo_destruir(casoImp->ret);
     free(caso);
 }

@@ -1,5 +1,6 @@
 #include "texto.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,11 +14,12 @@ typedef struct {
     char cor_borda[20];
     char cor_preenchimento[20];
     char conteudo[500];
+    bool centralizar;
 } TextoImp;
 
 // Cria e inicializa um struct Texto com os valores passados.
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20], const char conteudo[500]) {
+                  const char cor_preenchimento[20], const char conteudo[500], bool centralizar) {
     TextoImp *texImp = malloc(sizeof(TextoImp));
     strcpy(texImp->id, id);
     texImp->x = x;
@@ -25,6 +27,7 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
     strcpy(texImp->cor_borda, cor_borda);
     strcpy(texImp->cor_preenchimento, cor_preenchimento);
     strcpy(texImp->conteudo, conteudo);
+    texImp->centralizar = centralizar;
     return texImp;
 }
 
@@ -38,7 +41,7 @@ Texto texto_ler(const char *linha) {
     char conteudo[500];
     sscanf(linha, "%*s %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
            conteudo);
-    return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo);
+    return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo, false);
 }
 
 // Escreve todos os dados de um texto em um arquivo.
@@ -56,6 +59,8 @@ void texto_escrever_svg(FILE *arquivo, Texto tex) {
     fprintf(arquivo, "\t<text");
     if (strlen(texImp->id) > 0)
         fprintf(arquivo, " id='%s'", texImp->id);
+    if (texImp->centralizar)
+        fprintf(arquivo, " text-anchor='middle'");
     fprintf(arquivo, " x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n", texImp->x, texImp->y,
             texImp->cor_borda, texImp->cor_preenchimento, texImp->conteudo);
 }

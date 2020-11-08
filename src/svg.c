@@ -74,8 +74,8 @@ void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao,
     escrever_lista(lista_hidrantes, arquivo_tmp, exibicao);
     escrever_lista(lista_radios, arquivo_tmp, exibicao);
     escrever_lista(lista_semaforos, arquivo_tmp, exibicao);
-    escrever_lista(lista_formas, arquivo_tmp, exibicao);
     escrever_lista(lista_casos, arquivo_tmp, exibicao);
+    escrever_lista(lista_formas, arquivo_tmp, exibicao);
     escrever_lista(lista_postos, arquivo_tmp, exibicao);
 
     fprintf(arquivo_tmp, "</svg>\n");

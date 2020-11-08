@@ -16,8 +16,8 @@
 // TIPOS_FIGURA_MAX que servem o propósito de verificar se um tipo está contido no enum.
 typedef enum {
     TIPOS_FIGURA_MIN = -1,
-    TIPO_CIRCULO,
     TIPO_CASO,
+    TIPO_CIRCULO,
     TIPO_DENSIDADE,
     TIPO_HIDRANTE,
     TIPO_LINHA,

@@ -102,9 +102,6 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figura));
     switch (figuraImp->tipo) {
-        case TIPO_CASO:
-            caso_escrever_informacoes(arquivo, figuraImp->cas);
-            break;
         case TIPO_CIRCULO:
             circulo_escrever_informacoes(arquivo, figuraImp->cir);
             break;
@@ -242,9 +239,9 @@ TiposFigura figura_obter_tipo(Figura figura) {
 // Retorna o nome do tipo de uma figura como uma string.
 const char *figura_obter_string_tipo(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    const char *valores[] = {"círculo",  "densidade", "caso",       "hidrante",
-                             "linha",    "quadra",    "rádio-base", "retângulo",
-                             "polígono", "posto",     "semáforo",   "texto"};
+    const char *valores[] = {"caso",     "círculo", "densidade",  "hidrante",
+                             "linha",    "quadra",  "rádio-base", "retângulo",
+                             "polígono", "posto",   "semáforo",   "texto"};
     return valores[figuraImp->tipo];
 }
 
@@ -284,6 +281,8 @@ void *figura_obter_figura(Figura figura) {
 double figura_obter_x(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_x(figuraImp->cas);
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -313,6 +312,8 @@ double figura_obter_x(Figura figura) {
 double figura_obter_y(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_y(figuraImp->cas);
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -342,6 +343,8 @@ double figura_obter_y(Figura figura) {
 double figura_obter_x_inicio(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_x(figuraImp->cas);
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -374,6 +377,8 @@ double figura_obter_x_inicio(Figura figura) {
 double figura_obter_y_inicio(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_y(figuraImp->cas);
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) - circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -406,6 +411,8 @@ double figura_obter_y_inicio(Figura figura) {
 double figura_obter_x_fim(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_x(figuraImp->cas) + caso_obter_largura(figuraImp->cas);
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -426,7 +433,7 @@ double figura_obter_x_fim(Figura figura) {
             return semaforo_obter_x(figuraImp->sem) + semaforo_obter_largura(figuraImp->sem);
         case TIPO_TEXTO:
             // Usa uma largura estimada para o texto
-            return texto_obter_x(figuraImp->tex) + strlen(texto_obter_conteudo(figuraImp->tex)) * 4;
+            return texto_obter_x(figuraImp->tex) + strlen(texto_obter_conteudo(figuraImp->tex)) * 5;
         default:
             LOG_ERROR("Tipo de figura inválido passado para obter x fim: %d!\n", figuraImp->tipo);
             break;
@@ -438,6 +445,8 @@ double figura_obter_x_fim(Figura figura) {
 double figura_obter_y_fim(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_y(figuraImp->cas) + caso_obter_altura(figuraImp->cas);
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir) + circulo_obter_raio(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -469,6 +478,8 @@ double figura_obter_y_fim(Figura figura) {
 double figura_obter_centro_x(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_x(figuraImp->cas) + caso_obter_largura(figuraImp->cas) / 2;
         case TIPO_CIRCULO:
             return circulo_obter_x(figuraImp->cir);
         case TIPO_HIDRANTE:
@@ -494,6 +505,8 @@ double figura_obter_centro_x(Figura figura) {
 double figura_obter_centro_y(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return caso_obter_y(figuraImp->cas) + caso_obter_altura(figuraImp->cas) / 2;
         case TIPO_CIRCULO:
             return circulo_obter_y(figuraImp->cir);
         case TIPO_HIDRANTE:

@@ -137,42 +137,6 @@ void quadra_definir_arredondamento_borda(Quadra quadra, double raio_borda) {
     retangulo_definir_arredondamento_borda(quadImp->ret, raio_borda);
 }
 
-double quadra_obter_casa_x(Lista lista_quadras, const char *cep) {
-    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
-        QuadraImp *quadra = (QuadraImp *) figura_obter_figura(lista_get_figura(i));
-        if (strcmp(cep, quadra_obter_id(quadra)) == 0)
-            return quadra_obter_x(quadra);
-    }
-    return -1;
-}
-
-double quadra_obter_casa_y(Lista lista_quadras, const char *cep) {
-    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
-        QuadraImp *quadra = (QuadraImp *) figura_obter_figura(lista_get_figura(i));
-        if (strcmp(cep, quadra_obter_id(quadra)) == 0)
-            return quadra_obter_y(quadra);
-    }
-    return -1;
-}
-
-double quadra_obter_casa_x_final(Lista lista_quadras, const char *cep) {
-    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
-        QuadraImp *quadra = (QuadraImp *) figura_obter_figura(lista_get_figura(i));
-        if (strcmp(cep, quadra_obter_id(quadra)) == 0)
-            return quadra_obter_x(quadra) + quadra_obter_largura(quadra);
-    }
-    return -1;
-}
-
-double quadra_obter_casa_y_final(Lista lista_quadras, const char *cep) {
-    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
-        QuadraImp *quadra = (QuadraImp *) figura_obter_figura(lista_get_figura(i));
-        if (strcmp(cep, quadra_obter_id(quadra)) == 0)
-            return quadra_obter_y(quadra) + quadra_obter_altura(quadra);
-    }
-    return -1;
-}
-
 // Libera a memória alocada por uma quadra.
 void quadra_destruir(Quadra quadra) {
     QuadraImp *quadImp = (QuadraImp *) quadra;

@@ -36,7 +36,7 @@
 // Cria o texto "sobrepoe" no centro de um retângulo.
 Figura criar_texto_sobreposicao(Figura contorno) {
     Texto aviso = texto_criar("", figura_obter_centro_x(contorno), figura_obter_centro_y(contorno),
-                              "None", "Black", "sobrepoe");
+                              "None", "Black", "sobrepoe", true);
 
     return figura_criar(aviso, TIPO_TEXTO);
 }
@@ -55,12 +55,12 @@ Figura *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
     // mais longe se encontra.
     retangulo_definir_largura(contorno,
                               max(figura_obter_x_fim(figura1), figura_obter_x_fim(figura2)) -
-                                  retangulo_obter_x(contorno) + 2 * MARGEM_CONTORNO);
+                                  retangulo_obter_x(contorno) + MARGEM_CONTORNO);
     // Altura do contorno é a distancia entre o y do contorno e a coordenada y onde o fim da figura
     // mais longe se encontra.
     retangulo_definir_altura(contorno,
                              max(figura_obter_y_fim(figura1), figura_obter_y_fim(figura2)) -
-                                 retangulo_obter_y(contorno) + 2 * MARGEM_CONTORNO);
+                                 retangulo_obter_y(contorno) + MARGEM_CONTORNO);
     return figura_criar(contorno, TIPO_RETANGULO);
 }
 
@@ -149,11 +149,8 @@ void alterar_cor(Lista lista, const char *linha, FILE *arquivo_log) {
         return;
     Figura fig = lista_get_figura(no);
 
-    const char *atual_corp = figura_obter_cor_preenchimento(fig);
-    const char *atual_corb = figura_obter_cor_borda(fig);
-
     fprintf(arquivo_log, "pnt %s %s %s\n", id, nova_corb, nova_corp);
-    fprintf(arquivo_log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
+    fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
 
     figura_definir_cor_borda(fig, nova_corb);
     figura_definir_cor_preenchimento(fig, nova_corp);
@@ -171,11 +168,9 @@ void alterar_cores(Lista lista, const char *linha, FILE *arquivo_log) {
     while (atual != NULL) {
         Figura fig = lista_get_figura(atual);
         const char *id_atual = figura_obter_id(fig);
-        const char *atual_corp = figura_obter_cor_preenchimento(fig);
-        const char *atual_corb = figura_obter_cor_borda(fig);
 
         fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
-        fprintf(arquivo_log, "corb: %s, corp: %s\n\n", atual_corb, atual_corp);
+        fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
 
         figura_definir_cor_borda(fig, nova_corb);
         figura_definir_cor_preenchimento(fig, nova_corp);
@@ -357,7 +352,7 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
     Figura nova_figura = figura_criar(linha_vertical, TIPO_LINHA);
     lista_insert_final(lista_formas, nova_figura);
 
-    Texto rotulo = texto_criar("", centro_x + 1, 0, "black", "black", id);
+    Texto rotulo = texto_criar("", centro_x + 1, 0, "black", "black", id, false);
     Figura texto_figura = figura_criar(rotulo, TIPO_TEXTO);
     lista_insert_final(lista_formas, texto_figura);
 }
@@ -435,7 +430,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
 
             Texto area_quadra =
                 texto_criar("", figura_obter_centro_x(figura), figura_obter_centro_y(figura),
-                            "black", "black", texto_area_figura);
+                            "black", "black", texto_area_figura, true);
             Figura fig_area_quadra = figura_criar(area_quadra, TIPO_TEXTO);
             lista_insert_final(lista_formas, fig_area_quadra);
 
@@ -452,7 +447,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
     // Converte o valor total da área para string
     snprintf(texto_area_total, 100, "%lf", area_total);
 
-    Texto area_linha = texto_criar("", x + 1, 0, "black", "black", texto_area_total);
+    Texto area_linha = texto_criar("", x + 1, 0, "black", "black", texto_area_total, false);
     Figura fig_area_linha = figura_criar(area_linha, TIPO_TEXTO);
     lista_insert_final(lista_formas, fig_area_linha);
 
@@ -465,27 +460,35 @@ void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_f
     int numero;
     char face;
     char cep[100];
-    sscanf(linha, "%*s %d %s %c %d", &k, cep, &face, &numero);
+    sscanf(linha, "soc %d %s %c %d", &k, cep, &face, &numero);
 
-    double x;
-    double y;
-    if (face == 'N') {
-        y = quadra_obter_casa_y_final(lista_quadras, cep);
-        x = quadra_obter_casa_x(lista_quadras, cep) + numero;
-    } else if (face == 'S') {
-        y = quadra_obter_casa_y(lista_quadras, cep);
-        x = quadra_obter_casa_x(lista_quadras, cep) + numero;
-    } else if (face == 'L') {
-        y = quadra_obter_casa_y(lista_quadras, cep) + numero;
-        x = quadra_obter_casa_x(lista_quadras, cep);
-    } else if (face == 'O') {
-        y = quadra_obter_casa_y(lista_quadras, cep) + numero;
-        x = quadra_obter_casa_x_final(lista_quadras, cep);
+    Figura quadra_buscada = NULL;
+    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
+        Figura quadra = lista_get_figura(i);
+        if (strcmp(cep, figura_obter_id(quadra)) == 0)
+            quadra_buscada = quadra;
+    }
+    if (quadra_buscada == NULL) {
+        LOG_ERROR(
+            "Não foi possível encontrar a quadra especificada pelo cep na lista de quadras: %s\n",
+            cep);
+        return;
     }
 
-    if (x == -1 || y == -1) {
-        LOG_ERROR("Não foi possível encontrar a quadra especificada pelo cep: %s\n", cep);
-        return;
+    double x = 0;
+    double y = 0;
+    if (face == 'N') {
+        y = figura_obter_y_fim(quadra_buscada);
+        x = figura_obter_x(quadra_buscada) + numero;
+    } else if (face == 'S') {
+        y = figura_obter_y(quadra_buscada);
+        x = figura_obter_x(quadra_buscada) + numero;
+    } else if (face == 'L') {
+        y = figura_obter_y(quadra_buscada) + numero;
+        x = figura_obter_x(quadra_buscada);
+    } else if (face == 'O') {
+        y = figura_obter_y(quadra_buscada) + numero;
+        x = figura_obter_x_fim(quadra_buscada);
     }
 
     // Desenhar o quadrado azul
@@ -494,20 +497,21 @@ void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_f
     nova_figura = figura_criar(desenho_quadrado, TIPO_RETANGULO);
     lista_insert_final(lista_formas, nova_figura);
 
-    shellSort(lista_postos, (lista_get_length(lista_postos) / 2), x, y);
+    shellSort(lista_postos, lista_get_length(lista_postos) / 2, x, y);
 
     No i = lista_get_first(lista_postos);
     for (int j = 0; j < k; j++) {
-        figura_obter_centro_x(figura_obter_figura(lista_get_figura(i)));
         Linha linha_posto = linha_criar(
             x, y, figura_obter_centro_x(figura_obter_figura(lista_get_figura(i))),
             figura_obter_centro_y(figura_obter_figura(lista_get_figura(i))), "black", "black");
         Figura fig_linha = figura_criar(linha_posto, TIPO_LINHA);
         lista_insert_final(lista_formas, fig_linha);
 
-        i = lista_get_next(i);
-
         posto_escrever_informacoes(arquivo_log, figura_obter_figura(lista_get_figura(i)));
+
+        i = lista_get_next(i);
+        if (i == NULL)
+            break;
     }
 }
 
@@ -619,11 +623,6 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
         }
     }
 
-    // Calcula a envoltória convexa.
-    Pilha pilha_pontos_envoltoria = graham_scan(lista_casos_filtrados);
-    if (pilha_pontos_envoltoria == NULL)
-        return;
-
     double habitantes = densidade_buscar_coordenada(lista_densidades, x, y);
     double incidencia = (total_de_casos / habitantes) * 100000;
     char categoria = '\0';
@@ -647,6 +646,14 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
         categoria = 'E';
         strcpy(cor_poligono, "#800080");
     }
+    // Escreve as informações no arquivo de log
+    fprintf(arquivo_log, "Total de casos: %d\n", total_de_casos);
+    fprintf(arquivo_log, "Categoria de incidência: %c\n", categoria);
+
+    // Calcula a envoltória convexa.
+    Pilha pilha_pontos_envoltoria = graham_scan(lista_casos_filtrados);
+    if (pilha_pontos_envoltoria == NULL)
+        return;
 
     // Aloca uma matriz para armazenar os pontos encontrados.
     double **pontos = malloc(pilha_get_tamanho(pilha_pontos_envoltoria) * sizeof(double *));
@@ -659,6 +666,7 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
         Figura fig = pilha_pop(pilha_pontos_envoltoria);
         pontos[i][0] = figura_obter_centro_x(fig);
         pontos[i][1] = figura_obter_centro_y(fig);
+        LOG_INFO("Ponto centroide x: %lf e y: %lf\n", pontos[i][0], pontos[i][1]);
         i++;
     }
 
@@ -666,19 +674,17 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
     Poligono pol = poligono_criar(pontos, i, "red", cor_poligono, 0.4);
     Figura poligono_figura = figura_criar(pol, TIPO_POLIGONO);
     lista_insert_final(lista_formas, poligono_figura);
+    // Escreve a área do polígono no arquivo de log.
+    fprintf(arquivo_log, "Área da envoltória convexa: %lf\n", poligono_calcular_area(pol));
 
     // Adiciona um posto de campanha caso necessário.
     if (categoria == 'E') {
         double x_centroide = poligono_calcular_x_centroide(pol);
         double y_centroide = poligono_calcular_y_centroide(pol);
+        LOG_INFO("Centroide elementos: %d, x: %lf e y: %lf\n", i, x_centroide, y_centroide);
         Figura centroide = figura_criar(posto_criar("", x_centroide, y_centroide), TIPO_POSTO);
         lista_insert_final(lista_postos, centroide);
     }
-
-    // Escreve as informações no arquivo de log
-    fprintf(arquivo_log, "Total de casos: %d\n", total_de_casos);
-    fprintf(arquivo_log, "Área da envoltória convexa: %lf\n", poligono_calcular_area(pol));
-    fprintf(arquivo_log, "Categoria de incidência: %c\n", categoria);
 
     // Libera a memória alocada.
     No atual = lista_get_first(lista_casos_filtrados);
@@ -694,13 +700,13 @@ void determinar_regiao_de_incidencia(Lista lista_formas, Lista lista_densidades,
 }
 
 void escrever_numero_casos_centro(Lista lista_formas, Caso caso) {
-    double largura = caso_obter_x(caso);
-    double altura = caso_obter_x(caso);
-    double x = caso_obter_x(caso) + largura / 2;
-    double y = caso_obter_y(caso) + altura / 2;
+    double largura = caso_obter_largura(caso);
+    double altura = caso_obter_altura(caso);
+    double x = caso_obter_x(caso) + (largura / 2);
+    double y = caso_obter_y(caso) + altura - 2;
     char conteudo[500];
     snprintf(conteudo, 500, "%d", caso_obter_casos(caso));
-    Texto numero_casos = texto_criar("", x + 1, y, "black", "black", conteudo);
+    Texto numero_casos = texto_criar("", x, y, "white", "white", conteudo, true);
     Figura fig_numero_casos = figura_criar(numero_casos, TIPO_TEXTO);
     lista_insert_final(lista_formas, fig_numero_casos);
 }
@@ -751,11 +757,11 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
         } else if (strcmp("car", comando) == 0) {
             retangulo_area_total_contida(lista_formas, lista_quadras, linha, arquivo_log);
         } else if (strcmp("cv", comando) == 0) {
-            Figura nova_figura = NULL;
             Caso novo_caso = caso_ler(linha, lista_quadras);
-            nova_figura = figura_criar(novo_caso, TIPO_CASO);
-            lista_insert_final(lista_casos, nova_figura);
-            escrever_numero_casos_centro(lista_formas, novo_caso);
+            if (novo_caso != NULL) {
+                escrever_numero_casos_centro(lista_formas, novo_caso);
+                lista_insert_final(lista_casos, figura_criar(novo_caso, TIPO_CASO));
+            }
         } else if (strcmp("soc", comando) == 0) {
             postos_mais_proximos(lista_postos, lista_quadras, lista_formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {

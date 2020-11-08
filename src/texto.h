@@ -1,6 +1,7 @@
 #ifndef TEXTO_H
 #define TEXTO_H
 
+#include <stdbool.h>
 #include <stdio.h>
 
 /*
@@ -15,7 +16,7 @@ A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20], const char conteudo[500]);
+                  const char cor_preenchimento[20], const char conteudo[500], bool centralizar);
 
 /*
 Cria e inicializa uma struct Texto a partir de um texto obtido no arquivo .geo.

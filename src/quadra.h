@@ -115,34 +115,6 @@ ser nulo.
 void quadra_definir_arredondamento_borda(Quadra quadra, double raio_borda);
 
 /*
-Obtém a coordenada x de uma quadra a partir de um cep.
-O cep não pode ser nulo e deve ser de uma quadra existente.
-Retorna o x de uma quadra.
-*/
-double quadra_obter_casa_x(Lista lista_quadras, const char *cep);
-
-/*
-Obtém a coordenada y de uma quadra a partir de um cep.
-O cep não pode ser nulo e deve ser de uma quadra existente.
-Retorna o y de uma quadra.
-*/
-double quadra_obter_casa_y(Lista lista_quadras, const char *cep);
-
-/*
-Obtém a coordenada x + largura de uma quadra a partir de um cep.
-O cep não pode ser nulo e deve ser de uma quadra existente.
-Retorna o x + largura de uma quadra.
-*/
-double quadra_obter_casa_x_final(Lista lista_quadras, const char *cep);
-
-/*
-Obtém a coordenada y + largura de uma quadra a partir de um cep.
-O cep não pode ser nulo e deve ser de uma quadra existente.
-Retorna o y + largura de uma quadra.
-*/
-double quadra_obter_casa_y_final(Lista lista_quadras, const char *cep);
-
-/*
 Libera a memória alocada por uma quadra.
 O parâmetro quadra não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado após isso!

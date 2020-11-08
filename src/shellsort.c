@@ -10,8 +10,8 @@
 // retorna a distância entre o morador de coordenada x,y e o posto armazenado em no1
 double get_distance(No no1, double x, double y) {
     Figura figura = lista_get_figura(no1);
-    double x_no = figura_obter_x_inicio(figura);
-    double y_no = figura_obter_y_inicio(figura);
+    double x_no = figura_obter_x(figura);
+    double y_no = figura_obter_y(figura);
 
     double cat1 = fabs(x - x_no);
     double cat2 = fabs(y - y_no);

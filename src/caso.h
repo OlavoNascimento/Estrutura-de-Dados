@@ -18,8 +18,8 @@ Cria e inicializa um struct Caso com os valores passados.
 As cores não podem ser nulas.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
-Caso caso_criar(double largura, double altura, double x, double y, const char cor_borda[20],
-                const char cor_preenchimento[20], int n);
+Caso caso_criar(int casos, double largura, double altura, double x, double y,
+                const char cor_borda[20], const char cor_preenchimento[20]);
 
 /*
 Cria e inicializa um struct Caso a partir de um texto obtido no arquivo .geo.
@@ -27,12 +27,6 @@ O parâmetro linha não pode ser nulo.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Caso caso_ler(const char* linha, Lista lista_quadras);
-
-/*
-Escreve todas as informações presentes em um caso em um arquivo.
-Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
-*/
-void caso_escrever_informacoes(FILE* arquivo, Caso caso);
 
 /*
 Escreve o código svg necessário para representar um caso em um arquivo.
