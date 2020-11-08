@@ -18,6 +18,7 @@
 #include "pilha.h"
 #include "poligono.h"
 #include "posto.h"
+#include "quadra.h"
 #include "quicksort.h"
 #include "retangulo.h"
 #include "shellsort.h"
@@ -484,7 +485,7 @@ void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_f
 
     if (x == -1 || y == -1) {
         LOG_ERROR("Não foi possível encontrar a quadra especificada pelo cep: %s\n", cep);
-        return NULL;
+        return;
     }
 
     // Desenhar o quadrado azul
@@ -751,9 +752,10 @@ void ler_qry(const char *caminho_qry, const char *caminho_log, Lista lista_forma
             retangulo_area_total_contida(lista_formas, lista_quadras, linha, arquivo_log);
         } else if (strcmp("cv", comando) == 0) {
             Figura nova_figura = NULL;
-            nova_figura = figura_criar(caso_ler(linha, lista_casos), TIPO_CASO);
+            Caso novo_caso = caso_ler(linha, lista_quadras);
+            nova_figura = figura_criar(novo_caso, TIPO_CASO);
             lista_insert_final(lista_casos, nova_figura);
-            escrever_numero_casos_centro(lista_formas, nova_figura);
+            escrever_numero_casos_centro(lista_formas, novo_caso);
         } else if (strcmp("soc", comando) == 0) {
             postos_mais_proximos(lista_postos, lista_quadras, lista_formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {

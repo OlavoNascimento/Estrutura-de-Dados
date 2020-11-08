@@ -17,7 +17,7 @@ typedef struct {
 
 // Cria e inicializa um struct CasoImp com os valores passados.
 Caso caso_criar(double largura, double altura, double x, double y, const char cor_borda[20],
-                const char cor_preenchimento[20]) {
+                const char cor_preenchimento[20], int n) {
     if (cor_borda == NULL) {
         LOG_ERROR("Não é possível criar um caso com cor de borda NULL!\n");
         return NULL;
@@ -30,6 +30,7 @@ Caso caso_criar(double largura, double altura, double x, double y, const char co
     // TODO definir como será o id dos casos
     char id[6] = "caso";  // apenas simbólico
     casoImp->ret = retangulo_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
+    casoImp->nCasos = n;
     return casoImp;
 }
 
@@ -65,8 +66,7 @@ Caso caso_ler(const char *linha, Lista lista_quadras) {
         LOG_ERROR("Não foi possível encontrar a quadra especificada pelo cep: %s\n", cep);
         return NULL;
     }
-
-    return caso_criar(largura, altura, x, y, cor_borda, cor_preenchimento);
+    return caso_criar(largura, altura, x, y, cor_borda, cor_preenchimento, n);
 }
 
 // Escreve as informações de um caso.

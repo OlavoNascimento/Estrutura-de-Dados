@@ -252,6 +252,8 @@ const char *figura_obter_string_tipo(Figura figura) {
 void *figura_obter_figura(Figura figura) {
     FiguraImp *figuraImp = (FiguraImp *) figura;
     switch (figuraImp->tipo) {
+        case TIPO_CASO:
+            return figuraImp->cas;
         case TIPO_CIRCULO:
             return figuraImp->cir;
         case TIPO_DENSIDADE:

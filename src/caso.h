@@ -19,7 +19,7 @@ As cores não podem ser nulas.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Caso caso_criar(double largura, double altura, double x, double y, const char cor_borda[20],
-                const char cor_preenchimento[20]);
+                const char cor_preenchimento[20], int n);
 
 /*
 Cria e inicializa um struct Caso a partir de um texto obtido no arquivo .geo.
