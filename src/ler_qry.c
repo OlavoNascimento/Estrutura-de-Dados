@@ -497,6 +497,8 @@ void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_f
     nova_figura = figura_criar(desenho_quadrado, TIPO_RETANGULO);
     lista_insert_final(lista_formas, nova_figura);
 
+    if (lista_get_length(lista_postos) == 0)
+        return;
     shellSort(lista_postos, lista_get_length(lista_postos) / 2, x, y);
 
     No i = lista_get_first(lista_postos);

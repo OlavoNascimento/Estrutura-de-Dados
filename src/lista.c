@@ -184,11 +184,9 @@ No lista_get_no(Lista lista, const char id[100]) {
 
 No lista_get_first(Lista lista) {
     ListaImp *lista_aux = (ListaImp *) lista;
-    if (lista_aux->tamanho == 0) {
+    if (lista_aux->tamanho == 0)
         return NULL;
-    } else {
-        return lista_aux->primeiro;
-    }
+    return lista_aux->primeiro;
 }
 
 No lista_get_last(Lista lista) {

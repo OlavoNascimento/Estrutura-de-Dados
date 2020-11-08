@@ -63,6 +63,8 @@ void shellSort(Lista lista_postos, int H, double x, double y) {
         insertionSort(lista_postos, x, y);
     } else {
         No noI = lista_get_first(lista_postos);
+        if (noI == NULL)
+            return;
         No noH = noI;
         double distanceI;
         double distanceH;
