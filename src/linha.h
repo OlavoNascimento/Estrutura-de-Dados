@@ -1,6 +1,7 @@
 #ifndef LINHA_H
 #define LINHA_H
 
+#include <stdbool.h>
 #include <stdio.h>
 
 /*
@@ -16,7 +17,7 @@ O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
-                  const char cor_preenchimento[20]);
+                  const char cor_preenchimento[20], bool tracejado);
 
 /*
 Escreve o código svg necessário para representar uma linha em um arquivo.

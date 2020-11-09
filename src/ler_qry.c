@@ -109,7 +109,7 @@ Figura criar_ligacao_ponto_figura(Circulo ponto, Figura figura) {
     Linha ligacao =
         linha_criar(circulo_obter_x(ponto), circulo_obter_y(ponto), figura_obter_centro_x(figura),
                     figura_obter_centro_y(figura), circulo_obter_cor_borda(ponto),
-                    circulo_obter_cor_preenchimento(ponto));
+                    circulo_obter_cor_preenchimento(ponto), false);
     return figura_criar(ligacao, TIPO_LINHA);
 }
 
@@ -348,7 +348,7 @@ void remove_equipamento_urbano(const char *linha, Lista *lista_quadras, Lista *l
             break;
     }
 
-    Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black", "black");
+    Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black", "black", false);
     Figura nova_figura = figura_criar(linha_vertical, TIPO_LINHA);
     lista_insert_final(lista_formas, nova_figura);
 
@@ -439,7 +439,7 @@ void retangulo_area_total_contida(Lista lista_formas, Lista lista_quadras, const
         atual = lista_get_next(atual);
     }
 
-    Linha linha_vertical = linha_criar(x, y, x, 0, "black", "black");
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black", "black", false);
     Figura fig_linha = figura_criar(linha_vertical, TIPO_LINHA);
     lista_insert_final(lista_formas, fig_linha);
 
@@ -482,7 +482,7 @@ void postos_mais_proximos(Lista lista_postos, Lista lista_quadras, Lista lista_f
         Figura posto = lista_get_figura(i);
         Linha linha_posto = linha_criar(
             figura_obter_centro_x(fig_caso), figura_obter_centro_y(fig_caso),
-            figura_obter_centro_x(posto), figura_obter_centro_y(posto), "black", "black");
+            figura_obter_centro_x(posto), figura_obter_centro_y(posto), "black", "black", true);
         Figura fig_linha = figura_criar(linha_posto, TIPO_LINHA);
         lista_insert_final(lista_formas, fig_linha);
 
