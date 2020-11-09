@@ -148,16 +148,16 @@ Nenhum dos parâmetros podem ser nulos.
 void retangulo_definir_espessura_borda(Retangulo retangulo, const char *espessura_borda);
 
 /*
-Obtém o espassamento da borda de um retângulo.
+Obtém o espacamento da borda de um retângulo.
 O parâmetro retangulo não pode ser nulo.
-Retorna o espassamento da borda de um retângulo.
+Retorna o espacamento da borda de um retângulo.
 */
-int retangulo_obter_espassamento_borda(Retangulo retangulo);
+int retangulo_obter_espacamento_borda(Retangulo retangulo);
 /*
-Define o espassamento da borda de um retângulo.
+Define o espacamento da borda de um retângulo.
 Nenhum dos parâmetros podem ser nulos.
 */
-void retangulo_definir_espassamento_borda(Retangulo retangulo, int espassamento_borda);
+void retangulo_definir_espacamento_borda(Retangulo retangulo, int espacamento_borda);
 
 /*
 Define o arredondamento da borda de um retângulo.

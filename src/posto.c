@@ -7,6 +7,7 @@
 
 #include "circulo.h"
 #include "logging.h"
+#include "texto.h"
 
 typedef struct {
     Circulo circ;
@@ -15,7 +16,7 @@ typedef struct {
 // Cria e inicializa um struct PostoImp com os valores passados.
 Posto posto_criar(double x, double y) {
     PostoImp *posImp = malloc(sizeof(PostoImp));
-    posImp->circ = circulo_criar("", 12, x, y, "blue", "green");
+    posImp->circ = circulo_criar("", 10, x, y, "steelblue", "green");
     return posImp;
 }
 
@@ -37,6 +38,11 @@ const char *posto_obter_id(Posto posto) {
 void posto_escrever_svg(FILE *arquivo, Posto posto) {
     PostoImp *posImp = (PostoImp *) posto;
     circulo_escrever_svg(arquivo, posImp->circ);
+    double x = circulo_obter_x(posImp->circ);
+    double y = circulo_obter_y(posImp->circ) + 4;
+    Texto texto_posto = texto_criar("", x, y, "none", "white", "PC", true);
+    texto_escrever_svg(arquivo, texto_posto);
+    texto_destruir(texto_posto);
 }
 
 // Retorna o raio de um posto. Usado apenas para cálculo interno, já que o posto é considerado

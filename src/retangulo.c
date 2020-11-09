@@ -17,7 +17,7 @@ typedef struct {
     char cor_preenchimento[20];
     double rx;
     char espessura_borda[20];
-    int espassamento_borda;
+    int espacamento_borda;
 } RetanguloImp;
 
 // Cria e inicializa um struct Retangulo com os valores passados.
@@ -44,7 +44,7 @@ Retangulo retangulo_criar(const char id[100], double largura, double altura, dou
     strcpy(retImp->cor_borda, cor_borda);
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
     retImp->rx = 0;
-    retImp->espassamento_borda = 0;
+    retImp->espacamento_borda = 0;
     strcpy(retImp->espessura_borda, "1px");
     return retImp;
 }
@@ -88,8 +88,8 @@ void retangulo_escrever_svg(FILE *arquivo, Retangulo ret) {
             retImp->cor_preenchimento, retImp->rx, retImp->espessura_borda);
 
     // Caso o retângulo deva ser tracejado
-    if (retImp->espassamento_borda != 0)
-        fprintf(arquivo, " style='stroke-dasharray: %d'", retImp->espassamento_borda);
+    if (retImp->espacamento_borda != 0)
+        fprintf(arquivo, " style='stroke-dasharray: %d'", retImp->espacamento_borda);
     fprintf(arquivo, "/>\n");
 }
 
@@ -227,16 +227,16 @@ void retangulo_definir_espessura_borda(Retangulo ret, const char *espessura_bord
     strcpy(retImp->espessura_borda, espessura_borda);
 }
 
-// Retorna o espassamento da borda de retângulo.
-int retangulo_obter_espassamento_borda(Retangulo ret) {
+// Retorna o espacamento da borda de retângulo.
+int retangulo_obter_espacamento_borda(Retangulo ret) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    return retImp->espassamento_borda;
+    return retImp->espacamento_borda;
 }
 
-// Define o espassamento da borda de retângulo.
-void retangulo_definir_espassamento_borda(Retangulo ret, int espassamento_borda) {
+// Define o espacamento da borda de retângulo.
+void retangulo_definir_espacamento_borda(Retangulo ret, int espacamento_borda) {
     RetanguloImp *retImp = (RetanguloImp *) ret;
-    retImp->espassamento_borda = espassamento_borda;
+    retImp->espacamento_borda = espacamento_borda;
 }
 
 // Define o arredondamento da borda de retângulo.

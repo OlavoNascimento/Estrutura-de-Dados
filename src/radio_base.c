@@ -7,6 +7,7 @@
 
 #include "circulo.h"
 #include "logging.h"
+#include "texto.h"
 
 typedef struct {
     Circulo circ;
@@ -59,6 +60,11 @@ void radio_escrever_informacoes(FILE *arquivo, Radio radio) {
 void radio_escrever_svg(FILE *arquivo, Radio radio) {
     RadioBaseImp *radImp = (RadioBaseImp *) radio;
     circulo_escrever_svg(arquivo, radImp->circ);
+    double x = circulo_obter_x(radImp->circ);
+    double y = circulo_obter_y(radImp->circ) + 4;
+    Texto texto_radio_base = texto_criar("", x, y, "none", "white", "RB", true);
+    texto_escrever_svg(arquivo, texto_radio_base);
+    texto_destruir(texto_radio_base);
 }
 
 // Retorna a coordenada y de uma radio base. A radio base é considerada apenas um ponto.

@@ -69,9 +69,9 @@ void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao,
 
     // Escreve todas as listas no arquivo temporário
     escrever_lista(lista_quadras, arquivo_tmp, exibicao);
-    escrever_lista(lista_hidrantes, arquivo_tmp, exibicao);
-    escrever_lista(lista_radios, arquivo_tmp, exibicao);
     escrever_lista(lista_semaforos, arquivo_tmp, exibicao);
+    escrever_lista(lista_radios, arquivo_tmp, exibicao);
+    escrever_lista(lista_hidrantes, arquivo_tmp, exibicao);
     escrever_lista(lista_casos, arquivo_tmp, exibicao);
     escrever_lista(lista_postos, arquivo_tmp, exibicao);
     escrever_lista(lista_formas, arquivo_tmp, exibicao);

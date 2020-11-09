@@ -68,9 +68,7 @@ Figura pilha_peek(Pilha pilha) {
 
 void pilha_destruir(Pilha pilha) {
     PilhaImp *pilhaAux = (PilhaImp *) pilha;
-    for (No *i = pilhaAux->topo; i != NULL; i = i->proximo) {
-        free(i->figura);
+    for (No *i = pilhaAux->topo; i != NULL; i = i->proximo)
         free(i);
-    }
     free(pilha);
 }

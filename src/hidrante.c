@@ -7,6 +7,7 @@
 
 #include "circulo.h"
 #include "logging.h"
+#include "texto.h"
 
 typedef struct {
     Circulo circ;
@@ -60,6 +61,11 @@ void hidrante_escrever_informacoes(FILE *arquivo, Hidrante hidrante) {
 void hidrante_escrever_svg(FILE *arquivo, Hidrante hidrante) {
     HidranteImp *hidImp = (HidranteImp *) hidrante;
     circulo_escrever_svg(arquivo, hidImp->circ);
+    double x = circulo_obter_x(hidImp->circ);
+    double y = circulo_obter_y(hidImp->circ) + 4;
+    Texto texto_hidrante = texto_criar("", x, y, "none", "white", "H", true);
+    texto_escrever_svg(arquivo, texto_hidrante);
+    texto_destruir(texto_hidrante);
 }
 
 // Retorna o raio de um hidrante. Usado apenas para cálculo interno, já que o hidrante é considerado

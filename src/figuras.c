@@ -100,7 +100,7 @@ void figura_escrever_informacoes(FILE *arquivo, Figura figura) {
         return;
     }
     FiguraImp *figuraImp = (FiguraImp *) figura;
-    fprintf(arquivo, "tipo: %s, ", figura_obter_string_tipo(figura));
+    fprintf(arquivo, "Tipo: %s, ", figura_obter_string_tipo(figura));
     switch (figuraImp->tipo) {
         case TIPO_CIRCULO:
             circulo_escrever_informacoes(arquivo, figuraImp->cir);

@@ -49,15 +49,15 @@ Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_
     double y = 0;
     if (face == 'N') {
         y = figura_obter_y_fim(quadra_buscada) - altura;
-        x = figura_obter_x(quadra_buscada) + numero;
+        x = figura_obter_x(quadra_buscada) - largura / 2 + numero;
     } else if (face == 'S') {
         y = figura_obter_y(quadra_buscada);
-        x = figura_obter_x(quadra_buscada) + numero;
+        x = figura_obter_x(quadra_buscada) - largura / 2 + numero;
     } else if (face == 'L') {
-        y = figura_obter_y(quadra_buscada) + numero;
+        y = figura_obter_y(quadra_buscada) - altura / 2 + numero;
         x = figura_obter_x(quadra_buscada);
     } else if (face == 'O') {
-        y = figura_obter_y(quadra_buscada) + numero;
+        y = figura_obter_y(quadra_buscada) - altura / 2 + numero;
         x = figura_obter_x_fim(quadra_buscada) - largura;
     }
 
