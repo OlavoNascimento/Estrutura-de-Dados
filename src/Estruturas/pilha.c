@@ -3,7 +3,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "logging.h"
+#include "../Interfaces/figura.h"
+#include "../Utils/logging.h"
 
 typedef struct N {
     Figura figura;
@@ -15,10 +16,10 @@ typedef struct {
     No *topo;
 } PilhaImp;
 
-Pilha pilha_create() {
+Pilha pilha_criar() {
     PilhaImp *pilha = (PilhaImp *) malloc(sizeof(PilhaImp));
     if (pilha == NULL) {
-        LOG_ERROR("Erro ao alocar espaço para a pilha!\n");
+        LOG_ERRO("Erro ao alocar espaço para a pilha!\n");
         return NULL;
     }
     pilha->topo = NULL;
@@ -26,17 +27,17 @@ Pilha pilha_create() {
     return pilha;
 }
 
-bool pilha_is_empty(Pilha pilha) {
+bool pilha_esta_vazia(Pilha pilha) {
     PilhaImp *pilhaAux = (PilhaImp *) pilha;
     return pilhaAux->topo == NULL;
 }
 
-int pilha_get_tamanho(Pilha pilha) {
+int pilha_obter_tamanho(Pilha pilha) {
     PilhaImp *pilhaAux = (PilhaImp *) pilha;
     return pilhaAux->tamanho;
 }
 
-void pilha_push(Pilha pilha, Figura figura) {
+void pilha_inserir(Pilha pilha, Figura figura) {
     PilhaImp *pilhaAux = (PilhaImp *) pilha;
     No *novo_no = malloc(sizeof(No));
     novo_no->figura = figura;
@@ -45,9 +46,9 @@ void pilha_push(Pilha pilha, Figura figura) {
     pilhaAux->tamanho++;
 }
 
-Figura pilha_pop(Pilha pilha) {
+Figura pilha_remover(Pilha pilha) {
     PilhaImp *pilhaAux = (PilhaImp *) pilha;
-    if (pilha_is_empty(pilha))
+    if (pilha_esta_vazia(pilha))
         return NULL;
 
     Figura fig = pilhaAux->topo->figura;
@@ -59,9 +60,9 @@ Figura pilha_pop(Pilha pilha) {
     return fig;
 }
 
-Figura pilha_peek(Pilha pilha) {
+Figura pilha_obter_topo(Pilha pilha) {
     PilhaImp *pilhaAux = (PilhaImp *) pilha;
-    if (pilha_is_empty(pilha))
+    if (pilha_esta_vazia(pilha))
         return NULL;
     return pilhaAux->topo->figura;
 }
