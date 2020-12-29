@@ -10,7 +10,7 @@ CFLAGS = -fstack-protector-all -std=c99 -W -Wall
 LDFLAGS = -lm
 
 # Recebe todos os arquivos .c
-SOURCES = $(wildcard *.c)
+SOURCES = $(wildcard *.c Arquivos/*.c Estruturas/*.c Interfaces/*.c Objetos/*/*.c Ordenação/*.c Utils/*.c)
 # Substitui a extensão dos arquivos .c para .o
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -26,8 +26,7 @@ $(EXECUTABLE): $(OBJECTS)
 	@echo "Criando executável..."
 	$(CC) -o $@ $(OBJECTS) $(LDFLAGS)
 
-# Específica que cada arquivo .o deve ser gerado a partir
-# de seu correspondente .c
+# Específica que cada arquivo .o deve ser gerado a partir de seu correspondente .c
 %.o: %.c
 # $@ é o alvo atual (arquivo .o)
 # $^ representa a dependência atual (arquivo .c)
@@ -35,5 +34,5 @@ $(EXECUTABLE): $(OBJECTS)
 	gcc $(CFLAGS) -I . -c -o $@ $^
 
 clean:
-	rm -f *.o
+	rm -f *.o Arquivos/*.o Estruturas/*.o Interfaces/*.o Objetos/*/*.o Ordenação/*.o Utils/*.o
 
