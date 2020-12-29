@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "figuras.h"
-#include "logging.h"
+#include "../Interfaces/figura.h"
+#include "../Utils/logging.h"
 
 typedef struct N {
     Figura figura;
@@ -19,10 +19,10 @@ typedef struct {
     NoImp *ultimo;
 } ListaImp;
 
-Lista lista_create() {
+Lista lista_criar() {
     ListaImp *lista = (ListaImp *) malloc(sizeof(ListaImp));
     if (lista == NULL) {
-        LOG_ERROR("Erro ao alocar espaço para a lista!\n");
+        LOG_ERRO("Erro ao alocar espaço para uma nova lista!\n");
         return NULL;
     }
 
@@ -32,12 +32,17 @@ Lista lista_create() {
     return lista;
 }
 
-int lista_get_length(Lista lista) {
+int lista_obter_tamanho(Lista lista) {
     ListaImp *listaAux = (ListaImp *) lista;
     return listaAux->tamanho;
 }
 
-No lista_insert_final(Lista lista, Figura figura) {
+No lista_inserir_final(Lista lista, Figura figura) {
+    if (figura == NULL) {
+        LOG_ERRO("Figura nula passada para lista_inserir_final!\n");
+        return NULL;
+    }
+
     ListaImp *listaAux = (ListaImp *) lista;
     NoImp *nodeAux;
     NoImp *nodeInsert = (NoImp *) malloc(sizeof(NoImp));
@@ -58,47 +63,13 @@ No lista_insert_final(Lista lista, Figura figura) {
     return nodeInsert;
 }
 
-No lista_insert_after(Lista lista, Figura figura, No p) {
+No lista_inserir_antes(Lista lista, Figura figura, No p) {
     if (p == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_insert_after!\n");
+        LOG_ERRO("Nó nulo passado para lista_inserir_antes!\n");
         return NULL;
     }
-
-    ListaImp *lista_aux = (ListaImp *) lista;
-    NoImp *node_aux;
-    NoImp *node_proximo = NULL;
-    NoImp *node_insert = (NoImp *) malloc(sizeof(NoImp));
-    int tam_aux = lista_aux->tamanho;
-
-    node_insert->figura = figura;
-    node_aux = p;
-
-    if (node_aux == lista_aux->ultimo) {  // caso seja inserido depois do último
-        node_aux->proximo = node_insert;
-        lista_aux->ultimo = node_insert;
-
-        node_insert->anterior = node_aux;
-        node_insert->proximo = NULL;
-    } else {
-        node_proximo = node_aux->proximo;
-        node_aux->proximo = node_insert;
-        node_proximo->anterior = node_insert;
-
-        node_insert->proximo = node_proximo;
-        node_insert->anterior = node_aux;
-    }
-    if (tam_aux == lista_aux->tamanho) {
-        LOG_ERROR("Erro ao inserir elemento (insert_after)\n");
-        return NULL;
-    }
-    lista_aux->tamanho++;
-
-    return node_insert;
-}
-
-No lista_insert_before(Lista lista, Figura figura, No p) {
-    if (p == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_insert_before!\n");
+    if (figura == NULL) {
+        LOG_ERRO("Figura nula passada para lista_inserir_antes!\n");
         return NULL;
     }
 
@@ -126,7 +97,7 @@ No lista_insert_before(Lista lista, Figura figura, No p) {
         node_insert->anterior = node_anterior;
     }
     if (tam_aux == lista_aux->tamanho) {
-        LOG_ERROR("Erro ao inserir elemento (insert_before)!\n");
+        LOG_ERRO("Erro ao inserir elemento (lista_inserir_antes)!\n");
         return NULL;
     }
     lista_aux->tamanho++;
@@ -134,26 +105,67 @@ No lista_insert_before(Lista lista, Figura figura, No p) {
     return node_insert;
 }
 
-void lista_remove_no(Lista lista, No no_selecionado) {
-    if (no_selecionado == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_insert_before!\n");
-        return;
+No lista_inserir_depois(Lista lista, Figura figura, No p) {
+    if (p == NULL) {
+        LOG_ERRO("Nó nulo passado para lista_inserir_depois!\n");
+        return NULL;
+    }
+    if (figura == NULL) {
+        LOG_ERRO("Figura nula passada para lista_inserir_depois!\n");
+        return NULL;
     }
 
+    ListaImp *lista_aux = (ListaImp *) lista;
+    NoImp *node_aux;
+    NoImp *node_proximo = NULL;
+    NoImp *node_insert = (NoImp *) malloc(sizeof(NoImp));
+    int tam_aux = lista_aux->tamanho;
+
+    node_insert->figura = figura;
+    node_aux = p;
+
+    if (node_aux == lista_aux->ultimo) {  // Caso seja inserido depois do último.
+        node_aux->proximo = node_insert;
+        lista_aux->ultimo = node_insert;
+
+        node_insert->anterior = node_aux;
+        node_insert->proximo = NULL;
+    } else {
+        node_proximo = node_aux->proximo;
+        node_aux->proximo = node_insert;
+        node_proximo->anterior = node_insert;
+
+        node_insert->proximo = node_proximo;
+        node_insert->anterior = node_aux;
+    }
+    if (tam_aux == lista_aux->tamanho) {
+        LOG_ERRO("Erro ao inserir elemento (lista_inserir_depois)\n");
+        return NULL;
+    }
+    lista_aux->tamanho++;
+
+    return node_insert;
+}
+
+void lista_remover(Lista lista, No no_selecionado) {
+    if (no_selecionado == NULL) {
+        LOG_ERRO("Nó nulo passado para lista_remover!\n");
+        return;
+    }
     ListaImp *lista_auxiliar = (ListaImp *) lista;
     NoImp *no_auxiliar = (NoImp *) no_selecionado;
     NoImp *no_anterior = NULL;
     NoImp *no_proximo = NULL;
 
-    if (no_auxiliar == lista_auxiliar->primeiro) {  // se for o primeiro elemento da lista
+    if (no_auxiliar == lista_auxiliar->primeiro) {  // Se for o primeiro elemento da lista.
         no_proximo = no_auxiliar->proximo;
         lista_auxiliar->primeiro = no_proximo;
         no_proximo->anterior = NULL;
-    } else if (no_auxiliar == lista_auxiliar->ultimo) {  // se for o último elemento da lista
+    } else if (no_auxiliar == lista_auxiliar->ultimo) {  // Se for o último elemento da lista.
         no_anterior = no_auxiliar->anterior;
         lista_auxiliar->ultimo = no_anterior;
         no_anterior->proximo = NULL;
-    } else {  // se estiver NoImp meio da lista
+    } else {  // Se estiver no meio da lista.
         no_anterior = no_auxiliar->anterior;
         no_proximo = no_auxiliar->proximo;
 
@@ -166,7 +178,7 @@ void lista_remove_no(Lista lista, No no_selecionado) {
     lista_auxiliar->tamanho--;
 }
 
-No lista_get_no(Lista lista, const char id[100]) {
+No lista_buscar(Lista lista, const char id[100]) {
     ListaImp *lista_auxiliar = (ListaImp *) lista;
     NoImp *no_auxiliar = lista_auxiliar->primeiro;
 
@@ -182,14 +194,14 @@ No lista_get_no(Lista lista, const char id[100]) {
     return NULL;
 }
 
-No lista_get_first(Lista lista) {
+No lista_obter_primeiro(Lista lista) {
     ListaImp *lista_aux = (ListaImp *) lista;
     if (lista_aux->tamanho == 0)
         return NULL;
     return lista_aux->primeiro;
 }
 
-No lista_get_last(Lista lista) {
+No lista_obter_ultimo(Lista lista) {
     ListaImp *lista_aux = (ListaImp *) lista;
     if (lista_aux->tamanho == 0) {
         return NULL;
@@ -197,22 +209,22 @@ No lista_get_last(Lista lista) {
     return lista_aux->ultimo;
 }
 
-Figura lista_get_figura(No p) {
+Figura lista_obter_figura(No p) {
     if (p == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_get_figura!\n");
+        LOG_ERRO("Nó nulo passado para lista_obter_figura!\n");
         return NULL;
     }
     NoImp *node_auxiliar = (NoImp *) p;
     return node_auxiliar->figura;
 }
 
-void lista_set_figura(No p, Figura figura) {
+void lista_definir_figura(No p, Figura figura) {
     if (p == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_set_figura!\n");
+        LOG_ERRO("Nó nulo passado para lista_definir_figura!\n");
         return;
     }
     if (figura == NULL) {
-        LOG_ERROR("Figura nula passada para lista_set_figura!\n");
+        LOG_ERRO("Figura nula passada para lista_definir_figura!\n");
         return;
     }
 
@@ -220,18 +232,18 @@ void lista_set_figura(No p, Figura figura) {
     no_auxiliar->figura = figura;
 }
 
-No lista_get_next(No p) {
+No lista_obter_proximo(No p) {
     if (p == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_get_next!\n");
+        LOG_ERRO("Nó nulo passado para lista_obter_proximo!\n");
         return NULL;
     }
     NoImp *node_aux = (NoImp *) p;
     return node_aux->proximo;
 }
 
-No lista_get_previous(No p) {
+No lista_obter_anterior(No p) {
     if (p == NULL) {
-        LOG_ERROR("Nó nulo passado para lista_get_previous!\n");
+        LOG_ERRO("Nó nulo passado para lista_obter_anterior!\n");
         return NULL;
     }
     NoImp *node_aux = (NoImp *) p;
@@ -240,12 +252,12 @@ No lista_get_previous(No p) {
 
 // Troca as figuras armazenadas em dois nós.
 void lista_trocar_figuras(No no1, No no2) {
-    Figura temp = lista_get_figura(no1);
-    lista_set_figura(no1, lista_get_figura(no2));
-    lista_set_figura(no2, temp);
+    Figura temp = lista_obter_figura(no1);
+    lista_definir_figura(no1, lista_obter_figura(no2));
+    lista_definir_figura(no2, temp);
 }
 
-void lista_libera_lista(Lista lista) {
+void lista_destruir(Lista lista) {
     ListaImp *lista_aux = (ListaImp *) lista;
     NoImp *node_atual = lista_aux->primeiro;
     NoImp *node_proximo;
