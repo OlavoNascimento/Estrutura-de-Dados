@@ -1,22 +1,22 @@
-#include "ler_geo.h"
+#include "descricao.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "circulo.h"
-#include "densidade.h"
-#include "figuras.h"
-#include "hidrante.h"
-#include "linha.h"
-#include "lista.h"
-#include "logging.h"
-#include "posto.h"
-#include "quadra.h"
-#include "radio_base.h"
-#include "retangulo.h"
-#include "semaforo.h"
-#include "texto.h"
+#include "../Estruturas/lista.h"
+#include "../Interfaces/figura.h"
+#include "../Objetos/EquipamentosUrbanos/hidrante.h"
+#include "../Objetos/EquipamentosUrbanos/posto.h"
+#include "../Objetos/EquipamentosUrbanos/quadra.h"
+#include "../Objetos/EquipamentosUrbanos/radio.h"
+#include "../Objetos/EquipamentosUrbanos/semaforo.h"
+#include "../Objetos/Formas/circulo.h"
+#include "../Objetos/Formas/linha.h"
+#include "../Objetos/Formas/retangulo.h"
+#include "../Objetos/Outros/densidade.h"
+#include "../Objetos/Outros/texto.h"
+#include "../Utils/logging.h"
 
 // Tamanho maxímo de um comando do arquivo de descrição.
 #define LINHA_MAX 300
@@ -80,16 +80,15 @@ typedef struct {
 
 // Inicializa os valores máximo de cada tipo de figura inicialmente como 1000.
 NumerosMaximos criar_maximos() {
-    NumerosMaximos propMax;
-    propMax.lista_max_bases = 1000;
-    propMax.lista_max_figuras = 1000;
-    propMax.lista_max_hidrantes = 1000;
-    propMax.lista_max_quadras = 1000;
-    propMax.lista_max_semaforos = 1000;
+    NumerosMaximos propMax = {.lista_max_bases = 1000,
+                              .lista_max_figuras = 1000,
+                              .lista_max_hidrantes = 1000,
+                              .lista_max_quadras = 1000,
+                              .lista_max_semaforos = 1000};
     return propMax;
 }
 
-// Inicializa as propriedades de cada tipo de figura inicialmente como vazias.
+// Inicializa as propriedades de cada tipo de figura.
 PropriedadesFiguras criar_propriedades() {
     PropriedadesFiguras prop;
     // Inicializa todas as propriedades como vazias (0 para int e NULL para char[]).
@@ -109,12 +108,12 @@ void definir_max_figuras(const char *linha, NumerosMaximos *propMax) {
 }
 
 // Cria uma figura contendo um círculo com base em uma linha e as propriedades definidas.
-Figura ler_circulo(const char *linha, PropriedadesCirculos prop) {
+Circulo ler_circulo(const char *linha, PropriedadesCirculos prop) {
     Circulo cir = circulo_ler(linha);
     if (prop.definido) {
         circulo_definir_espessura_borda(cir, prop.espessura_borda);
     }
-    return figura_criar(cir, TIPO_CIRCULO);
+    return cir;
 }
 
 // Define as propriedades que devem ser aplicadas a todos os círculos com base em uma linha.
@@ -124,14 +123,14 @@ void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop
 }
 
 // Cria uma figura contendo um hidrante com base em uma linha e as propriedades definidas.
-Figura ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
+Hidrante ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
     Hidrante hid = hidrante_ler(linha);
     if (prop.definido) {
         hidrante_definir_espessura_borda(hid, prop.espessura_borda);
         hidrante_definir_cor_borda(hid, prop.cor_borda);
         hidrante_definir_cor_preenchimento(hid, prop.cor_preenchimento);
     }
-    return figura_criar(hid, TIPO_HIDRANTE);
+    return hid;
 }
 
 // Define as propriedades que devem ser aplicadas a todos os hidrantes com base em uma linha.
@@ -141,14 +140,14 @@ void definir_propriedades_hidrantes(const char *linha, PropriedadesHidrantes *pr
 }
 
 // Cria uma figura contendo uma quadra com base em uma linha e as propriedades definidas.
-Figura ler_quadra(const char *linha, PropriedadesQuadras prop) {
+Quadra ler_quadra(const char *linha, PropriedadesQuadras prop) {
     Quadra qua = quadra_ler(linha);
     if (prop.definido) {
         quadra_definir_espessura_borda(qua, prop.espessura_borda);
         quadra_definir_cor_borda(qua, prop.cor_borda);
         quadra_definir_cor_preenchimento(qua, prop.cor_preenchimento);
     }
-    return figura_criar(qua, TIPO_QUADRA);
+    return qua;
 }
 
 // Define as propriedades que devem ser aplicadas a todos as quadras com base em uma linha.
@@ -158,12 +157,12 @@ void definir_propriedades_quadras(const char *linha, PropriedadesQuadras *prop) 
 }
 
 // Cria uma figura contendo um retângulo com base em uma linha e as propriedades definidas.
-Figura ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
+Retangulo ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
     Retangulo ret = retangulo_ler(linha);
     if (prop.definido) {
         retangulo_definir_espessura_borda(ret, prop.espessura_borda);
     }
-    return figura_criar(ret, TIPO_RETANGULO);
+    return ret;
 }
 
 // Define as propriedades que devem ser aplicadas a todos os retângulos com base em uma linha.
@@ -173,14 +172,14 @@ void definir_propriedades_retangulos(const char *linha, PropriedadesRetangulos *
 }
 
 // Cria uma figura contendo um rádio com base em uma linha e as propriedades definidas.
-Figura ler_radio(const char *linha, PropriedadesRadios prop) {
+Radio ler_radio(const char *linha, PropriedadesRadios prop) {
     Radio rad = radio_ler(linha);
     if (prop.definido) {
         radio_definir_espessura_borda(rad, prop.espessura_borda);
         radio_definir_cor_borda(rad, prop.cor_borda);
         radio_definir_cor_preenchimento(rad, prop.cor_preenchimento);
     }
-    return figura_criar(rad, TIPO_RADIO);
+    return rad;
 }
 
 // Define as propriedades que devem ser aplicadas a todos os rádios com base em uma linha.
@@ -190,14 +189,14 @@ void definir_propriedades_radios(const char *linha, PropriedadesRadios *prop) {
 }
 
 // Cria uma figura contendo um semáforo com base em uma linha e as propriedades definidas.
-Figura ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
+Semaforo ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
     Semaforo sem = semaforo_ler(linha);
     if (prop.definido) {
         semaforo_definir_espessura_borda(sem, prop.espessura_borda);
         semaforo_definir_cor_borda(sem, prop.cor_borda);
         semaforo_definir_cor_preenchimento(sem, prop.cor_preenchimento);
     }
-    return figura_criar(sem, TIPO_SEMAFORO);
+    return sem;
 }
 
 // Define as propriedades que devem ser aplicadas a todos os semáforos com base em uma linha.
@@ -206,17 +205,11 @@ void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *pr
     prop->definido = true;
 }
 
-// Cria uma figura contendo um texto com base em uma linha e as propriedades definidas.
-Figura ler_texto(const char *linha) {
-    Texto tex = texto_ler(linha);
-    return figura_criar(tex, TIPO_TEXTO);
-}
-
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha como
 // elementos de uma lista.
-void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
-             Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos, Lista lista_postos,
-             Lista lista_densidades) {
+void descricao_ler(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
+                   Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
+                   Lista lista_postos, Lista lista_densidades) {
     FILE *arquivo_descricao = fopen(caminho_geo, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
@@ -236,25 +229,40 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
         char comando[TIPO_FIGURA_TAMANHO];
         sscanf(linha, "%s", comando);
 
-        Figura nova_figura = NULL;
         if (strcmp("c", comando) == 0 && figuras_criadas <= maximo.lista_max_figuras) {
-            nova_figura = ler_circulo(linha, propriedades.cir);
+            Circulo novo_circulo = ler_circulo(linha, propriedades.cir);
+            lista_inserir_final(lista_formas, novo_circulo);
+            figuras_criadas++;
         } else if (strcmp("dd", comando) == 0) {
-            nova_figura = figura_criar(densidade_ler(linha), TIPO_DENSIDADE);
+            Densidade nova_densidade = densidade_ler(linha);
+            lista_inserir_final(lista_densidades, nova_densidade);
         } else if (strcmp("r", comando) == 0 && figuras_criadas <= maximo.lista_max_figuras) {
-            nova_figura = ler_retangulo(linha, propriedades.ret);
+            Retangulo novo_retangulo = ler_retangulo(linha, propriedades.ret);
+            lista_inserir_final(lista_formas, novo_retangulo);
+            figuras_criadas++;
         } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.lista_max_quadras) {
-            nova_figura = ler_quadra(linha, propriedades.qua);
+            Quadra nova_quadra = ler_quadra(linha, propriedades.qua);
+            lista_inserir_final(lista_quadras, nova_quadra);
+            quadras_criadas++;
         } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.lista_max_hidrantes) {
-            nova_figura = ler_hidrante(linha, propriedades.hid);
+            Hidrante novo_hidrante = ler_hidrante(linha, propriedades.hid);
+            lista_inserir_final(lista_hidrantes, novo_hidrante);
+            hidrantes_criados++;
         } else if (strcmp("ps", comando) == 0) {
-            nova_figura = figura_criar(posto_ler(linha), TIPO_POSTO);
+            Posto novo_posto = posto_ler(linha);
+            lista_inserir_final(lista_postos, novo_posto);
         } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.lista_max_semaforos) {
-            nova_figura = ler_semaforo(linha, propriedades.sem);
+            Semaforo novo_semaforo = ler_semaforo(linha, propriedades.sem);
+            lista_inserir_final(lista_semaforos, novo_semaforo);
+            semaforos_criados++;
         } else if (strcmp("rb", comando) == 0 && bases_criadas <= maximo.lista_max_bases) {
-            nova_figura = ler_radio(linha, propriedades.rad);
+            Radio novo_radio = ler_radio(linha, propriedades.rad);
+            lista_inserir_final(lista_radios, novo_radio);
+            bases_criadas++;
         } else if (strcmp("t", comando) == 0 && figuras_criadas <= maximo.lista_max_figuras) {
-            nova_figura = ler_texto(linha);
+            Texto novo_texto = texto_ler(linha);
+            lista_inserir_final(lista_formas, novo_texto);
+            figuras_criadas++;
         } else if (strcmp("cq", comando) == 0) {
             definir_propriedades_quadras(linha, &propriedades.qua);
         } else if (strcmp("ch", comando) == 0) {
@@ -273,44 +281,6 @@ void ler_geo(const char *caminho_geo, Lista lista_formas, Lista lista_quadras,
             LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximo.lista_max_hidrantes);
             LOG_INFO("Novo valor máximo de semaforos: %d\n", maximo.lista_max_semaforos);
             LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximo.lista_max_bases);
-        }
-
-        if (nova_figura != NULL) {
-            TiposFigura tipo = figura_obter_tipo(nova_figura);
-            switch (tipo) {
-                case TIPO_DENSIDADE:
-                    lista_insert_final(lista_densidades, nova_figura);
-                    break;
-                case TIPO_CIRCULO:
-                case TIPO_RETANGULO:
-                case TIPO_TEXTO:
-                    lista_insert_final(lista_formas, nova_figura);
-                    figuras_criadas++;
-                    break;
-                case TIPO_HIDRANTE:
-                    lista_insert_final(lista_hidrantes, nova_figura);
-                    hidrantes_criados++;
-                    break;
-                case TIPO_QUADRA:
-                    lista_insert_final(lista_quadras, nova_figura);
-                    quadras_criadas++;
-                    break;
-                case TIPO_RADIO:
-                    lista_insert_final(lista_radios, nova_figura);
-                    bases_criadas++;
-                    break;
-                case TIPO_POSTO:
-                    lista_insert_final(lista_postos, nova_figura);
-                    break;
-                case TIPO_SEMAFORO:
-                    lista_insert_final(lista_semaforos, nova_figura);
-                    semaforos_criados++;
-                    break;
-                default:
-                    LOG_ERROR("Tipo de figura desconhecido ao ler arquivo de descrição: %d!\n",
-                              tipo);
-                    return;
-            }
         }
     }
     fclose(arquivo_descricao);
