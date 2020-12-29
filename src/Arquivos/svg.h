@@ -1,12 +1,12 @@
 #ifndef SVG_H
 #define SVG_H
 
-#include "lista.h"
-
 /*
-Este módulo define funções para transformar uma lista em um arquivo svg, mantendo todas as
-propriedades de seus elementos.
+Este módulo define a função svg_lista_para_svg, responsável por transformar todas as figuras em
+várias listas em um arquivo svg.
 */
+
+#include "../Estruturas/lista.h"
 
 /*
 Itera por uma lista e transforma cada elemento no seu código svg equivalente.

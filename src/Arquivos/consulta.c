@@ -17,8 +17,8 @@
 #include "../Objetos/Formas/retangulo.h"
 #include "../Objetos/Outros/densidade.h"
 #include "../Objetos/Outros/texto.h"
-#include "../Ordenação/quicksort.h"
-#include "../Ordenação/shellsort.h"
+#include "../Ordenacao/quicksort.h"
+#include "../Ordenacao/shellsort.h"
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
 

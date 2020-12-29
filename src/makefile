@@ -10,7 +10,7 @@ CFLAGS = -fstack-protector-all -std=c99 -W -Wall
 LDFLAGS = -lm
 
 # Recebe todos os arquivos .c
-SOURCES = $(wildcard *.c Arquivos/*.c Estruturas/*.c Interfaces/*.c Objetos/*/*.c Ordenação/*.c Utils/*.c)
+SOURCES = $(wildcard *.c Arquivos/*.c Estruturas/*.c Interfaces/*.c Objetos/*/*.c Ordenacao/*.c Utils/*.c)
 # Substitui a extensão dos arquivos .c para .o
 OBJECTS = $(SOURCES:.c=.o)
 
@@ -34,5 +34,5 @@ $(EXECUTABLE): $(OBJECTS)
 	gcc $(CFLAGS) -I . -c -o $@ $^
 
 clean:
-	rm -f *.o Arquivos/*.o Estruturas/*.o Interfaces/*.o Objetos/*/*.o Ordenação/*.o Utils/*.o
+	rm -f *.o Arquivos/*.o Estruturas/*.o Interfaces/*.o Objetos/*/*.o Ordenacao/*.o Utils/*.o
 
