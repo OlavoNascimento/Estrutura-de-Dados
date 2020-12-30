@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ler_geo.h"
-#include "ler_qry.h"
-#include "lista.h"
-#include "logging.h"
-#include "parametros.h"
-#include "svg.h"
-#include "utils.h"
+#include "./Arquivos/consulta.h"
+#include "./Arquivos/descricao.h"
+#include "./Arquivos/svg.h"
+#include "./Estruturas/lista.h"
+#include "./Utils/caminhos.h"
+#include "./Utils/logging.h"
+#include "./Utils/parametros.h"
 
 int main(int argc, const char *argv[]) {
     const Parametros params = parametros_ler(argc, argv);
@@ -23,17 +23,17 @@ int main(int argc, const char *argv[]) {
     LOG_INFO("Arquivo descrição: %s\n", caminho_descricao);
     LOG_INFO("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
-    Lista *lista_formas = lista_create();
-    Lista *lista_quadras = lista_create();
-    Lista *lista_hidrantes = lista_create();
-    Lista *lista_radios = lista_create();
-    Lista *lista_semaforos = lista_create();
-    Lista *lista_postos = lista_create();
-    Lista *lista_densidades = lista_create();
-    Lista *lista_casos = lista_create();
+    Lista *lista_formas = lista_criar();
+    Lista *lista_quadras = lista_criar();
+    Lista *lista_hidrantes = lista_criar();
+    Lista *lista_radios = lista_criar();
+    Lista *lista_semaforos = lista_criar();
+    Lista *lista_postos = lista_criar();
+    Lista *lista_densidades = lista_criar();
+    Lista *lista_casos = lista_criar();
 
-    ler_geo(caminho_descricao, lista_formas, lista_quadras, lista_hidrantes, lista_radios,
-            lista_semaforos, lista_postos, lista_densidades);
+    descricao_ler(caminho_descricao, lista_formas, lista_quadras, lista_hidrantes, lista_radios,
+                  lista_semaforos, lista_postos, lista_densidades);
     svg_lista_para_svg(caminho_svg_descricao, lista_formas, lista_quadras, lista_hidrantes,
                        lista_radios, lista_semaforos, lista_postos, lista_casos);
 
@@ -45,9 +45,9 @@ int main(int argc, const char *argv[]) {
         LOG_INFO("Arquivo log: %s\n", caminho_registro_consulta);
         LOG_INFO("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
-        ler_qry(caminho_consulta, caminho_registro_consulta, lista_formas, lista_quadras,
-                lista_hidrantes, lista_radios, lista_semaforos, lista_postos, lista_densidades,
-                lista_casos);
+        consulta_ler(caminho_consulta, caminho_registro_consulta, lista_formas, lista_quadras,
+                     lista_hidrantes, lista_radios, lista_semaforos, lista_postos, lista_densidades,
+                     lista_casos);
         svg_lista_para_svg(caminho_svg_consulta, lista_formas, lista_quadras, lista_hidrantes,
                            lista_radios, lista_semaforos, lista_postos, lista_casos);
 
@@ -55,18 +55,18 @@ int main(int argc, const char *argv[]) {
         free(caminho_svg_consulta);
     }
 
-    lista_libera_lista(lista_formas);
-    lista_libera_lista(lista_quadras);
-    lista_libera_lista(lista_hidrantes);
-    lista_libera_lista(lista_semaforos);
-    lista_libera_lista(lista_radios);
-    lista_libera_lista(lista_postos);
-    lista_libera_lista(lista_densidades);
-    lista_libera_lista(lista_casos);
     free(caminho_descricao);
     free(caminho_consulta);
     free(caminho_svg_descricao);
     parametros_destruir(params);
+    lista_destruir(lista_formas);
+    lista_destruir(lista_quadras);
+    lista_destruir(lista_hidrantes);
+    lista_destruir(lista_semaforos);
+    lista_destruir(lista_radios);
+    lista_destruir(lista_postos);
+    lista_destruir(lista_densidades);
+    lista_destruir(lista_casos);
 
     return 0;
 }
