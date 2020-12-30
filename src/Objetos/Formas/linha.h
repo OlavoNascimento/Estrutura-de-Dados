@@ -1,13 +1,24 @@
 #ifndef LINHA_H
 #define LINHA_H
 
+/*
+Este módulo define um Linha, o qual possui propriedades inerentes ao seu tipo como coordenadas
+espaciais de inicio e fim, assim como propriedades para alterar sua visualização no arquivo svg,
+como as cores de borda e preenchimento e sua aparência.
+
+Suas propriedades são:
+    id: Identificador da linha.
+    x: Coordenada x inicial da linha no plano.
+    y: Coordenada y inicial da linha no plano.
+    x1: Coordenada x final da linha no plano.
+    y1: Coordenada y final da linha no plano.
+    cor_borda
+    cor_preenchimento
+    tracejado: Define se a linha deve ser continua ou tracejada no arquivo svg.
+*/
+
 #include <stdbool.h>
 #include <stdio.h>
-
-/*
-Este módulo define o tipo Linha, assim como funções que criam, acessam suas propriedades e realizam
-operações entre variáveis deste tipo.
-*/
 
 typedef void *Linha;
 
@@ -20,58 +31,58 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
                   const char cor_preenchimento[20], bool tracejado);
 
 /*
+Escreve todas as informações presentes em uma linha em um arquivo.
+Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
+*/
+void linha_escrever_informacoes(Linha linha, FILE *arquivo);
+
+/*
 Escreve o código svg necessário para representar uma linha em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
-void linha_escrever_svg(FILE *arquivo, Linha linha);
+void linha_escrever_svg(Linha linha, FILE *arquivo);
 
 /*
-Obtém a coordenada x1 de uma linha.
-O parâmetro linha não pode ser nulo.
-Retorna a coordenada x1 de uma linha.
+Obtém a coordenada x onde uma linha começa.
+O parâmetro circulo não pode ser nulo.
+Retorna a coordenada x onde uma linha começa.
 */
-double linha_obter_x1(Linha linha);
-/*
-Define a coordenada x1 de uma linha.
-O parâmetro linha não pode ser nulo.
-*/
-void linha_definir_x1(Linha linha, double x1);
+double linha_obter_x(Linha linha);
 
 /*
-Obtém a coordenada y1 de uma linha.
-O parâmetro linha não pode ser nulo.
-Retorna a coordenada y1 de uma linha.
+Obtém a coordenada y onde uma linha começa.
+O parâmetro circulo não pode ser nulo.
+Retorna a coordenada y onde uma linha começa.
 */
-double linha_obter_y1(Linha linha);
-/*
-Define a coordenada y1 de uma linha.
-O parâmetro linha não pode ser nulo.
-*/
-void linha_definir_y1(Linha linha, double y1);
+double linha_obter_y(Linha linha);
 
 /*
-Obtém a coordenada x2 de uma linha.
-O parâmetro linha não pode ser nulo.
-Retorna a coordenada x2 de uma linha.
+Obtém a coordenada x onde uma linha termina.
+O parâmetro circulo não pode ser nulo.
+Retorna a coordenada x onde uma linha termina.
 */
-double linha_obter_x2(Linha linha);
-/*
-Define a coordenada x2 de uma linha.
-O parâmetro linha não pode ser nulo.
-*/
-void linha_definir_x2(Linha linha, double x2);
+double linha_obter_x_fim(Linha linha);
 
 /*
-Obtém a coordenada y2 de uma linha.
-O parâmetro linha não pode ser nulo.
-Retorna a coordenada y2 de uma linha.
+Obtém a coordenada y onde uma linha termina.
+O parâmetro circulo não pode ser nulo.
+Retorna a coordenada y onde uma linha termina.
 */
-double linha_obter_y2(Linha linha);
+double linha_obter_y_fim(Linha linha);
+
 /*
-Define a coordenada y2 de uma linha.
-O parâmetro linha não pode ser nulo.
+Obtém a coordenada x onde o centro de uma linha se encontra.
+O parâmetro retangulo não pode ser nulo.
+Retorna a coordenada x onde o centro de uma linha se encontra.
 */
-void linha_definir_y2(Linha linha, double y2);
+double linha_obter_x_centro(Linha linha);
+
+/*
+Obtém a coordenada y onde o centro de uma linha se encontra.
+O parâmetro retangulo não pode ser nulo.
+Retorna a coordenada y onde o centro de uma linha se encontra.
+*/
+double linha_obter_y_centro(Linha linha);
 
 /*
 Obtém a cor da borda de uma linha.
