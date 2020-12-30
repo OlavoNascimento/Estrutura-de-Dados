@@ -1,21 +1,19 @@
 #ifndef PARAMETROS_H
 #define PARAMETROS_H
 
-#include <stdbool.h>
-
 /*
 Este módulo define o tipo Parametros, responsável por ler e armazenar os parâmetros do programa.
 Assim como criar os caminhos finais destes arquivos com base nos seus dados.
 */
 
+#include <stdbool.h>
+
 typedef void *Parametros;
 
 /*
-Recebe a quantidade de argumentos e os argumentos passados ao programa, armazenando os valores no
-valor do struct interno. O parâmetro argv não pode ser nulo.
+Recebe a quantidade de argumentos e os argumentos passados ao programa.
 O parâmetro argv não pode ser nulo.
-Retorna o struct Parametros inicializado. O usuário é responsável por liberar a memória alocada pela
-struct!
+O usuário é responsável por liberar a memória alocada pela
 */
 Parametros parametros_ler(int argc, const char *argv[]);
 
@@ -81,10 +79,9 @@ responsável por liberar a memória alocada!
 char *parametros_obter_caminho_registro_consulta(const Parametros params);
 
 /*
-Libera a memória alocada pelos dados de um struct Parametros.
+Libera a memória alocada pelos parametros.
 O parâmetro params não pode ser nulo e deve apontar para um espaço de memória reservada.
-Libera a memória alocada pelos valores do struct. Esses valores não poderão ser utilizados após
-isso!
+Libera a memória alocada. Esses valores não poderão ser utilizados após isso!
 */
 void parametros_destruir(Parametros params);
 

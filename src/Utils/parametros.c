@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "caminhos.h"
 #include "logging.h"
-#include "utils.h"
 
 typedef struct {
     char *nome_dir_entrada;

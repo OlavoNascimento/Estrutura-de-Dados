@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "caminhos.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -20,7 +20,7 @@
 // Cria todos os diretórios especificados no caminho passado a função.
 void criar_diretorio(const char *diretorio) {
     if (diretorio == NULL) {
-        LOG_ERROR("Diretório nulo fornecida ao criar diretório!\n");
+        LOG_ERRO("Diretório nulo fornecida ao criar diretório!\n");
         return;
     }
 
@@ -43,14 +43,14 @@ void criar_diretorio(const char *diretorio) {
 // Concatena um diretório com um arquivo fornecido, separados por uma / ou \.
 char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
     if (diretorio == NULL || nome_arquivo == NULL) {
-        LOG_ERROR("Variável nula fornecida ao unir caminhos!\n");
+        LOG_ERRO("Variável nula fornecida ao unir caminhos!\n");
         return NULL;
     }
 
     char *uniao = malloc(strlen(diretorio) + strlen(nome_arquivo) + 2);
     if (uniao == NULL) {
-        LOG_ERROR("Falha ao alocar memória paro o caminho %s%c%s!\n", diretorio,
-                  SEPARADOR_DE_DIRETORIOS, nome_arquivo);
+        LOG_ERRO("Falha ao alocar memória paro o caminho %s%c%s!\n", diretorio,
+                 SEPARADOR_DE_DIRETORIOS, nome_arquivo);
         return NULL;
     }
     sprintf(uniao, "%s%c%s", diretorio, SEPARADOR_DE_DIRETORIOS, nome_arquivo);
@@ -61,7 +61,7 @@ char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
 // formato: /diretório/.../nome-arquivo.ext
 char *extrair_nome_base(const char *caminho_arquivo) {
     if (caminho_arquivo == NULL) {
-        LOG_ERROR("Caminho de arquivo nulo fornecida ao extrair nome base!\n");
+        LOG_ERRO("Caminho de arquivo nulo fornecida ao extrair nome base!\n");
         return NULL;
     }
 
@@ -98,7 +98,7 @@ char *extrair_nome_base(const char *caminho_arquivo) {
 // Extrai os diretórios de uma string no formato: /diretório1/diretório2/.../nome-arquivo.ext
 char *extrair_nome_diretorio(const char *caminho_arquivo) {
     if (caminho_arquivo == NULL) {
-        LOG_ERROR("Caminho de arquivo nulo fornecida a extrair nome diretório!\n");
+        LOG_ERRO("Caminho de arquivo nulo fornecida a extrair nome diretório!\n");
         return NULL;
     }
 
@@ -119,7 +119,7 @@ char *extrair_nome_diretorio(const char *caminho_arquivo) {
 // substituida por sufixos adicionais.
 char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
     if (caminho_arquivo == NULL) {
-        LOG_ERROR("Caminho de arquivo nulo fornecida ao alterar sufixo!\n");
+        LOG_ERRO("Caminho de arquivo nulo fornecida ao alterar sufixo!\n");
         return NULL;
     }
 
@@ -136,7 +136,7 @@ char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
         char *tmp =
             realloc(sufixo_final, (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof(char));
         if (tmp == NULL) {
-            LOG_ERROR("Falha ao alocar memória para novo sufixo!\n");
+            LOG_ERRO("Falha ao alocar memória para novo sufixo!\n");
             free(sufixo_final);
             return NULL;
         }

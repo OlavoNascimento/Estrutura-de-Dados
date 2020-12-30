@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef CAMINHOS_H
+#define CAMINHOS_H
 
 /*
 Este módulo define funções auxiliares relacionadas a caminhos de arquivos e diretórios.
