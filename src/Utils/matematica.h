@@ -5,16 +5,27 @@
 Este módulo define funções matemáticas que são utilizadas por mais de um módulo.
 */
 
+#include "../Objetos/Formas/circulo.h"
+#include "../Objetos/Formas/retangulo.h"
+
 /*
-Calcula o maior valor de dois parâmetros.
-Retorna o maior valor.
+Retorna o maior valor de dois parâmetros.
 */
 double max(double a, double b);
 
 /*
-Calcula o menor valor de dois parâmetros.
-Retorna o menor valor.
+Retorna o menor valor de dois parâmetros.
 */
 double min(double a, double b);
+
+/*
+Retorna verdadeiro caso um circulo e um retângulo se intersectem.
+*/
+bool circulo_intersecta_retangulo(Circulo circulo, Retangulo retangulo);
+
+/*
+Retorna verdadeiro caso um circulo contem um retângulo.
+*/
+bool circulo_contem_retangulo(Circulo circulo, Retangulo retangulo);
 
 #endif
