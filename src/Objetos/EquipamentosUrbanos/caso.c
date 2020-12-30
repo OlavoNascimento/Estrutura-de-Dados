@@ -5,46 +5,108 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lista.h"
-#include "logging.h"
-#include "quadra.h"
-#include "retangulo.h"
+#include "../../Estruturas/lista.h"
+#include "../../Utils/logging.h"
+#include "../Formas/retangulo.h"
+#include "../Outros/texto.h"
 
 typedef struct {
-    Retangulo ret;
-    int nCasos;
+    FiguraInterface vtable;
+    char id[100];
+    double largura;
+    double altura;
+    double x;
+    double y;
+    char cor_borda[20];
+    char cor_preenchimento[20];
+    double arredondamento_borda;
+    char espessura_borda[20];
+    bool borda_tracejada;
+    int numero_de_casos;
 } CasoImp;
+
+const char *caso_obter_tipo() {
+    return "caso";
+}
+
+// Escreve no svg as informações de uma radio base.
+void caso_escrever_svg(Caso caso, FILE *arquivo) {
+    CasoImp *casoImp = (CasoImp *) caso;
+    retangulo_escrever_svg(caso, arquivo);
+
+    double x = figura_obter_x_centro(caso);
+    double y = figura_obter_y_centro(caso) + 4;
+    // Converte o número de casos para uma string.
+    char conteudo[500];
+    snprintf(conteudo, 500, "%d", casoImp->numero_de_casos);
+    // Rótulo do caso.
+    Texto texto_quadra = texto_criar("", x, y, "none", "white", conteudo, true);
+    texto_escrever_svg(texto_quadra, arquivo);
+    texto_destruir(texto_quadra);
+}
+
+// Conecta as funções do objeto Caso com as da interface figura.
+// Como o struct CasoImp é idêntico ao struct RetanguloImp as funções utilizadas em um objeto
+// Retangulo podem ser reaproveitadas.
+static FiguraInterface caso_criar_interface_figura() {
+    FiguraInterface interface = figura_interface_criar();
+    figura_registrar_escrever_informacoes(interface, retangulo_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, caso_escrever_svg);
+
+    figura_registrar_obter_tipo(interface, caso_obter_tipo);
+
+    figura_registrar_obter_id(interface, retangulo_obter_id);
+
+    figura_registrar_obter_x(interface, retangulo_obter_x);
+    figura_registrar_obter_y(interface, retangulo_obter_y);
+
+    figura_registrar_obter_x_inicio(interface, retangulo_obter_x);
+    figura_registrar_obter_y_inicio(interface, retangulo_obter_y);
+
+    figura_registrar_obter_x_fim(interface, retangulo_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, retangulo_obter_y_fim);
+
+    figura_registrar_obter_x_centro(interface, retangulo_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, retangulo_obter_y_centro);
+
+    figura_registrar_obter_cor_borda(interface, retangulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, retangulo_definir_cor_borda);
+
+    figura_registrar_obter_cor_preenchimento(interface, retangulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(interface, retangulo_definir_cor_preenchimento);
+
+    figura_registrar_destruir(interface, retangulo_destruir);
+    return interface;
+}
 
 // Cria e inicializa um struct CasoImp com os valores passados.
 Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_borda[20],
                 const char cor_preenchimento[20], Lista lista_quadras) {
     if (casos <= 0) {
-        LOG_ERROR("Não é possível criar um caso menor ou igual a zero!\n");
+        LOG_ERRO("Não é possível criar um caso menor ou igual a zero!\n");
         return NULL;
     }
     if (cep == NULL) {
-        LOG_ERROR("Não é possível criar um caso buscando por um cep nulo!\n");
+        LOG_ERRO("Não é possível criar um caso buscando por um cep nulo!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        LOG_ERROR("Não é possível criar um caso com cor de borda NULL!\n");
+        LOG_ERRO("Não é possível criar um caso com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        LOG_ERROR("Não é possível criar um caso com cor de preenchimento NULL!\n");
+        LOG_ERRO("Não é possível criar um caso com cor de preenchimento NULL!\n");
         return NULL;
     }
-    Figura quadra_buscada = NULL;
-    for (No i = lista_get_first(lista_quadras); i != NULL; i = lista_get_next(i)) {
-        Figura quadra = lista_get_figura(i);
-        if (strcmp(cep, figura_obter_id(quadra)) == 0)
-            quadra_buscada = quadra;
-    }
-    if (quadra_buscada == NULL)
+    No figura_no = lista_buscar(lista_quadras, cep);
+    if (figura_no == NULL) {
+        LOG_ERRO("Quadra com cep %s não encontrada ao criar caso!\n", cep);
         return NULL;
+    }
+    Figura quadra_buscada = lista_obter_figura(figura_no);
 
-    double largura = 12;
-    double altura = 12;
+    const double largura = 12;
+    const double altura = 12;
     double x = 0;
     double y = 0;
     if (face == 'N') {
@@ -62,12 +124,23 @@ Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_
     }
 
     CasoImp *casoImp = malloc(sizeof(CasoImp));
-    casoImp->ret = retangulo_criar("", largura, altura, x, y, cor_borda, cor_preenchimento);
-    casoImp->nCasos = casos;
+    strcpy(casoImp->id, "");
+    casoImp->largura = largura;
+    casoImp->altura = altura;
+    casoImp->x = x;
+    casoImp->y = y;
+    strcpy(casoImp->cor_borda, cor_borda);
+    strcpy(casoImp->cor_preenchimento, cor_preenchimento);
+    casoImp->arredondamento_borda = 0;
+    casoImp->borda_tracejada = false;
+    strcpy(casoImp->espessura_borda, "1px");
+    casoImp->numero_de_casos = casos;
+
+    casoImp->vtable = caso_criar_interface_figura();
     return casoImp;
 }
 
-// Cria uma quadra com base em informações de uma linha.
+// Cria um caso com base em informações de uma linha.
 Caso caso_ler(const char *linha, Lista lista_quadras) {
     int casos;
     int numero;
@@ -77,40 +150,68 @@ Caso caso_ler(const char *linha, Lista lista_quadras) {
     return caso_criar(casos, cep, face, numero, "orange", "orange", lista_quadras);
 }
 
-// Escreve no svg as informações de um caso.
-void caso_escrever_svg(FILE *arquivo, Caso caso) {
+// Retorna o número de casos armazenado em um objeto caso.
+int caso_obter_numero_de_casos(Caso caso) {
     CasoImp *casoImp = (CasoImp *) caso;
-    retangulo_escrever_svg(arquivo, casoImp->ret);
+    return casoImp->numero_de_casos;
 }
 
+// Retorna o id de um caso.
+const char *caso_obter_id(Caso caso) {
+    return retangulo_obter_id(caso);
+}
+
+// Retorna a coordenada x de um caso.
 double caso_obter_x(Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
-    return retangulo_obter_x(casoImp->ret);
+    return retangulo_obter_x(caso);
 }
 
+// Retorna a coordenada y de um caso.
 double caso_obter_y(Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
-    return retangulo_obter_y(casoImp->ret);
+    return retangulo_obter_y(caso);
 }
 
+// Retorna a largura de um caso.
 double caso_obter_largura(Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
-    return retangulo_obter_largura(casoImp->ret);
+    return retangulo_obter_largura(caso);
 }
 
+// Retorna a altura de um caso.
 double caso_obter_altura(Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
-    return retangulo_obter_altura(casoImp->ret);
+    return retangulo_obter_altura(caso);
 }
 
-int caso_obter_casos(Caso casos) {
-    CasoImp *casoImp = (CasoImp *) casos;
-    return casoImp->nCasos;
+// Retorna a cor da borda de um caso.
+const char *caso_obter_cor_borda(Caso caso) {
+    return retangulo_obter_cor_borda(caso);
+}
+
+// Define a cor da borda de um caso.
+void caso_definir_cor_borda(Caso caso, const char *cor_borda) {
+    retangulo_definir_cor_borda(caso, cor_borda);
+}
+
+// Retorna a cor de preenchimento de um caso.
+const char *caso_obter_cor_preenchimento(Caso caso) {
+    return retangulo_obter_cor_preenchimento(caso);
+}
+
+// Define a cor de preenchimento de um caso.
+void caso_definir_cor_preenchimento(Caso caso, const char *cor_preenchimento) {
+    retangulo_definir_cor_preenchimento(caso, cor_preenchimento);
+}
+
+// Define a espessura da borda de um caso.
+void caso_definir_espessura_borda(Caso caso, const char *espessura_borda) {
+    retangulo_definir_espessura_borda(caso, espessura_borda);
+}
+
+// Define o arredondamento da borda de um caso.
+void caso_definir_arredondamento_borda(Caso caso, double raio_borda) {
+    retangulo_definir_arredondamento_borda(caso, raio_borda);
 }
 
 // Libera a memória alocada por um caso.
 void caso_destruir(Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
-    retangulo_destruir(casoImp->ret);
-    free(caso);
+    retangulo_destruir(caso);
 }
