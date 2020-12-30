@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "lista.h"
+#include "../Estruturas/lista.h"
 
 /*
 Este módulo define a função quicksort, responsável por ordenar um array em ordem crescente.

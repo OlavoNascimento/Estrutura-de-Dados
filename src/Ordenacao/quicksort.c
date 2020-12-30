@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "lista.h"
+#include "../Estruturas/lista.h"
 
 // Retorna o angulo entre dois pontos
 double angulo_polar(Figura min, Figura ponto) {
@@ -27,16 +27,16 @@ No particionar(Figura min, No inicio, No fim) {
     No i = inicio;
     No j = fim;
 
-    double angulo_pivo = angulo_polar(min, lista_get_figura(inicio));
+    double angulo_pivo = angulo_polar(min, lista_obter_figura(inicio));
     // Itera até os ponteiros se encontrarem.
     while (true) {
-        while (i != NULL && angulo_polar(min, lista_get_figura(i)) < angulo_pivo)
+        while (i != NULL && angulo_polar(min, lista_obter_figura(i)) < angulo_pivo)
             // Checa se o ângulo polar do ponteiro inferior é menor que o ângulo pivo.
-            i = lista_get_next(i);
+            i = lista_obter_proximo(i);
 
-        while (j != NULL && angulo_polar(min, lista_get_figura(j)) > angulo_pivo)
+        while (j != NULL && angulo_polar(min, lista_obter_figura(j)) > angulo_pivo)
             // Checa se o ângulo polar do ponteiro superior é maior que o ângulo pivo.
-            j = lista_get_previous(j);
+            j = lista_obter_anterior(j);
 
         if (i >= j) {
             return j;
@@ -44,8 +44,8 @@ No particionar(Figura min, No inicio, No fim) {
         // Troca as figuras armazenadas nos nós i e j, já que o nó i é maior que o pivô ou o nó
         // j é menor que o pivô.
         lista_trocar_figuras(i, j);
-        i = lista_get_next(i);
-        j = lista_get_previous(j);
+        i = lista_obter_proximo(i);
+        j = lista_obter_anterior(j);
     }
 }
 
@@ -56,5 +56,5 @@ void quicksort(Figura min, No inicio, No fim) {
 
     No meio = particionar(min, inicio, fim);
     quicksort(min, inicio, meio);
-    quicksort(min, lista_get_next(meio), fim);
+    quicksort(min, lista_obter_proximo(meio), fim);
 }
