@@ -1,20 +1,33 @@
 #ifndef POLIGONO_H
 #define POLIGONO_H
 
+/*
+Este módulo define um Poligono, o qual possui propriedades inerentes ao seu tipo como raio e suas
+coordenadas espaciais, assim como propriedades para alterar sua visualização no arquivo svg, como as
+cores de borda e preenchimento e a espessura de sua borda.
+
+Suas propriedades são:
+    largura
+    altura
+    x: Coordenada x do círculo no plano.
+    y: Coordenada y do círculo no plano.
+    cor_borda
+    cor_preenchimento
+    opacidade: Opacidade do polígono no svg.
+*/
+
 #include <stdbool.h>
 #include <stdio.h>
-
-/*
-Este módulo define o tipo Poligono, assim como funções que criam, acessam suas propriedades e
-realizam operações entre variáveis deste tipo.
-*/
 
 typedef void *Poligono;
 
 /*
-Cria e inicializa uma struct Poligono com os valores passados.
+Cria e inicializa um Poligono com os valores passados.
+pontos: Array de pontos que compõem o polígono.
+numero_de_pontos: Número de pontos que compõem o polígono.
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
-Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
+A opacidade deve estar entre 0 e 1 (inclusivo).
+O usuário é responsável por liberar a memória alocada!
 */
 Poligono poligono_criar(double **pontos, int numero_de_pontos, const char cor_borda[20],
                         const char cor_preenchimento[20], double opacidade);
@@ -23,7 +36,20 @@ Poligono poligono_criar(double **pontos, int numero_de_pontos, const char cor_bo
 Escreve o código svg necessário para representar um polígono em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
-void poligono_escrever_svg(FILE *arquivo, Poligono poligono);
+void poligono_escrever_svg(Poligono poligono, FILE *arquivo);
+
+/*
+Escreve todas as informações presentes em um polígono em um arquivo.
+Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
+*/
+void poligono_escrever_informacoes(Poligono poligono, FILE *arquivo);
+
+/*
+Calcula a área de um polígono.
+O parâmetro poligono não pode ser nulo.
+Retorna a área de um polígono.
+*/
+double poligono_calcular_area(Poligono poligono);
 
 /*
 Obtém a largura de um polígono.
@@ -54,31 +80,63 @@ Retorna a coordenada y de um polígono.
 double poligono_obter_y(Poligono poligono);
 
 /*
-Calcula a área de um polígono.
-O parâmetro poligono não pode ser nulo.
-Retorna a área de um polígono.
+Obtém a coordenada x onde um polígono termina.
+O parâmetro circulo não pode ser nulo.
+Retorna a coordenada x onde um polígono termina.
 */
-double poligono_calcular_area(Poligono poligono);
+double poligono_obter_x_fim(Poligono poligono);
+
+/*
+Obtém a coordenada y onde um polígono termina.
+O parâmetro circulo não pode ser nulo.
+Retorna a coordenada y onde um polígono termina.
+*/
+double poligono_obter_y_fim(Poligono poligono);
 
 /*
 Calcula a coordenada x do centróide de um polígono.
 O parâmetro poligono não pode ser nulo.
 Retorna a coordenada x do centróide de um polígono.
 */
-double poligono_calcular_x_centroide(Poligono poligono);
+double poligono_obter_x_centro(Poligono poligono);
 
 /*
 Calcula a coordenada y do centróide de um polígono.
 O parâmetro poligono não pode ser nulo.
 Retorna a coordenada y do centróide de um polígono.
 */
-double poligono_calcular_y_centroide(Poligono poligono);
+double poligono_obter_y_centro(Poligono poligono);
+
+/*
+Obtém a cor da borda de um polígono.
+O parâmetro circulo não pode ser nulo.
+Retorna a cor da borda de um polígono.
+*/
+const char *poligono_obter_cor_borda(Poligono poligono);
+
+/*
+Define a cor da borda de um polígono.
+Nenhum dos parâmetros podem ser nulos.
+*/
+void poligono_definir_cor_borda(Poligono poligono, const char *cor_borda);
+
+/*
+Obtém a cor de preenchimento de um polígono.
+O parâmetro circulo não pode ser nulo.
+Retorna a cor de preenchimento de um polígono.
+*/
+const char *poligono_obter_cor_preenchimento(Poligono poligono);
+
+/*
+Define a cor de preenchimento de um polígono.
+Nenhum dos parâmetros podem ser nulos.
+*/
+void poligono_definir_cor_preenchimento(Poligono poligono, const char *cor_preenchimento);
 
 /*
 Libera a memória alocada por um polígono.
-O parâmetro poligono não pode ser nulo e deve apontar para um espaço de memória
-reservada. Libera a memória alocada pelo struct. O ponteiro não poderá ser utilizado
-após isso!
+O parâmetro poligono não pode ser nulo e deve apontar para um espaço de memória reservada.
+Libera a memória alocada. O ponteiro não poderá ser utilizado após isso!
 */
 void poligono_destruir(Poligono poligono);
 
