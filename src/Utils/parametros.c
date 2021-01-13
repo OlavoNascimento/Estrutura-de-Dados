@@ -12,6 +12,7 @@ typedef struct {
     char *nome_dir_entrada;
     char *caminho_descricao;
     char *caminho_consulta;
+    char *caminho_estabelecimentos;
     char *nome_dir_saida;
 } ParametrosImp;
 
@@ -21,6 +22,7 @@ Parametros parametros_criar() {
     params->nome_dir_entrada = NULL;
     params->caminho_descricao = NULL;
     params->caminho_consulta = NULL;
+    params->caminho_estabelecimentos = NULL;
     params->nome_dir_saida = NULL;
     return params;
 }
@@ -46,6 +48,10 @@ Parametros parametros_ler(int argc, const char *argv[]) {
             i++;
             paramsImp->caminho_consulta = malloc((strlen(argv[i]) + 1) * sizeof(char));
             strcpy(paramsImp->caminho_consulta, argv[i]);
+        } else if (strcmp("-ec", argv[i]) == 0) {
+            i++;
+            paramsImp->caminho_estabelecimentos = malloc((strlen(argv[i]) + 1) * sizeof(char));
+            strcpy(paramsImp->caminho_estabelecimentos, argv[i]);
         }
         i++;
     }
@@ -97,7 +103,7 @@ char *parametros_obter_caminho_consulta(const Parametros params) {
         return NULL;
 
     char *caminho_consulta = NULL;
-    // Adiciona o diretório de entrada ao caminho do arquivo de descrição caso necessário.
+    // Adiciona o diretório de entrada ao caminho do arquivo de consulta caso necessário.
     if (paramsImp->nome_dir_entrada != NULL) {
         // Concatena o diretório ao caminho do arquivo.
         caminho_consulta = unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_consulta);
@@ -107,6 +113,26 @@ char *parametros_obter_caminho_consulta(const Parametros params) {
     }
 
     return caminho_consulta;
+}
+
+char *parametros_obter_caminho_estabelecimentos(const Parametros params) {
+    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_estabelecimentos == NULL)
+        return NULL;
+
+    char *caminho_estabelecimentos = NULL;
+    // Adiciona o diretório de entrada ao caminho do arquivo de estabelecimentos caso necessário.
+    if (paramsImp->nome_dir_entrada != NULL) {
+        // Concatena o diretório ao caminho do arquivo.
+        caminho_estabelecimentos =
+            unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_estabelecimentos);
+    } else {
+        caminho_estabelecimentos =
+            malloc((strlen(paramsImp->caminho_estabelecimentos) + 1) * sizeof(char));
+        strcpy(caminho_estabelecimentos, paramsImp->caminho_estabelecimentos);
+    }
+
+    return caminho_estabelecimentos;
 }
 
 // Usa o nome do arquivo de descrição para criar o nome do svg.

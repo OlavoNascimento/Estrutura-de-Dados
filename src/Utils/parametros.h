@@ -52,6 +52,15 @@ memória alocada!
 char *parametros_obter_caminho_consulta(const Parametros params);
 
 /*
+Obtém o caminho do arquivo de estabelecimentos (.ec) passado como argumento para o programa. O
+caminho é concatenado ao diretório de entrada caso necessário.
+O parâmetro params não pode ser nulo.
+Retorna o caminho do arquivo de estabelecimentos (.ec) armazenado. O usuário é responsável por
+liberar a memória alocada!
+*/
+char *parametros_obter_caminho_estabelecimentos(const Parametros params);
+
+/*
 Obtém o caminho do arquivo svg criado como saída do arquivo de descrição (.geo). O caminho é
 concatenado ao diretório de saída.
 O parâmetro params não pode ser nulo.

@@ -22,6 +22,7 @@ int main(int argc, const char *argv[]) {
     criar_diretorio(parametros_obter_diretorio_saida(params));
     char *caminho_descricao = parametros_obter_caminho_descricao(params);
     char *caminho_consulta = parametros_obter_caminho_consulta(params);
+    char *caminho_estabelecimentos = parametros_obter_caminho_estabelecimentos(params);
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
 
     LOG_INFO("Arquivo descrição: %s\n", caminho_descricao);
@@ -40,6 +41,10 @@ int main(int argc, const char *argv[]) {
                   densidades);
     svg_quadtree_para_svg(caminho_svg_descricao, formas, quadras, hidrantes, radios, semaforos,
                           postos, casos);
+
+    if (caminho_estabelecimentos != NULL) {
+        // TODO Adicionar ler_estabelecimentos
+    }
 
     if (caminho_consulta != NULL) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
@@ -60,6 +65,7 @@ int main(int argc, const char *argv[]) {
 
     free(caminho_descricao);
     free(caminho_consulta);
+    free(caminho_estabelecimentos);
     free(caminho_svg_descricao);
     parametros_destruir(params);
     desalocaQt(formas);
