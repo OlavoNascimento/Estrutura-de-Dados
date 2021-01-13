@@ -72,7 +72,7 @@ static FiguraInterface posto_criar_interface_figura() {
 
 // Cria e inicializa um struct PostoImp com os valores passados.
 Posto posto_criar(double x, double y) {
-    PostoImp *posImp = malloc(sizeof(PostoImp));
+    PostoImp *posImp = malloc(sizeof *posImp);
     strcpy(posImp->id, "");
     posImp->raio = 10;
     posImp->x = x;

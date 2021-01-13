@@ -14,7 +14,7 @@ typedef struct {
 
 // Cria e inicializa um struct PontoImp com os valores passados.
 Ponto ponto_criar(double x, double y) {
-    PontoImp *ponImp = malloc(sizeof(PontoImp));
+    PontoImp *ponImp = malloc(sizeof *ponImp);
     ponImp->x = x;
     ponImp->y = y;
     return ponImp;

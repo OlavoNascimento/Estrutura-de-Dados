@@ -117,6 +117,12 @@ O parâmetro quadra não pode ser nulo.
 void quadra_definir_arredondamento_borda(Quadra quadra, double raio_borda);
 
 /*
+Define a cor da sombra de uma quadra. A cor deve estar definida anteriormente no arquivo svg.
+Nenhum dos parâmetros podem ser nulos.
+*/
+void quadra_definir_cor_sombra(Quadra quadra, const char *cor_sombra);
+
+/*
 Libera a memória alocada por uma quadra.
 O parâmetro quadra não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada. O ponteiro não poderá ser utilizado após isso!

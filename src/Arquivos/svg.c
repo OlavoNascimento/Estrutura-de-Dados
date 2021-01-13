@@ -38,7 +38,7 @@ void svg_atualizar_exibicao(Figura figura, ExibicaoSVG *exi) {
 ExibicaoSVG *svg_criar_exibicao(QuadTree formas, QuadTree quadras, QuadTree hidrantes,
                                 QuadTree radios, QuadTree semaforos, QuadTree postos,
                                 QuadTree casos) {
-    ExibicaoSVG *exi = malloc(sizeof(ExibicaoSVG));
+    ExibicaoSVG *exi = malloc(sizeof *exi);
     exi->origem_x = DBL_MAX;
     exi->origem_y = DBL_MAX;
     exi->largura = DBL_MIN;
@@ -54,6 +54,30 @@ ExibicaoSVG *svg_criar_exibicao(QuadTree formas, QuadTree quadras, QuadTree hidr
     percorreLarguraQt(casos, (void *) svg_atualizar_exibicao, exi);
 
     return exi;
+}
+
+void escrever_definicoes_sombras(FILE *arquivo) {
+    fprintf(arquivo,
+            "\t<defs>\n"
+            "\t\t<filter id='sombra_10_500'>\n"
+            "\t\t\t<feDropShadow dx='8' dy='8' flood-color='#FFFF00'/>\n"
+            "\t\t</filter>\n"
+            "\t\t<filter id='sombra_500_1500'>\n"
+            "\t\t\t<feDropShadow dx='8' dy='8' flood-color='#FF9955'/>\n"
+            "\t\t</filter>\n"
+            "\t\t<filter id='sombra_1500_3000'>\n"
+            "\t\t\t<feDropShadow dx='8' dy='8' flood-color='#FF0000'/>\n"
+            "\t\t</filter>\n"
+            "\t\t<filter id='sombra_3000_4500'>\n"
+            "\t\t\t<feDropShadow dx='8' dy='8' flood-color='#FF00CC'/>\n"
+            "\t\t</filter>\n"
+            "\t\t<filter id='sombra_4500_6000'>\n"
+            "\t\t\t<feDropShadow dx='8' dy='8' flood-color='#6600FF'/>\n"
+            "\t\t</filter>\n"
+            "\t\t<filter id='sombra_6000'>\n"
+            "\t\t\t<feDropShadow dx='8' dy='8' flood-color='#A02C5A'/>\n"
+            "\t\t</filter>\n"
+            "\t</defs>\n");
 }
 
 // Transforma as figuras das listas em um código svg que as representam, salvando o resultado em um
@@ -88,8 +112,10 @@ void svg_quadtree_para_svg(const char *caminho_svg, QuadTree formas, QuadTree qu
     // Coordenada altura é a figura mais a abaixo. A largura do svg deve ser alterada para utilizar
     // a nova origem como base.
     double svg_altura = exibicao->altura - exibicao->origem_y + 2 * SVG_MARGEM;
-    fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf'>\n", svg_origem_x, svg_origem_y,
-            svg_largura, svg_altura);
+    fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf' xmlns='http://www.w3.org/2000/svg'>\n",
+            svg_origem_x, svg_origem_y, svg_largura, svg_altura);
+
+    escrever_definicoes_sombras(arquivo_svg);
 
     percorreLarguraQt(quadras, (void *) figura_escrever_svg, arquivo_svg);
     percorreLarguraQt(semaforos, (void *) figura_escrever_svg, arquivo_svg);

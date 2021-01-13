@@ -17,7 +17,7 @@ typedef struct {
 } PilhaImp;
 
 Pilha pilha_criar(DestruirInfo destruir_info) {
-    PilhaImp *pilha = (PilhaImp *) malloc(sizeof(PilhaImp));
+    PilhaImp *pilha = malloc(sizeof *pilha);
     if (pilha == NULL) {
         LOG_ERRO("Erro ao alocar espaço para a pilha!\n");
         return NULL;
@@ -40,7 +40,7 @@ int pilha_obter_tamanho(Pilha pilha) {
 
 void pilha_inserir(Pilha pilha, PilhaInfo info) {
     PilhaImp *pilhaImp = (PilhaImp *) pilha;
-    No *novo_no = malloc(sizeof(No));
+    No *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
     novo_no->proximo = pilhaImp->topo;
     pilhaImp->topo = novo_no;

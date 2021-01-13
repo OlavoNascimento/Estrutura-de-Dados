@@ -552,7 +552,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
 
     double incidencia = (total_de_casos / habitantes) * 100000;
     char categoria = '\0';
-    char *cor_poligono = malloc(8 * sizeof(char));
+    char *cor_poligono = malloc(sizeof *cor_poligono * 8);
     cor_poligono[0] = '\0';
 
     // Define a categoria e cor do polígono baseado na incidência.
@@ -595,12 +595,6 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
         Figura fig = lista_obter_info(pilha_remover(pilha_pontos_envoltoria));
         pontos[i][0] = figura_obter_x_centro(fig);
         pontos[i][1] = figura_obter_y_centro(fig);
-
-        // TODO Remover
-        char conteudo[500];
-        sprintf(conteudo, "%d", i);
-        Texto tex = texto_criar("", pontos[i][0], pontos[i][1], "none", "black", conteudo, true);
-        insereQt(formas, ponto_criar_com_figura(tex), tex);
         i++;
     }
 

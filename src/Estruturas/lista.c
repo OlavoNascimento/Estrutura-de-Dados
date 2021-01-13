@@ -21,7 +21,7 @@ typedef struct {
 } ListaImp;
 
 Lista lista_criar(ObterIdentificadorInfo obter_identificador_info, DestruirInfo destruir_info) {
-    ListaImp *lista = (ListaImp *) malloc(sizeof(ListaImp));
+    ListaImp *lista = malloc(sizeof *lista);
     if (lista == NULL) {
         LOG_ERRO("Erro ao alocar espaço para uma nova lista!\n");
         return NULL;
@@ -47,7 +47,7 @@ ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
 
     ListaImp *lista_aux = (ListaImp *) lista;
     NoImp *no_aux;
-    NoImp *novo_no = (NoImp *) malloc(sizeof(NoImp));
+    NoImp *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
 
     if (lista_aux->primeiro == NULL) {
@@ -78,7 +78,7 @@ ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo p) {
     ListaImp *lista_aux = (ListaImp *) lista;
     NoImp *no_aux;
     NoImp *no_anterior = NULL;
-    NoImp *novo_no = (NoImp *) malloc(sizeof(NoImp));
+    NoImp *novo_no = malloc(sizeof *novo_no);
 
     novo_no->info = info;
     no_aux = p;
@@ -115,7 +115,7 @@ ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo p) {
     ListaImp *lista_aux = (ListaImp *) lista;
     NoImp *no_aux;
     NoImp *no_proximo = NULL;
-    NoImp *novo_no = (NoImp *) malloc(sizeof(NoImp));
+    NoImp *novo_no = malloc(sizeof *novo_no);
 
     novo_no->info = info;
     no_aux = p;

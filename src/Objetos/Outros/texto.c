@@ -61,7 +61,7 @@ static FiguraInterface texto_criar_interface_figura() {
 // Cria e inicializa um struct Texto com os valores passados.
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
                   const char cor_preenchimento[20], const char conteudo[500], bool centralizar) {
-    TextoImp *texImp = malloc(sizeof(TextoImp));
+    TextoImp *texImp = malloc(sizeof *texImp);
     strcpy(texImp->id, id);
     texImp->x = x;
     texImp->y = y;

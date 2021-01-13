@@ -32,18 +32,32 @@ double densidade_obter_y(Densidade densidade) {
     return denImp->y;
 }
 
+double densidade_obter_x_fim(Densidade densidade) {
+    DenImp *denImp = densidade;
+    return denImp->x + denImp->largura;
+}
+
+double densidade_obter_y_fim(Densidade densidade) {
+    DenImp *denImp = densidade;
+    return denImp->y + denImp->altura;
+}
+
 // Conecta as funções do objeto Densidade com as da interface figura.
 static FiguraInterface densidade_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, densidade_obter_tipo);
     figura_registrar_obter_x(interface, densidade_obter_x);
     figura_registrar_obter_y(interface, densidade_obter_y);
+    figura_registrar_obter_x_inicio(interface, densidade_obter_x);
+    figura_registrar_obter_y_inicio(interface, densidade_obter_y);
+    figura_registrar_obter_x_fim(interface, densidade_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, densidade_obter_y_fim);
     figura_registrar_destruir(interface, densidade_destruir);
     return interface;
 }
 
 Densidade densidade_criar(double x, double y, double largura, double altura, double densidade) {
-    DenImp *denImp = malloc(sizeof(DenImp));
+    DenImp *denImp = malloc(sizeof *denImp);
     denImp->largura = largura;
     denImp->altura = altura;
     denImp->x = x;
@@ -62,6 +76,12 @@ Densidade densidade_ler(const char *linha) {
     double altura;
     sscanf(linha, "dd %lf %lf %lf %lf %lf", &x, &y, &largura, &altura, &densidade);
     return densidade_criar(x, y, largura, altura, densidade);
+}
+
+// Retorna o número de habitantes que vivem dentro de uma densidade.
+double densidade_obter_densidade(Densidade densidade) {
+    DenImp *denImp = (DenImp *) densidade;
+    return denImp->densidade;
 }
 
 // Retorna o número de habitantes contidos na área da densidade.
@@ -99,17 +119,6 @@ bool densidade_contem_quadra(DenImp *densidade, Figura quadra) {
         densidade->y + densidade->altura < figura_obter_y_fim(quadra))
         return false;
     return true;
-}
-
-// Retorna a densidade de uma quadra.
-double densidade_buscar_densidade_quadra(Lista lista_densidades, Figura quadra) {
-    for (ListaNo i = lista_obter_primeiro(lista_densidades); i != NULL;
-         i = lista_obter_proximo(i)) {
-        DenImp *regiao = (DenImp *) lista_obter_info(i);
-        if (densidade_contem_quadra(regiao, quadra))
-            return regiao->densidade;
-    }
-    return 0;
 }
 
 // Libera a memória utilizada por uma densidade.

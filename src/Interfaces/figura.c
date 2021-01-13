@@ -36,7 +36,7 @@ typedef struct {
 
 // Cria e retorna uma interface que pode ser populada com as funções de uma figura específica.
 FiguraInterface figura_interface_criar() {
-    FiguraInterfaceImp *figuraInterfaceImp = malloc(sizeof(FiguraInterfaceImp));
+    FiguraInterfaceImp *figuraInterfaceImp = calloc(1, sizeof *figuraInterfaceImp);
     return figuraInterfaceImp;
 }
 

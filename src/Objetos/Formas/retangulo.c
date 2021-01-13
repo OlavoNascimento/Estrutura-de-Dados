@@ -73,7 +73,7 @@ Retangulo retangulo_criar(const char id[100], double largura, double altura, dou
         LOG_ERRO("Não é possível criar um retângulo com cor de preenchimento NULL!\n");
         return NULL;
     }
-    RetanguloImp *retImp = malloc(sizeof(RetanguloImp));
+    RetanguloImp *retImp = malloc(sizeof *retImp);
     strcpy(retImp->id, id);
     retImp->largura = largura;
     retImp->altura = altura;

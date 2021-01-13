@@ -71,7 +71,7 @@ Circulo circulo_criar(const char id[100], double raio, double x, double y, const
         LOG_ERRO("Não é possível criar um círculo com cor de preenchimento NULL!\n");
         return NULL;
     }
-    CirculoImp *cirImp = malloc(sizeof(CirculoImp));
+    CirculoImp *cirImp = malloc(sizeof *cirImp);
     strcpy(cirImp->id, id);
     cirImp->raio = raio;
     cirImp->x = x;

@@ -27,7 +27,7 @@ typedef struct QuadTreeImpT {
 } QuadTreeImp;
 
 QuadTree criaQt(funcGetChave f) {
-    QuadTreeImp *quadtree = malloc(sizeof(QuadTreeImp));
+    QuadTreeImp *quadtree = malloc(sizeof *quadtree);
     quadtree->obter_identificador = f;
     quadtree->noroeste = NULL;
     quadtree->nordeste = NULL;
@@ -314,7 +314,7 @@ QtNo insereQt(QuadTree qt, Ponto ponto, QtInfo info) {
         LOG_ERRO("Não é possível inserir uma informação nula em uma quadtree!\n");
         return NULL;
     }
-    QTNoImp *no = malloc(sizeof(QTNoImp));
+    QTNoImp *no = malloc(sizeof *no);
     no->coordenada = ponto;
     no->info = info;
 

@@ -24,7 +24,7 @@ void criar_diretorio(const char *diretorio) {
         return;
     }
 
-    char *caminho = malloc((strlen(diretorio) + 1) * sizeof(char));
+    char *caminho = malloc((strlen(diretorio) + 1) * sizeof *caminho);
     strcpy(caminho, diretorio);
     // Avança caractere por caractere até encontrar o separador de diretórios do sistema, quando o
     // separador é encontrado cria o diretório especificado até aquele ponto.
@@ -72,14 +72,14 @@ char *extrair_nome_base(const char *caminho_arquivo) {
     if (nome_arquivo != NULL) {
         // Caso o arquivo tem uma / ou \ em seu caminho, avança um caratere, removendo a /
         nome_arquivo++;
-        nome_base = malloc((strlen(nome_arquivo) + 1) * sizeof(char));
+        nome_base = malloc((strlen(nome_arquivo) + 1) * sizeof *nome_base);
         if (nome_base == NULL)
             return NULL;
         strcpy(nome_base, nome_arquivo);
     } else {
         // Arquivo não tem uma / ou \ em seu caminho, consequentemente o caminho passado a função
         // não possui diretórios antecedentes ao arquivo.
-        nome_base = malloc((strlen(caminho_arquivo) + 1) * sizeof(char));
+        nome_base = malloc((strlen(caminho_arquivo) + 1) * sizeof *nome_base);
         if (nome_base == NULL)
             return NULL;
         strcpy(nome_base, caminho_arquivo);
@@ -102,7 +102,7 @@ char *extrair_nome_diretorio(const char *caminho_arquivo) {
         return NULL;
     }
 
-    char *caminho_diretorios = malloc((strlen(caminho_arquivo) + 1) * sizeof(char));
+    char *caminho_diretorios = malloc((strlen(caminho_arquivo) + 1) * sizeof *caminho_diretorios);
     strcpy(caminho_diretorios, caminho_arquivo);
 
     // Avança até a última / ou \ no caminho do arquivo.
@@ -123,7 +123,7 @@ char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
         return NULL;
     }
 
-    char *sufixo_final = malloc(sizeof(char));
+    char *sufixo_final = malloc(sizeof *sufixo_final);
     sufixo_final[0] = '\0';
 
     va_list sufixos;
@@ -134,7 +134,7 @@ char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
         char *sufixo = va_arg(sufixos, char *);
         // Aumenta o tamanho da string para receber o proximo sufixo
         char *tmp =
-            realloc(sufixo_final, (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof(char));
+            realloc(sufixo_final, (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof *tmp);
         if (tmp == NULL) {
             LOG_ERRO("Falha ao alocar memória para novo sufixo!\n");
             free(sufixo_final);
@@ -148,7 +148,7 @@ char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
     // Recebe o nome do arquivo, sem os diretórios que compõem seu caminho e sua extensão
     char *nome_arquivo = extrair_nome_base(caminho_arquivo);
 
-    char *novo_nome = malloc((strlen(nome_arquivo) + strlen(sufixo_final) + 1) * sizeof(char));
+    char *novo_nome = malloc((strlen(nome_arquivo) + strlen(sufixo_final) + 1) * sizeof *novo_nome);
     sprintf(novo_nome, "%s%s", nome_arquivo, sufixo_final);
 
     free(nome_arquivo);

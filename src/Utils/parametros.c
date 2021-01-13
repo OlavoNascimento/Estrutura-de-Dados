@@ -19,7 +19,7 @@ typedef struct {
 
 // Retorna uma struct com todos os parâmetros que podem ser lidos pelo programa.
 Parametros parametros_criar() {
-    ParametrosImp *params = malloc(sizeof(ParametrosImp));
+    ParametrosImp *params = malloc(sizeof *params);
     params->nome_dir_entrada = NULL;
     params->caminho_descricao = NULL;
     params->caminho_consulta = NULL;
@@ -36,23 +36,28 @@ Parametros parametros_ler(int argc, const char *argv[]) {
     while (i < argc) {
         if (strcmp("-e", argv[i]) == 0) {
             i++;
-            paramsImp->nome_dir_entrada = malloc((strlen(argv[i]) + 1) * sizeof(char));
+            paramsImp->nome_dir_entrada =
+                malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->nome_dir_entrada);
             strcpy(paramsImp->nome_dir_entrada, argv[i]);
         } else if (strcmp("-f", argv[i]) == 0) {
             i++;
-            paramsImp->caminho_descricao = malloc((strlen(argv[i]) + 1) * sizeof(char));
+            paramsImp->caminho_descricao =
+                malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->caminho_descricao);
             strcpy(paramsImp->caminho_descricao, argv[i]);
         } else if (strcmp("-o", argv[i]) == 0) {
             i++;
-            paramsImp->nome_dir_saida = malloc((strlen(argv[i]) + 1) * sizeof(char));
+            paramsImp->nome_dir_saida =
+                malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->nome_dir_saida);
             strcpy(paramsImp->nome_dir_saida, argv[i]);
         } else if (strcmp("-q", argv[i]) == 0) {
             i++;
-            paramsImp->caminho_consulta = malloc((strlen(argv[i]) + 1) * sizeof(char));
+            paramsImp->caminho_consulta =
+                malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->caminho_consulta);
             strcpy(paramsImp->caminho_consulta, argv[i]);
         } else if (strcmp("-ec", argv[i]) == 0) {
             i++;
-            paramsImp->caminho_estabelecimentos = malloc((strlen(argv[i]) + 1) * sizeof(char));
+            paramsImp->caminho_estabelecimentos =
+                malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->caminho_estabelecimentos);
             strcpy(paramsImp->caminho_estabelecimentos, argv[i]);
         }
         i++;
@@ -92,7 +97,8 @@ char *parametros_obter_caminho_descricao(const Parametros params) {
         caminho_descricao =
             unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_descricao);
     } else {
-        caminho_descricao = malloc((strlen(paramsImp->caminho_descricao) + 1) * sizeof(char));
+        caminho_descricao =
+            malloc((strlen(paramsImp->caminho_descricao) + 1) * sizeof *caminho_descricao);
         strcpy(caminho_descricao, paramsImp->caminho_descricao);
     }
 
@@ -110,7 +116,8 @@ char *parametros_obter_caminho_consulta(const Parametros params) {
         // Concatena o diretório ao caminho do arquivo.
         caminho_consulta = unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_consulta);
     } else {
-        caminho_consulta = malloc((strlen(paramsImp->caminho_consulta) + 1) * sizeof(char));
+        caminho_consulta =
+            malloc((strlen(paramsImp->caminho_consulta) + 1) * sizeof caminho_consulta);
         strcpy(caminho_consulta, paramsImp->caminho_consulta);
     }
 
@@ -129,8 +136,8 @@ char *parametros_obter_caminho_estabelecimentos(const Parametros params) {
         caminho_estabelecimentos =
             unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_estabelecimentos);
     } else {
-        caminho_estabelecimentos =
-            malloc((strlen(paramsImp->caminho_estabelecimentos) + 1) * sizeof(char));
+        caminho_estabelecimentos = malloc((strlen(paramsImp->caminho_estabelecimentos) + 1) *
+                                          sizeof *caminho_estabelecimentos);
         strcpy(caminho_estabelecimentos, paramsImp->caminho_estabelecimentos);
     }
 
@@ -149,7 +156,8 @@ char *parametros_obter_caminho_moradores(const Parametros params) {
         caminho_moradores =
             unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_moradores);
     } else {
-        caminho_moradores = malloc((strlen(paramsImp->caminho_moradores) + 1) * sizeof(char));
+        caminho_moradores =
+            malloc((strlen(paramsImp->caminho_moradores) + 1) * sizeof *caminho_moradores);
         strcpy(caminho_moradores, paramsImp->caminho_moradores);
     }
 

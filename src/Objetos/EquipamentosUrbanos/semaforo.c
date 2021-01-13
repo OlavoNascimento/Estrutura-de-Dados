@@ -89,7 +89,7 @@ Semaforo semaforo_criar(const char id[100], double largura, double altura, doubl
         LOG_ERRO("Não é possível criar um semáforo com cor de preenchimento NULL!\n");
         return NULL;
     }
-    SemaforoImp *semImp = malloc(sizeof(SemaforoImp));
+    SemaforoImp *semImp = malloc(sizeof *semImp);
     strcpy(semImp->id, id);
     semImp->largura = largura;
     semImp->altura = altura;

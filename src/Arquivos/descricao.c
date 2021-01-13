@@ -208,6 +208,46 @@ void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *pr
     prop->definido = true;
 }
 
+// Atualiza a cor das sombras das quadras de acordo com suas densidades.
+void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
+    Lista lista_densidades = quadtree_para_lista(densidades);
+    for (ListaNo i = lista_obter_primeiro(lista_densidades); i != NULL;
+         i = lista_obter_proximo(i)) {
+        Densidade densidade = lista_obter_info(i);
+        double habitantes = densidade_obter_densidade(densidade);
+
+        char cor[20];
+        cor[0] = '\0';
+        if (habitantes >= 10 && habitantes <= 500) {
+            strcpy(cor, "#sombra_10_500");
+        } else if (habitantes > 500 && habitantes <= 1500) {
+            strcpy(cor, "#sombra_500_1500");
+        } else if (habitantes > 1500 && habitantes <= 3000) {
+            strcpy(cor, "#sombra_1500_3000");
+        } else if (habitantes > 3000 && habitantes <= 4500) {
+            strcpy(cor, "#sombra_3000_4500");
+        } else if (habitantes > 4500 && habitantes <= 6000) {
+            strcpy(cor, "#sombra_4500_6000");
+        } else if (habitantes > 6000) {
+            strcpy(cor, "#sombra_6000");
+        }
+
+        double x_inicio = figura_obter_x_inicio(densidade);
+        double y_inicio = figura_obter_y_inicio(densidade);
+        double x_fim = figura_obter_x_fim(densidade);
+        double y_fim = figura_obter_y_fim(densidade);
+        Lista quadras_contidas = nosDentroRetanguloQt(quadras, x_inicio, y_inicio, x_fim, y_fim);
+
+        for (ListaNo j = lista_obter_primeiro(quadras_contidas); j != NULL;
+             j = lista_obter_proximo(j)) {
+            Quadra quad = getInfoQt(lista_obter_info(j));
+            quadra_definir_cor_sombra(quad, cor);
+        }
+        lista_destruir(quadras_contidas);
+    }
+    lista_destruir(lista_densidades);
+}
+
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha
 // como elementos de uma lista.
 void descricao_ler(const char *caminho_geo, QuadTree formas, QuadTree quadras, QuadTree hidrantes,
@@ -285,6 +325,8 @@ void descricao_ler(const char *caminho_geo, QuadTree formas, QuadTree quadras, Q
             LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximo.lista_max_bases);
         }
     }
+
+    atualizar_sombras_quadras(quadras, densidades);
 
     fclose(arquivo_descricao);
 }

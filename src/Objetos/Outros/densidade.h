@@ -37,20 +37,18 @@ O usuário é responsável por liberar a memória alocada!
 Densidade densidade_ler(const char *linha);
 
 /*
+Retorna a densidade armazenada em uma densidade.
+O parâmetro densidade não pode ser nulo.
+*/
+double densidade_obter_densidade(Densidade densidade);
+
+/*
 Checa se um ponto está contido por uma das densidades armazenadas em uma lista e retorna o número de
 habitantes.
 O parâmetro lista_densidades não pode ser nulo.
 Retorna o número de habitantes que vivem dentro da densidade.
 */
 double densidade_buscar_habitantes_ponto(Lista lista_densidades, double x, double y);
-
-/*
-Checa se uma quadra está contida por uma das densidades armazenadas em uma lista e retorna a
-densidade respectiva a quadra.
-O parâmetro lista_densidades não pode ser nulo.
-Retorna o número a densidade da quadra.
-*/
-double densidade_buscar_densidade_quadra(Lista lista_densidades, Figura quadra);
 
 /*
 Libera a memória alocada por uma densidade.

@@ -85,7 +85,7 @@ Radio radio_criar(const char id[100], double raio, double x, double y, const cha
         LOG_ERRO("Não é possível criar um rádio com cor de preenchimento NULL!\n");
         return NULL;
     }
-    RadioImp *radImp = malloc(sizeof(RadioImp));
+    RadioImp *radImp = malloc(sizeof *radImp);
     strcpy(radImp->id, id);
     radImp->raio = raio;
     radImp->x = x;

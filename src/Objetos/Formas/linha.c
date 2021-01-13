@@ -65,7 +65,7 @@ static FiguraInterface linha_criar_interface_figura() {
 // Cria e inicializa um struct Linha com os valores passados.
 Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
                   const char cor_preenchimento[20], bool tracejado) {
-    LinhaImp *linImp = malloc(sizeof(LinhaImp));
+    LinhaImp *linImp = malloc(sizeof *linImp);
     linImp->x1 = x1;
     linImp->y1 = y1;
     linImp->x2 = x2;

@@ -118,7 +118,7 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_
         x = figura_obter_x_fim(quadra) - largura;
     }
 
-    CasoImp *casoImp = malloc(sizeof(CasoImp));
+    CasoImp *casoImp = malloc(sizeof *casoImp);
     strcpy(casoImp->id, "");
     casoImp->largura = largura;
     casoImp->altura = altura;

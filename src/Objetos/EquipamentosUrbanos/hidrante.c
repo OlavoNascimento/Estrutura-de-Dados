@@ -86,7 +86,7 @@ Hidrante hidrante_criar(const char id[100], double raio, double x, double y,
         LOG_ERRO("Não é possível criar um hidrante com cor de preenchimento NULL!\n");
         return NULL;
     }
-    HidranteImp *hidImp = malloc(sizeof(HidranteImp));
+    HidranteImp *hidImp = malloc(sizeof *hidImp);
     strcpy(hidImp->id, id);
     hidImp->raio = raio;
     hidImp->x = x;

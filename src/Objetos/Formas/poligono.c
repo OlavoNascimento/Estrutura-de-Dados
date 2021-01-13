@@ -83,7 +83,7 @@ Poligono poligono_criar(double **pontos, int numero_de_pontos, const char cor_bo
         LOG_ERRO("Não é possível criar um polígono com opacidade menor que 0 ou maior que 1!\n");
         return NULL;
     }
-    PoligonoImp *polImp = malloc(sizeof(PoligonoImp));
+    PoligonoImp *polImp = malloc(sizeof *polImp);
 
     double min_x = DBL_MAX;
     double min_y = DBL_MAX;

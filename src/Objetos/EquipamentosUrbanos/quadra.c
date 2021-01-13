@@ -23,6 +23,7 @@ typedef struct {
     double arredondamento_borda;
     char espessura_borda[20];
     bool borda_tracejada;
+    char cor_sombra[20];
 } QuadraImp;
 
 const char *quadra_obter_tipo() {
@@ -31,7 +32,24 @@ const char *quadra_obter_tipo() {
 
 // Escreve no svg as informações de uma quadra.
 void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
-    retangulo_escrever_svg(quadra, arquivo);
+    QuadraImp *quadImp = (QuadraImp *) quadra;
+
+    fprintf(arquivo, "\t<rect");
+    if (strlen(quadImp->id) > 0)
+        fprintf(arquivo, " id='%s'", quadImp->id);
+
+    fprintf(arquivo,
+            " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf' "
+            "stroke-width='%s'",
+            quadImp->largura, quadImp->altura, quadImp->x, quadImp->y, quadImp->cor_borda,
+            quadImp->cor_preenchimento, quadImp->arredondamento_borda, quadImp->espessura_borda);
+
+    if (strlen(quadImp->cor_sombra) > 0)
+        fprintf(arquivo, " filter='url(%s)'", quadImp->cor_sombra);
+
+    if (quadImp->borda_tracejada)
+        fprintf(arquivo, " style='stroke-dasharray: 2'");
+    fprintf(arquivo, "/>\n");
 
     double x = figura_obter_x_centro(quadra);
     double y = figura_obter_y_centro(quadra) + 4;
@@ -90,7 +108,7 @@ Quadra quadra_criar(const char id[100], double largura, double altura, double x,
         LOG_ERRO("Não é possível criar uma quadra com cor de preenchimento NULL!\n");
         return NULL;
     }
-    QuadraImp *quaImp = malloc(sizeof(QuadraImp));
+    QuadraImp *quaImp = malloc(sizeof *quaImp);
     strcpy(quaImp->id, id);
     quaImp->largura = largura;
     quaImp->altura = altura;
@@ -101,6 +119,7 @@ Quadra quadra_criar(const char id[100], double largura, double altura, double x,
     quaImp->arredondamento_borda = 0;
     quaImp->borda_tracejada = false;
     strcpy(quaImp->espessura_borda, "1px");
+    strcpy(quaImp->cor_sombra, "");
 
     quaImp->vtable = quadra_criar_interface_figura();
     return quaImp;
@@ -177,6 +196,17 @@ void quadra_definir_borda_tracejada(Quadra quadra, bool tracejado) {
 // Define o arredondamento da borda da quadra.
 void quadra_definir_arredondamento_borda(Quadra quadra, double arredondamento_borda) {
     retangulo_definir_arredondamento_borda(quadra, arredondamento_borda);
+}
+
+// Define a cor da sombra de uma quadra.
+void quadra_definir_cor_sombra(Quadra quadra, const char *cor_sombra) {
+    if (cor_sombra == NULL) {
+        LOG_ERRO("Não é possível definir NULL como cor da sombra de uma %s!\n",
+                 figura_obter_tipo(quadra));
+        return;
+    }
+    QuadraImp *quaImp = (QuadraImp *) quadra;
+    strcpy(quaImp->cor_sombra, cor_sombra);
 }
 
 // Libera a memória alocada por uma quadra.
