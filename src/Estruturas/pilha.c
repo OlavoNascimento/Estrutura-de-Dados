@@ -3,73 +3,81 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "../Interfaces/figura.h"
 #include "../Utils/logging.h"
 
 typedef struct N {
-    Figura figura;
+    PilhaInfo info;
     struct N *proximo;
 } No;
 
 typedef struct {
+    DestruirInfo *destruir_info;
     int tamanho;
     No *topo;
 } PilhaImp;
 
-Pilha pilha_criar() {
+Pilha pilha_criar(DestruirInfo destruir_info) {
     PilhaImp *pilha = (PilhaImp *) malloc(sizeof(PilhaImp));
     if (pilha == NULL) {
         LOG_ERRO("Erro ao alocar espaço para a pilha!\n");
         return NULL;
     }
-    pilha->topo = NULL;
     pilha->tamanho = 0;
+    pilha->topo = NULL;
+    pilha->destruir_info = destruir_info;
     return pilha;
 }
 
 bool pilha_esta_vazia(Pilha pilha) {
-    PilhaImp *pilhaAux = (PilhaImp *) pilha;
-    return pilhaAux->topo == NULL;
+    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    return pilhaImp->topo == NULL;
 }
 
 int pilha_obter_tamanho(Pilha pilha) {
-    PilhaImp *pilhaAux = (PilhaImp *) pilha;
-    return pilhaAux->tamanho;
+    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    return pilhaImp->tamanho;
 }
 
-void pilha_inserir(Pilha pilha, Figura figura) {
-    PilhaImp *pilhaAux = (PilhaImp *) pilha;
+void pilha_inserir(Pilha pilha, PilhaInfo info) {
+    PilhaImp *pilhaImp = (PilhaImp *) pilha;
     No *novo_no = malloc(sizeof(No));
-    novo_no->figura = figura;
-    novo_no->proximo = pilhaAux->topo;
-    pilhaAux->topo = novo_no;
-    pilhaAux->tamanho++;
+    novo_no->info = info;
+    novo_no->proximo = pilhaImp->topo;
+    pilhaImp->topo = novo_no;
+    pilhaImp->tamanho++;
 }
 
-Figura pilha_remover(Pilha pilha) {
-    PilhaImp *pilhaAux = (PilhaImp *) pilha;
+PilhaInfo pilha_remover(Pilha pilha) {
+    PilhaImp *pilhaImp = (PilhaImp *) pilha;
     if (pilha_esta_vazia(pilha))
         return NULL;
 
-    Figura fig = pilhaAux->topo->figura;
-    No *topo = pilhaAux->topo;
-    pilhaAux->topo = topo->proximo;
+    PilhaInfo info = pilhaImp->topo->info;
+    No *topo = pilhaImp->topo;
+    pilhaImp->topo = topo->proximo;
     free(topo);
-    pilhaAux->tamanho--;
+    pilhaImp->tamanho--;
 
-    return fig;
+    return info;
 }
 
-Figura pilha_obter_topo(Pilha pilha) {
-    PilhaImp *pilhaAux = (PilhaImp *) pilha;
+PilhaInfo pilha_obter_topo(Pilha pilha) {
+    PilhaImp *pilhaImp = (PilhaImp *) pilha;
     if (pilha_esta_vazia(pilha))
         return NULL;
-    return pilhaAux->topo->figura;
+    return pilhaImp->topo->info;
 }
 
 void pilha_destruir(Pilha pilha) {
-    PilhaImp *pilhaAux = (PilhaImp *) pilha;
-    for (No *i = pilhaAux->topo; i != NULL; i = i->proximo)
-        free(i);
+    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+
+    No *no_atual = pilhaImp->topo;
+    while (no_atual != NULL) {
+        No *no_proximo = no_atual->proximo;
+        if (pilhaImp->destruir_info != NULL)
+            (pilhaImp->destruir_info(no_atual->info));
+        free(no_atual);
+        no_atual = no_proximo;
+    }
     free(pilha);
 }

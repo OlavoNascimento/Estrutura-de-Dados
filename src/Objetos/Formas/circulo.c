@@ -1,5 +1,6 @@
 #include "circulo.h"
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -102,19 +103,13 @@ bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
     double dist = (cirImp1->x - cirImp2->x) * (cirImp1->x - cirImp2->x) +
                   (cirImp1->y - cirImp2->y) * (cirImp1->y - cirImp2->y);
     double raios = (cirImp1->raio + cirImp2->raio) * (cirImp1->raio + cirImp2->raio);
-    if (dist > raios)
-        return false;
-    return true;
+    return dist <= raios;
 }
 
 // Retorna verdadeiro se um ponto se encontra dentro de um círculo.
 bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
     CirculoImp *cirImp = (CirculoImp *) circulo;
-    if (ponto_x <= cirImp->x - cirImp->raio || ponto_x >= cirImp->x + cirImp->raio)
-        return false;
-    if (ponto_y <= cirImp->y - cirImp->raio || ponto_y >= cirImp->y + cirImp->raio)
-        return false;
-    return true;
+    return pow((ponto_x - cirImp->x), 2) + pow((ponto_y - cirImp->y), 2) <= pow(cirImp->raio, 2);
 }
 
 // Escreve todos os dados de um círculo em um arquivo.
@@ -131,7 +126,6 @@ void circulo_escrever_informacoes(Circulo circulo, FILE *arquivo) {
 void circulo_escrever_svg(Circulo circulo, FILE *arquivo) {
     CirculoImp *cirImp = (CirculoImp *) circulo;
     fprintf(arquivo, "\t<circle ");
-    // Um circulo pode não ter um id
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, "id='%s' ", cirImp->id);
 

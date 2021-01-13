@@ -92,11 +92,13 @@ Radio radio_criar(const char id[100], double raio, double x, double y, const cha
     radImp->y = y;
     strcpy(radImp->cor_borda, cor_borda);
     strcpy(radImp->cor_preenchimento, cor_preenchimento);
+    strcpy(radImp->espessura_borda, "1px");
 
     radImp->vtable = radio_criar_interface_figura();
     return radImp;
 }
 
+// Cria um rádio com base em informações de uma linha.
 Radio radio_ler(const char *linha) {
     char id[100];
     double raio = 10;

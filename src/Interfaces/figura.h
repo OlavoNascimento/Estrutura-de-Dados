@@ -4,9 +4,8 @@
 /*
 Define uma FiguraInterface a qual pode ser incluída em outros objetos para permitir que sejam
 utilizados como uma figura genérica.
-Isso é possível já que ao chamar uma das funções que recebem uma Figura como argumento, o objeto
-internamente utiliza um ponteiro de uma função registrada anteriormente, tornando polimorfismo
-possível.
+Ao chamar uma das funções que recebem uma Figura como argumento, o objeto internamente utiliza um
+ponteiro de uma função registrada anteriormente, tornando polimorfismo possível.
 */
 
 #include <stdbool.h>
@@ -21,6 +20,51 @@ Interface que guarda diversos ponteiros de funções que devem ser implementadas
 ser utilizado como uma Figura.
 */
 typedef void *FiguraInterface;
+
+// Escreve todos os dados de uma figura em um arquivo passado a função.
+typedef void EscreverInformacoes(Figura figura, FILE *arquivo);
+
+// Escreve o código svg que representa uma figura em um arquivo.
+typedef void EscreverSvg(Figura figura, FILE *arquivo);
+
+// Retorna o nome do tipo de uma figura como uma string.
+typedef const char *ObterTipo();
+
+// Retorna o id de uma figura.
+typedef const char *ObterId(Figura figura);
+
+// Retorna a coordenada x de uma figura
+typedef double ObterX(Figura figura);
+// Retorna a coordenada y de uma figura
+typedef double ObterY(Figura figura);
+
+// Retorna a coordenada x onde uma figura se inicia.
+typedef double ObterXInicio(Figura figura);
+// Retorna a coordenada y onde uma figura se inicia.
+typedef double ObterYInicio(Figura figura);
+
+// Retorna a coordenada x onde uma figura acaba.
+typedef double ObterXFim(Figura figura);
+// Retorna a coordenada y onde uma figura acaba.
+typedef double ObterYFim(Figura figura);
+
+// Retorna a coordenada x do centro de uma figura.
+typedef double ObterXCentro(Figura figura);
+// Retorna a coordenada y do centro de uma figura.
+typedef double ObterYCentro(Figura figura);
+
+// Retorna a cor da borda de uma figura.
+typedef const char *ObterCorBorda(Figura figura);
+// Define a cor da borda de uma figura.
+typedef void DefinirCorBorda(Figura figura, const char *cor_borda);
+
+// Retorna a cor do preenchimento de uma figura.
+typedef const char *ObterCorPreenchimento(Figura figura);
+// Define a cor de preenchimento de uma figura.
+typedef void DefinirCorPreenchimento(Figura figura, const char *cor_preenchimento);
+
+// Libera a memória alocada por uma figura.
+typedef void Destruir(Figura figura);
 
 /*
 Cria e inicializa uma FiguraInterface, na qual diversas funções podem ser registradas para permitir

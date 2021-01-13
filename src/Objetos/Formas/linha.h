@@ -7,7 +7,6 @@ espaciais de inicio e fim, assim como propriedades para alterar sua visualizaç�
 como as cores de borda e preenchimento e sua aparência.
 
 Suas propriedades são:
-    id: Identificador da linha.
     x: Coordenada x inicial da linha no plano.
     y: Coordenada y inicial da linha no plano.
     x1: Coordenada x final da linha no plano.

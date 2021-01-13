@@ -93,11 +93,6 @@ Posto posto_ler(const char *linha) {
     return posto_criar(x, y);
 }
 
-// Retorna o id de um posto.
-const char *posto_obter_id(Posto posto) {
-    return circulo_obter_id(posto);
-}
-
 // Retorna o raio de um posto. Usado apenas para cálculo interno, já que o posto é considerado
 // um ponto.
 double posto_obter_raio(Posto posto) {

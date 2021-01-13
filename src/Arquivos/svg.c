@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../Estruturas/lista.h"
+#include "../Estruturas/quadtree.h"
 #include "../Interfaces/figura.h"
 #include "../Objetos/Outros/texto.h"
 #include "../Utils/caminhos.h"
@@ -25,76 +25,59 @@ typedef struct {
     double altura;
 } ExibicaoSVG;
 
-// Retorna uma struct que representa as propriedades iniciais do arquivo svg.
-ExibicaoSVG svg_criar_exibicao() {
-    ExibicaoSVG exi = {
-        .origem_x = DBL_MAX, .origem_y = DBL_MAX, .largura = DBL_MIN, .altura = DBL_MIN};
-    return exi;
-}
-
 // Checa se é necessário atualizar os valores da struct ExibiçãoSVG para garantir que a figura
 // passada a função possa ser vista no arquivo svg.
-void svg_atualizar_exibicao(ExibicaoSVG *exi, Figura figura) {
+void svg_atualizar_exibicao(Figura figura, ExibicaoSVG *exi) {
     exi->origem_x = min(exi->origem_x, figura_obter_x_inicio(figura));
     exi->origem_y = min(exi->origem_y, figura_obter_y_inicio(figura));
     exi->largura = max(exi->largura, figura_obter_x_fim(figura));
     exi->altura = max(exi->altura, figura_obter_y_fim(figura));
 }
 
-// Escreve uma lista genérica em um arquivo.
-void escrever_lista(Lista *lista, FILE *arquivo_tmp, ExibicaoSVG *exibicao) {
-    struct No *atual = lista_obter_primeiro(lista);
-    while (atual != NULL) {
-        Figura figura_atual = lista_obter_figura(atual);
-        figura_escrever_svg(figura_atual, arquivo_tmp);
-        // Atualiza as proporções do svg caso necessário.
-        svg_atualizar_exibicao(exibicao, figura_atual);
+// Retorna uma struct que representa as propriedades iniciais do arquivo svg.
+ExibicaoSVG *svg_criar_exibicao(QuadTree formas, QuadTree quadras, QuadTree hidrantes,
+                                QuadTree radios, QuadTree semaforos, QuadTree postos,
+                                QuadTree casos) {
+    ExibicaoSVG *exi = malloc(sizeof(ExibicaoSVG));
+    exi->origem_x = DBL_MAX;
+    exi->origem_y = DBL_MAX;
+    exi->largura = DBL_MIN;
+    exi->altura = DBL_MIN;
 
-        atual = lista_obter_proximo(atual);
-    }
+    // Encontra os valores necessários para que todas as figuras apareçam no arquivo svg.
+    percorreLarguraQt(formas, (void *) svg_atualizar_exibicao, exi);
+    percorreLarguraQt(quadras, (void *) svg_atualizar_exibicao, exi);
+    percorreLarguraQt(hidrantes, (void *) svg_atualizar_exibicao, exi);
+    percorreLarguraQt(radios, (void *) svg_atualizar_exibicao, exi);
+    percorreLarguraQt(semaforos, (void *) svg_atualizar_exibicao, exi);
+    percorreLarguraQt(postos, (void *) svg_atualizar_exibicao, exi);
+    percorreLarguraQt(casos, (void *) svg_atualizar_exibicao, exi);
+
+    return exi;
 }
 
-// Escreve as listas passadas para um arquivo svg temporário.
-void escrever_svg_temporario(const char *caminho_svg_tmp, ExibicaoSVG *exibicao, Lista lista_formas,
-                             Lista lista_quadras, Lista lista_hidrantes, Lista lista_radios,
-                             Lista lista_semaforos, Lista lista_postos, Lista lista_casos) {
-    FILE *arquivo_tmp = fopen(caminho_svg_tmp, "w");
-    if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser criado para escrita!\n",
-                caminho_svg_tmp);
+// Transforma as figuras das listas em um código svg que as representam, salvando o resultado em um
+// arquivo .svg localizado no caminho específicado.
+void svg_quadtree_para_svg(const char *caminho_svg, QuadTree formas, QuadTree quadras,
+                           QuadTree hidrantes, QuadTree radios, QuadTree semaforos, QuadTree postos,
+                           QuadTree casos) {
+    if (caminho_svg == NULL) {
+        LOG_ERRO("Caminho nulo passado a lista para svg!\n");
         return;
     }
-    // Escreve as informações em um arquivo temporário, já que o parâmetro viewbow precisa ser
-    // substituido após a criação do arquivo.
-    fprintf(arquivo_tmp, "<svg>\n");
 
-    escrever_lista(lista_quadras, arquivo_tmp, exibicao);
-    escrever_lista(lista_semaforos, arquivo_tmp, exibicao);
-    escrever_lista(lista_radios, arquivo_tmp, exibicao);
-    escrever_lista(lista_hidrantes, arquivo_tmp, exibicao);
-    escrever_lista(lista_casos, arquivo_tmp, exibicao);
-    escrever_lista(lista_postos, arquivo_tmp, exibicao);
-    escrever_lista(lista_formas, arquivo_tmp, exibicao);
+    // Calcula as proporções da imagem svg.
+    ExibicaoSVG *exibicao =
+        svg_criar_exibicao(formas, quadras, hidrantes, radios, semaforos, postos, casos);
 
-    fprintf(arquivo_tmp, "</svg>\n");
-    fclose(arquivo_tmp);
-}
+    // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
+    char *diretorio_saida = extrair_nome_diretorio(caminho_svg);
 
-// Copia o arquivo temporário com exceção de sua primeira linha, a qual é substituida por uma tag
-// <svg> com o atributo viewbox definido.
-void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho_svg_tmp,
-                              ExibicaoSVG *exibicao) {
-    FILE *arquivo_svg = fopen(caminho_svg_final, "w");
+    FILE *arquivo_svg = fopen(caminho_svg, "w");
     if (arquivo_svg == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado!\n", caminho_svg_final);
+        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
         return;
     }
-    FILE *arquivo_tmp = fopen(caminho_svg_tmp, "r");
-    if (arquivo_tmp == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg temporário %s não pode ser lido!\n", caminho_svg_tmp);
-        return;
-    }
-
     // Coordenada x da origem é a figura mais a esquerda.
     double svg_origem_x = exibicao->origem_x - SVG_MARGEM;
     // Coordenada y da origem é a figura mais acima.
@@ -105,53 +88,19 @@ void escrever_svg_com_viewbox(const char *caminho_svg_final, const char *caminho
     // Coordenada altura é a figura mais a abaixo. A largura do svg deve ser alterada para utilizar
     // a nova origem como base.
     double svg_altura = exibicao->altura - exibicao->origem_y + 2 * SVG_MARGEM;
+    fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf'>\n", svg_origem_x, svg_origem_y,
+            svg_largura, svg_altura);
 
-    // Utiliza o atributo viewbox para garantir que todas as figuras possam ser vistas no arquivo
-    // svg.
-    int numero_linha = 0;
-    char linha[LINHA_MAX];
-    while ((fgets(linha, LINHA_MAX, arquivo_tmp)) != NULL) {
-        // Substitui a primeira linha, no caso a tag <svg> com uma nova tag <svg> que possui o
-        // atributo viewbox definido.
-        if (numero_linha == 0)
-            fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf'>\n", svg_origem_x, svg_origem_y,
-                    svg_largura, svg_altura);
-        else
-            fprintf(arquivo_svg, "%s", linha);
-        numero_linha++;
-    }
+    percorreLarguraQt(quadras, (void *) figura_escrever_svg, arquivo_svg);
+    percorreLarguraQt(semaforos, (void *) figura_escrever_svg, arquivo_svg);
+    percorreLarguraQt(radios, (void *) figura_escrever_svg, arquivo_svg);
+    percorreLarguraQt(hidrantes, (void *) figura_escrever_svg, arquivo_svg);
+    percorreLarguraQt(casos, (void *) figura_escrever_svg, arquivo_svg);
+    percorreLarguraQt(postos, (void *) figura_escrever_svg, arquivo_svg);
+    percorreLarguraQt(formas, (void *) figura_escrever_svg, arquivo_svg);
+    fprintf(arquivo_svg, "</svg>\n");
 
-    fclose(arquivo_tmp);
     fclose(arquivo_svg);
-}
-
-// Transforma as figuras das listas em um código svg que as representam, salvando o resultado em um
-// arquivo .svg localizado no caminho específicado.
-void svg_lista_para_svg(const char *caminho_svg, Lista lista_formas, Lista lista_quadras,
-                        Lista lista_hidrantes, Lista lista_radios, Lista lista_semaforos,
-                        Lista lista_postos, Lista lista_casos) {
-    if (caminho_svg == NULL) {
-        LOG_ERRO("Caminho nulo passado a lista para svg!\n");
-        return;
-    }
-
-    // Mantem informações sobre as proporções da imagem svg.
-    ExibicaoSVG exibicao = svg_criar_exibicao();
-
-    // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
-    char *diretorio_saida = extrair_nome_diretorio(caminho_svg);
-    char *nome_svg_tmp = alterar_sufixo(caminho_svg, 2, ".svg", ".tmp");
-    char *caminho_tmp = unir_caminhos(diretorio_saida, nome_svg_tmp);
-
-    // Svg temporário criado para anotar as proporções necessárias pelo svg final.
-    escrever_svg_temporario(caminho_tmp, &exibicao, lista_formas, lista_quadras, lista_hidrantes,
-                            lista_radios, lista_semaforos, lista_postos, lista_casos);
-
-    // Svg final com a propriedade viewbox definida.
-    escrever_svg_com_viewbox(caminho_svg, caminho_tmp, &exibicao);
-
-    remove(caminho_tmp);
     free(diretorio_saida);
-    free(nome_svg_tmp);
-    free(caminho_tmp);
+    free(exibicao);
 }

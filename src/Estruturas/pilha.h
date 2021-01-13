@@ -6,16 +6,20 @@ Este módulo define uma Pilha, responsável por armazenar os diferentes tipos de
 no projeto. Disponibiliza funções para modificar criar, modificar e destruir a pilha.
 */
 
-#include "../Interfaces/figura.h"
+#include <stdbool.h>
 
 typedef void* Pilha;
+typedef void* PilhaInfo;
+
+typedef void DestruirInfo(PilhaInfo);
 
 /*
 Cria uma pilha.
-Não é passado nenhum parâmetro.
+É possível especificar uma função que libere a memória alocada pelas informações da fila, para que
+ao liberar a memória da fila suas informações também sejam liberadas.
 Retorna o endereço para uma pilha vazia.
 */
-Pilha pilha_criar();
+Pilha pilha_criar(DestruirInfo destruir_info);
 
 /*
 Verifica se uma pilha está vazia.
@@ -32,25 +36,25 @@ Retorna o tamanho da pilha.
 int pilha_obter_tamanho(Pilha pilha);
 
 /*
-Adiciona uma figura em uma pilha.
+Adiciona uma informação em uma pilha.
 Ambos os parâmetros não podem ser nulos.
-A figura é definida como o novo topo da pilha.
+A informação é definida como o novo topo da pilha.
 */
-void pilha_inserir(Pilha pilha, Figura figura);
+void pilha_inserir(Pilha pilha, PilhaInfo info);
 
 /*
-Remove a figura no topo de uma pilha.
+Remove a informação no topo de uma pilha.
 O parâmetro pilha não pode ser nulo.
-A figura é retirada da pilha e o a figura a seguir é definida como o novo topo da pilha.
+A informação é retirada da pilha e o a informação a seguir é definida como o novo topo da pilha.
 */
-Figura pilha_remover(Pilha pilha);
+PilhaInfo pilha_remover(Pilha pilha);
 
 /*
-Retorna a figura no topo da pilha sem remove-la.
+Retorna a informação no topo da pilha sem remove-la.
 O parâmetro pilha não pode ser nulo.
-A figura no topo da pilha é retornada.
+A info no topo da pilha é retornada.
 */
-Figura pilha_obter_topo(Pilha pilha);
+PilhaInfo pilha_obter_topo(Pilha pilha);
 
 /*
 Libera a memória alocada por uma pilha.

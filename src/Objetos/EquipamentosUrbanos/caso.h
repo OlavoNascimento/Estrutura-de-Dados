@@ -21,7 +21,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "../../Estruturas/lista.h"
+#include "quadra.h"
 
 typedef void *Caso;
 
@@ -37,15 +37,15 @@ Os casos devem ser maior que zero, as cores e a lista de quadras não podem ser 
 Uma quadra com o cep especificado deve estar presente na lista de quadras.
 O usuário é responsável por liberar a memória alocada!
 */
-Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_borda[20],
-                const char cor_preenchimento[20], Lista lista_quadras);
+Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_borda[20],
+                const char cor_preenchimento[20]);
 
 /*
 Cria e inicializa um Caso a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */
-Caso caso_ler(const char *linha, Lista lista_quadras);
+Caso caso_ler(const char *linha, Quadra quadra);
 
 /*
 Obtém o número de casos de um determinada caso.

@@ -5,15 +5,19 @@
 #include "./Arquivos/consulta.h"
 #include "./Arquivos/descricao.h"
 #include "./Arquivos/svg.h"
-#include "./Estruturas/lista.h"
+#include "./Estruturas/quadtree.h"
+#include "./Interfaces/figura.h"
+#include "./Objetos/Formas/retangulo.h"
 #include "./Utils/caminhos.h"
 #include "./Utils/logging.h"
 #include "./Utils/parametros.h"
 
 int main(int argc, const char *argv[]) {
     const Parametros params = parametros_ler(argc, argv);
-    if (!parametros_checar_obrigatorios(params))
+    if (!parametros_checar_obrigatorios(params)) {
+        parametros_destruir(params);
         return 1;
+    }
 
     criar_diretorio(parametros_obter_diretorio_saida(params));
     char *caminho_descricao = parametros_obter_caminho_descricao(params);
@@ -23,19 +27,19 @@ int main(int argc, const char *argv[]) {
     LOG_INFO("Arquivo descrição: %s\n", caminho_descricao);
     LOG_INFO("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
-    Lista *lista_formas = lista_criar();
-    Lista *lista_quadras = lista_criar();
-    Lista *lista_hidrantes = lista_criar();
-    Lista *lista_radios = lista_criar();
-    Lista *lista_semaforos = lista_criar();
-    Lista *lista_postos = lista_criar();
-    Lista *lista_densidades = lista_criar();
-    Lista *lista_casos = lista_criar();
+    QuadTree *formas = criaQt(figura_obter_id);
+    QuadTree *quadras = criaQt(figura_obter_id);
+    QuadTree *hidrantes = criaQt(figura_obter_id);
+    QuadTree *radios = criaQt(figura_obter_id);
+    QuadTree *semaforos = criaQt(figura_obter_id);
+    QuadTree *postos = criaQt(figura_obter_id);
+    QuadTree *densidades = criaQt(figura_obter_id);
+    QuadTree *casos = criaQt(figura_obter_id);
 
-    descricao_ler(caminho_descricao, lista_formas, lista_quadras, lista_hidrantes, lista_radios,
-                  lista_semaforos, lista_postos, lista_densidades);
-    svg_lista_para_svg(caminho_svg_descricao, lista_formas, lista_quadras, lista_hidrantes,
-                       lista_radios, lista_semaforos, lista_postos, lista_casos);
+    descricao_ler(caminho_descricao, formas, quadras, hidrantes, radios, semaforos, postos,
+                  densidades);
+    svg_quadtree_para_svg(caminho_svg_descricao, formas, quadras, hidrantes, radios, semaforos,
+                          postos, casos);
 
     if (caminho_consulta != NULL) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
@@ -45,11 +49,10 @@ int main(int argc, const char *argv[]) {
         LOG_INFO("Arquivo log: %s\n", caminho_registro_consulta);
         LOG_INFO("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
-        consulta_ler(caminho_consulta, caminho_registro_consulta, lista_formas, lista_quadras,
-                     lista_hidrantes, lista_radios, lista_semaforos, lista_postos, lista_densidades,
-                     lista_casos);
-        svg_lista_para_svg(caminho_svg_consulta, lista_formas, lista_quadras, lista_hidrantes,
-                           lista_radios, lista_semaforos, lista_postos, lista_casos);
+        consulta_ler(caminho_consulta, caminho_registro_consulta, formas, quadras, hidrantes,
+                     radios, semaforos, postos, densidades, casos);
+        svg_quadtree_para_svg(caminho_svg_consulta, formas, quadras, hidrantes, radios, semaforos,
+                              postos, casos);
 
         free(caminho_registro_consulta);
         free(caminho_svg_consulta);
@@ -59,14 +62,14 @@ int main(int argc, const char *argv[]) {
     free(caminho_consulta);
     free(caminho_svg_descricao);
     parametros_destruir(params);
-    lista_destruir(lista_formas);
-    lista_destruir(lista_quadras);
-    lista_destruir(lista_hidrantes);
-    lista_destruir(lista_semaforos);
-    lista_destruir(lista_radios);
-    lista_destruir(lista_postos);
-    lista_destruir(lista_densidades);
-    lista_destruir(lista_casos);
+    desalocaQt(formas);
+    desalocaQt(quadras);
+    desalocaQt(hidrantes);
+    desalocaQt(semaforos);
+    desalocaQt(radios);
+    desalocaQt(postos);
+    desalocaQt(densidades);
+    desalocaQt(casos);
 
     return 0;
 }

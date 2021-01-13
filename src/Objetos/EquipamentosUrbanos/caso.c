@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../Estruturas/lista.h"
+#include "../../Interfaces/figura.h"
 #include "../../Utils/logging.h"
 #include "../Formas/retangulo.h"
 #include "../Outros/texto.h"
+#include "quadra.h"
 
 typedef struct {
     FiguraInterface vtable;
@@ -80,14 +81,14 @@ static FiguraInterface caso_criar_interface_figura() {
 }
 
 // Cria e inicializa um struct CasoImp com os valores passados.
-Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_borda[20],
-                const char cor_preenchimento[20], Lista lista_quadras) {
+Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_borda[20],
+                const char cor_preenchimento[20]) {
     if (casos <= 0) {
         LOG_ERRO("Não é possível criar um caso menor ou igual a zero!\n");
         return NULL;
     }
-    if (cep == NULL) {
-        LOG_ERRO("Não é possível criar um caso buscando por um cep nulo!\n");
+    if (quadra == NULL) {
+        LOG_ERRO("Não é possível criar um caso com uma quadra nula!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
@@ -98,29 +99,23 @@ Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_
         LOG_ERRO("Não é possível criar um caso com cor de preenchimento NULL!\n");
         return NULL;
     }
-    No figura_no = lista_buscar(lista_quadras, cep);
-    if (figura_no == NULL) {
-        LOG_ERRO("Quadra com cep %s não encontrada ao criar caso!\n", cep);
-        return NULL;
-    }
-    Figura quadra_buscada = lista_obter_figura(figura_no);
 
     const double largura = 12;
     const double altura = 12;
     double x = 0;
     double y = 0;
     if (face == 'N') {
-        y = figura_obter_y_fim(quadra_buscada) - altura;
-        x = figura_obter_x(quadra_buscada) - largura / 2 + numero;
+        y = figura_obter_y_fim(quadra) - altura;
+        x = figura_obter_x(quadra) - largura / 2 + numero;
     } else if (face == 'S') {
-        y = figura_obter_y(quadra_buscada);
-        x = figura_obter_x(quadra_buscada) - largura / 2 + numero;
+        y = figura_obter_y(quadra);
+        x = figura_obter_x(quadra) - largura / 2 + numero;
     } else if (face == 'L') {
-        y = figura_obter_y(quadra_buscada) - altura / 2 + numero;
-        x = figura_obter_x(quadra_buscada);
+        y = figura_obter_y(quadra) - altura / 2 + numero;
+        x = figura_obter_x(quadra);
     } else if (face == 'O') {
-        y = figura_obter_y(quadra_buscada) - altura / 2 + numero;
-        x = figura_obter_x_fim(quadra_buscada) - largura;
+        y = figura_obter_y(quadra) - altura / 2 + numero;
+        x = figura_obter_x_fim(quadra) - largura;
     }
 
     CasoImp *casoImp = malloc(sizeof(CasoImp));
@@ -141,24 +136,18 @@ Caso caso_criar(int casos, char cep[100], char face, int numero, const char cor_
 }
 
 // Cria um caso com base em informações de uma linha.
-Caso caso_ler(const char *linha, Lista lista_quadras) {
+Caso caso_ler(const char *linha, Quadra quadra) {
     int casos;
     int numero;
     char face;
-    char cep[100];
-    sscanf(linha, "cv %d %s %c %d", &casos, cep, &face, &numero);
-    return caso_criar(casos, cep, face, numero, "orange", "orange", lista_quadras);
+    sscanf(linha, "cv %d %*s %c %d", &casos, &face, &numero);
+    return caso_criar(casos, quadra, face, numero, "orange", "orange");
 }
 
 // Retorna o número de casos armazenado em um objeto caso.
 int caso_obter_numero_de_casos(Caso caso) {
     CasoImp *casoImp = (CasoImp *) caso;
     return casoImp->numero_de_casos;
-}
-
-// Retorna o id de um caso.
-const char *caso_obter_id(Caso caso) {
-    return retangulo_obter_id(caso);
 }
 
 // Retorna a coordenada x de um caso.

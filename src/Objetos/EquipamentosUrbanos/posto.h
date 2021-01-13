@@ -34,13 +34,6 @@ O usuário é responsável por liberar a memória alocada!
 Posto posto_ler(const char *linha);
 
 /*
-Obtém o id de um posto.
-O parâmetro posto não pode ser nulo.
-Retorna o id de um posto.
-*/
-const char *posto_obter_id(Posto posto);
-
-/*
 Obtém a coordenada x de um posto.
 O parâmetro posto não pode ser nulo.
 Retorna a coordenada x de um posto.
