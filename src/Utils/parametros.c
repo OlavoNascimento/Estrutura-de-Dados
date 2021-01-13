@@ -13,6 +13,7 @@ typedef struct {
     char *caminho_descricao;
     char *caminho_consulta;
     char *caminho_estabelecimentos;
+    char *caminho_moradores;
     char *nome_dir_saida;
 } ParametrosImp;
 
@@ -23,6 +24,7 @@ Parametros parametros_criar() {
     params->caminho_descricao = NULL;
     params->caminho_consulta = NULL;
     params->caminho_estabelecimentos = NULL;
+    params->caminho_moradores = NULL;
     params->nome_dir_saida = NULL;
     return params;
 }
@@ -133,6 +135,25 @@ char *parametros_obter_caminho_estabelecimentos(const Parametros params) {
     }
 
     return caminho_estabelecimentos;
+}
+
+char *parametros_obter_caminho_moradores(const Parametros params) {
+    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    if (paramsImp->caminho_moradores == NULL)
+        return NULL;
+
+    char *caminho_moradores = NULL;
+    // Adiciona o diretório de entrada ao caminho do arquivo de moradores caso necessário.
+    if (paramsImp->nome_dir_entrada != NULL) {
+        // Concatena o diretório ao caminho do arquivo.
+        caminho_moradores =
+            unir_caminhos(paramsImp->nome_dir_entrada, paramsImp->caminho_moradores);
+    } else {
+        caminho_moradores = malloc((strlen(paramsImp->caminho_moradores) + 1) * sizeof(char));
+        strcpy(caminho_moradores, paramsImp->caminho_moradores);
+    }
+
+    return caminho_moradores;
 }
 
 // Usa o nome do arquivo de descrição para criar o nome do svg.
