@@ -6,16 +6,12 @@ Este módulo define a função svg_lista_para_svg, responsável por transformar 
 várias listas em um arquivo svg.
 */
 
-#include "../Estruturas/quadtree.h"
-
 /*
-Itera uma quadtree e transforma cada elemento no seu código svg equivalente.
-Todos os argumentos não podem ser nulos e todos os diretórios especificados no caminho do arquivo
-svg devem existir.
+Escreve o svg correspondente a todas as quadtrees passadas como argumento.
+O argumento caminho_svg não pode ser nulo, assim como as quadtrees passadas. O parâmetro
+num_quadtrees deve ser igual a quantidade de quadtrees passadas a função.
 Cria um arquivo svg no caminho especificado.
 */
-void svg_quadtree_para_svg(const char *caminho_svg, QuadTree formas, QuadTree quadras,
-                           QuadTree hidrantes, QuadTree radios, QuadTree semaforos, QuadTree postos,
-                           QuadTree casos);
+void svg_quadtrees_para_svg(const char *caminho_svg, int num_quadtrees, ...);
 
 #endif

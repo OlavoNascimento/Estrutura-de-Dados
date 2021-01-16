@@ -14,7 +14,8 @@ quadtrees com os elementos especificados no arquivo.
 Nenhum dos parâmetros podem ser nulos e o caminho do arquivo de descrição deve ser válido.
 A listas são preenchidas com as figuras e equipamentos urbanos descritos no arquivo.
 */
-void descricao_ler(const char *caminho_geo, QuadTree formas, QuadTree quadras, QuadTree hidrantes,
-                   QuadTree radios, QuadTree semaforos, QuadTree postos, QuadTree densidades);
+void descricao_ler(const char *caminho_descricao, QuadTree formas, QuadTree quadras,
+                   QuadTree hidrantes, QuadTree radios, QuadTree semaforos, QuadTree postos,
+                   QuadTree densidades);
 
 #endif

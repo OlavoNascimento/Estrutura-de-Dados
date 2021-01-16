@@ -18,7 +18,6 @@
 #include "../Objetos/Formas/retangulo.h"
 #include "../Objetos/Outros/densidade.h"
 #include "../Objetos/Outros/texto.h"
-#include "../Utils/graham_scan.h"
 #include "../Utils/logging.h"
 
 // Tamanho maxímo de um comando do arquivo de descrição.
@@ -250,11 +249,12 @@ void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha
 // como elementos de uma lista.
-void descricao_ler(const char *caminho_geo, QuadTree formas, QuadTree quadras, QuadTree hidrantes,
-                   QuadTree radios, QuadTree semaforos, QuadTree postos, QuadTree densidades) {
-    FILE *arquivo_descricao = fopen(caminho_geo, "r");
+void descricao_ler(const char *caminho_descricao, QuadTree formas, QuadTree quadras,
+                   QuadTree hidrantes, QuadTree radios, QuadTree semaforos, QuadTree postos,
+                   QuadTree densidades) {
+    FILE *arquivo_descricao = fopen(caminho_descricao, "r");
     if (arquivo_descricao == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_geo);
+        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_descricao);
         return;
     }
 

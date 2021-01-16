@@ -1,6 +1,7 @@
 #include "svg.h"
 
 #include <float.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,8 +13,6 @@
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
 
-// Tamanho maxímo da linha de um arquivo svg
-#define LINHA_MAX 300
 // Margem entre o svg e as figuras mais próximas das bordas.
 #define SVG_MARGEM 14
 
@@ -35,9 +34,10 @@ void svg_atualizar_exibicao(Figura figura, ExibicaoSVG *exi) {
 }
 
 // Retorna uma struct que representa as propriedades iniciais do arquivo svg.
-ExibicaoSVG *svg_criar_exibicao(QuadTree formas, QuadTree quadras, QuadTree hidrantes,
-                                QuadTree radios, QuadTree semaforos, QuadTree postos,
-                                QuadTree casos) {
+ExibicaoSVG *svg_criar_exibicao(int num_quadtrees, va_list quadtrees) {
+    va_list qts;
+    va_copy(qts, quadtrees);
+
     ExibicaoSVG *exi = malloc(sizeof *exi);
     exi->origem_x = DBL_MAX;
     exi->origem_y = DBL_MAX;
@@ -45,17 +45,23 @@ ExibicaoSVG *svg_criar_exibicao(QuadTree formas, QuadTree quadras, QuadTree hidr
     exi->altura = DBL_MIN;
 
     // Encontra os valores necessários para que todas as figuras apareçam no arquivo svg.
-    percorreLarguraQt(formas, (void *) svg_atualizar_exibicao, exi);
-    percorreLarguraQt(quadras, (void *) svg_atualizar_exibicao, exi);
-    percorreLarguraQt(hidrantes, (void *) svg_atualizar_exibicao, exi);
-    percorreLarguraQt(radios, (void *) svg_atualizar_exibicao, exi);
-    percorreLarguraQt(semaforos, (void *) svg_atualizar_exibicao, exi);
-    percorreLarguraQt(postos, (void *) svg_atualizar_exibicao, exi);
-    percorreLarguraQt(casos, (void *) svg_atualizar_exibicao, exi);
+    for (int i = 0; i < num_quadtrees; i++) {
+        QuadTree qt = va_arg(qts, QuadTree);
+        percorreLarguraQt(qt, (void *) svg_atualizar_exibicao, exi);
+    }
+
+    exi->origem_x -= SVG_MARGEM;
+    exi->origem_y -= SVG_MARGEM;
+    // A largura do svg deve ser alterada para utilizar a nova origem como base.
+    exi->largura = exi->largura - exi->origem_x + 2 * SVG_MARGEM;
+    // A largura do svg deve ser alterada para utilizar a nova origem como base.
+    exi->altura = exi->altura - exi->origem_y + 2 * SVG_MARGEM;
 
     return exi;
 }
 
+// Adiciona ao arquivo svg definições de filtros que podem ser utilizadas para incluir sombras de
+// diferentes cores as figuras.
 void escrever_definicoes_sombras(FILE *arquivo) {
     fprintf(arquivo,
             "\t<defs>\n"
@@ -80,53 +86,40 @@ void escrever_definicoes_sombras(FILE *arquivo) {
             "\t</defs>\n");
 }
 
-// Transforma as figuras das listas em um código svg que as representam, salvando o resultado em um
-// arquivo .svg localizado no caminho específicado.
-void svg_quadtree_para_svg(const char *caminho_svg, QuadTree formas, QuadTree quadras,
-                           QuadTree hidrantes, QuadTree radios, QuadTree semaforos, QuadTree postos,
-                           QuadTree casos) {
+// Transforma as figuras das quadtrees em um código svg que as representam, salvando o resultado em
+// um arquivo svg localizado no caminho específicado.
+void svg_quadtrees_para_svg(const char *caminho_svg, int num_quadtrees, ...) {
     if (caminho_svg == NULL) {
         LOG_ERRO("Caminho nulo passado a lista para svg!\n");
         return;
     }
+    va_list quadtrees;
+    va_start(quadtrees, num_quadtrees);
 
     // Calcula as proporções da imagem svg.
-    ExibicaoSVG *exibicao =
-        svg_criar_exibicao(formas, quadras, hidrantes, radios, semaforos, postos, casos);
-
-    // Cria uma cópia do caminho do arquivo svg porem com o sufixo .tmp
-    char *diretorio_saida = extrair_nome_diretorio(caminho_svg);
+    ExibicaoSVG *exibicao = svg_criar_exibicao(num_quadtrees, quadtrees);
 
     FILE *arquivo_svg = fopen(caminho_svg, "w");
     if (arquivo_svg == NULL) {
         fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
         return;
     }
-    // Coordenada x da origem é a figura mais a esquerda.
-    double svg_origem_x = exibicao->origem_x - SVG_MARGEM;
-    // Coordenada y da origem é a figura mais acima.
-    double svg_origem_y = exibicao->origem_y - SVG_MARGEM;
-    // Coordenada largura é a figura mais a direita. A largura do svg deve ser alterada para
-    // utilizar a nova origem como base.
-    double svg_largura = exibicao->largura - exibicao->origem_x + 2 * SVG_MARGEM;
-    // Coordenada altura é a figura mais a abaixo. A largura do svg deve ser alterada para utilizar
-    // a nova origem como base.
-    double svg_altura = exibicao->altura - exibicao->origem_y + 2 * SVG_MARGEM;
+
     fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf' xmlns='http://www.w3.org/2000/svg'>\n",
-            svg_origem_x, svg_origem_y, svg_largura, svg_altura);
+            exibicao->origem_x, exibicao->origem_y, exibicao->largura, exibicao->altura);
 
     escrever_definicoes_sombras(arquivo_svg);
 
-    percorreLarguraQt(quadras, (void *) figura_escrever_svg, arquivo_svg);
-    percorreLarguraQt(semaforos, (void *) figura_escrever_svg, arquivo_svg);
-    percorreLarguraQt(radios, (void *) figura_escrever_svg, arquivo_svg);
-    percorreLarguraQt(hidrantes, (void *) figura_escrever_svg, arquivo_svg);
-    percorreLarguraQt(casos, (void *) figura_escrever_svg, arquivo_svg);
-    percorreLarguraQt(postos, (void *) figura_escrever_svg, arquivo_svg);
-    percorreLarguraQt(formas, (void *) figura_escrever_svg, arquivo_svg);
+    // Itera pelas quadtrees e escreve suas figuras.
+    for (int i = 0; i < num_quadtrees; i++) {
+        // Recebe a quadtree atual.
+        QuadTree qt = va_arg(quadtrees, QuadTree);
+        percorreLarguraQt(qt, (void *) figura_escrever_svg, arquivo_svg);
+    }
+    va_end(quadtrees);
+
     fprintf(arquivo_svg, "</svg>\n");
 
     fclose(arquivo_svg);
-    free(diretorio_saida);
     free(exibicao);
 }

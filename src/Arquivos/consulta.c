@@ -21,16 +21,16 @@
 #include "../Objetos/Outros/texto.h"
 #include "../Ordenacao/quicksort.h"
 #include "../Ordenacao/shellsort.h"
+#include "../Utils/caminhos.h"
 #include "../Utils/graham_scan.h"
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
+#include "./svg.h"
 
 // Tamanho maxímo de um comando do arquivo de consulta.
 #define LINHA_MAX 300
 // Margem entre o retângulo criado pela função envolver_figuras e as figuras que ele envolve.
 #define MARGEM_CONTORNO 2
-// Tamanho estimado para cada letra de um texto
-#define MARGEM_LETRAS_TEXTO 4
 
 Retangulo *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
     // Coordenada x do contorno é a menor coordenada x entre as duas figuras.
@@ -468,6 +468,17 @@ void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char 
     fprintf(arquivo_log, "Área total: %lf\n\n", area_total);
 }
 
+void adicionar_caso(QuadTree casos, QuadTree quadras, const char *linha) {
+    char cep[100];
+    sscanf(linha, "cv %*d %s %*c %*d", cep);
+    QtNo no = quadtree_buscar_id(quadras, cep);
+    if (no != NULL) {
+        Quadra quadra_buscada = getInfoQt(no);
+        Caso novo_caso = caso_ler(linha, quadra_buscada);
+        insereQt(casos, ponto_criar_com_figura(novo_caso), novo_caso);
+    }
+}
+
 void postos_mais_proximos(QuadTree postos, QuadTree quadras, QuadTree formas, const char *linha,
                           FILE *arquivo_log) {
     int k;
@@ -531,24 +542,22 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     if (lista_obter_tamanho(nos_contidos) > 0)
         fprintf(arquivo_log, "Pontos selecionados pelo círculo: \n");
     for (ListaNo i = lista_obter_primeiro(nos_contidos); i != NULL; i = lista_obter_proximo(i)) {
-        // Distância entre o círculo e o ponto x mais longe do círculo
         Figura caso = getInfoQt(lista_obter_info(i));
-        double dx = max(x - figura_obter_x_centro(caso), figura_obter_x_centro(caso) - x);
-        // Distância entre o círculo e o ponto y mais longe do círculo
-        double dy = max(y - figura_obter_y_centro(caso), figura_obter_y_centro(caso) - y);
-        if (dx * dx + dy * dy < raio * raio) {
-            lista_inserir_final(casos_filtrados, caso);
+        if (circulo_contem_retangulo(raio_de_selecao, caso)) {
             total_de_casos += caso_obter_numero_de_casos(caso);
             fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(caso), figura_obter_y(caso));
+            lista_inserir_final(casos_filtrados, caso);
         }
     }
     if (lista_obter_tamanho(nos_contidos) > 0)
         fprintf(arquivo_log, "\n");
     lista_destruir(nos_contidos);
+    nos_contidos = NULL;
 
     Lista lista_densidades = quadtree_para_lista(densidades);
     double habitantes = densidade_buscar_habitantes_ponto(lista_densidades, x, y);
     lista_destruir(lista_densidades);
+    lista_densidades = NULL;
 
     double incidencia = (total_de_casos / habitantes) * 100000;
     char categoria = '\0';
@@ -617,14 +626,66 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     pilha_destruir(pilha_pontos_envoltoria);
 }
 
+// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o segundo
+// com as coordenadas da figura.
+void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
+    Texto texto_id = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_inicio(figura),
+                                 "none", "black", figura_obter_id(figura), false);
+    insereQt(quadtree, ponto_criar_com_figura(texto_id), texto_id);
+
+    char texto_cords[500];
+    texto_cords[0] = '\0';
+    snprintf(texto_cords, 500, "(%d,%d)", (int) figura_obter_x(figura),
+             (int) figura_obter_y(figura));
+    Texto coordenadas = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_fim(figura),
+                                    "none", "black", texto_cords, false);
+    insereQt(quadtree, ponto_criar_com_figura(coordenadas), coordenadas);
+}
+
+void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree hidrantes,
+                           QuadTree semaforos, QuadTree radios, const char *linha) {
+    char arvore[10];
+    char nome[1024];
+    sscanf(linha, "dmprbt %s %s", arvore, nome);
+
+    QuadTree qt = NULL;
+    if (strcmp(arvore, "q") == 0)
+        qt = quadras;
+    else if (strcmp(arvore, "h") == 0)
+        qt = hidrantes;
+    else if (strcmp(arvore, "s") == 0)
+        qt = semaforos;
+    else if (strcmp(arvore, "t") == 0)
+        qt = radios;
+    else
+        return;
+
+    char *diretorios = extrair_nome_diretorio(caminho_log);
+    char *nome_arquivo = alterar_sufixo(nome, 1, ".svg");
+    char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
+    LOG_INFO("Arquivo dmprbt: %s\n", caminho_arquivo);
+
+    // Quadtree contendo os ids e coordenadas das figuras da quadtree selecionada.
+    QuadTree quadtree_dados = criaQt(NULL);
+    percorreLarguraQt(qt, armazenar_dados_no, quadtree_dados);
+
+    // Escreve o svg das duas árvores.
+    svg_quadtrees_para_svg(caminho_arquivo, 2, qt, quadtree_dados);
+
+    desalocaQt(quadtree_dados);
+    free(caminho_arquivo);
+    free(nome_arquivo);
+    free(diretorios);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
-void consulta_ler(const char *caminho_qry, const char *caminho_log, QuadTree formas,
+void consulta_ler(const char *caminho_consulta, const char *caminho_log, QuadTree formas,
                   QuadTree quadras, QuadTree hidrantes, QuadTree radios, QuadTree semaforos,
                   QuadTree postos, QuadTree densidades, QuadTree casos) {
-    FILE *arquivo_consulta = fopen(caminho_qry, "r");
+    FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_qry);
+        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);
         return;
     }
     FILE *arquivo_log = fopen(caminho_log, "w");
@@ -663,18 +724,13 @@ void consulta_ler(const char *caminho_qry, const char *caminho_log, QuadTree for
         } else if (strcmp("car", comando) == 0) {
             retangulo_area_total_contida(formas, quadras, linha, arquivo_log);
         } else if (strcmp("cv", comando) == 0) {
-            char cep[100];
-            sscanf(linha, "cv %*d %s %*c %*d", cep);
-            QtNo no = quadtree_buscar_id(quadras, cep);
-            if (no != NULL) {
-                Figura quadra_buscada = getInfoQt(no);
-                Caso novo_caso = caso_ler(linha, quadra_buscada);
-                insereQt(casos, ponto_criar_com_figura(novo_caso), novo_caso);
-            }
+            adicionar_caso(casos, quadras, linha);
         } else if (strcmp("soc", comando) == 0) {
             postos_mais_proximos(postos, quadras, formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {
             determinar_regiao_de_incidencia(formas, densidades, casos, postos, linha, arquivo_log);
+        } else if (strcmp("dmprbt", comando) == 0) {
+            escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         }
     }
 

@@ -13,7 +13,7 @@ Lê um arquivo de consulta (.qry) e aplica os seus comandos nas figuras apropria
 Nenhum dos argumentos pode ser nulo e o caminho do arquivo de consulta deve ser válido.
 Altera as listas de acordo com os comandos presentes no arquivo de consulta.
 */
-void consulta_ler(const char *caminho_qry, const char *caminho_log, QuadTree formas,
+void consulta_ler(const char *caminho_consulta, const char *caminho_log, QuadTree formas,
                   QuadTree quadras, QuadTree hidrantes, QuadTree radios, QuadTree semaforos,
                   QuadTree postos, QuadTree densidades, QuadTree casos);
 
