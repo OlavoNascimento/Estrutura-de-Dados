@@ -32,7 +32,7 @@ const char *quadra_obter_tipo() {
 
 // Escreve no svg as informações de uma quadra.
 void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
-    QuadraImp *quadImp = (QuadraImp *) quadra;
+    QuadraImp *quadImp = quadra;
 
     fprintf(arquivo, "\t<rect");
     if (strlen(quadImp->id) > 0)
@@ -205,7 +205,7 @@ void quadra_definir_cor_sombra(Quadra quadra, const char *cor_sombra) {
                  figura_obter_tipo(quadra));
         return;
     }
-    QuadraImp *quaImp = (QuadraImp *) quadra;
+    QuadraImp *quaImp = quadra;
     strcpy(quaImp->cor_sombra, cor_sombra);
 }
 

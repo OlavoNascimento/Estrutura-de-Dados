@@ -46,12 +46,16 @@ double densidade_obter_y_fim(Densidade densidade) {
 static FiguraInterface densidade_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, densidade_obter_tipo);
+
     figura_registrar_obter_x(interface, densidade_obter_x);
     figura_registrar_obter_y(interface, densidade_obter_y);
+
     figura_registrar_obter_x_inicio(interface, densidade_obter_x);
     figura_registrar_obter_y_inicio(interface, densidade_obter_y);
+
     figura_registrar_obter_x_fim(interface, densidade_obter_x_fim);
     figura_registrar_obter_y_fim(interface, densidade_obter_y_fim);
+
     figura_registrar_destruir(interface, densidade_destruir);
     return interface;
 }
@@ -80,7 +84,7 @@ Densidade densidade_ler(const char *linha) {
 
 // Retorna o número de habitantes que vivem dentro de uma densidade.
 double densidade_obter_densidade(Densidade densidade) {
-    DenImp *denImp = (DenImp *) densidade;
+    DenImp *denImp = densidade;
     return denImp->densidade;
 }
 
@@ -103,7 +107,7 @@ bool densidade_contem_ponto(DenImp *regiao, double x, double y) {
 double densidade_buscar_habitantes_ponto(Lista lista_densidades, double x, double y) {
     for (ListaNo i = lista_obter_primeiro(lista_densidades); i != NULL;
          i = lista_obter_proximo(i)) {
-        DenImp *regiao = (DenImp *) lista_obter_info(i);
+        DenImp *regiao = lista_obter_info(i);
         if (densidade_contem_ponto(regiao, x, y))
             return densidade_calcular_habitantes(regiao);
     }
@@ -123,7 +127,7 @@ bool densidade_contem_quadra(DenImp *densidade, Figura quadra) {
 
 // Libera a memória utilizada por uma densidade.
 void densidade_destruir(Densidade densidade) {
-    DenImp *denImp = (DenImp *) densidade;
+    DenImp *denImp = densidade;
     free(denImp->vtable);
     free(denImp);
 }

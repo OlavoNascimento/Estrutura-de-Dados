@@ -18,7 +18,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void* Radio;
+typedef void *Radio;
 
 /*
 Cria e inicializa um Radio com os valores passados.
@@ -33,14 +33,14 @@ Cria e inicializa um Radio a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */
-Radio radio_ler(const char* linha);
+Radio radio_ler(const char *linha);
 
 /*
 Obtém o id de um rádio.
 O parâmetro radio não pode ser nulo.
 Retorna o id de um rádio.
 */
-const char* radio_obter_id(Radio radio);
+const char *radio_obter_id(Radio radio);
 
 /*
 Obtém a coordenada x de um rádio.
@@ -68,32 +68,32 @@ Obtém a cor de preenchimento de um rádio.
 O parâmetro radio não pode ser nulo.
 Retorna a cor de preenchimento de um rádio.
 */
-const char* radio_obter_cor_preenchimento(Radio radio);
+const char *radio_obter_cor_preenchimento(Radio radio);
 
 /*
 Define a cor de preenchimento de um rádio.
 Nenhum dos parâmetros podem ser nulos.
 */
-void radio_definir_cor_preenchimento(Radio radio, const char* cor_preenchimento);
+void radio_definir_cor_preenchimento(Radio radio, const char *cor_preenchimento);
 
 /*
 Obtém a cor da borda de um rádio.
 O parâmetro radio não pode ser nulo.
 Retorna a cor da borda de um rádio.
 */
-const char* radio_obter_cor_borda(Radio radio);
+const char *radio_obter_cor_borda(Radio radio);
 
 /*
 Define a cor da borda de um rádio.
 Nenhum dos parâmetros podem ser nulos.
 */
-void radio_definir_cor_borda(Radio radio, const char* cor_borda);
+void radio_definir_cor_borda(Radio radio, const char *cor_borda);
 
 /*
 Define a espessura da borda de um rádio.
 Nenhum dos parâmetros podem ser nulos.
 */
-void radio_definir_espessura_borda(Radio radio, const char* espessura_borda);
+void radio_definir_espessura_borda(Radio radio, const char *espessura_borda);
 
 /*
 Libera a memória alocada por um radio.

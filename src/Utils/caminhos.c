@@ -53,7 +53,10 @@ char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
                  SEPARADOR_DE_DIRETORIOS, nome_arquivo);
         return NULL;
     }
-    sprintf(uniao, "%s%c%s", diretorio, SEPARADOR_DE_DIRETORIOS, nome_arquivo);
+    if (strlen(diretorio) == 0 || strlen(nome_arquivo) == 0)
+        sprintf(uniao, "%s%s", diretorio, nome_arquivo);
+    else
+        sprintf(uniao, "%s%c%s", diretorio, SEPARADOR_DE_DIRETORIOS, nome_arquivo);
     return uniao;
 }
 
@@ -111,6 +114,9 @@ char *extrair_nome_diretorio(const char *caminho_arquivo) {
     // Substitui o último separador com '\0', marcando o fim da string.
     if (diretorios != NULL)
         *diretorios = '\0';
+    else
+        // Caminho não possui diretórios, retorna uma string vazia.
+        strcpy(caminho_diretorios, "");
 
     return caminho_diretorios;
 }

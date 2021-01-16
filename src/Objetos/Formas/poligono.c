@@ -117,7 +117,7 @@ Poligono poligono_criar(double **pontos, int numero_de_pontos, const char cor_bo
 
 // Escreve todos os dados de um polígono em um arquivo.
 void poligono_escrever_informacoes(Poligono poligono, FILE *arquivo) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     fprintf(arquivo, "tipo: %s, largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s,",
             figura_obter_tipo(poligono), polImp->largura, polImp->altura, polImp->x, polImp->y,
             polImp->cor_borda, polImp->cor_preenchimento);
@@ -135,7 +135,7 @@ void poligono_escrever_informacoes(Poligono poligono, FILE *arquivo) {
 
 // Escreve o código svg que representa um polígono em um arquivo.
 void poligono_escrever_svg(Poligono poligono, FILE *arquivo) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     fprintf(arquivo, "\t<polygon");
 
     fprintf(arquivo, " points='");
@@ -157,7 +157,7 @@ void poligono_escrever_svg(Poligono poligono, FILE *arquivo) {
 
 // Retorna a área de um polígono.
 double poligono_calcular_area(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     double area = 0;
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
         double x = polImp->pontos[i][0];
@@ -171,31 +171,31 @@ double poligono_calcular_area(Poligono poligono) {
 
 // Retorna a coordenada x de polígono.
 double poligono_obter_x(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->x;
 }
 
 // Retorna a coordenada y de polígono.
 double poligono_obter_y(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->y;
 }
 
 // Retorna a coordenada x onde uma linha termina.
 double poligono_obter_x_fim(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->x + polImp->largura;
 }
 
 // Retorna a coordenada y onde uma linha termina.
 double poligono_obter_y_fim(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->y + polImp->altura;
 }
 
 // Retorna a cordenada x do centroide de um polígono.
 double poligono_obter_x_centro(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     double valor = 0;
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
         double x = polImp->pontos[i][0];
@@ -209,7 +209,7 @@ double poligono_obter_x_centro(Poligono poligono) {
 
 // Retorna a cordenada y do centroide de um polígono.
 double poligono_obter_y_centro(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     double valor = 0;
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
         double x = polImp->pontos[i][0];
@@ -223,19 +223,19 @@ double poligono_obter_y_centro(Poligono poligono) {
 
 // Retorna a largura de polígono.
 double poligono_obter_largura(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->largura;
 }
 
 // Retorna a altura de polígono.
 double poligono_obter_altura(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->altura;
 }
 
 // Retorna a cor da borda de um polígono.
 const char *poligono_obter_cor_borda(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->cor_borda;
 }
 
@@ -246,13 +246,13 @@ void poligono_definir_cor_borda(Poligono poligono, const char *cor_borda) {
                  figura_obter_tipo(poligono));
         return;
     }
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     strcpy(polImp->cor_borda, cor_borda);
 }
 
 // Retorna a cor de preenchimento de um polígono..
 const char *poligono_obter_cor_preenchimento(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     return polImp->cor_preenchimento;
 }
 
@@ -263,13 +263,13 @@ void poligono_definir_cor_preenchimento(Poligono poligono, const char *cor_preen
                  figura_obter_tipo(poligono));
         return;
     }
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     strcpy(polImp->cor_preenchimento, cor_preenchimento);
 }
 
 // Libera a memória alocada por polígono.
 void poligono_destruir(Poligono poligono) {
-    PoligonoImp *polImp = (PoligonoImp *) poligono;
+    PoligonoImp *polImp = poligono;
     // Libera cada linha da matriz.
     for (int j = 0; j < polImp->numero_de_pontos; j++)
         free(polImp->pontos[j]);

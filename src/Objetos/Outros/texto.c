@@ -74,22 +74,22 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
     return texImp;
 }
 
-// Cria um texto com base em informações de uma texto.
-Texto texto_ler(const char *texto) {
+// Cria um texto com base em informações de uma linha.
+Texto texto_ler(const char *linha) {
     char id[100];
     double x;
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
     char conteudo[500];
-    sscanf(texto, "%*s %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
+    sscanf(linha, "%*s %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
            conteudo);
     return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo, false);
 }
 
 // Escreve todos os dados de um texto em um arquivo.
 void texto_escrever_informacoes(Texto texto, FILE *arquivo) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     fprintf(arquivo, "tipo: %s, ", figura_obter_tipo(texto));
     if (strlen(texImp->id) > 0)
         fprintf(arquivo, "id: %s, ", texImp->id);
@@ -99,7 +99,7 @@ void texto_escrever_informacoes(Texto texto, FILE *arquivo) {
 
 // Escreve o código svg que representa um texto em um arquivo.
 void texto_escrever_svg(Texto texto, FILE *arquivo) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     fprintf(arquivo, "\t<text");
     if (strlen(texImp->id) > 0)
         fprintf(arquivo, " id='%s'", texImp->id);
@@ -111,37 +111,37 @@ void texto_escrever_svg(Texto texto, FILE *arquivo) {
 
 // Obtém o conteúdo de um texto.
 const char *texto_obter_conteudo(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->conteudo;
 }
 
 // Retorna o id de um texto.
 const char *texto_obter_id(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->id;
 }
 
 // Retorna a coordenada x de um texto.
 double texto_obter_x(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->x;
 }
 
 // Retorna a coordenada y de um texto.
 double texto_obter_y(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->y;
 }
 
 // Retorna um valor utilizando uma largura estimada.
 double texto_obter_x_fim(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->x + strlen(texImp->conteudo) * LARGURA_LETRA;
 }
 
 // Retorna um valor utilizando uma altura estimada.
 double texto_obter_y_fim(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->y + ALTURA_LETRA;
 }
 
@@ -157,7 +157,7 @@ double texto_obter_y_centro(Texto texto) {
 
 // Retorna a cor da borda de um texto.
 const char *texto_obter_cor_borda(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->cor_borda;
 }
 
@@ -167,13 +167,13 @@ void texto_definir_cor_borda(Texto texto, const char *cor_borda) {
         LOG_ERRO("Não é possível definir NULL como cor da borda de um texto!\n");
         return;
     }
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     strcpy(texImp->cor_borda, cor_borda);
 }
 
 // Retorna a cor de preenchimento de um texto.
 const char *texto_obter_cor_preenchimento(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     return texImp->cor_preenchimento;
 }
 
@@ -183,13 +183,13 @@ void texto_definir_cor_preenchimento(Texto texto, const char *cor_preenchimento)
         LOG_ERRO("Não é possível definir NULL como cor de preenchimento de um texto!\n");
         return;
     }
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     strcpy(texImp->cor_preenchimento, cor_preenchimento);
 }
 
 // Libera a memória alocada por um texto.
 void texto_destruir(Texto texto) {
-    TextoImp *texImp = (TextoImp *) texto;
+    TextoImp *texImp = texto;
     free(texImp->vtable);
     free(texImp);
 }

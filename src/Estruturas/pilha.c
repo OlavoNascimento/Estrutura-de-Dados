@@ -29,17 +29,17 @@ Pilha pilha_criar(DestruirInfo destruir_info) {
 }
 
 bool pilha_esta_vazia(Pilha pilha) {
-    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    PilhaImp *pilhaImp = pilha;
     return pilhaImp->topo == NULL;
 }
 
 int pilha_obter_tamanho(Pilha pilha) {
-    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    PilhaImp *pilhaImp = pilha;
     return pilhaImp->tamanho;
 }
 
 void pilha_inserir(Pilha pilha, PilhaInfo info) {
-    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    PilhaImp *pilhaImp = pilha;
     No *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
     novo_no->proximo = pilhaImp->topo;
@@ -48,7 +48,7 @@ void pilha_inserir(Pilha pilha, PilhaInfo info) {
 }
 
 PilhaInfo pilha_remover(Pilha pilha) {
-    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    PilhaImp *pilhaImp = pilha;
     if (pilha_esta_vazia(pilha))
         return NULL;
 
@@ -62,14 +62,14 @@ PilhaInfo pilha_remover(Pilha pilha) {
 }
 
 PilhaInfo pilha_obter_topo(Pilha pilha) {
-    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    PilhaImp *pilhaImp = pilha;
     if (pilha_esta_vazia(pilha))
         return NULL;
     return pilhaImp->topo->info;
 }
 
 void pilha_destruir(Pilha pilha) {
-    PilhaImp *pilhaImp = (PilhaImp *) pilha;
+    PilhaImp *pilhaImp = pilha;
 
     No *no_atual = pilhaImp->topo;
     while (no_atual != NULL) {

@@ -22,7 +22,7 @@ O usuário é responsável por liberar a memória alocada!
 Ponto ponto_criar(double x, double y);
 
 /*
-Cria e inicializa Ponto com cordenadas iguais a da figura passada.
+Cria e inicializa Ponto com coordenadas iguais a da figura passada.
 A figura não pode ser nula.
 O usuário é responsável por liberar a memória alocada!
 */

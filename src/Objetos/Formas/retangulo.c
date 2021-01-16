@@ -105,7 +105,7 @@ Retangulo retangulo_ler(const char *linha) {
 
 // Escreve todos os dados de um retângulo em um arquivo.
 void retangulo_escrever_informacoes(Retangulo retangulo, FILE *arquivo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     fprintf(arquivo, "tipo: %s,", figura_obter_tipo(retangulo));
     if (strlen(retImp->id) > 0)
         fprintf(arquivo, " id: %s,", retImp->id);
@@ -116,7 +116,7 @@ void retangulo_escrever_informacoes(Retangulo retangulo, FILE *arquivo) {
 
 // Escreve o código svg que representa um retângulo em um arquivo.
 void retangulo_escrever_svg(Retangulo retangulo, FILE *arquivo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     fprintf(arquivo, "\t<rect");
     if (strlen(retImp->id) > 0)
         fprintf(arquivo, " id='%s'", retImp->id);
@@ -134,8 +134,8 @@ void retangulo_escrever_svg(Retangulo retangulo, FILE *arquivo) {
 
 // Retorna verdadeiro se dois retângulos se intersectam.
 bool retangulo_checar_interseccao(Retangulo retangulo1, Retangulo retangulo2) {
-    RetanguloImp *retImp1 = (RetanguloImp *) retangulo1;
-    RetanguloImp *retImp2 = (RetanguloImp *) retangulo2;
+    RetanguloImp *retImp1 = retangulo1;
+    RetanguloImp *retImp2 = retangulo2;
     if (retImp1->x > retImp2->x + retImp2->largura || retImp2->x > retImp1->x + retImp1->largura)
         return false;
     if (retImp1->y + retImp1->altura < retImp2->y || retImp2->y + retImp2->altura < retImp1->y)
@@ -145,7 +145,7 @@ bool retangulo_checar_interseccao(Retangulo retangulo1, Retangulo retangulo2) {
 
 // Retorna verdadeiro se um ponto se encontra dentro de um retângulo.
 bool retangulo_checar_ponto_interno(Retangulo retangulo, double ponto_x, double ponto_y) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     if (ponto_x <= retImp->x || ponto_x >= retImp->x + retImp->largura)
         return false;
     if (ponto_y <= retImp->y || ponto_y >= retImp->y + retImp->altura)
@@ -155,61 +155,61 @@ bool retangulo_checar_ponto_interno(Retangulo retangulo, double ponto_x, double 
 
 // Retorna o id de retângulo.
 const char *retangulo_obter_id(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->id;
 }
 
 // Retorna a largura de retângulo.
 double retangulo_obter_largura(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->largura;
 }
 
 // Retorna a altura de retângulo.
 double retangulo_obter_altura(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->altura;
 }
 
 // Retorna a coordenada x de retângulo.
 double retangulo_obter_x(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->x;
 }
 
 // Retorna a coordenada y de retângulo.
 double retangulo_obter_y(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->y;
 }
 
 // Retorna a coordenada x onde um retângulo termina.
 double retangulo_obter_x_fim(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->x + retImp->largura;
 }
 
 // Retorna a coordenada y onde um retângulo termina.
 double retangulo_obter_y_fim(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->y + retImp->altura;
 }
 
 // Retorna a coordenada x do centro de um retângulo.
 double retangulo_obter_x_centro(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->x + retImp->largura / 2;
 }
 
 // Retorna a coordenada y do centro de um retângulo.
 double retangulo_obter_y_centro(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->y + retImp->altura / 2;
 }
 
 // Retorna a cor da borda de retângulo.
 const char *retangulo_obter_cor_borda(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->cor_borda;
 }
 
@@ -220,13 +220,13 @@ void retangulo_definir_cor_borda(Retangulo retangulo, const char *cor_borda) {
                  figura_obter_tipo(retangulo));
         return;
     }
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     strcpy(retImp->cor_borda, cor_borda);
 }
 
 // Retorna a cor de preenchimento de retângulo.
 const char *retangulo_obter_cor_preenchimento(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     return retImp->cor_preenchimento;
 }
 
@@ -237,7 +237,7 @@ void retangulo_definir_cor_preenchimento(Retangulo retangulo, const char *cor_pr
                  figura_obter_tipo(retangulo));
         return;
     }
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     strcpy(retImp->cor_preenchimento, cor_preenchimento);
 }
 
@@ -248,25 +248,25 @@ void retangulo_definir_espessura_borda(Retangulo retangulo, const char *espessur
                  figura_obter_tipo(retangulo));
         return;
     }
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     strcpy(retImp->espessura_borda, espessura_borda);
 }
 
 // Define se a borda do retângulo é tracejada.
 void retangulo_definir_borda_tracejada(Retangulo retangulo, bool tracejado) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     retImp->borda_tracejada = tracejado;
 }
 
 // Define o arredondamento da borda do retângulo.
 void retangulo_definir_arredondamento_borda(Retangulo retangulo, double arredondamento_borda) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     retImp->arredondamento_borda = arredondamento_borda;
 }
 
 // Libera a memória alocada por.retângulo.
 void retangulo_destruir(Retangulo retangulo) {
-    RetanguloImp *retImp = (RetanguloImp *) retangulo;
+    RetanguloImp *retImp = retangulo;
     free(retImp->vtable);
     free(retImp);
 }

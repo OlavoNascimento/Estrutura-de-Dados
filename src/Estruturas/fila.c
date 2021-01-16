@@ -31,17 +31,17 @@ Fila fila_criar(DestruirInfo destruir_info) {
 }
 
 bool fila_esta_vazia(Fila fila) {
-    FilaImp *filaImp = (FilaImp *) fila;
+    FilaImp *filaImp = fila;
     return filaImp->primeiro == NULL;
 }
 
 int fila_obter_tamanho(Fila fila) {
-    FilaImp *filaImp = (FilaImp *) fila;
+    FilaImp *filaImp = fila;
     return filaImp->tamanho;
 }
 
 void fila_inserir(Fila fila, FilaInfo info) {
-    FilaImp *filaImp = (FilaImp *) fila;
+    FilaImp *filaImp = fila;
     No *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
     novo_no->proximo = NULL;
@@ -56,7 +56,7 @@ void fila_inserir(Fila fila, FilaInfo info) {
 }
 
 FilaInfo fila_remover(Fila fila) {
-    FilaImp *filaImp = (FilaImp *) fila;
+    FilaImp *filaImp = fila;
     if (fila_esta_vazia(fila))
         return NULL;
 
@@ -71,14 +71,14 @@ FilaInfo fila_remover(Fila fila) {
 }
 
 FilaInfo fila_obter_info(Fila fila) {
-    FilaImp *filaImp = (FilaImp *) fila;
+    FilaImp *filaImp = fila;
     if (fila_esta_vazia(fila))
         return NULL;
     return filaImp->primeiro->info;
 }
 
 void fila_destruir(Fila fila) {
-    FilaImp *filaImp = (FilaImp *) fila;
+    FilaImp *filaImp = fila;
 
     No *no_atual = filaImp->primeiro;
     while (no_atual != NULL) {

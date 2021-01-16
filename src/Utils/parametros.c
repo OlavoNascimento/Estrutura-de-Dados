@@ -31,7 +31,7 @@ Parametros parametros_criar() {
 
 // Retorna uma struct contendo os parâmetros fornecidos ao programa.
 Parametros parametros_ler(int argc, const char *argv[]) {
-    ParametrosImp *paramsImp = (ParametrosImp *) parametros_criar();
+    ParametrosImp *paramsImp = parametros_criar();
     int i = 0;
     while (i < argc) {
         if (strcmp("-e", argv[i]) == 0) {
@@ -67,7 +67,7 @@ Parametros parametros_ler(int argc, const char *argv[]) {
 
 // Retorna verdadeiro caso os parâmetros buscados pela função existam.
 bool parametros_checar_obrigatorios(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL) {
         fprintf(stderr, "ERRO: Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
         return false;
@@ -81,12 +81,12 @@ bool parametros_checar_obrigatorios(const Parametros params) {
 }
 
 char *parametros_obter_diretorio_saida(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     return paramsImp->nome_dir_saida;
 }
 
 char *parametros_obter_caminho_descricao(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL)
         return NULL;
 
@@ -106,7 +106,7 @@ char *parametros_obter_caminho_descricao(const Parametros params) {
 }
 
 char *parametros_obter_caminho_consulta(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_consulta == NULL)
         return NULL;
 
@@ -125,7 +125,7 @@ char *parametros_obter_caminho_consulta(const Parametros params) {
 }
 
 char *parametros_obter_caminho_estabelecimentos(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_estabelecimentos == NULL)
         return NULL;
 
@@ -145,7 +145,7 @@ char *parametros_obter_caminho_estabelecimentos(const Parametros params) {
 }
 
 char *parametros_obter_caminho_moradores(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_moradores == NULL)
         return NULL;
 
@@ -166,7 +166,7 @@ char *parametros_obter_caminho_moradores(const Parametros params) {
 
 // Usa o nome do arquivo de descrição para criar o nome do svg.
 char *parametros_obter_caminho_svg_descricao(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL || paramsImp->nome_dir_saida == NULL)
         return NULL;
 
@@ -180,7 +180,7 @@ char *parametros_obter_caminho_svg_descricao(const Parametros params) {
 // Cria o caminho do arquivo svg de consulta utilizando o seguinte formato:
 // arquivoDescrição-arquivoConsulta.svg
 char *parametros_obter_caminho_svg_consulta(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL || paramsImp->caminho_consulta == NULL ||
         paramsImp->nome_dir_saida == NULL)
         return NULL;
@@ -199,7 +199,7 @@ char *parametros_obter_caminho_svg_consulta(const Parametros params) {
 // Cria o caminho do arquivo txt de consulta utilizando o seguinte formato:
 // arquivoDescrição-arquivoConsulta.txt
 char *parametros_obter_caminho_registro_consulta(const Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL || paramsImp->caminho_consulta == NULL ||
         paramsImp->nome_dir_saida == NULL)
         return NULL;
@@ -218,7 +218,7 @@ char *parametros_obter_caminho_registro_consulta(const Parametros params) {
 
 // Libera a memória alocada pelos argumentos.
 void parametros_destruir(Parametros params) {
-    ParametrosImp *paramsImp = (ParametrosImp *) params;
+    ParametrosImp *paramsImp = params;
     free(paramsImp->caminho_descricao);
     free(paramsImp->nome_dir_entrada);
     free(paramsImp->nome_dir_saida);

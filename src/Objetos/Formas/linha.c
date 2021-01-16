@@ -80,7 +80,7 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
 
 // Escreve todos os dados de uma linha em um arquivo.
 void linha_escrever_informacoes(Linha linha, FILE *arquivo) {
-    LinhaImp *linhaImp = (LinhaImp *) linha;
+    LinhaImp *linhaImp = linha;
     fprintf(arquivo, "tipo: %s, x1: %lf, y1: %lf, x2: %lf, y2: %lf, corb: %s, corp: %s\n",
             figura_obter_tipo(linha), linhaImp->x1, linhaImp->y1, linhaImp->x2, linhaImp->y2,
             linhaImp->cor_borda, linhaImp->cor_preenchimento);
@@ -88,7 +88,7 @@ void linha_escrever_informacoes(Linha linha, FILE *arquivo) {
 
 // Escreve o código svg que representa uma linha em um arquivo.
 void linha_escrever_svg(Linha linha, FILE *arquivo) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     fprintf(arquivo, "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' fill='%s'",
             linImp->x1, linImp->y1, linImp->x2, linImp->y2, linImp->cor_borda,
             linImp->cor_preenchimento);
@@ -100,43 +100,43 @@ void linha_escrever_svg(Linha linha, FILE *arquivo) {
 
 // Retorna a coordenada x de uma linha.
 double linha_obter_x(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return min(linImp->x1, linImp->x2);
 }
 
 // Retorna a coordenada y de uma linha.
 double linha_obter_y(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return min(linImp->y1, linImp->y2);
 }
 
 // Retorna a coordenada x onde uma linha termina.
 double linha_obter_x_fim(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return max(linImp->x1, linImp->x2);
 }
 
 // Retorna a coordenada y onde uma linha termina.
 double linha_obter_y_fim(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return max(linImp->y1, linImp->y2);
 }
 
 // Retorna a coordenada x do centro de uma linha.
 double linha_obter_x_centro(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return (linImp->x1 + linImp->x2) / 2;
 }
 
 // Retorna a coordenada y do centro de uma linha.
 double linha_obter_y_centro(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return (linImp->y1 + linImp->y2) / 2;
 }
 
 // Retorna a cor da borda de uma linha.
 const char *linha_obter_cor_borda(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return linImp->cor_borda;
 }
 
@@ -147,13 +147,13 @@ void linha_definir_cor_borda(Linha linha, const char *cor_borda) {
                  figura_obter_tipo(linha));
         return;
     }
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     strcpy(linImp->cor_borda, cor_borda);
 }
 
 // Retorna a cor de preenchimento de uma linha..
 const char *linha_obter_cor_preenchimento(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     return linImp->cor_preenchimento;
 }
 
@@ -164,13 +164,13 @@ void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento)
                  figura_obter_tipo(linha));
         return;
     }
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     strcpy(linImp->cor_preenchimento, cor_preenchimento);
 }
 
 // Libera a memória alocada por uma linha.
 void linha_destruir(Linha linha) {
-    LinhaImp *linImp = (LinhaImp *) linha;
+    LinhaImp *linImp = linha;
     free(linImp->vtable);
     free(linImp);
 }

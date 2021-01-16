@@ -27,7 +27,7 @@ const char *posto_obter_tipo() {
 
 // Escreve no svg as informações de um posto.
 void posto_escrever_svg(Posto posto, FILE *arquivo) {
-    PostoImp *posImp = (PostoImp *) posto;
+    PostoImp *posImp = posto;
     circulo_escrever_svg(posto, arquivo);
 
     // Rótulo do posto.

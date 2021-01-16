@@ -98,8 +98,8 @@ Circulo circulo_ler(const char *linha) {
 
 // Retorna verdadeiro se dois círculos se intersectam.
 bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
-    CirculoImp *cirImp1 = (CirculoImp *) circulo1;
-    CirculoImp *cirImp2 = (CirculoImp *) circulo2;
+    CirculoImp *cirImp1 = circulo1;
+    CirculoImp *cirImp2 = circulo2;
     double dist = (cirImp1->x - cirImp2->x) * (cirImp1->x - cirImp2->x) +
                   (cirImp1->y - cirImp2->y) * (cirImp1->y - cirImp2->y);
     double raios = (cirImp1->raio + cirImp2->raio) * (cirImp1->raio + cirImp2->raio);
@@ -108,13 +108,13 @@ bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
 
 // Retorna verdadeiro se um ponto se encontra dentro de um círculo.
 bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return pow((ponto_x - cirImp->x), 2) + pow((ponto_y - cirImp->y), 2) <= pow(cirImp->raio, 2);
 }
 
 // Escreve todos os dados de um círculo em um arquivo.
 void circulo_escrever_informacoes(Circulo circulo, FILE *arquivo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     fprintf(arquivo, "tipo: %s,", figura_obter_tipo(circulo));
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, " id: %s,", cirImp->id);
@@ -124,7 +124,7 @@ void circulo_escrever_informacoes(Circulo circulo, FILE *arquivo) {
 
 // Escreve o código svg que representa um círculo em um arquivo.
 void circulo_escrever_svg(Circulo circulo, FILE *arquivo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     fprintf(arquivo, "\t<circle ");
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, "id='%s' ", cirImp->id);
@@ -137,55 +137,55 @@ void circulo_escrever_svg(Circulo circulo, FILE *arquivo) {
 
 // Retorna o id de um círculo.
 const char *circulo_obter_id(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->id;
 }
 
 // Retorna a coordenada x de um círculo.
 double circulo_obter_x(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->x;
 }
 
 // Retorna a coordenada y de um círculo.
 double circulo_obter_y(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->y;
 }
 
 // Retorna a coordenada x onde um círculo se inicia.
 double circulo_obter_x_inicio(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->x - cirImp->raio;
 }
 
 // Retorna a coordenada y onde um círculo se inicia.
 double circulo_obter_y_inicio(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->y - cirImp->raio;
 }
 
 // Retorna a coordenada x onde um círculo termina.
 double circulo_obter_x_fim(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->x + cirImp->raio;
 }
 
 // Retorna a coordenada y onde um círculo termina.
 double circulo_obter_y_fim(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->y + cirImp->raio;
 }
 
 // Retorna o raio de um círculo.
 double circulo_obter_raio(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->raio;
 }
 
 // Retorna a cor da borda de um círculo.
 const char *circulo_obter_cor_borda(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->cor_borda;
 }
 
@@ -196,13 +196,13 @@ void circulo_definir_cor_borda(Circulo circulo, const char *cor_borda) {
                  figura_obter_tipo(circulo));
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     strcpy(cirImp->cor_borda, cor_borda);
 }
 
 // Retorna a cor de preenchimento de um círculo..
 const char *circulo_obter_cor_preenchimento(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     return cirImp->cor_preenchimento;
 }
 
@@ -213,7 +213,7 @@ void circulo_definir_cor_preenchimento(Circulo circulo, const char *cor_preenchi
                  figura_obter_tipo(circulo));
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     strcpy(cirImp->cor_preenchimento, cor_preenchimento);
 }
 
@@ -224,13 +224,13 @@ void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_bord
                  figura_obter_tipo(circulo));
         return;
     }
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     strcpy(cirImp->espessura_borda, espessura_borda);
 }
 
 // Libera a memória alocada por um círculo.
 void circulo_destruir(Circulo circulo) {
-    CirculoImp *cirImp = (CirculoImp *) circulo;
+    CirculoImp *cirImp = circulo;
     free(cirImp->vtable);
     free(cirImp);
 }

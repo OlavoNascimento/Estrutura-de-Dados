@@ -18,7 +18,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void* Hidrante;
+typedef void *Hidrante;
 
 /*
 Cria e inicializa um Hidrante com os valores passados.
@@ -33,14 +33,14 @@ Cria e inicializa um Hidrante a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */
-Hidrante hidrante_ler(const char* linha);
+Hidrante hidrante_ler(const char *linha);
 
 /*
 Obtém o id de um hidrante.
 O parâmetro hidrante não pode ser nulo.
 Retorna o id de um hidrante.
 */
-const char* hidrante_obter_id(Hidrante hidrante);
+const char *hidrante_obter_id(Hidrante hidrante);
 
 /*
 Obtém a coordenada x de um hidrante.
@@ -68,32 +68,32 @@ Obtém a cor de preenchimento de um hidrante.
 O parâmetro hidrante não pode ser nulo.
 Retorna a cor de preenchimento de um hidrante.
 */
-const char* hidrante_obter_cor_preenchimento(Hidrante hidrante);
+const char *hidrante_obter_cor_preenchimento(Hidrante hidrante);
 
 /*
 Define a cor de preenchimento de um hidrante.
 Nenhum dos parâmetros podem ser nulos.
 */
-void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char* cor_preenchimento);
+void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char *cor_preenchimento);
 
 /*
 Obtém a cor da borda de um hidrante.
 O parâmetro hidrante não pode ser nulo.
 Retorna a cor da borda de um hidrante.
 */
-const char* hidrante_obter_cor_borda(Hidrante hidrante);
+const char *hidrante_obter_cor_borda(Hidrante hidrante);
 
 /*
 Define a cor da borda de um hidrante.
 Nenhum dos parâmetros podem ser nulos.
 */
-void hidrante_definir_cor_borda(Hidrante hidrante, const char* cor_borda);
+void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda);
 
 /*
 Define a espessura da borda de um rádio-base.
 Nenhum dos parâmetros podem ser nulos.
 */
-void hidrante_definir_espessura_borda(Hidrante hidrante, const char* espessura_borda);
+void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda);
 
 /*
 Libera a memória alocada por um hidrante.

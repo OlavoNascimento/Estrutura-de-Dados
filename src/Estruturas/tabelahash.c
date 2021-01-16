@@ -28,7 +28,7 @@ Tabela tabela_criar(int size, ObterIdentificadorInfo obter_identificador_info,
     tabelaImp->size = size;
     tabelaImp->destruir_info = destruir_info;
     tabelaImp->obter_identificador_info = obter_identificador_info;
-    tabelaImp->inf = (InfoImp **) malloc(size * sizeof(InfoImp *));
+    tabelaImp->inf = malloc(size * sizeof(InfoImp *));
 
     for (int i = 0; i < size; i++) {
         tabelaImp->inf[i] = NULL;

@@ -16,8 +16,8 @@ Figura genérica que possui possui uma FiguraInterface com funções registradas
 */
 typedef void *Figura;
 /*
-Interface que guarda diversos ponteiros de funções que devem ser implementadas para um objeto poder
-ser utilizado como uma Figura.
+Interface que guarda diversos ponteiros de funções que podem ser implementadas para um objeto ser
+utilizado como uma Figura.
 */
 typedef void *FiguraInterface;
 
@@ -79,94 +79,84 @@ Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
 void figura_registrar_escrever_informacoes(FiguraInterface figuraInterface,
-                                           void (*escrever_informacoes)(Figura figura,
-                                                                        FILE *arquivo));
+                                           EscreverInformacoes escrever_informacoes);
 
 /*
 Registra a função escrever_svg em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_escrever_svg(FiguraInterface figuraInterface,
-                                   void (*escrever_svg)(Figura figura, FILE *arquivo));
+void figura_registrar_escrever_svg(FiguraInterface figuraInterface, EscreverSvg escrever_svg);
 
 /*
 Registra a função obter_tipo em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_tipo(FiguraInterface figuraInterface,
-                                 const char *(*obter_tipo)(Figura figura));
+void figura_registrar_obter_tipo(FiguraInterface figuraInterface, ObterTipo obter_tipo);
 
 /*
 Registra a função obter_x em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_x(FiguraInterface figuraInterface, double (*obter_x)(Figura figura));
+void figura_registrar_obter_x(FiguraInterface figuraInterface, ObterX obter_x);
 
 /*
 Registra a função obter_y em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_y(FiguraInterface figuraInterface, double (*obter_y)(Figura figura));
+void figura_registrar_obter_y(FiguraInterface figuraInterface, ObterY obter_y);
 
 /*
 Registra a função obter_x_inicio em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_x_inicio(FiguraInterface figuraInterface,
-                                     double (*obter_x_inicio)(Figura figura));
+void figura_registrar_obter_x_inicio(FiguraInterface figuraInterface, ObterXInicio obter_x_inicio);
 
 /*
 Registra a função obter_y_inicio em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_y_inicio(FiguraInterface figuraInterface,
-                                     double (*obter_y_inicio)(Figura figura));
+void figura_registrar_obter_y_inicio(FiguraInterface figuraInterface, ObterYInicio obter_y_inicio);
 
 /*
 Registra a função obter_x_fim em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_x_fim(FiguraInterface figuraInterface,
-                                  double (*obter_x_fim)(Figura figura));
+void figura_registrar_obter_x_fim(FiguraInterface figuraInterface, ObterXFim obter_x_fim);
 
 /*
 Registra a função obter_y_fim em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_y_fim(FiguraInterface figuraInterface,
-                                  double (*obter_y_fim)(Figura figura));
+void figura_registrar_obter_y_fim(FiguraInterface figuraInterface, ObterYFim obter_y_fim);
 
 /*
 Registra a função obter_x_centro em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_x_centro(FiguraInterface figuraInterface,
-                                     double (*obter_centro_x)(Figura figura));
+void figura_registrar_obter_x_centro(FiguraInterface figuraInterface, ObterXCentro obter_centro_x);
 
 /*
 Registra a função obter_y_centro em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_y_centro(FiguraInterface figuraInterface,
-                                     double (*obter_centro_y)(Figura figura));
+void figura_registrar_obter_y_centro(FiguraInterface figuraInterface, ObterYCentro obter_centro_y);
 
 /*
 Registra a função obter_id em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_id(FiguraInterface figuraInterface,
-                               const char *(*obter_id)(Figura figura));
+void figura_registrar_obter_id(FiguraInterface figuraInterface, ObterId obter_id);
 
 /*
 Registra a função obter_cor_borda em uma FiguraInterface.
@@ -174,7 +164,7 @@ Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
 void figura_registrar_obter_cor_borda(FiguraInterface figuraInterface,
-                                      const char *(*obter_cor_borda)(Figura figura));
+                                      ObterCorBorda obter_cor_borda);
 
 /*
 Registra a função definir_cor_borda em uma FiguraInterface.
@@ -182,32 +172,30 @@ Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
 void figura_registrar_definir_cor_borda(FiguraInterface figuraInterface,
-                                        void (*definir_cor_borda)(Figura figura,
-                                                                  const char *cor_borda));
+                                        DefinirCorBorda definir_cor_borda);
 
 /*
 Registra a função obter_cor_preenchimento em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_obter_cor_preenchimento(
-    FiguraInterface figuraInterface, const char *(*obter_cor_preenchimento)(Figura figura));
+void figura_registrar_obter_cor_preenchimento(FiguraInterface figuraInterface,
+                                              ObterCorPreenchimento obter_cor_preenchimento);
 
 /*
 Registra a função definir_cor_preenchimento em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_definir_cor_preenchimento(
-    FiguraInterface figuraInterface,
-    void (*definir_cor_preenchimento)(Figura figura, const char *cor_preenchimento));
+void figura_registrar_definir_cor_preenchimento(FiguraInterface figuraInterface,
+                                                DefinirCorPreenchimento definir_cor_preenchimento);
 
 /*
 Registra a função destruir em uma FiguraInterface.
 Nenhum dos parâmetros podem ser nulos.
 A função é definida na interface, permitindo que seja utilizada posteriormente.
 */
-void figura_registrar_destruir(FiguraInterface figuraInterface, void (*destruir)(Figura figura));
+void figura_registrar_destruir(FiguraInterface figuraInterface, Destruir destruir);
 
 /*
 Escreve todas as informações presentes em uma figura em um arquivo.

@@ -27,7 +27,7 @@ const char *radio_obter_tipo() {
 
 // Escreve no svg as informações de um rádio.
 void radio_escrever_svg(Radio radio, FILE *arquivo) {
-    RadioImp *radImp = (RadioImp *) radio;
+    RadioImp *radImp = radio;
     circulo_escrever_svg(radio, arquivo);
 
     // Rótulo do rádio.

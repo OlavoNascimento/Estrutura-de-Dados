@@ -32,7 +32,7 @@ const char *caso_obter_tipo() {
 
 // Escreve no svg as informações de uma radio base.
 void caso_escrever_svg(Caso caso, FILE *arquivo) {
-    CasoImp *casoImp = (CasoImp *) caso;
+    CasoImp *casoImp = caso;
     retangulo_escrever_svg(caso, arquivo);
 
     double x = figura_obter_x_centro(caso);
@@ -146,7 +146,7 @@ Caso caso_ler(const char *linha, Quadra quadra) {
 
 // Retorna o número de casos armazenado em um objeto caso.
 int caso_obter_numero_de_casos(Caso caso) {
-    CasoImp *casoImp = (CasoImp *) caso;
+    CasoImp *casoImp = caso;
     return casoImp->numero_de_casos;
 }
 

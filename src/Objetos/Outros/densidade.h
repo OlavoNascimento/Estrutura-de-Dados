@@ -4,7 +4,7 @@
 /*
 Este módulo define uma Densidade, o qual representa uma área retangular que contem a densidade
 populacional em sua área. Possui o número de habitantes por km^2, assim como altura, largura e
-cordenadas espaciais.
+coordenadas espaciais.
 
 Suas propriedades são:
     densidade: Número de habitantes por km^2 na área delimitado pela densidade.

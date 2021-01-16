@@ -7,7 +7,6 @@
 #include "./Arquivos/svg.h"
 #include "./Estruturas/quadtree.h"
 #include "./Interfaces/figura.h"
-#include "./Objetos/Formas/retangulo.h"
 #include "./Utils/caminhos.h"
 #include "./Utils/logging.h"
 #include "./Utils/parametros.h"
@@ -48,8 +47,8 @@ int main(int argc, const char *argv[]) {
         // TODO Adicionar ler_moradores
     }
 
-    svg_quadtree_para_svg(caminho_svg_descricao, formas, quadras, hidrantes, radios, semaforos,
-                          postos, casos);
+    svg_quadtrees_para_svg(caminho_svg_descricao, 7, quadras, semaforos, radios, hidrantes, casos,
+                           postos, formas);
 
     if (caminho_consulta != NULL) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
@@ -61,8 +60,8 @@ int main(int argc, const char *argv[]) {
 
         consulta_ler(caminho_consulta, caminho_registro_consulta, formas, quadras, hidrantes,
                      radios, semaforos, postos, densidades, casos);
-        svg_quadtree_para_svg(caminho_svg_consulta, formas, quadras, hidrantes, radios, semaforos,
-                              postos, casos);
+        svg_quadtrees_para_svg(caminho_svg_consulta, 7, quadras, semaforos, radios, hidrantes,
+                               casos, postos, formas);
 
         free(caminho_registro_consulta);
         free(caminho_svg_consulta);

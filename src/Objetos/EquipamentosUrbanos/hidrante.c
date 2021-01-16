@@ -27,7 +27,7 @@ const char *hidrante_obter_tipo() {
 
 // Escreve no svg as informações de um hidrante.
 void hidrante_escrever_svg(Hidrante hidrante, FILE *arquivo) {
-    HidranteImp *hidImp = (HidranteImp *) hidrante;
+    HidranteImp *hidImp = hidrante;
     circulo_escrever_svg(hidrante, arquivo);
 
     // Rótulo do hidrante.
@@ -41,22 +41,15 @@ void hidrante_escrever_svg(Hidrante hidrante, FILE *arquivo) {
 // Circulo podem ser reaproveitadas.
 static FiguraInterface hidrante_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-
-    figura_registrar_obter_id(interface, circulo_obter_id);
-
-    figura_registrar_obter_cor_borda(interface, circulo_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, circulo_definir_cor_borda);
-
-    figura_registrar_obter_cor_preenchimento(interface, circulo_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface, circulo_definir_cor_preenchimento);
-
-    figura_registrar_obter_x(interface, circulo_obter_x);
-    figura_registrar_obter_y(interface, circulo_obter_y);
-
     figura_registrar_escrever_informacoes(interface, circulo_escrever_informacoes);
     figura_registrar_escrever_svg(interface, hidrante_escrever_svg);
 
     figura_registrar_obter_tipo(interface, hidrante_obter_tipo);
+
+    figura_registrar_obter_id(interface, circulo_obter_id);
+
+    figura_registrar_obter_x(interface, circulo_obter_x);
+    figura_registrar_obter_y(interface, circulo_obter_y);
 
     figura_registrar_obter_x_inicio(interface, circulo_obter_x_inicio);
     figura_registrar_obter_y_inicio(interface, circulo_obter_y_inicio);
@@ -66,6 +59,12 @@ static FiguraInterface hidrante_criar_interface_figura() {
 
     figura_registrar_obter_x_centro(interface, circulo_obter_x);
     figura_registrar_obter_y_centro(interface, circulo_obter_y);
+
+    figura_registrar_obter_cor_borda(interface, circulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, circulo_definir_cor_borda);
+
+    figura_registrar_obter_cor_preenchimento(interface, circulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(interface, circulo_definir_cor_preenchimento);
 
     figura_registrar_destruir(interface, circulo_destruir);
     return interface;

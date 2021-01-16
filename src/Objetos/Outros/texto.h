@@ -2,9 +2,9 @@
 #define TEXTO_H
 
 /*
-Este módulo define um Texto, permitindo a exibição de textos no arquivo svg. Possui como
-propriedades seu identificador, coordenadas espacias e para alterar sua visualização no arquivo svg
-cores de borda e preenchimento e caso necessário é possível centralizar seu conteudo.
+Este módulo define um Texto, permitindo exibir textos no arquivo svg. Possui como propriedades seu
+identificador, coordenadas espaciais e para alterar sua visualização no arquivo svg cores de borda e
+preenchimento.
 
 Suas propriedades são:
     id: Identificador do texto.
@@ -23,6 +23,8 @@ typedef void *Texto;
 /*
 Cria e inicializa uma Texto com os valores passados.
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
+Caso o parâmetro centralizar seja verdadeiro a cordenada x,y passa a representar o centro do
+conteúdo. Se for falso, a coordenada x,y indica onde o conteúdo deve iniciar.
 O usuário é responsável por liberar a memória alocada!
 */
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
