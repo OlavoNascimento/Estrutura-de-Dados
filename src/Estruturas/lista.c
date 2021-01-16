@@ -35,7 +35,7 @@ Lista lista_criar(ObterIdentificadorInfo obter_identificador_info, DestruirInfo 
 }
 
 int lista_obter_tamanho(Lista lista) {
-    ListaImp *lista_aux = (ListaImp *) lista;
+    ListaImp *lista_aux = lista;
     return lista_aux->tamanho;
 }
 
@@ -45,10 +45,11 @@ ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
         return NULL;
     }
 
-    ListaImp *lista_aux = (ListaImp *) lista;
+    ListaImp *lista_aux = lista;
     NoImp *no_aux;
     NoImp *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
+    novo_no->proximo = NULL;
 
     if (lista_aux->primeiro == NULL) {
         lista_aux->primeiro = novo_no;
@@ -59,7 +60,6 @@ ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
         novo_no->anterior = no_aux;
     }
 
-    novo_no->proximo = NULL;
     lista_aux->ultimo = novo_no;
     lista_aux->tamanho++;
     return novo_no;
@@ -75,7 +75,7 @@ ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo p) {
         return NULL;
     }
 
-    ListaImp *lista_aux = (ListaImp *) lista;
+    ListaImp *lista_aux = lista;
     NoImp *no_aux;
     NoImp *no_anterior = NULL;
     NoImp *novo_no = malloc(sizeof *novo_no);
@@ -112,7 +112,7 @@ ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo p) {
         return NULL;
     }
 
-    ListaImp *lista_aux = (ListaImp *) lista;
+    ListaImp *lista_aux = lista;
     NoImp *no_aux;
     NoImp *no_proximo = NULL;
     NoImp *novo_no = malloc(sizeof *novo_no);
@@ -144,8 +144,8 @@ void lista_remover(Lista lista, ListaNo no_selecionado) {
         LOG_ERRO("Nó nulo passado para lista_remover!\n");
         return;
     }
-    ListaImp *lista_auxiliar = (ListaImp *) lista;
-    NoImp *no_auxiliar = (NoImp *) no_selecionado;
+    ListaImp *lista_auxiliar = lista;
+    NoImp *no_auxiliar = no_selecionado;
     NoImp *no_anterior = NULL;
     NoImp *no_proximo = NULL;
 
@@ -174,7 +174,11 @@ void lista_remover(Lista lista, ListaNo no_selecionado) {
 }
 
 ListaNo lista_buscar(Lista lista, const char id[100]) {
-    ListaImp *lista_auxiliar = (ListaImp *) lista;
+    if (lista == NULL) {
+        LOG_ERRO("Lista nula passada para lista_buscar!\n");
+        return NULL;
+    }
+    ListaImp *lista_auxiliar = lista;
     if (lista_auxiliar->obter_identificador_info == NULL) {
         LOG_ERRO(
             "Não é possível buscar em uma lista que não possui a função obter_identificador_info "
@@ -196,14 +200,22 @@ ListaNo lista_buscar(Lista lista, const char id[100]) {
 }
 
 ListaNo lista_obter_primeiro(Lista lista) {
-    ListaImp *lista_aux = (ListaImp *) lista;
+    if (lista == NULL) {
+        LOG_ERRO("Lista nula passada para lista_obter_primeiro!\n");
+        return NULL;
+    }
+    ListaImp *lista_aux = lista;
     if (lista_aux->tamanho == 0)
         return NULL;
     return lista_aux->primeiro;
 }
 
 ListaNo lista_obter_ultimo(Lista lista) {
-    ListaImp *lista_aux = (ListaImp *) lista;
+    if (lista == NULL) {
+        LOG_ERRO("Lista nula passada para lista_obter_ultimo!\n");
+        return NULL;
+    }
+    ListaImp *lista_aux = lista;
     if (lista_aux->tamanho == 0) {
         return NULL;
     }
@@ -215,7 +227,7 @@ ListaInfo lista_obter_info(ListaNo p) {
         LOG_ERRO("Nó nulo passado para lista_obter_info!\n");
         return NULL;
     }
-    NoImp *no_auxiliar = (NoImp *) p;
+    NoImp *no_auxiliar = p;
     return no_auxiliar->info;
 }
 
@@ -229,7 +241,7 @@ void lista_definir_info(ListaNo p, ListaInfo info) {
         return;
     }
 
-    NoImp *no_auxiliar = (NoImp *) p;
+    NoImp *no_auxiliar = p;
     no_auxiliar->info = info;
 }
 
@@ -238,7 +250,7 @@ ListaNo lista_obter_proximo(ListaNo p) {
         LOG_ERRO("Nó nulo passado para lista_obter_proximo!\n");
         return NULL;
     }
-    NoImp *no_aux = (NoImp *) p;
+    NoImp *no_aux = p;
     return no_aux->proximo;
 }
 
@@ -247,19 +259,24 @@ ListaNo lista_obter_anterior(ListaNo p) {
         LOG_ERRO("Nó nulo passado para lista_obter_anterior!\n");
         return NULL;
     }
-    NoImp *no_aux = (NoImp *) p;
+    NoImp *no_aux = p;
     return no_aux->anterior;
 }
 
 // Troca as informações armazenadas em dois nós.
 void lista_trocar_info(ListaNo no1, ListaNo no2) {
+    if (no1 == NULL || no2 == NULL) {
+        LOG_ERRO("Nó nulo passado para lista_trocar_info!\n");
+        return;
+    }
+
     ListaInfo temp = lista_obter_info(no1);
     lista_definir_info(no1, lista_obter_info(no2));
     lista_definir_info(no2, temp);
 }
 
 void lista_destruir(Lista lista) {
-    ListaImp *lista_aux = (ListaImp *) lista;
+    ListaImp *lista_aux = lista;
     NoImp *no_atual = lista_aux->primeiro;
 
     while (no_atual != NULL) {

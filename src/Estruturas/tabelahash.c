@@ -20,7 +20,7 @@ typedef struct tabela {
 
 Tabela tabela_criar(int size, ObterIdentificadorInfo obter_identificador_info,
                     DestruirInfo destruir_info) {
-    TabelaImp *tabelaImp = (TabelaImp *) malloc(sizeof(TabelaImp));
+    TabelaImp *tabelaImp = malloc(sizeof(TabelaImp));
     if (tabelaImp == NULL) {
         LOG_ERRO("Erro ao alocar espaço para uma nova tabela de espalhamento!\n");
         return NULL;
@@ -36,13 +36,13 @@ Tabela tabela_criar(int size, ObterIdentificadorInfo obter_identificador_info,
     return tabelaImp;
 }
 
-// funções de hashing
-int chaveDivisao(int chave, int Table_size) {
-    return (chave & 0x7FFFFFFF) % Table_size;
+// Funções de hashing
+int chaveDivisao(int chave, int table_size) {
+    return (chave & 0x7FFFFFFF) % table_size;
 }
 
-// função utilizada para transformar uma string em numero
-int chaveString(const char id[100]) {
+// Função utilizada para transformar uma string em numero
+int chaveString(const char *id) {
     int numero = 3;
     int tamanho = strlen(id);
     for (int i = 0; i < tamanho; i++) {
@@ -51,48 +51,51 @@ int chaveString(const char id[100]) {
     return numero;
 }
 
-void tabela_inserir(Tabela tabela, ListaInfo info, const char id[100]) {
-    TabelaImp *tabelaImp = (TabelaImp *) tabela;
-    InfoImp *infoImp = (InfoImp *) malloc(sizeof(InfoImp));
-
-    if (tabelaImp == NULL) {
+void tabela_inserir(Tabela tabela, ListaInfo info, const char *id) {
+    if (tabela == NULL) {
         LOG_ERRO("Tabela de espalhamento nula passada para tabela_inserir!\n");
         return;
     } else if (info == NULL) {
         LOG_INFO("Informação nula passada para tabela_inserir!\n");
         return;
+    } else if (id == NULL) {
+        LOG_INFO("Id nulo passado para tabela_inserir!\n");
+        return;
     }
+    TabelaImp *tabelaImp = tabela;
+    InfoImp *infoImp = malloc(sizeof(InfoImp));
 
     int chave = chaveString(id);
     int pos = chaveDivisao(chave, tabelaImp->size);
 
     if (tabelaImp->inf[pos] == NULL) {
-        // cria uma lista com o identificador especificado na criação da tabela
+        // Cria uma lista com o identificador especificado na criação da tabela.
         infoImp->lista = lista_criar(tabelaImp->obter_identificador_info, tabelaImp->destruir_info);
         tabelaImp->inf[pos] = infoImp;
-        lista_inserir_final(tabelaImp->inf[pos]->lista, info);
-    } else {
-        lista_inserir_final(tabelaImp->inf[pos]->lista, info);
     }
+    lista_inserir_final(tabelaImp->inf[pos]->lista, info);
     return;
 }
 
-ListaNo tabela_buscar(Tabela tabela, const char id[100]) {
-    TabelaImp *tabelaImp = (TabelaImp *) tabela;
-
-    if (tabelaImp == NULL) {
+ListaNo tabela_buscar(Tabela tabela, const char *id) {
+    if (tabela == NULL) {
         LOG_ERRO("Tabela de espalhamento nula passada para tabela_buscar!\n");
         return NULL;
     }
+    if (id == NULL) {
+        LOG_ERRO("Id nulo passado para tabela_buscar!\n");
+        return NULL;
+    }
+    TabelaImp *tabelaImp = tabela;
     int chave = chaveString(id);
     int pos = chaveDivisao(chave, tabelaImp->size);
 
-    // retorna o nó da lista encontrado no indice "pos" da tabela
+    // Retorna o nó da lista encontrado no indice "pos" da tabela.
     return lista_buscar(tabelaImp->inf[pos]->lista, id);
 }
 
 void tabela_destruir(Tabela tabela) {
-    TabelaImp *tabelaImp = (TabelaImp *) tabela;
+    TabelaImp *tabelaImp = tabela;
 
     for (int i = 0; i < tabelaImp->size; i++) {
         if (tabelaImp->inf[i] != NULL) {

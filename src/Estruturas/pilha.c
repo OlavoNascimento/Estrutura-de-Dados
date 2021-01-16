@@ -75,7 +75,7 @@ void pilha_destruir(Pilha pilha) {
     while (no_atual != NULL) {
         No *no_proximo = no_atual->proximo;
         if (pilhaImp->destruir_info != NULL)
-            (pilhaImp->destruir_info(no_atual->info));
+            pilhaImp->destruir_info(no_atual->info);
         free(no_atual);
         no_atual = no_proximo;
     }

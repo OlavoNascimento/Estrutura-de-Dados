@@ -9,10 +9,10 @@ typedef void *TabelaInfo;
 /*
 Cria uma tabela de espalhamento
 É possível passar uma função que extrai um identificador das informações armazenadas na lista que
-está armazenada dentro do balde da tabela, a qual é utilizada para realizar buscas na lista. Também
-é possível especificar uma função que libere a memória alocada pelas informações dessa lista, para
-que ao liberar a memória da lista suas informações também sejam liberadas. Retorna o endereço para
-um array de listas.
+está armazenada dentro do balde da tabela, a qual é utilizada para realizar buscas na lista.
+Também é possível especificar uma função que libere a memória alocada pelas informações dessa lista,
+para que ao liberar a memória da lista suas informações também sejam liberadas.
+Retorna o endereço para um array de listas.
 */
 Tabela tabela_criar(int size, ObterIdentificadorInfo obter_identificador_info,
                     DestruirInfo destruir_info);

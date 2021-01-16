@@ -18,7 +18,7 @@ typedef struct {
 } FilaImp;
 
 Fila fila_criar(DestruirInfo destruir_info) {
-    FilaImp *fila = (FilaImp *) malloc(sizeof *fila);
+    FilaImp *fila = malloc(sizeof *fila);
     if (fila == NULL) {
         LOG_ERRO("Erro ao alocar espaço para a fila!\n");
         return NULL;
@@ -84,7 +84,7 @@ void fila_destruir(Fila fila) {
     while (no_atual != NULL) {
         No *no_proximo = no_atual->proximo;
         if (filaImp->destruir_info != NULL)
-            (filaImp->destruir_info(no_atual->info));
+            filaImp->destruir_info(no_atual->info);
         free(no_atual);
         no_atual = no_proximo;
     }
