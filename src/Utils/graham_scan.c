@@ -2,6 +2,7 @@
 #include "graham_scan.h"
 
 #include <float.h>
+#include <stdbool.h>
 
 #include "../Estruturas/lista.h"
 #include "../Estruturas/pilha.h"
@@ -14,14 +15,10 @@ double checar_horario(Figura a, Figura b, Figura c) {
     double area =
         (figura_obter_x(b) - figura_obter_x(a)) * (figura_obter_y(c) - figura_obter_y(a)) -
         (figura_obter_y(b) - figura_obter_y(a)) * (figura_obter_x(c) - figura_obter_x(a));
-    // Anti-horário
-    if (area > 0)
-        return -1;
-    // Horário
-    if (area < 0)
-        return 1;
-    // Pontos são colineares
-    return 0;
+    // Area > 0, curva no sentido anti-horário.
+    // Area = 0, pontos são colineares.
+    // Area < 0, curva no sentido horário.
+    return area < 0;
 }
 
 // Devolve uma pilha com os pontos de uma envoltória convexa.
@@ -47,7 +44,7 @@ Pilha graham_scan(Lista figuras) {
         return NULL;
     }
 
-    // Move a figura com maior y para a primeira posição da lista.
+    // Move a figura com menor y para a primeira posição da lista.
     lista_trocar_info(no_min, lista_obter_primeiro(figuras));
 
     // Ordena a lista de casos de acordo como o ângulo formado com o ponto mínimo.
@@ -67,8 +64,8 @@ Pilha graham_scan(Lista figuras) {
 
         // Remove figuras da pilha caso ocorra uma curva em sentido anti-horário.
         while (!pilha_esta_vazia(pontos_envoltoria) &&
-               checar_horario(lista_obter_info(pilha_obter_topo(pontos_envoltoria)),
-                              lista_obter_info(ultimo_caso), proximo_caso) < 0) {
+               !checar_horario(lista_obter_info(pilha_obter_topo(pontos_envoltoria)),
+                               lista_obter_info(ultimo_caso), proximo_caso)) {
             ultimo_caso = pilha_remover(pontos_envoltoria);
         }
 
@@ -80,7 +77,7 @@ Pilha graham_scan(Lista figuras) {
     ListaNo topo = pilha_obter_topo(pontos_envoltoria);
     // Verifica se o último ponto é inválido.
     if (checar_horario(lista_obter_info(topo), lista_obter_info(ultimo_no),
-                       lista_obter_info(lista_obter_primeiro(figuras))) >= 0) {
+                       lista_obter_info(lista_obter_primeiro(figuras)))) {
         pilha_inserir(pontos_envoltoria, ultimo_no);
     }
 

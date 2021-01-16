@@ -1,11 +1,11 @@
 #ifndef SHELLSORT_H
 #define SHELLSORT_H
 
-#include "../Estruturas/lista.h"
-
 /*
 Este módulo define a função shellsort, responsável por ordenar um array em ordem crescente.
 */
+
+#include "../Estruturas/lista.h"
 
 /*
 Ordena uma lista de figuras utilizando o algorítmo shellsort.
