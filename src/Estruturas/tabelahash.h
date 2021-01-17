@@ -14,7 +14,7 @@ Também é possível especificar uma função que libere a memória alocada pela
 para que ao liberar a memória da lista suas informações também sejam liberadas.
 Retorna o endereço para um array de listas.
 */
-Tabela tabela_criar(int size, DestruirInfo destruir_info);
+Tabela tabela_criar(DestruirInfo destruir_info);
 
 /*
 Insere um elemento na tabela de espalhamento.
