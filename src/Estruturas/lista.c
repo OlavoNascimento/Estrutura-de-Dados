@@ -40,8 +40,12 @@ int lista_obter_tamanho(Lista lista) {
 }
 
 ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
+    if (lista == NULL) {
+        LOG_ERRO("Lista nula passada para lista_inserir_final!\n");
+        return NULL;
+    }
     if (info == NULL) {
-        LOG_INFO("Informação nula passada para lista_inserir_final!\n");
+        LOG_ERRO("Informação nula passada para lista_inserir_final!\n");
         return NULL;
     }
 
@@ -173,7 +177,7 @@ void lista_remover(Lista lista, ListaNo no_selecionado) {
     lista_auxiliar->tamanho--;
 }
 
-ListaNo lista_buscar(Lista lista, const char id[100]) {
+ListaNo lista_buscar(Lista lista, const char *id) {
     if (lista == NULL) {
         LOG_ERRO("Lista nula passada para lista_buscar!\n");
         return NULL;
@@ -189,11 +193,8 @@ ListaNo lista_buscar(Lista lista, const char id[100]) {
     NoImp *no_auxiliar = lista_auxiliar->primeiro;
     while (no_auxiliar != NULL) {
         const char *id_atual = lista_auxiliar->obter_identificador_info(no_auxiliar->info);
-
-        if (strcmp(id_atual, id) == 0) {
+        if (strcmp(id_atual, id) == 0)
             return no_auxiliar;
-        }
-
         no_auxiliar = no_auxiliar->proximo;
     }
     return NULL;

@@ -642,6 +642,8 @@ void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
     insereQt(quadtree, ponto_criar_com_figura(coordenadas), coordenadas);
 }
 
+// Cria um arquivo svg com o nome especificado, o qual contem as figuras da quadtree selecionada,
+// assim como os ids e coordenadas de cada figura.
 void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree hidrantes,
                            QuadTree semaforos, QuadTree radios, const char *linha) {
     char arvore[10];

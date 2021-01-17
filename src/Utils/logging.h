@@ -1,11 +1,11 @@
 #ifndef DEBUG_SIGUEL_H
 #define DEBUG_SIGUEL_H
 
-#include <stdio.h>
-
 /*
 Este módulo define macros auxiliares para logging da execução do programa.
 */
+
+#include <stdio.h>
 
 #ifdef DEBUG_SIGUEL
     #define LOG_INFO(fmt, ...) printf(fmt, ##__VA_ARGS__)

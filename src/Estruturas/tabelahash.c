@@ -7,19 +7,19 @@
 #include "../Utils/logging.h"
 #include "lista.h"
 
-typedef struct infos {
-    Lista lista;
-} InfoImp;
+// Elemento armazenado nas listas da tabela.
+typedef struct {
+    const char *chave;
+    TabelaInfo info;
+} Elemento;
 
 typedef struct tabela {
-    ObterIdentificadorInfo *obter_identificador_info;
     DestruirInfo *destruir_info;
-    InfoImp **inf;
+    Lista **inf;
     int size;
 } TabelaImp;
 
-Tabela tabela_criar(int size, ObterIdentificadorInfo obter_identificador_info,
-                    DestruirInfo destruir_info) {
+Tabela tabela_criar(int size, DestruirInfo destruir_info) {
     TabelaImp *tabelaImp = malloc(sizeof(TabelaImp));
     if (tabelaImp == NULL) {
         LOG_ERRO("Erro ao alocar espaço para uma nova tabela de espalhamento!\n");
@@ -27,8 +27,7 @@ Tabela tabela_criar(int size, ObterIdentificadorInfo obter_identificador_info,
     }
     tabelaImp->size = size;
     tabelaImp->destruir_info = destruir_info;
-    tabelaImp->obter_identificador_info = obter_identificador_info;
-    tabelaImp->inf = malloc(size * sizeof(InfoImp *));
+    tabelaImp->inf = malloc(size * sizeof(Lista *));
 
     for (int i = 0; i < size; i++) {
         tabelaImp->inf[i] = NULL;
@@ -51,7 +50,13 @@ int chaveString(const char *id) {
     return numero;
 }
 
-void tabela_inserir(Tabela tabela, ListaInfo info, const char *id) {
+// Recebe um elemento e extrai sua chave.
+const char *extrair_chave_elemento(ListaInfo elemento) {
+    Elemento *el = elemento;
+    return el->chave;
+}
+
+void tabela_inserir(Tabela tabela, TabelaInfo info, const char *id) {
     if (tabela == NULL) {
         LOG_ERRO("Tabela de espalhamento nula passada para tabela_inserir!\n");
         return;
@@ -63,21 +68,22 @@ void tabela_inserir(Tabela tabela, ListaInfo info, const char *id) {
         return;
     }
     TabelaImp *tabelaImp = tabela;
-    InfoImp *infoImp = malloc(sizeof(InfoImp));
 
     int chave = chaveString(id);
     int pos = chaveDivisao(chave, tabelaImp->size);
 
     if (tabelaImp->inf[pos] == NULL) {
-        // Cria uma lista com o identificador especificado na criação da tabela.
-        infoImp->lista = lista_criar(tabelaImp->obter_identificador_info, tabelaImp->destruir_info);
-        tabelaImp->inf[pos] = infoImp;
+        // Cria uma lista com uma função específica para extrair a chave de um elemento da tabela.
+        tabelaImp->inf[pos] = lista_criar(extrair_chave_elemento, NULL);
     }
-    lista_inserir_final(tabelaImp->inf[pos]->lista, info);
-    return;
+
+    Elemento *novo_elemento = malloc(sizeof *novo_elemento);
+    novo_elemento->chave = id;
+    novo_elemento->info = info;
+    lista_inserir_final(tabelaImp->inf[pos], novo_elemento);
 }
 
-ListaNo tabela_buscar(Tabela tabela, const char *id) {
+TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
     if (tabela == NULL) {
         LOG_ERRO("Tabela de espalhamento nula passada para tabela_buscar!\n");
         return NULL;
@@ -90,18 +96,32 @@ ListaNo tabela_buscar(Tabela tabela, const char *id) {
     int chave = chaveString(id);
     int pos = chaveDivisao(chave, tabelaImp->size);
 
+    if (tabelaImp->inf[pos] == NULL)
+        return NULL;
     // Retorna o nó da lista encontrado no indice "pos" da tabela.
-    return lista_buscar(tabelaImp->inf[pos]->lista, id);
+    ListaNo no = lista_buscar(tabelaImp->inf[pos], id);
+    if (no == NULL)
+        return NULL;
+
+    Elemento *elemento = lista_obter_info(no);
+    return elemento->info;
 }
 
 void tabela_destruir(Tabela tabela) {
     TabelaImp *tabelaImp = tabela;
 
     for (int i = 0; i < tabelaImp->size; i++) {
-        if (tabelaImp->inf[i] != NULL) {
-            lista_destruir(tabelaImp->inf[i]->lista);
-            free(tabelaImp->inf[i]);
+        Lista atual = tabelaImp->inf[i];
+        if (atual == NULL)
+            continue;
+        // Libera as chaves e informações armazenadas na lista.
+        for (ListaNo j = lista_obter_primeiro(atual); j != NULL; j = lista_obter_proximo(j)) {
+            Elemento *el = lista_obter_info(j);
+            tabelaImp->destruir_info(el->info);
+            free(el);
         }
+        lista_destruir(atual);
     }
+    free(tabelaImp->inf);
     free(tabelaImp);
 }
