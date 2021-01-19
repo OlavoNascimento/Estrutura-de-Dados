@@ -138,6 +138,37 @@ Quadra quadra_ler(const char *linha) {
     return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
 }
 
+// Encontra e inicializa as coordenadas x e y de um elemento que seja contido por uma quadra.
+// Argumentos:
+//      x: coordenada x do elemento.
+//      y: coordenada y do elemento.
+//      largura: largura do elemento, usado para centralizar-lo.
+//      altura: altura do elemento, usado para centralizar-lo.
+//      quadra: Quadra onde o elemento se encontra.
+//      face: Lado da quadra onde o elemento se encontra.
+//      numero: Distância do elemento e o início da face.
+void quadra_inicializar_coordenada(double *x, double *y, double largura, double altura,
+                                   Quadra quadra, char face, int numero) {
+    if (face != 'N' && face != 'S' && face != 'L' && face != 'O') {
+        LOG_ERRO("Face inválida passada para quadra_inicializar_coordenada");
+        return;
+    }
+
+    if (face == 'N') {
+        *y = figura_obter_y_fim(quadra) - altura;
+        *x = figura_obter_x(quadra) - largura / 2 + numero;
+    } else if (face == 'S') {
+        *y = figura_obter_y(quadra);
+        *x = figura_obter_x(quadra) - largura / 2 + numero;
+    } else if (face == 'L') {
+        *y = figura_obter_y(quadra) - altura / 2 + numero;
+        *x = figura_obter_x(quadra);
+    } else if (face == 'O') {
+        *y = figura_obter_y(quadra) - altura / 2 + numero;
+        *x = figura_obter_x_fim(quadra) - largura;
+    }
+}
+
 // Retorna o id de uma quadra
 const char *quadra_obter_id(Quadra quadra) {
     return retangulo_obter_id(quadra);

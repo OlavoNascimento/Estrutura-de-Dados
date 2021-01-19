@@ -30,7 +30,7 @@ const char *caso_obter_tipo() {
     return "caso";
 }
 
-// Escreve no svg as informações de uma radio base.
+// Escreve no svg as informações de um rádio.
 void caso_escrever_svg(Caso caso, FILE *arquivo) {
     CasoImp *casoImp = caso;
     retangulo_escrever_svg(caso, arquivo);
@@ -81,8 +81,7 @@ static FiguraInterface caso_criar_interface_figura() {
 }
 
 // Cria e inicializa um struct CasoImp com os valores passados.
-Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_borda[20],
-                const char cor_preenchimento[20]) {
+Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
     if (casos <= 0) {
         LOG_ERRO("Não é possível criar um caso menor ou igual a zero!\n");
         return NULL;
@@ -91,32 +90,11 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_
         LOG_ERRO("Não é possível criar um caso com uma quadra nula!\n");
         return NULL;
     }
-    if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um caso com cor de borda NULL!\n");
-        return NULL;
-    }
-    if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um caso com cor de preenchimento NULL!\n");
-        return NULL;
-    }
-
     const double largura = 12;
     const double altura = 12;
     double x = 0;
     double y = 0;
-    if (face == 'N') {
-        y = figura_obter_y_fim(quadra) - altura;
-        x = figura_obter_x(quadra) - largura / 2 + numero;
-    } else if (face == 'S') {
-        y = figura_obter_y(quadra);
-        x = figura_obter_x(quadra) - largura / 2 + numero;
-    } else if (face == 'L') {
-        y = figura_obter_y(quadra) - altura / 2 + numero;
-        x = figura_obter_x(quadra);
-    } else if (face == 'O') {
-        y = figura_obter_y(quadra) - altura / 2 + numero;
-        x = figura_obter_x_fim(quadra) - largura;
-    }
+    quadra_inicializar_coordenada(&x, &y, largura, altura, quadra, face, numero);
 
     CasoImp *casoImp = malloc(sizeof *casoImp);
     strcpy(casoImp->id, "");
@@ -124,8 +102,8 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_
     casoImp->altura = altura;
     casoImp->x = x;
     casoImp->y = y;
-    strcpy(casoImp->cor_borda, cor_borda);
-    strcpy(casoImp->cor_preenchimento, cor_preenchimento);
+    strcpy(casoImp->cor_borda, "red");
+    strcpy(casoImp->cor_preenchimento, "orange");
     casoImp->arredondamento_borda = 0;
     casoImp->borda_tracejada = false;
     strcpy(casoImp->espessura_borda, "1px");
@@ -141,7 +119,7 @@ Caso caso_ler(const char *linha, Quadra quadra) {
     int numero;
     char face;
     sscanf(linha, "cv %d %*s %c %d", &casos, &face, &numero);
-    return caso_criar(casos, quadra, face, numero, "orange", "orange");
+    return caso_criar(casos, quadra, face, numero);
 }
 
 // Retorna o número de casos armazenado em um objeto caso.

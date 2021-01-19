@@ -37,8 +37,7 @@ Os casos devem ser maior que zero, as cores e a lista de quadras não podem ser 
 Uma quadra com o cep especificado deve estar presente na lista de quadras.
 O usuário é responsável por liberar a memória alocada!
 */
-Caso caso_criar(int casos, Quadra quadra, char face, int numero, const char cor_borda[20],
-                const char cor_preenchimento[20]);
+Caso caso_criar(int casos, Quadra quadra, char face, int numero);
 
 /*
 Cria e inicializa um Caso a partir de um texto obtido no arquivo .geo.

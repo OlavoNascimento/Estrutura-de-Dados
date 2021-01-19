@@ -492,7 +492,7 @@ void postos_mais_proximos(QuadTree postos, QuadTree quadras, QuadTree formas, co
         return;
 
     // Desenhar o caso azul
-    Caso caso = caso_criar(k, getInfoQt(no_quadra), face, numero, "white", "blue");
+    Caso caso = caso_criar(k, getInfoQt(no_quadra), face, numero);
     insereQt(formas, ponto_criar_com_figura(caso), caso);
 
     Lista lista_postos = quadtree_para_lista(postos);

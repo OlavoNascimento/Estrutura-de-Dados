@@ -37,6 +37,17 @@ O usuário é responsável por liberar a memória alocada!
 */
 Quadra quadra_ler(const char *linha);
 
+// Encontra e inicializa as coordenadas x e y de um elemento que seja contido por uma quadra.
+// Argumentos:
+//      largura: largura do elemento, usado para centralizar-lo.
+//      altura: altura do elemento, usado para centralizar-lo.
+//      quadra: Quadra onde o elemento se encontra.
+//      face: Lado da quadra onde o elemento se encontra.
+//      numero: Distância do elemento e o início da face.
+// Inicializa os parâmetros x e y com as coordenadas derivadas a partir da quadra.
+void quadra_inicializar_coordenada(double *x, double *y, double largura, double altura,
+                                   Quadra quadra, char face, int numero);
+
 /*
 Obtém o id de uma quadra.
 O parâmetro quadra não pode ser nulo.
