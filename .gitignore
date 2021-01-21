@@ -7,6 +7,8 @@ siguel
 # Input/Output/Query text files
 *.geo
 *.qry
+*.ec
+*.pm
 *.txt
 
 # Valgrind files

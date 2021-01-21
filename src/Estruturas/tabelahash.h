@@ -21,7 +21,7 @@ Insere um elemento na tabela de espalhamento.
 Nenhum parametro pode ser nulo, o parâmetro tabela deve ser uma tabela existente.
 Não retorna nada.
 */
-void tabela_inserir(Tabela tabela, TabelaInfo info, const char *id);
+void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info);
 
 /*
 Acessa uma lista da tabela e posteriormente um nó dessa lista.

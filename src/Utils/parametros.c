@@ -219,9 +219,11 @@ char *parametros_obter_caminho_registro_consulta(const Parametros params) {
 // Libera a memória alocada pelos argumentos.
 void parametros_destruir(Parametros params) {
     ParametrosImp *paramsImp = params;
-    free(paramsImp->caminho_descricao);
     free(paramsImp->nome_dir_entrada);
-    free(paramsImp->nome_dir_saida);
+    free(paramsImp->caminho_descricao);
     free(paramsImp->caminho_consulta);
+    free(paramsImp->caminho_moradores);
+    free(paramsImp->caminho_estabelecimentos);
+    free(paramsImp->nome_dir_saida);
     free(params);
 }

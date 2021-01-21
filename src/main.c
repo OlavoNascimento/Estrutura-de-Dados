@@ -33,42 +33,42 @@ int main(int argc, const char *argv[]) {
     Tabela quadtrees = tabela_criar(desalocaQt);
 
     QuadTree formas = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, formas, "formas");
+    tabela_inserir(quadtrees, "formas", formas);
     QuadTree quadras = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, quadras, "quadras");
+    tabela_inserir(quadtrees, "quadras", quadras);
     QuadTree hidrantes = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, hidrantes, "hidrantes");
+    tabela_inserir(quadtrees, "hidrantes", hidrantes);
     QuadTree radios = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, radios, "radios");
+    tabela_inserir(quadtrees, "radios", radios);
     QuadTree semaforos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, semaforos, "semaforos");
+    tabela_inserir(quadtrees, "semaforos", semaforos);
     QuadTree postos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, postos, "postos");
+    tabela_inserir(quadtrees, "postos", postos);
     QuadTree densidades = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, densidades, "densidades");
+    tabela_inserir(quadtrees, "densidades", densidades);
     QuadTree casos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, casos, "casos");
+    tabela_inserir(quadtrees, "casos", casos);
     QuadTree moradores = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, moradores, "moradores");
+    tabela_inserir(quadtrees, "moradores", moradores);
 
     Tabela relacoes = tabela_criar(tabela_destruir);
 
     Tabela cpf_cep = tabela_criar(NULL);
-    tabela_inserir(relacoes, cpf_cep, "cpf_cep");
-    Tabela tipo_descrição = tabela_criar(NULL);
-    tabela_inserir(relacoes, tipo_descrição, "tipo_descricao");
+    tabela_inserir(relacoes, "cpf_cep", cpf_cep);
+    Tabela tipo_descricao = tabela_criar(NULL);
+    tabela_inserir(relacoes, "tipo_descricao", tipo_descricao);
     Tabela dados_pessoa = tabela_criar(NULL);
-    tabela_inserir(relacoes, dados_pessoa, "dados_pessoa");
+    tabela_inserir(relacoes, "dados_pessoa", dados_pessoa);
     Tabela comercial_descricao = tabela_criar(NULL);
-    tabela_inserir(relacoes, comercial_descricao, "comercial_descricao");
+    tabela_inserir(relacoes, "comercial_descricao", comercial_descricao);
 
     descricao_ler(caminho_descricao, quadtrees);
 
-    if (caminho_estabelecimentos != NULL) {
-        comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
-    }
     if (caminho_moradores != NULL) {
         // TODO Adicionar ler_moradores
+    }
+    if (caminho_estabelecimentos != NULL) {
+        comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
     }
 
     svg_quadtrees_para_svg(caminho_svg_descricao, 7, quadras, semaforos, radios, hidrantes, casos,

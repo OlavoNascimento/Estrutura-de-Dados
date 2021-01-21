@@ -82,7 +82,7 @@ void rehash(TabelaImp *tabela) {
             continue;
         for (ListaNo j = lista_obter_primeiro(atual); j != NULL; j = lista_obter_proximo(j)) {
             Elemento *el = lista_obter_info(j);
-            tabela_inserir(tabela, el->info, el->chave);
+            tabela_inserir(tabela, el->chave, el->info);
             free(el);
         }
         lista_destruir(atual);
@@ -91,15 +91,15 @@ void rehash(TabelaImp *tabela) {
 }
 
 // Insere uma informação na tabela que pode ser acessada através do id fornecido.
-void tabela_inserir(Tabela tabela, TabelaInfo info, const char *id) {
+void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     if (tabela == NULL) {
         LOG_ERRO("Tabela de espalhamento nula passada para tabela_inserir!\n");
         return;
-    } else if (info == NULL) {
-        LOG_INFO("Informação nula passada para tabela_inserir!\n");
-        return;
     } else if (id == NULL) {
         LOG_INFO("Id nulo passado para tabela_inserir!\n");
+        return;
+    } else if (info == NULL) {
+        LOG_INFO("Informação nula passada para tabela_inserir!\n");
         return;
     }
     TabelaImp *tabelaImp = tabela;
