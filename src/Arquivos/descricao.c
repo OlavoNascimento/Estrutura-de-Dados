@@ -7,6 +7,7 @@
 #include "../Estruturas/lista.h"
 #include "../Estruturas/pilha.h"
 #include "../Estruturas/quadtree.h"
+#include "../Estruturas/tabelahash.h"
 #include "../Interfaces/figura.h"
 #include "../Objetos/EquipamentosUrbanos/hidrante.h"
 #include "../Objetos/EquipamentosUrbanos/posto.h"
@@ -21,9 +22,7 @@
 #include "../Utils/logging.h"
 
 // Tamanho maxímo de um comando do arquivo de descrição.
-#define LINHA_MAX 300
-// Tamanho maxímo da abreviação do tipo de uma figura no arquivo de descrição.
-#define TIPO_FIGURA_TAMANHO 100
+#define TAMANHO_COMANDO 300
 
 typedef struct {
     bool definido;
@@ -249,14 +248,20 @@ void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha
 // como elementos de uma lista.
-void descricao_ler(const char *caminho_descricao, QuadTree formas, QuadTree quadras,
-                   QuadTree hidrantes, QuadTree radios, QuadTree semaforos, QuadTree postos,
-                   QuadTree densidades) {
+void descricao_ler(const char *caminho_descricao, Tabela quadtrees) {
     FILE *arquivo_descricao = fopen(caminho_descricao, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_descricao);
         return;
     }
+
+    QuadTree formas = tabela_buscar(quadtrees, "formas");
+    QuadTree quadras = tabela_buscar(quadtrees, "quadras");
+    QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
+    QuadTree radios = tabela_buscar(quadtrees, "radios");
+    QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
+    QuadTree postos = tabela_buscar(quadtrees, "postos");
+    QuadTree densidades = tabela_buscar(quadtrees, "densidades");
 
     NumerosMaximos maximo = criar_maximos();
     int figuras_criadas = 0;
@@ -266,9 +271,9 @@ void descricao_ler(const char *caminho_descricao, QuadTree formas, QuadTree quad
     int bases_criadas = 0;
     PropriedadesFiguras propriedades = criar_propriedades();
 
-    char linha[LINHA_MAX];
-    while (fgets(linha, LINHA_MAX, arquivo_descricao) != NULL) {
-        char comando[TIPO_FIGURA_TAMANHO];
+    char linha[TAMANHO_COMANDO];
+    while (fgets(linha, TAMANHO_COMANDO, arquivo_descricao) != NULL) {
+        char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
         if (strcmp("c", comando) == 0 && figuras_criadas <= maximo.lista_max_formas) {

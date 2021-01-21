@@ -9,6 +9,7 @@
 #include "../Estruturas/lista.h"
 #include "../Estruturas/pilha.h"
 #include "../Estruturas/quadtree.h"
+#include "../Estruturas/tabelahash.h"
 #include "../Interfaces/figura.h"
 #include "../Objetos/EquipamentosUrbanos/caso.h"
 #include "../Objetos/EquipamentosUrbanos/posto.h"
@@ -28,7 +29,7 @@
 #include "./svg.h"
 
 // Tamanho maxímo de um comando do arquivo de consulta.
-#define LINHA_MAX 300
+#define TAMANHO_COMANDO 300
 // Margem entre o retângulo criado pela função envolver_figuras e as figuras que ele envolve.
 #define MARGEM_CONTORNO 2
 
@@ -682,9 +683,8 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
-void consulta_ler(const char *caminho_consulta, const char *caminho_log, QuadTree formas,
-                  QuadTree quadras, QuadTree hidrantes, QuadTree radios, QuadTree semaforos,
-                  QuadTree postos, QuadTree densidades, QuadTree casos) {
+void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
+                  Tabela relacoes) {
     FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);
@@ -696,9 +696,18 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, QuadTre
         return;
     }
 
-    char linha[LINHA_MAX];
-    while (fgets(linha, LINHA_MAX, arquivo_consulta) != NULL) {
-        char comando[LINHA_MAX];
+    QuadTree formas = tabela_buscar(quadtrees, "formas");
+    QuadTree quadras = tabela_buscar(quadtrees, "quadras");
+    QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
+    QuadTree radios = tabela_buscar(quadtrees, "radios");
+    QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
+    QuadTree postos = tabela_buscar(quadtrees, "postos");
+    QuadTree densidades = tabela_buscar(quadtrees, "densidades");
+    QuadTree casos = tabela_buscar(quadtrees, "casos");
+
+    char linha[TAMANHO_COMANDO];
+    while (fgets(linha, TAMANHO_COMANDO, arquivo_consulta) != NULL) {
+        char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
         if (strcmp("o?", comando) == 0) {
