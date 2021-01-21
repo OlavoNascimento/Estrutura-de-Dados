@@ -75,18 +75,9 @@ static FiguraInterface semaforo_criar_interface_figura() {
 }
 
 // Cria e inicializa um struct SemaforoImp com os valores passados.
-Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y,
-                        const char cor_borda[20], const char cor_preenchimento[20]) {
+Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y) {
     if (id == NULL) {
         LOG_ERRO("Não é possível criar um semáforo com id NULL!\n");
-        return NULL;
-    }
-    if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um semáforo com cor de borda NULL!\n");
-        return NULL;
-    }
-    if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um semáforo com cor de preenchimento NULL!\n");
         return NULL;
     }
     SemaforoImp *semImp = malloc(sizeof *semImp);
@@ -95,8 +86,8 @@ Semaforo semaforo_criar(const char id[100], double largura, double altura, doubl
     semImp->altura = altura;
     semImp->x = x;
     semImp->y = y;
-    strcpy(semImp->cor_borda, cor_borda);
-    strcpy(semImp->cor_preenchimento, cor_preenchimento);
+    strcpy(semImp->cor_borda, "red");
+    strcpy(semImp->cor_preenchimento, "green");
     semImp->arredondamento_borda = 0;
     semImp->borda_tracejada = false;
     strcpy(semImp->espessura_borda, "1px");
@@ -112,11 +103,8 @@ Semaforo semaforo_ler(const char *linha) {
     double y;
     double largura = 12;
     double altura = 30;
-    char cor_borda[20] = "red";
-    char cor_preenchimento[20] = "green";
     sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
-    return semaforo_criar(id, largura, altura, x - largura / 2, y - altura / 2, cor_borda,
-                          cor_preenchimento);
+    return semaforo_criar(id, largura, altura, x - largura / 2, y - altura / 2);
 }
 
 // Retorna o id de um semáforo.

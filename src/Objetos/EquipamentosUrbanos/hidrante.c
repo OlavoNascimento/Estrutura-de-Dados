@@ -31,7 +31,7 @@ void hidrante_escrever_svg(Hidrante hidrante, FILE *arquivo) {
     circulo_escrever_svg(hidrante, arquivo);
 
     // Rótulo do hidrante.
-    Texto texto_hidrante = texto_criar("", hidImp->x, hidImp->y + 4, "none", "white", "H", true);
+    Texto texto_hidrante = texto_criar("", hidImp->x, hidImp->y + 5, "none", "white", "H", true);
     texto_escrever_svg(texto_hidrante, arquivo);
     texto_destruir(texto_hidrante);
 }
@@ -71,18 +71,9 @@ static FiguraInterface hidrante_criar_interface_figura() {
 }
 
 // Cria e inicializa um struct HidranteImp com os valores passados.
-Hidrante hidrante_criar(const char id[100], double raio, double x, double y,
-                        const char cor_borda[20], const char cor_preenchimento[20]) {
+Hidrante hidrante_criar(const char id[100], double raio, double x, double y) {
     if (id == NULL) {
         LOG_ERRO("Não é possível criar um hidrante com id NULL!\n");
-        return NULL;
-    }
-    if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um hidrante com cor de borda NULL!\n");
-        return NULL;
-    }
-    if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um hidrante com cor de preenchimento NULL!\n");
         return NULL;
     }
     HidranteImp *hidImp = malloc(sizeof *hidImp);
@@ -90,8 +81,8 @@ Hidrante hidrante_criar(const char id[100], double raio, double x, double y,
     hidImp->raio = raio;
     hidImp->x = x;
     hidImp->y = y;
-    strcpy(hidImp->cor_borda, cor_borda);
-    strcpy(hidImp->cor_preenchimento, cor_preenchimento);
+    strcpy(hidImp->cor_borda, "red");
+    strcpy(hidImp->cor_preenchimento, "red");
     strcpy(hidImp->espessura_borda, "1px");
 
     hidImp->vtable = hidrante_criar_interface_figura();
@@ -104,10 +95,8 @@ Hidrante hidrante_ler(const char *linha) {
     double raio = 10;
     double x;
     double y;
-    char cor_borda[20] = "red";
-    char cor_preenchimento[20] = "red";
     sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
-    return hidrante_criar(id, raio, x, y, cor_borda, cor_preenchimento);
+    return hidrante_criar(id, raio, x, y);
 }
 
 // Retorna o id de um hidrante.

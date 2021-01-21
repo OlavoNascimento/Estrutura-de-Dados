@@ -26,8 +26,7 @@ Cria e inicializa um Semaforo a partir dos parâmetros passados pela função se
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
 Retorna o ponteiro. O usuário é responsável por liberar a memória alocada!
 */
-Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y,
-                        const char cor_borda[20], const char cor_preenchimento[20]);
+Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y);
 
 /*
 Cria e inicializa um Semaforo a partir de um texto obtido no arquivo .geo.

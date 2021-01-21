@@ -37,7 +37,7 @@ void estabelecimento_escrever_svg(Estabelecimento estabelecimento, FILE *arquivo
     retangulo_escrever_svg(estabelecimento, arquivo);
 
     double x = figura_obter_x_centro(estabelecimento);
-    double y = figura_obter_y_centro(estabelecimento) + 4;
+    double y = figura_obter_y_centro(estabelecimento) + 6;
     // Rótulo do estabelecimento.
     Texto texto_estabelecimento = texto_criar("", x, y, "none", "white", "E", true);
     texto_escrever_svg(texto_estabelecimento, arquivo);

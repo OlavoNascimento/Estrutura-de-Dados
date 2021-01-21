@@ -5,6 +5,7 @@
 
 #include "../Estruturas/quadtree.h"
 #include "../Estruturas/tabelahash.h"
+#include "../Objetos/EquipamentosUrbanos/estabelecimento.h"
 #include "../Utils/logging.h"
 
 // Tamanho maxímo de um comando do arquivo de comércios.
@@ -19,6 +20,18 @@ void definir_descricao_tipo(Tabela descricoes, const char *linha) {
     tabela_inserir(descricoes, tipo, descricao);
 }
 
+// Adiciona um estabelecimento a quadra especificada.
+void adicionar_estabelecimento(QuadTree estabelecimentos, QuadTree quadras, const char *linha) {
+    char cep[100];
+    sscanf(linha, "e %*s %*s %*s %s %*c %*d %*s", cep);
+    QtNo no = quadtree_buscar_id(quadras, cep);
+    if (no != NULL) {
+        Quadra quadra_pai = getInfoQt(no);
+        Estabelecimento est = estabelecimento_ler(linha, quadra_pai);
+        insereQt(estabelecimentos, ponto_criar_com_figura(est), est);
+    }
+}
+
 // Lê um arquivo de comércios fornecido a função e adiciona as figuras descritas em suas linha
 // como elementos de uma lista.
 void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relacoes) {
@@ -28,7 +41,8 @@ void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relac
         return;
     }
 
-    QuadTree moradores = tabela_buscar(quadtrees, "moradores");
+    QuadTree quadras = tabela_buscar(quadtrees, "quadras");
+    QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
     Tabela tipo_descricao = tabela_buscar(relacoes, "tipo_descricao");
 
     char linha[TAMANHO_COMANDO];
@@ -39,6 +53,7 @@ void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relac
         if (strcmp("t", comando) == 0) {
             definir_descricao_tipo(tipo_descricao, linha);
         } else if (strcmp("e", comando) == 0) {
+            adicionar_estabelecimento(estabelecimentos, quadras, linha);
         }
     }
 

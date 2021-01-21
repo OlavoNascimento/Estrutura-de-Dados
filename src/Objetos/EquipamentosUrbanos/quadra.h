@@ -27,8 +27,7 @@ Cria e inicializa uma Quadra com os valores passados.
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
-Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y,
-                    const char cor_borda[20], const char cor_preenchimento[20]);
+Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y);
 
 /*
 Cria e inicializa uma Quadra a partir de um texto obtido no arquivo .geo.

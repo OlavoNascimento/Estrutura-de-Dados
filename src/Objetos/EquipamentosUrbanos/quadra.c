@@ -94,18 +94,9 @@ static FiguraInterface quadra_criar_interface_figura() {
 }
 
 // Cria e inicializa um struct QuadraImp com os valores passados.
-Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y,
-                    const char cor_borda[20], const char cor_preenchimento[20]) {
+Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y) {
     if (id == NULL) {
         LOG_ERRO("Não é possível criar uma quadra com id NULL!\n");
-        return NULL;
-    }
-    if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar uma quadra com cor de borda NULL!\n");
-        return NULL;
-    }
-    if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar uma quadra com cor de preenchimento NULL!\n");
         return NULL;
     }
     QuadraImp *quaImp = malloc(sizeof *quaImp);
@@ -114,8 +105,8 @@ Quadra quadra_criar(const char id[100], double largura, double altura, double x,
     quaImp->altura = altura;
     quaImp->x = x;
     quaImp->y = y;
-    strcpy(quaImp->cor_borda, cor_borda);
-    strcpy(quaImp->cor_preenchimento, cor_preenchimento);
+    strcpy(quaImp->cor_borda, "saddlebrown");
+    strcpy(quaImp->cor_preenchimento, "coral");
     quaImp->arredondamento_borda = 0;
     quaImp->borda_tracejada = false;
     strcpy(quaImp->espessura_borda, "1px");
@@ -132,10 +123,8 @@ Quadra quadra_ler(const char *linha) {
     double altura;
     double x;
     double y;
-    char cor_borda[20] = "saddlebrown";
-    char cor_preenchimento[20] = "coral";
     sscanf(linha, "%*s %s %lf %lf %lf %lf", id, &x, &y, &largura, &altura);
-    return quadra_criar(id, largura, altura, x, y, cor_borda, cor_preenchimento);
+    return quadra_criar(id, largura, altura, x, y);
 }
 
 // Encontra e inicializa as coordenadas x e y de um elemento que seja contido por uma quadra.

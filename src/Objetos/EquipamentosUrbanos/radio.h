@@ -25,8 +25,7 @@ Cria e inicializa um Radio com os valores passados.
 O raio deve ser maior que 0. O id e as cores não podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
-Radio radio_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20]);
+Radio radio_criar(const char id[100], double raio, double x, double y);
 
 /*
 Cria e inicializa um Radio a partir de um texto obtido no arquivo .geo.

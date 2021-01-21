@@ -31,7 +31,7 @@ void radio_escrever_svg(Radio radio, FILE *arquivo) {
     circulo_escrever_svg(radio, arquivo);
 
     // Rótulo do rádio.
-    Texto texto_radio_base = texto_criar("", radImp->x, radImp->y + 4, "none", "white", "RB", true);
+    Texto texto_radio_base = texto_criar("", radImp->x, radImp->y + 5, "none", "white", "R", true);
     texto_escrever_svg(texto_radio_base, arquivo);
     texto_destruir(texto_radio_base);
 }
@@ -71,18 +71,9 @@ static FiguraInterface radio_criar_interface_figura() {
 }
 
 // Cria e inicializa um struct RadioImp com os valores passados.
-Radio radio_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20]) {
+Radio radio_criar(const char id[100], double raio, double x, double y) {
     if (id == NULL) {
         LOG_ERRO("Não é possível criar um rádio com id NULL!\n");
-        return NULL;
-    }
-    if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um rádio com cor de borda NULL!\n");
-        return NULL;
-    }
-    if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um rádio com cor de preenchimento NULL!\n");
         return NULL;
     }
     RadioImp *radImp = malloc(sizeof *radImp);
@@ -90,8 +81,8 @@ Radio radio_criar(const char id[100], double raio, double x, double y, const cha
     radImp->raio = raio;
     radImp->x = x;
     radImp->y = y;
-    strcpy(radImp->cor_borda, cor_borda);
-    strcpy(radImp->cor_preenchimento, cor_preenchimento);
+    strcpy(radImp->cor_borda, "purple");
+    strcpy(radImp->cor_preenchimento, "purple");
     strcpy(radImp->espessura_borda, "1px");
 
     radImp->vtable = radio_criar_interface_figura();
@@ -104,10 +95,8 @@ Radio radio_ler(const char *linha) {
     double raio = 10;
     double x;
     double y;
-    char cor_borda[20] = "purple";
-    char cor_preenchimento[20] = "purple";
     sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
-    return radio_criar(id, raio, x, y, cor_borda, cor_preenchimento);
+    return radio_criar(id, raio, x, y);
 }
 
 // Retorna o id de um rádio.
