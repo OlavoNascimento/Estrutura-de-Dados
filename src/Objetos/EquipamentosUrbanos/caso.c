@@ -30,7 +30,7 @@ const char *caso_obter_tipo() {
     return "caso";
 }
 
-// Escreve no svg as informações de um rádio.
+// Escreve no svg as informações de um caso.
 void caso_escrever_svg(Caso caso, FILE *arquivo) {
     CasoImp *casoImp = caso;
     retangulo_escrever_svg(caso, arquivo);
@@ -46,12 +46,24 @@ void caso_escrever_svg(Caso caso, FILE *arquivo) {
     texto_destruir(texto_quadra);
 }
 
+// Escreve todos os dados de um caso em um arquivo.
+void caso_escrever_informacoes(Caso caso, FILE *arquivo) {
+    CasoImp *casoImp = caso;
+    fprintf(arquivo, "tipo: %s,", figura_obter_tipo(caso));
+    if (strlen(casoImp->id) > 0)
+        fprintf(arquivo, " id: %s,", casoImp->id);
+    fprintf(arquivo,
+            " largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s, número de casos: %d\n",
+            casoImp->largura, casoImp->altura, casoImp->x, casoImp->y, casoImp->cor_borda,
+            casoImp->cor_preenchimento, casoImp->numero_de_casos);
+}
+
 // Conecta as funções do objeto Caso com as da interface figura.
 // Como o struct CasoImp é idêntico ao struct RetanguloImp as funções utilizadas em um objeto
 // Retangulo podem ser reaproveitadas.
 static FiguraInterface caso_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_escrever_informacoes(interface, retangulo_escrever_informacoes);
+    figura_registrar_escrever_informacoes(interface, caso_escrever_informacoes);
     figura_registrar_escrever_svg(interface, caso_escrever_svg);
 
     figura_registrar_obter_tipo(interface, caso_obter_tipo);
@@ -122,7 +134,7 @@ Caso caso_ler(const char *linha, Quadra quadra) {
     return caso_criar(casos, quadra, face, numero);
 }
 
-// Retorna o número de casos armazenado em um objeto caso.
+// Retorna o número de casos armazenado em um caso.
 int caso_obter_numero_de_casos(Caso caso) {
     CasoImp *casoImp = caso;
     return casoImp->numero_de_casos;

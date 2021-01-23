@@ -136,9 +136,8 @@ void poligono_escrever_informacoes(Poligono poligono, FILE *arquivo) {
 // Escreve o código svg que representa um polígono em um arquivo.
 void poligono_escrever_svg(Poligono poligono, FILE *arquivo) {
     PoligonoImp *polImp = poligono;
-    fprintf(arquivo, "\t<polygon");
+    fprintf(arquivo, "\t<polygon points='");
 
-    fprintf(arquivo, " points='");
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
         if (i != 0)
             fprintf(arquivo, " ");
@@ -146,13 +145,9 @@ void poligono_escrever_svg(Poligono poligono, FILE *arquivo) {
         double y = polImp->pontos[i][1];
         fprintf(arquivo, "%lf,%lf", x, y);
     }
-    fprintf(arquivo, "'");
 
-    fprintf(arquivo, " stroke='%s' fill='%s' stroke-width='4px'", polImp->cor_borda,
-            polImp->cor_preenchimento);
-    if (polImp->opacidade != 0)
-        fprintf(arquivo, "  opacity='%lf'", polImp->opacidade);
-    fprintf(arquivo, "/>\n");
+    fprintf(arquivo, "' stroke='%s' fill='%s' stroke-width='4px' opacity='%lf' />\n",
+            polImp->cor_borda, polImp->cor_preenchimento, polImp->opacidade);
 }
 
 // Retorna a área de um polígono.

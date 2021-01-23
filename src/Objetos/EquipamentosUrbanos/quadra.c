@@ -59,12 +59,23 @@ void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
     texto_destruir(texto_quadra);
 }
 
+// Escreve todos os dados de uma quadra em um arquivo.
+void quadra_escrever_informacoes(Quadra quadra, FILE *arquivo) {
+    QuadraImp *quadImp = quadra;
+    fprintf(arquivo, "tipo: %s,", figura_obter_tipo(quadra));
+    if (strlen(quadImp->id) > 0)
+        fprintf(arquivo, " cep: %s,", quadImp->id);
+    fprintf(arquivo, " largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
+            quadImp->largura, quadImp->altura, quadImp->x, quadImp->y, quadImp->cor_borda,
+            quadImp->cor_preenchimento);
+}
+
 // Conecta as funções do objeto Quadra com as da interface figura.
 // Como o struct QuadraImp é idêntico ao struct RetanguloImp as funções utilizadas em um objeto
 // Retangulo podem ser reaproveitadas.
 static FiguraInterface quadra_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_escrever_informacoes(interface, retangulo_escrever_informacoes);
+    figura_registrar_escrever_informacoes(interface, quadra_escrever_informacoes);
     figura_registrar_escrever_svg(interface, quadra_escrever_svg);
 
     figura_registrar_obter_tipo(interface, quadra_obter_tipo);

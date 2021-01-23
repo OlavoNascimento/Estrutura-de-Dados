@@ -32,7 +32,7 @@ const char *estabelecimento_obter_string_tipo() {
     return "estabelecimento";
 }
 
-// Escreve no svg as informações de uma radio base.
+// Escreve no svg as informações de um estabelecimento.
 void estabelecimento_escrever_svg(Estabelecimento estabelecimento, FILE *arquivo) {
     retangulo_escrever_svg(estabelecimento, arquivo);
 
@@ -44,12 +44,24 @@ void estabelecimento_escrever_svg(Estabelecimento estabelecimento, FILE *arquivo
     texto_destruir(texto_estabelecimento);
 }
 
+// Escreve todos os dados de uma estabelecimento em um arquivo.
+void estabelecimento_escrever_informacoes(Estabelecimento estabelecimento, FILE *arquivo) {
+    EstabelecimentoImp *estImp = estabelecimento;
+    fprintf(arquivo,
+            "tipo: %s, cnpj: %s, largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s, "
+            "tipo de estabelecimento: %s, nome: %s, cpf: %s\n",
+            figura_obter_tipo(estabelecimento), estImp->id, estImp->largura, estImp->altura,
+            estImp->x, estImp->y, estImp->cor_borda, estImp->cor_preenchimento, estImp->tipo,
+            estImp->nome, estImp->cpf);
+}
+
 // Conecta as funções do objeto Estabelecimento com as da interface figura.
 // Como o struct EstabelecimentoImp é idêntico ao struct RetanguloImp as funções utilizadas em um
 // objeto Retangulo podem ser reaproveitadas.
 static FiguraInterface estabelecimento_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_escrever_informacoes(interface, retangulo_escrever_informacoes);
+    // TODO Implementar estabelecimento_escrever_informacoes.
+    figura_registrar_escrever_informacoes(interface, estabelecimento_escrever_informacoes);
     figura_registrar_escrever_svg(interface, estabelecimento_escrever_svg);
 
     figura_registrar_obter_tipo(interface, estabelecimento_obter_string_tipo);
@@ -119,8 +131,9 @@ Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const c
     estImp->arredondamento_borda = 0;
     estImp->borda_tracejada = false;
     strcpy(estImp->espessura_borda, "1px");
+    strcpy(estImp->tipo, tipo);
     strcpy(estImp->nome, nome);
-    strcpy(estImp->nome, cpf);
+    strcpy(estImp->cpf, cpf);
 
     estImp->vtable = estabelecimento_criar_interface_figura();
     return estImp;
@@ -131,8 +144,8 @@ Estabelecimento estabelecimento_ler(const char *linha, Quadra quadra) {
     char cnpj[100];
     char cpf[100];
     char tipo[100];
-    int numero;
     char face;
+    int numero;
     char nome[100];
     sscanf(linha, "e %s %s %s %*s %c %d %s", cnpj, cpf, tipo, &face, &numero, nome);
     return estabelecimento_criar(cnpj, cpf, tipo, nome, quadra, face, numero);

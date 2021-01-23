@@ -28,7 +28,7 @@ const char *semaforo_obter_tipo() {
     return "semáforo";
 }
 
-// Escreve no svg as informações de uma radio base
+// Escreve no svg as informações de um semáforo.
 void semaforo_escrever_svg(Semaforo semaforo, FILE *arquivo) {
     retangulo_escrever_svg(semaforo, arquivo);
 
