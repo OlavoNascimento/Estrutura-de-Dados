@@ -18,6 +18,7 @@ typedef struct {
     char cor_borda[20];
     char cor_preenchimento[20];
     char espessura_borda[20];
+    double opacidade;
 } CirculoImp;
 
 const char *circulo_obter_tipo() {
@@ -79,6 +80,7 @@ Circulo circulo_criar(const char id[100], double raio, double x, double y, const
     strcpy(cirImp->cor_borda, cor_borda);
     strcpy(cirImp->cor_preenchimento, cor_preenchimento);
     strcpy(cirImp->espessura_borda, "1px");
+    cirImp->opacidade = 1;
 
     cirImp->vtable = circulo_criar_interface_figura();
     return cirImp;
@@ -106,6 +108,14 @@ bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
     return dist <= raios;
 }
 
+// Retorna verdadeiro se o circulo1 contem o círculo2.
+bool circulo_contem_circulo(Circulo circulo1, Circulo circulo2) {
+    CirculoImp *cirImp1 = circulo1;
+    CirculoImp *cirImp2 = circulo2;
+    double dist = sqrt(pow(cirImp2->x - cirImp1->x, 2) + pow(cirImp2->y - cirImp1->y, 2));
+    return cirImp1->raio >= dist + cirImp2->raio;
+}
+
 // Retorna verdadeiro se um ponto se encontra dentro de um círculo.
 bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
     CirculoImp *cirImp = circulo;
@@ -118,8 +128,11 @@ void circulo_escrever_informacoes(Circulo circulo, FILE *arquivo) {
     fprintf(arquivo, "tipo: %s,", figura_obter_tipo(circulo));
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, " id: %s,", cirImp->id);
-    fprintf(arquivo, " raio: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n", cirImp->raio, cirImp->x,
+    fprintf(arquivo, " raio: %lf, x: %lf, y: %lf, corb: %s, corp: %s", cirImp->raio, cirImp->x,
             cirImp->y, cirImp->cor_borda, cirImp->cor_preenchimento);
+    if (cirImp->opacidade != 1)
+        fprintf(arquivo, ", opacidade: %lf", cirImp->opacidade);
+    fprintf(arquivo, "\n");
 }
 
 // Escreve o código svg que representa um círculo em um arquivo.
@@ -129,10 +142,10 @@ void circulo_escrever_svg(Circulo circulo, FILE *arquivo) {
     if (strlen(cirImp->id) > 0)
         fprintf(arquivo, "id='%s' ", cirImp->id);
 
-    fprintf(arquivo, "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s' stroke-width='%s'",
+    fprintf(arquivo,
+            "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s' stroke-width='%s' opacity='%lf'/>\n",
             cirImp->raio, cirImp->x, cirImp->y, cirImp->cor_borda, cirImp->cor_preenchimento,
-            cirImp->espessura_borda);
-    fprintf(arquivo, "/>\n");
+            cirImp->espessura_borda, cirImp->opacidade);
 }
 
 // Retorna o id de um círculo.
@@ -226,6 +239,17 @@ void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_bord
     }
     CirculoImp *cirImp = circulo;
     strcpy(cirImp->espessura_borda, espessura_borda);
+}
+
+// Define a opacidade de um círculo.
+void circulo_definir_opacidade(Circulo circulo, double opacidade) {
+    if (opacidade < 0 || opacidade > 1) {
+        LOG_ERRO("A opacidade de um %s deve ser maior ou igual a zero 0 e menor ou igual a 1!\n",
+                 figura_obter_tipo(circulo));
+        return;
+    }
+    CirculoImp *cirImp = circulo;
+    cirImp->opacidade = opacidade;
 }
 
 // Libera a memória alocada por um círculo.

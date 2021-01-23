@@ -19,6 +19,7 @@ typedef struct {
     char cor_borda[20];
     char cor_preenchimento[20];
     char espessura_borda[20];
+    double opacidade;
 } PostoImp;
 
 const char *posto_obter_tipo() {
@@ -80,6 +81,7 @@ Posto posto_criar(double x, double y) {
     strcpy(posImp->cor_borda, "steelblue");
     strcpy(posImp->cor_preenchimento, "green");
     strcpy(posImp->espessura_borda, "1px");
+    posImp->opacidade = 1;
 
     posImp->vtable = posto_criar_interface_figura();
     return posImp;
@@ -93,10 +95,9 @@ Posto posto_ler(const char *linha) {
     return posto_criar(x, y);
 }
 
-// Retorna o raio de um posto. Usado apenas para cálculo interno, já que o posto é considerado
-// um ponto.
-double posto_obter_raio(Posto posto) {
-    return circulo_obter_raio(posto);
+// Retorna a coordenada x de um posto. O posto é considerado apenas um ponto.
+double posto_obter_x(Posto posto) {
+    return circulo_obter_x(posto);
 }
 
 // Retorna a coordenada y de um posto. O posto é considerado apenas um ponto.
@@ -104,9 +105,10 @@ double posto_obter_y(Posto posto) {
     return circulo_obter_y(posto);
 }
 
-// Retorna a coordenada x de um posto. O posto é considerado apenas um ponto.
-double posto_obter_x(Posto posto) {
-    return circulo_obter_x(posto);
+// Retorna o raio de um posto. Usado apenas para cálculo interno, já que o posto é considerado
+// um ponto.
+double posto_obter_raio(Posto posto) {
+    return circulo_obter_raio(posto);
 }
 
 // Retorna a cor de preenchimento de um posto.
@@ -132,6 +134,11 @@ void posto_definir_cor_borda(Posto posto, const char *cor_borda) {
 // Define a espessura da borda de um posto.
 void posto_definir_espessura_borda(Posto posto, const char *espessura_borda) {
     circulo_definir_espessura_borda(posto, espessura_borda);
+}
+
+// Define a opacidade de um posto.
+void posto_definir_opacidade(Posto posto, double opacidade) {
+    circulo_definir_opacidade(posto, opacidade);
 }
 
 // Libera a memória alocada por um posto.

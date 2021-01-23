@@ -95,6 +95,13 @@ Nenhum dos parâmetros podem ser nulos.
 void radio_definir_espessura_borda(Radio radio, const char *espessura_borda);
 
 /*
+Define a opacidade de um radio.
+O parâmetro radio não pode ser nulo e a opacidade dever maior ou igual a zero e menor ou igual
+a 1.
+*/
+void radio_definir_opacidade(Radio radio, double opacidade);
+
+/*
 Libera a memória alocada por um radio.
 O parâmetro radio não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada. O ponteiro não poderá ser utilizado após isso!

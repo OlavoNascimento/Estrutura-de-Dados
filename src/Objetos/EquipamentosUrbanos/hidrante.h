@@ -95,6 +95,13 @@ Nenhum dos parâmetros podem ser nulos.
 void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda);
 
 /*
+Define a opacidade de um hidrante.
+O parâmetro hidrante não pode ser nulo e a opacidade dever maior ou igual a zero e menor ou igual
+a 1.
+*/
+void hidrante_definir_opacidade(Hidrante hidrante, double opacidade);
+
+/*
 Libera a memória alocada por um hidrante.
 O parâmetro hidrante não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada. O ponteiro não poderá ser utilizado após isso!

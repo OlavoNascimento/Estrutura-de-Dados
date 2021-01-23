@@ -19,6 +19,7 @@ typedef struct {
     char cor_borda[20];
     char cor_preenchimento[20];
     char espessura_borda[20];
+    double opacidade;
 } RadioImp;
 
 const char *radio_obter_tipo() {
@@ -84,6 +85,7 @@ Radio radio_criar(const char id[100], double raio, double x, double y) {
     strcpy(radImp->cor_borda, "purple");
     strcpy(radImp->cor_preenchimento, "purple");
     strcpy(radImp->espessura_borda, "1px");
+    radImp->opacidade = 1;
 
     radImp->vtable = radio_criar_interface_figura();
     return radImp;
@@ -143,6 +145,11 @@ void radio_definir_cor_preenchimento(Radio radio, const char *cor_preenchimento)
 // Define a espessura da borda de um rádio.
 void radio_definir_espessura_borda(Radio radio, const char *espessura_borda) {
     circulo_definir_espessura_borda(radio, espessura_borda);
+}
+
+// Define a opacidade de um radio.
+void radio_definir_opacidade(Radio radio, double opacidade) {
+    circulo_definir_opacidade(radio, opacidade);
 }
 
 // Libera a memória alocada por um rádio.

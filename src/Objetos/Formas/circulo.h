@@ -44,18 +44,18 @@ Retorna verdadeiro caso os dois círculos se intersectam, caso contrário retorn
 bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2);
 
 /*
+Verifica se o circulo1 contem o circulo2.
+Nenhum dos parâmetros podem ser nulos.
+Retorna verdadeiro caso o circulo1 contenha o circulo2.
+*/
+bool circulo_contem_circulo(Circulo circulo1, Circulo circulo2);
+
+/*
 Verifica se um ponto é contido por um círculo.
 O parâmetro circulo não pode ser nulo.
 Retorna verdadeiro caso o ponto se encontre contido pelo circulo, caso contrário retorna falso.
 */
 bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y);
-
-/*
-Obtém o raio de um círculo.
-O parâmetro circulo não pode ser nulo.
-Retorna o raio de um círculo.
-*/
-double circulo_obter_raio(Circulo circulo);
 
 /*
 Escreve todas as informações presentes em um círculo em um arquivo.
@@ -75,6 +75,13 @@ O parâmetro circulo não pode ser nulo.
 Retorna o id de um círculo.
 */
 const char *circulo_obter_id(Circulo circulo);
+
+/*
+Obtém o raio de um círculo.
+O parâmetro circulo não pode ser nulo.
+Retorna o raio de um círculo.
+*/
+double circulo_obter_raio(Circulo circulo);
 
 /*
 Obtém a coordenada x de um círculo.
@@ -156,6 +163,13 @@ Define a espessura da borda de um círculo.
 Nenhum dos parâmetros podem ser nulos.
 */
 void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_borda);
+
+/*
+Define a opacidade de um círculo.
+O parâmetro circulo não pode ser nulo e a opacidade dever maior ou igual a zero e menor ou igual
+a 1.
+*/
+void circulo_definir_opacidade(Circulo circulo, double opacidade);
 
 /*
 Libera a memória alocada por um círculo.

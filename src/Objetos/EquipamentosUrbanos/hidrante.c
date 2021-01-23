@@ -19,6 +19,7 @@ typedef struct {
     char cor_borda[20];
     char cor_preenchimento[20];
     char espessura_borda[20];
+    double opacidade;
 } HidranteImp;
 
 const char *hidrante_obter_tipo() {
@@ -84,6 +85,7 @@ Hidrante hidrante_criar(const char id[100], double raio, double x, double y) {
     strcpy(hidImp->cor_borda, "red");
     strcpy(hidImp->cor_preenchimento, "red");
     strcpy(hidImp->espessura_borda, "1px");
+    hidImp->opacidade = 1;
 
     hidImp->vtable = hidrante_criar_interface_figura();
     return hidImp;
@@ -143,6 +145,11 @@ void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char *cor_preen
 // Define a espessura da borda de um hidrante.
 void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda) {
     circulo_definir_espessura_borda(hidrante, espessura_borda);
+}
+
+// Define a opacidade de um hidrante.
+void hidrante_definir_opacidade(Hidrante hidrante, double opacidade) {
+    circulo_definir_opacidade(hidrante, opacidade);
 }
 
 // Libera a memória alocada por um hidrante.
