@@ -64,8 +64,8 @@ void checar_interseccao(QuadTree formas, const char *linha, FILE *arquivo_log) {
     QtNo no2 = quadtree_buscar_id(formas, id2);
     if (no1 == NULL || no2 == NULL)
         return;
-    Figura fig1 = getInfoQt(no1);
-    Figura fig2 = getInfoQt(no2);
+    Figura fig1 = getInfoQt(formas, no1);
+    Figura fig2 = getInfoQt(formas, no2);
 
     const char *tipo_fig1 = figura_obter_tipo(fig1);
     const char *tipo_fig2 = figura_obter_tipo(fig2);
@@ -118,7 +118,7 @@ void checar_ponto_interno(QuadTree formas, const char *linha, FILE *arquivo_log)
     QtNo no = quadtree_buscar_id(formas, id);
     if (no == NULL)
         return;
-    Figura figura = getInfoQt(no);
+    Figura figura = getInfoQt(formas, no);
 
     const char *tipo_figura = figura_obter_tipo(figura);
     bool interno = false;
@@ -153,7 +153,7 @@ void alterar_cor(QuadTree formas, const char *linha, FILE *arquivo_log) {
     QtNo no = quadtree_buscar_id(formas, id);
     if (no == NULL)
         return;
-    Figura fig = getInfoQt(no);
+    Figura fig = getInfoQt(formas, no);
 
     fprintf(arquivo_log, "pnt %s %s %s\n", id, nova_corb, nova_corp);
     fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
@@ -173,7 +173,7 @@ void alterar_cores(QuadTree formas, const char *linha, FILE *arquivo_log) {
 
     // Itera até o nó inicial.
     while (atual != NULL) {
-        Figura fig = getInfoQt(lista_obter_info(atual));
+        Figura fig = getInfoQt(formas, lista_obter_info(atual));
         const char *id_atual = figura_obter_id(fig);
         if (strcmp(id_atual, id_inicial) == 0)
             break;
@@ -183,7 +183,7 @@ void alterar_cores(QuadTree formas, const char *linha, FILE *arquivo_log) {
 
     // Itera até o nó final.
     while (atual != NULL) {
-        Figura fig = getInfoQt(lista_obter_info(atual));
+        Figura fig = getInfoQt(formas, lista_obter_info(atual));
         const char *id_atual = figura_obter_id(fig);
 
         fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
@@ -206,7 +206,7 @@ void remover_elemento(QuadTree formas, const char *linha, FILE *arquivo_log) {
     QtNo no = quadtree_buscar_id(formas, id);
     if (no == NULL)
         return;
-    Figura fig = getInfoQt(no);
+    Figura fig = getInfoQt(formas, no);
 
     fprintf(arquivo_log, "delf %s\n", id);
     figura_escrever_informacoes(fig, arquivo_log);
@@ -227,7 +227,7 @@ void remover_elementos(QuadTree formas, const char *linha, FILE *arquivo_log) {
 
     // Itera até o nó inicial.
     while (atual != NULL) {
-        Figura fig = getInfoQt(lista_obter_info(atual));
+        Figura fig = getInfoQt(formas, lista_obter_info(atual));
         const char *id_atual = figura_obter_id(fig);
         if (strcmp(id_atual, id_inicial) == 0)
             break;
@@ -236,7 +236,7 @@ void remover_elementos(QuadTree formas, const char *linha, FILE *arquivo_log) {
 
     // Itera até o nó final.
     while (atual != NULL) {
-        Figura fig = getInfoQt(lista_obter_info(atual));
+        Figura fig = getInfoQt(formas, lista_obter_info(atual));
         const char *id_atual = figura_obter_id(fig);
 
         fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
@@ -277,7 +277,7 @@ void raio_remove_quadras(QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
         no_id = quadtree_buscar_id(semaforos, id);
     if (no_id == NULL)
         return;
-    Figura figura = getInfoQt(no_id);
+    Figura figura = getInfoQt(formas, no_id);
 
     cir_x = figura_obter_x_centro(figura);
     cir_y = figura_obter_y_centro(figura);
@@ -288,7 +288,7 @@ void raio_remove_quadras(QuadTree quadras, QuadTree hidrantes, QuadTree semaforo
     ListaNo proximo = NULL;
     while (atual != NULL) {
         proximo = lista_obter_proximo(atual);
-        Figura quadra = getInfoQt(lista_obter_info(atual));
+        Figura quadra = getInfoQt(formas, lista_obter_info(atual));
 
         bool contido = circulo_contem_retangulo(circulo_de_selecao, quadra);
         if (contido) {
@@ -348,7 +348,7 @@ void remove_equipamento_urbano(const char *linha, QuadTree *quadras, QuadTree *h
     if (no == NULL)
         return;
 
-    Figura figura = getInfoQt(no);
+    Figura figura = getInfoQt(formas, no);
     double centro_x = figura_obter_x_centro(figura);
     double centro_y = figura_obter_y_centro(figura);
 
@@ -377,7 +377,7 @@ void circulo_contem_quadras(QuadTree *quadras, const char *linha, FILE *arquivo_
     Lista nos_contidos = nosDentroCirculoQt(quadras, cir_x, cir_y, raio);
     ListaNo atual = lista_obter_primeiro(nos_contidos);
     while (atual != NULL) {
-        Figura quadra = getInfoQt(lista_obter_info(atual));
+        Figura quadra = getInfoQt(quadras, lista_obter_info(atual));
 
         if (circulo_contem_retangulo(circulo_de_selecao, quadra)) {
             figura_definir_cor_borda(quadra, cor_borda);
@@ -406,7 +406,7 @@ void informacoes_equipamento_urbano(QuadTree quadras, QuadTree hidrantes, QuadTr
     if (no_id == NULL)
         return;
 
-    Figura equipamento = getInfoQt(no_id);
+    Figura equipamento = getInfoQt(quadras, no_id);
     fprintf(arquivo_log, "tipo: %s, x: %lf, y: %lf\n\n", figura_obter_tipo(equipamento),
             figura_obter_x(equipamento), figura_obter_y(equipamento));
 }
@@ -417,19 +417,19 @@ void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char 
     double x, y, largura, altura;
     sscanf(linha, "car %lf %lf %lf %lf", &x, &y, &largura, &altura);
 
+    Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
+    insereQt(formas, ponto_criar_com_figura(contorno), contorno);
+
     Lista nos_contidos = nosDentroRetanguloQt(quadras, x, y, x + largura, y + altura);
     if (lista_obter_tamanho(nos_contidos) == 0) {
         lista_destruir(nos_contidos);
         return;
     }
 
-    Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
-    insereQt(formas, ponto_criar_com_figura(contorno), contorno);
-
     double area_total = 0;
     ListaNo atual = lista_obter_primeiro(nos_contidos);
     while (atual != NULL) {
-        Figura figura = getInfoQt(lista_obter_info(atual));
+        Figura figura = getInfoQt(formas, lista_obter_info(atual));
         double figura_x_inicio = figura_obter_x_inicio(figura);
         double figura_y_inicio = figura_obter_y_inicio(figura);
         double figura_x_fim = figura_obter_x_fim(figura);
@@ -474,7 +474,7 @@ void adicionar_caso(QuadTree casos, QuadTree quadras, const char *linha) {
     sscanf(linha, "cv %*d %s %*c %*d", cep);
     QtNo no = quadtree_buscar_id(quadras, cep);
     if (no != NULL) {
-        Quadra quadra_buscada = getInfoQt(no);
+        Quadra quadra_buscada = getInfoQt(quadras, no);
         Caso novo_caso = caso_ler(linha, quadra_buscada);
         insereQt(casos, ponto_criar_com_figura(novo_caso), novo_caso);
     }
@@ -493,7 +493,7 @@ void postos_mais_proximos(QuadTree postos, QuadTree quadras, QuadTree formas, co
         return;
 
     // Desenhar o caso azul
-    Caso caso = caso_criar(k, getInfoQt(no_quadra), face, numero);
+    Caso caso = caso_criar(k, getInfoQt(formas, no_quadra), face, numero);
     insereQt(formas, ponto_criar_com_figura(caso), caso);
 
     Lista lista_postos = quadtree_para_lista(postos);
@@ -543,7 +543,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     if (lista_obter_tamanho(nos_contidos) > 0)
         fprintf(arquivo_log, "Pontos selecionados pelo círculo: \n");
     for (ListaNo i = lista_obter_primeiro(nos_contidos); i != NULL; i = lista_obter_proximo(i)) {
-        Figura caso = getInfoQt(lista_obter_info(i));
+        Figura caso = getInfoQt(formas, lista_obter_info(i));
         if (circulo_contem_retangulo(raio_de_selecao, caso)) {
             total_de_casos += caso_obter_numero_de_casos(caso);
             fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(caso), figura_obter_y(caso));
@@ -681,6 +681,54 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     free(diretorios);
 }
 
+void remover_elementos_contidos(QuadTree formas, QuadTree quadras, QuadTree hidrantes,
+                                QuadTree radios, QuadTree semaforos, QuadTree moradores,
+                                QuadTree estabelecimentos, const char *linha, FILE *arquivo_log) {
+    double x, y, raio;
+    sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
+
+    // Adiciona o círculo a Quadtree formas.
+    Circulo raio_selecao = circulo_criar("", raio, x, y, "#6C6753", "#CCFF00");
+    circulo_definir_opacidade(raio_selecao, 0.5);
+    insereQt(formas, ponto_criar_com_figura(raio_selecao), raio_selecao);
+
+    // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
+    // que estão contidas no círculo.
+    void *retangulos[] = {quadras, semaforos, moradores, estabelecimentos};
+    for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
+        Lista nos = nosDentroCirculoQt(retangulos[i], x, y, raio);
+
+        for (ListaNo j = lista_obter_primeiro(nos); j != NULL; j = lista_obter_proximo(j)) {
+            Retangulo ret = getInfoQt(formas, lista_obter_info(j));
+            if (circulo_contem_retangulo(raio_selecao, ret)) {
+                figura_escrever_informacoes(ret, arquivo_log);
+                fprintf(arquivo_log, "\n");
+                removeNoQt(retangulos[i], lista_obter_info(j));
+                figura_destruir(ret);
+            }
+        }
+        lista_destruir(nos);
+    }
+
+    // Itera por todas as figuras baseadas em círculos, escrevendo os dados e removendo as figuras
+    // que estão contidas no círculo.
+    void *circulos[] = {hidrantes, radios};
+    for (int i = 0; i < (int) (sizeof(circulos) / sizeof(circulos[0])); i++) {
+        Lista nos = nosDentroCirculoQt(circulos[i], x, y, raio);
+
+        for (ListaNo j = lista_obter_primeiro(nos); j != NULL; j = lista_obter_proximo(j)) {
+            Circulo circ = getInfoQt(formas, lista_obter_info(j));
+            if (circulo_contem_circulo(raio_selecao, circ)) {
+                figura_escrever_informacoes(circ, arquivo_log);
+                fprintf(arquivo_log, "\n");
+                removeNoQt(circulos[i], lista_obter_info(j));
+                figura_destruir(circ);
+            }
+        }
+        lista_destruir(nos);
+    }
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
@@ -704,6 +752,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree postos = tabela_buscar(quadtrees, "postos");
     QuadTree densidades = tabela_buscar(quadtrees, "densidades");
     QuadTree casos = tabela_buscar(quadtrees, "casos");
+    QuadTree moradores = tabela_buscar(quadtrees, "moradores");
+    QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
 
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_consulta) != NULL) {
@@ -742,6 +792,9 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             determinar_regiao_de_incidencia(formas, densidades, casos, postos, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
+        } else if (strcmp("catac", comando) == 0) {
+            remover_elementos_contidos(formas, quadras, hidrantes, radios, semaforos, moradores,
+                                       estabelecimentos, linha, arquivo_log);
         }
     }
 

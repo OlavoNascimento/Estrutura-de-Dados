@@ -548,8 +548,8 @@ QtNo quadtree_buscar_id(QuadTree qt, const char *id) {
     return NULL;
 }
 
-QtInfo getInfoQt(QtNo pNo) {
-    if (pNo == NULL) {
+QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
+    if (qt == NULL || pNo == NULL) {
         LOG_ERRO("Valor nulo passado para getInfoQt!\n");
         return NULL;
     }

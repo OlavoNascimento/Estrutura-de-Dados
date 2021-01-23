@@ -116,7 +116,7 @@ QtNo quadtree_buscar_id(QuadTree qt, const char *id);
 Retorna a informação armazenada na árvore no nó referenciado por pNo.
 "pNo" deve referenciar um nó válido dentro da árvore.
 */
-QtInfo getInfoQt(QtNo pNo);
+QtInfo getInfoQt(QuadTree qt, QtNo pNo);
 
 /*
 Retorna uma lista com as informações de uma quadtree. Necessário para comandos que precisam iterar

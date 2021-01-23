@@ -26,7 +26,7 @@ void adicionar_estabelecimento(QuadTree estabelecimentos, QuadTree quadras, cons
     sscanf(linha, "e %*s %*s %*s %s %*c %*d %*s", cep);
     QtNo no = quadtree_buscar_id(quadras, cep);
     if (no != NULL) {
-        Quadra quadra_pai = getInfoQt(no);
+        Quadra quadra_pai = getInfoQt(quadras, no);
         Estabelecimento est = estabelecimento_ler(linha, quadra_pai);
         insereQt(estabelecimentos, ponto_criar_com_figura(est), est);
     }

@@ -238,7 +238,7 @@ void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
 
         for (ListaNo j = lista_obter_primeiro(quadras_contidas); j != NULL;
              j = lista_obter_proximo(j)) {
-            Quadra quad = getInfoQt(lista_obter_info(j));
+            Quadra quad = getInfoQt(quadras, lista_obter_info(j));
             quadra_definir_cor_sombra(quad, cor);
         }
         lista_destruir(quadras_contidas);

@@ -60,7 +60,6 @@ void estabelecimento_escrever_informacoes(Estabelecimento estabelecimento, FILE 
 // objeto Retangulo podem ser reaproveitadas.
 static FiguraInterface estabelecimento_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    // TODO Implementar estabelecimento_escrever_informacoes.
     figura_registrar_escrever_informacoes(interface, estabelecimento_escrever_informacoes);
     figura_registrar_escrever_svg(interface, estabelecimento_escrever_svg);
 

@@ -4,12 +4,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "../Estruturas/quadtree.h"
 #include "../Interfaces/figura.h"
-#include "../Objetos/Outros/texto.h"
-#include "../Utils/caminhos.h"
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
 
@@ -35,8 +32,8 @@ void svg_atualizar_exibicao(Figura figura, ExibicaoSVG *exi) {
 
 // Retorna uma struct que representa as propriedades iniciais do arquivo svg.
 ExibicaoSVG *svg_criar_exibicao(int num_quadtrees, va_list quadtrees) {
-    va_list qts;
-    va_copy(qts, quadtrees);
+    va_list exi_qts;
+    va_copy(exi_qts, quadtrees);
 
     ExibicaoSVG *exi = malloc(sizeof *exi);
     exi->origem_x = DBL_MAX;
@@ -46,7 +43,7 @@ ExibicaoSVG *svg_criar_exibicao(int num_quadtrees, va_list quadtrees) {
 
     // Encontra os valores necessários para que todas as figuras apareçam no arquivo svg.
     for (int i = 0; i < num_quadtrees; i++) {
-        QuadTree qt = va_arg(qts, QuadTree);
+        QuadTree qt = va_arg(exi_qts, QuadTree);
         percorreLarguraQt(qt, (void *) svg_atualizar_exibicao, exi);
     }
 
@@ -54,7 +51,7 @@ ExibicaoSVG *svg_criar_exibicao(int num_quadtrees, va_list quadtrees) {
     exi->origem_y -= SVG_MARGEM;
     // A largura do svg deve ser alterada para utilizar a nova origem como base.
     exi->largura = exi->largura - exi->origem_x + 2 * SVG_MARGEM;
-    // A largura do svg deve ser alterada para utilizar a nova origem como base.
+    // A altura do svg deve ser alterada para utilizar a nova origem como base.
     exi->altura = exi->altura - exi->origem_y + 2 * SVG_MARGEM;
 
     return exi;
@@ -116,10 +113,9 @@ void svg_quadtrees_para_svg(const char *caminho_svg, int num_quadtrees, ...) {
         QuadTree qt = va_arg(quadtrees, QuadTree);
         percorreLarguraQt(qt, (void *) figura_escrever_svg, arquivo_svg);
     }
-    va_end(quadtrees);
-
     fprintf(arquivo_svg, "</svg>\n");
 
+    va_end(quadtrees);
     fclose(arquivo_svg);
     free(exibicao);
 }
