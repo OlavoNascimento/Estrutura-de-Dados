@@ -642,6 +642,31 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     pilha_destruir(pilha_pontos_envoltoria);
 }
 
+// Escreve as informações de todos os moradores de uma quadra no arquivo log.
+void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *linha,
+                             FILE *arquivo_log) {
+    char cep[100];
+    sscanf(linha, "m? %s", cep);
+
+    QtNo no = tabela_buscar(cep_quadra, cep);
+    if (no == NULL) {
+        fprintf(stderr, "Quadra buscada pelo comando m? não encontrada!\n");
+        return;
+    }
+    Quadra quad = getInfoQt(moradores, no);
+    double x_inicio = figura_obter_x_inicio(quad);
+    double y_inicio = figura_obter_y_inicio(quad);
+    double x_fim = figura_obter_x_fim(quad);
+    double y_fim = figura_obter_y_fim(quad);
+
+    Lista nos = nosDentroRetanguloQt(moradores, x_inicio, y_inicio, x_fim, y_fim);
+    for (ListaNo i = lista_obter_primeiro(nos); i != NULL; i = lista_obter_proximo(i)) {
+        Figura fig = getInfoQt(moradores, lista_obter_info(i));
+        figura_escrever_informacoes(fig, arquivo_log);
+    }
+    lista_destruir(nos);
+}
+
 // Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o segundo
 // com as coordenadas da figura.
 void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
@@ -822,6 +847,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             postos_mais_proximos(postos, cep_quadra, formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {
             determinar_regiao_de_incidencia(formas, densidades, casos, postos, linha, arquivo_log);
+        } else if (strcmp("m?", comando) == 0) {
+            listar_moradores_quadra(cep_quadra, moradores, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {
