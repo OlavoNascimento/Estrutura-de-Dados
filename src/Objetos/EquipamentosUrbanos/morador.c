@@ -63,7 +63,7 @@ void morador_escrever_svg(Morador morador, FILE *arquivo) {
     double x = figura_obter_x_centro(morador);
     double y = figura_obter_y_centro(morador) + 6;
     // Rótulo do morador.
-    Texto texto_morador = texto_criar("", x, y, "none", "white", "E", true);
+    Texto texto_morador = texto_criar("", x, y, "none", "white", "M", true);
     texto_escrever_svg(texto_morador, arquivo);
     texto_destruir(texto_morador);
 }
@@ -72,8 +72,8 @@ void morador_escrever_svg(Morador morador, FILE *arquivo) {
 void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
     MoradorImp *moradorImp = morador;
     fprintf(arquivo,
-            "tipo: %s cpf: %s, nome: %s, sobrenome: %s, sexo: %c, data: %s, x: %lf y: %lf, corb: "
-            "%s, corp: %s, ",
+            "tipo: %s, cpf: %s, nome: %s, sobrenome: %s, sexo: %c, data: %s, x: %lf y: %lf, corb: "
+            "%s, corp: %s\n",
             figura_obter_tipo(moradorImp), moradorImp->cpf, moradorImp->nome, moradorImp->sobrenome,
             moradorImp->sexo, morador_obter_data(moradorImp), moradorImp->x, moradorImp->y,
             moradorImp->cor_borda, moradorImp->cor_preenchimento);
