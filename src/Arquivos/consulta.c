@@ -453,7 +453,7 @@ void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char 
             area_total += area_figura;
 
             char texto_area_figura[100];
-            // Converte o valor da área da ret para string
+            // Converte o valor da área da figura para string
             snprintf(texto_area_figura, 100, "%lf", area_figura);
 
             Texto area_quadra =

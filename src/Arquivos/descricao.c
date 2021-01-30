@@ -63,12 +63,12 @@ typedef struct {
 } PropriedadesRadios;
 
 typedef struct {
-    PropriedadesCirculos cir;
-    PropriedadesHidrantes hid;
-    PropriedadesQuadras qua;
-    PropriedadesRetangulos ret;
-    PropriedadesSemaforos sem;
-    PropriedadesRadios rad;
+    PropriedadesCirculos circulos;
+    PropriedadesHidrantes hidrantes;
+    PropriedadesQuadras quadras;
+    PropriedadesRetangulos retangulos;
+    PropriedadesSemaforos semaforos;
+    PropriedadesRadios radios;
 } PropriedadesFiguras;
 
 typedef struct {
@@ -93,117 +93,147 @@ NumerosMaximos criar_maximos() {
 PropriedadesFiguras criar_propriedades() {
     PropriedadesFiguras prop;
     // Inicializa todas as propriedades como vazias (0 para int e NULL para char[]).
-    prop.cir = (PropriedadesCirculos){0};
-    prop.hid = (PropriedadesHidrantes){0};
-    prop.qua = (PropriedadesQuadras){0};
-    prop.ret = (PropriedadesRetangulos){0};
-    prop.sem = (PropriedadesSemaforos){0};
-    prop.rad = (PropriedadesRadios){0};
+    prop.circulos = (PropriedadesCirculos){0};
+    prop.hidrantes = (PropriedadesHidrantes){0};
+    prop.quadras = (PropriedadesQuadras){0};
+    prop.retangulos = (PropriedadesRetangulos){0};
+    prop.semaforos = (PropriedadesSemaforos){0};
+    prop.radios = (PropriedadesRadios){0};
     return prop;
 }
 
 // Define o máximo de figuras que devem ser criadas para cada tipo de figura.
-void definir_max_figuras(const char *linha, NumerosMaximos *propMax) {
+void definir_max_figuras(NumerosMaximos *propMax, const char *linha) {
     sscanf(linha, "%*s %d %d %d %d %d", &propMax->lista_max_formas, &propMax->lista_max_quadras,
            &propMax->lista_max_hidrantes, &propMax->lista_max_semaforos, &propMax->lista_max_bases);
 }
 
-// Cria uma figura contendo um círculo com base em uma linha e as propriedades definidas.
-Circulo ler_circulo(const char *linha, PropriedadesCirculos prop) {
-    Circulo cir = circulo_ler(linha);
+// Cria um círculo, aplica as propriedades definidas e adiciona nas estruturas.
+void adicionar_circulo(QuadTree formas, Tabela id_forma, PropriedadesCirculos prop,
+                       const char *linha) {
+    Circulo novo_circulo = circulo_ler(linha);
     if (prop.definido) {
-        circulo_definir_espessura_borda(cir, prop.espessura_borda);
+        circulo_definir_espessura_borda(novo_circulo, prop.espessura_borda);
     }
-    return cir;
+
+    QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_circulo), novo_circulo);
+    tabela_inserir(id_forma, figura_obter_id(novo_circulo), novo_no);
 }
 
-// Define as propriedades que devem ser aplicadas a todos os círculos com base em uma linha.
-void definir_propriedades_circulos(const char *linha, PropriedadesCirculos *prop) {
+// Define as propriedades que devem ser aplicadas a todos os círculos.
+void definir_propriedades_circulos(PropriedadesCirculos *prop, const char *linha) {
     sscanf(linha, "%*s %s %*s", prop->espessura_borda);
     prop->definido = true;
 }
 
-// Cria uma figura contendo um hidrante com base em uma linha e as propriedades definidas.
-Hidrante ler_hidrante(const char *linha, PropriedadesHidrantes prop) {
-    Hidrante hid = hidrante_ler(linha);
-    if (prop.definido) {
-        hidrante_definir_espessura_borda(hid, prop.espessura_borda);
-        hidrante_definir_cor_borda(hid, prop.cor_borda);
-        hidrante_definir_cor_preenchimento(hid, prop.cor_preenchimento);
-    }
-    return hid;
+// Cria uma densidade e adiciona na estrutura.
+void adicionar_densidade(QuadTree densidades, const char *linha) {
+    Densidade nova_densidade = densidade_ler(linha);
+    insereQt(densidades, ponto_criar_com_figura(nova_densidade), nova_densidade);
 }
 
-// Define as propriedades que devem ser aplicadas a todos os hidrantes com base em uma linha.
-void definir_propriedades_hidrantes(const char *linha, PropriedadesHidrantes *prop) {
+// Cria um hidrante, aplica as propriedades definidas e adiciona nas estruturas.
+void adicionar_hidrante(QuadTree hidrantes, Tabela id_hidrante, PropriedadesHidrantes prop,
+                        const char *linha) {
+    Hidrante novo_hidrante = hidrante_ler(linha);
+    if (prop.definido) {
+        hidrante_definir_cor_borda(novo_hidrante, prop.cor_borda);
+        hidrante_definir_cor_preenchimento(novo_hidrante, prop.cor_preenchimento);
+        hidrante_definir_espessura_borda(novo_hidrante, prop.espessura_borda);
+    }
+
+    QtNo novo_no = insereQt(hidrantes, ponto_criar_com_figura(novo_hidrante), novo_hidrante);
+    tabela_inserir(id_hidrante, figura_obter_id(novo_hidrante), novo_no);
+}
+
+// Define as propriedades que devem ser aplicadas a todos os hidrantes.
+void definir_propriedades_hidrantes(PropriedadesHidrantes *prop, const char *linha) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
-// Cria uma figura contendo uma quadra com base em uma linha e as propriedades definidas.
-Quadra ler_quadra(const char *linha, PropriedadesQuadras prop) {
-    Quadra qua = quadra_ler(linha);
+// Cria uma quadra, aplica as propriedades definidas e adiciona nas estruturas.
+void adicionar_quadra(QuadTree quadras, Tabela cep_quadra, PropriedadesQuadras prop,
+                      const char *linha) {
+    Quadra nova_quadra = quadra_ler(linha);
     if (prop.definido) {
-        quadra_definir_espessura_borda(qua, prop.espessura_borda);
-        quadra_definir_cor_borda(qua, prop.cor_borda);
-        quadra_definir_cor_preenchimento(qua, prop.cor_preenchimento);
+        quadra_definir_cor_borda(nova_quadra, prop.cor_borda);
+        quadra_definir_cor_preenchimento(nova_quadra, prop.cor_preenchimento);
+        quadra_definir_espessura_borda(nova_quadra, prop.espessura_borda);
     }
-    return qua;
+
+    QtNo novo_no = insereQt(quadras, ponto_criar_com_figura(nova_quadra), nova_quadra);
+    tabela_inserir(cep_quadra, figura_obter_id(nova_quadra), novo_no);
 }
 
-// Define as propriedades que devem ser aplicadas a todos as quadras com base em uma linha.
-void definir_propriedades_quadras(const char *linha, PropriedadesQuadras *prop) {
+// Define as propriedades que devem ser aplicadas a todas as quadras.
+void definir_propriedades_quadras(PropriedadesQuadras *prop, const char *linha) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
-// Cria uma figura contendo um retângulo com base em uma linha e as propriedades definidas.
-Retangulo ler_retangulo(const char *linha, PropriedadesRetangulos prop) {
-    Retangulo ret = retangulo_ler(linha);
+// Cria um retângulo, aplica as propriedades definidas e adiciona nas estruturas.
+void adicionar_retangulo(QuadTree formas, Tabela id_forma, PropriedadesRetangulos prop,
+                         const char *linha) {
+    Retangulo novo_retangulo = retangulo_ler(linha);
     if (prop.definido) {
-        retangulo_definir_espessura_borda(ret, prop.espessura_borda);
+        retangulo_definir_espessura_borda(novo_retangulo, prop.espessura_borda);
     }
-    return ret;
+
+    QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_retangulo), novo_retangulo);
+    tabela_inserir(id_forma, figura_obter_id(novo_retangulo), novo_no);
 }
 
-// Define as propriedades que devem ser aplicadas a todos os retângulos com base em uma linha.
-void definir_propriedades_retangulos(const char *linha, PropriedadesRetangulos *prop) {
+// Define as propriedades que devem ser aplicadas a todos os retângulos.
+void definir_propriedades_retangulos(PropriedadesRetangulos *prop, const char *linha) {
     sscanf(linha, "%*s %*s %s", prop->espessura_borda);
     prop->definido = true;
 }
 
-// Cria uma figura contendo um rádio com base em uma linha e as propriedades definidas.
-Radio ler_radio(const char *linha, PropriedadesRadios prop) {
-    Radio rad = radio_ler(linha);
+// Cria um rádio, aplica as propriedades definidas e adiciona nas estruturas.
+void adicionar_radio(QuadTree radios, Tabela id_radio, PropriedadesRadios prop, const char *linha) {
+    Radio novo_radio = radio_ler(linha);
     if (prop.definido) {
-        radio_definir_espessura_borda(rad, prop.espessura_borda);
-        radio_definir_cor_borda(rad, prop.cor_borda);
-        radio_definir_cor_preenchimento(rad, prop.cor_preenchimento);
+        radio_definir_cor_borda(novo_radio, prop.cor_borda);
+        radio_definir_cor_preenchimento(novo_radio, prop.cor_preenchimento);
+        radio_definir_espessura_borda(novo_radio, prop.espessura_borda);
     }
-    return rad;
+
+    QtNo novo_no = insereQt(radios, ponto_criar_com_figura(novo_radio), novo_radio);
+    tabela_inserir(id_radio, figura_obter_id(novo_radio), novo_no);
 }
 
-// Define as propriedades que devem ser aplicadas a todos os rádios com base em uma linha.
-void definir_propriedades_radios(const char *linha, PropriedadesRadios *prop) {
+// Define as propriedades que devem ser aplicadas a todos os rádios.
+void definir_propriedades_radios(PropriedadesRadios *prop, const char *linha) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
 }
 
-// Cria uma figura contendo um semáforo com base em uma linha e as propriedades definidas.
-Semaforo ler_semaforo(const char *linha, PropriedadesSemaforos prop) {
-    Semaforo sem = semaforo_ler(linha);
+// Cria um semáforo, aplica as propriedades definidas e adiciona nas estruturas.
+void adicionar_semaforo(QuadTree semaforos, Tabela id_semaforo, PropriedadesSemaforos prop,
+                        const char *linha) {
+    Semaforo novo_semaforo = semaforo_ler(linha);
     if (prop.definido) {
-        semaforo_definir_espessura_borda(sem, prop.espessura_borda);
-        semaforo_definir_cor_borda(sem, prop.cor_borda);
-        semaforo_definir_cor_preenchimento(sem, prop.cor_preenchimento);
+        semaforo_definir_cor_borda(novo_semaforo, prop.cor_borda);
+        semaforo_definir_cor_preenchimento(novo_semaforo, prop.cor_preenchimento);
+        semaforo_definir_espessura_borda(novo_semaforo, prop.espessura_borda);
     }
-    return sem;
+
+    QtNo novo_no = insereQt(semaforos, ponto_criar_com_figura(novo_semaforo), novo_semaforo);
+    tabela_inserir(id_semaforo, figura_obter_id(novo_semaforo), novo_no);
 }
 
-// Define as propriedades que devem ser aplicadas a todos os semáforos com base em uma linha.
-void definir_propriedades_semaforos(const char *linha, PropriedadesSemaforos *prop) {
+// Define as propriedades que devem ser aplicadas a todos os semáforos.
+void definir_propriedades_semaforos(PropriedadesSemaforos *prop, const char *linha) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
+}
+
+// Cria um texto e adiciona nas estruturas.
+void adicionar_texto(QuadTree formas, Tabela id_forma, const char *linha) {
+    Texto novo_texto = texto_ler(linha);
+    QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_texto), novo_texto);
+    tabela_inserir(id_forma, figura_obter_id(novo_texto), novo_no);
 }
 
 // Atualiza a cor das sombras das quadras de acordo com suas densidades.
@@ -283,63 +313,45 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela relac
         char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
-        // TODO Separar em funções.
         if (strcmp("c", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
-            Circulo novo_circulo = ler_circulo(linha, propriedades.cir);
-            QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_circulo), novo_circulo);
-            tabela_inserir(id_forma, figura_obter_id(novo_circulo), novo_no);
+            adicionar_circulo(formas, id_forma, propriedades.circulos, linha);
             formas_criadas++;
         } else if (strcmp("dd", comando) == 0) {
-            Densidade nova_densidade = densidade_ler(linha);
-            insereQt(densidades, ponto_criar_com_figura(nova_densidade), nova_densidade);
+            adicionar_densidade(densidades, linha);
         } else if (strcmp("r", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
-            Retangulo novo_retangulo = ler_retangulo(linha, propriedades.ret);
-            QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_retangulo), novo_retangulo);
-            tabela_inserir(id_forma, figura_obter_id(novo_retangulo), novo_no);
+            adicionar_retangulo(formas, id_forma, propriedades.retangulos, linha);
             formas_criadas++;
         } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.lista_max_quadras) {
-            Quadra nova_quadra = ler_quadra(linha, propriedades.qua);
-            QtNo novo_no = insereQt(quadras, ponto_criar_com_figura(nova_quadra), nova_quadra);
-            tabela_inserir(cep_quadra, figura_obter_id(nova_quadra), novo_no);
+            adicionar_quadra(quadras, cep_quadra, propriedades.quadras, linha);
             quadras_criadas++;
         } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.lista_max_hidrantes) {
-            Hidrante novo_hidrante = ler_hidrante(linha, propriedades.hid);
-            QtNo novo_no =
-                insereQt(hidrantes, ponto_criar_com_figura(novo_hidrante), novo_hidrante);
-            tabela_inserir(id_hidrante, figura_obter_id(novo_hidrante), novo_no);
+            adicionar_hidrante(hidrantes, id_hidrante, propriedades.hidrantes, linha);
             hidrantes_criados++;
         } else if (strcmp("ps", comando) == 0) {
             Posto novo_posto = posto_ler(linha);
             insereQt(postos, ponto_criar_com_figura(novo_posto), novo_posto);
         } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.lista_max_semaforos) {
-            Semaforo novo_semaforo = ler_semaforo(linha, propriedades.sem);
-            QtNo novo_no =
-                insereQt(semaforos, ponto_criar_com_figura(novo_semaforo), novo_semaforo);
-            tabela_inserir(id_semaforo, figura_obter_id(novo_semaforo), novo_no);
+            adicionar_semaforo(semaforos, id_semaforo, propriedades.semaforos, linha);
             semaforos_criados++;
         } else if (strcmp("rb", comando) == 0 && radios_criadas <= maximo.lista_max_bases) {
-            Radio novo_radio = ler_radio(linha, propriedades.rad);
-            QtNo novo_no = insereQt(radios, ponto_criar_com_figura(novo_radio), novo_radio);
-            tabela_inserir(id_radio, figura_obter_id(novo_radio), novo_no);
+            adicionar_radio(radios, id_radio, propriedades.radios, linha);
             radios_criadas++;
         } else if (strcmp("t", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
-            Texto novo_texto = texto_ler(linha);
-            QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_texto), novo_texto);
-            tabela_inserir(id_forma, figura_obter_id(novo_texto), novo_no);
+            adicionar_texto(formas, id_forma, linha);
             formas_criadas++;
         } else if (strcmp("cq", comando) == 0) {
-            definir_propriedades_quadras(linha, &propriedades.qua);
+            definir_propriedades_quadras(&propriedades.quadras, linha);
         } else if (strcmp("ch", comando) == 0) {
-            definir_propriedades_hidrantes(linha, &propriedades.hid);
+            definir_propriedades_hidrantes(&propriedades.hidrantes, linha);
         } else if (strcmp("cr", comando) == 0) {
-            definir_propriedades_radios(linha, &propriedades.rad);
+            definir_propriedades_radios(&propriedades.radios, linha);
         } else if (strcmp("cs", comando) == 0) {
-            definir_propriedades_semaforos(linha, &propriedades.sem);
+            definir_propriedades_semaforos(&propriedades.semaforos, linha);
         } else if (strcmp("sw", comando) == 0) {
-            definir_propriedades_circulos(linha, &propriedades.cir);
-            definir_propriedades_retangulos(linha, &propriedades.ret);
+            definir_propriedades_circulos(&propriedades.circulos, linha);
+            definir_propriedades_retangulos(&propriedades.retangulos, linha);
         } else if (strcmp("nx", comando) == 0) {
-            definir_max_figuras(linha, &maximo);
+            definir_max_figuras(&maximo, linha);
             LOG_INFO("Novo valor máximo de formas: %d\n", maximo.lista_max_formas);
             LOG_INFO("Novo valor máximo de quadras: %d\n", maximo.lista_max_quadras);
             LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximo.lista_max_hidrantes);

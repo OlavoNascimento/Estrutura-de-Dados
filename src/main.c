@@ -5,6 +5,7 @@
 #include "./Arquivos/comercios.h"
 #include "./Arquivos/consulta.h"
 #include "./Arquivos/descricao.h"
+#include "./Arquivos/pessoas.h"
 #include "./Arquivos/svg.h"
 #include "./Estruturas/quadtree.h"
 #include "./Estruturas/tabelahash.h"
