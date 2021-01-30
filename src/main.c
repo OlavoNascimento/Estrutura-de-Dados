@@ -50,12 +50,13 @@ int main(int argc, const char *argv[]) {
     tabela_inserir(quadtrees, "moradores", moradores);
     QuadTree estabelecimentos = criaQt(figura_obter_id);
     tabela_inserir(quadtrees, "estabelecimentos", estabelecimentos);
-    tabela_inserir(quadtrees, "densidades", criaQt(NULL));
+    QuadTree densidades = criaQt(figura_obter_id);
+    tabela_inserir(quadtrees, "densidades", densidades);
 
     Tabela relacoes = tabela_criar(tabela_destruir);
     tabela_inserir(relacoes, "cpf_cep", tabela_criar(NULL));
     tabela_inserir(relacoes, "tipo_descricao", tabela_criar(NULL));
-    tabela_inserir(relacoes, "dados_pessoa", tabela_criar(NULL));
+    tabela_inserir(relacoes, "dados_pessoa", tabela_criar(figura_destruir));
     tabela_inserir(relacoes, "cep_quadra", tabela_criar(NULL));
     tabela_inserir(relacoes, "id_hidrante", tabela_criar(NULL));
     tabela_inserir(relacoes, "id_semaforo", tabela_criar(NULL));
@@ -95,6 +96,17 @@ int main(int argc, const char *argv[]) {
     free(caminho_moradores);
     free(caminho_svg_descricao);
     parametros_destruir(params);
+
+    percorreLarguraQt(formas, (void *) figura_destruir, NULL);
+    percorreLarguraQt(quadras, (void *) figura_destruir, NULL);
+    percorreLarguraQt(hidrantes, (void *) figura_destruir, NULL);
+    percorreLarguraQt(radios, (void *) figura_destruir, NULL);
+    percorreLarguraQt(semaforos, (void *) figura_destruir, NULL);
+    percorreLarguraQt(postos, (void *) figura_destruir, NULL);
+    percorreLarguraQt(casos, (void *) figura_destruir, NULL);
+    percorreLarguraQt(estabelecimentos, (void *) figura_destruir, NULL);
+    percorreLarguraQt(densidades, (void *) figura_destruir, NULL);
+
     tabela_destruir(quadtrees);
     tabela_destruir(relacoes);
 

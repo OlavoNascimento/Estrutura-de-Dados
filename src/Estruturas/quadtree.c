@@ -491,7 +491,6 @@ void desalocaQt(QuadTree qt) {
 
     if (quadtree->no != NULL) {
         ponto_destruir(quadtree->no->coordenada);
-        figura_destruir(quadtree->no->info);
         free(quadtree->no);
     }
 
