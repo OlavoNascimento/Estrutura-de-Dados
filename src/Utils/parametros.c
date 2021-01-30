@@ -54,6 +54,11 @@ Parametros parametros_ler(int argc, const char *argv[]) {
             paramsImp->caminho_consulta =
                 malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->caminho_consulta);
             strcpy(paramsImp->caminho_consulta, argv[i]);
+        } else if (strcmp("-pm", argv[i]) == 0) {
+            i++;
+            paramsImp->caminho_moradores =
+                malloc((strlen(argv[i]) + 1) * sizeof *paramsImp->caminho_moradores);
+            strcpy(paramsImp->caminho_moradores, argv[i]);
         } else if (strcmp("-ec", argv[i]) == 0) {
             i++;
             paramsImp->caminho_estabelecimentos =
