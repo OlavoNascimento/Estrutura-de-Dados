@@ -59,6 +59,13 @@ Retorna verdadeiro caso os dois retângulos se intersectam, caso contrário reto
 bool retangulo_checar_interseccao(Retangulo retangulo1, Retangulo retangulo2);
 
 /*
+Verifica se o retangulo1 contem o retangulo2.
+Nenhum dos parâmetros podem ser nulos.
+Retorna verdadeiro caso o retangulo1 contenha o retangulo2.
+*/
+bool retangulo_contem_retangulo(Retangulo retangulo1, Retangulo retangulo2);
+
+/*
 Verifica se um ponto é contido por um retângulo.
 O parâmetro retangulo não pode ser nulo.
 Retorna verdadeiro caso o ponto se encontre contido pelo retangulo, caso contrário retorna falso.

@@ -105,14 +105,6 @@ Retorna NULL, caso não exista tal nó.
 QtNo getNoQt(QuadTree qt, double x, double y);
 
 /*
-Retorna uma referência ao nó da árvore associado ao id. Necessário para comandos que precisam buscar
-uma informação com base em seu id. Exemplos de comandos do arquivo de consulta que precisam dessa
-funcionalidade: o?, i?, pnt, delf, dq, del, crd?, cv, soc.
-Retorna NULL, caso não exista tal nó.
-*/
-QtNo quadtree_buscar_id(QuadTree qt, const char *id);
-
-/*
 Retorna a informação armazenada na árvore no nó referenciado por pNo.
 "pNo" deve referenciar um nó válido dentro da árvore.
 */

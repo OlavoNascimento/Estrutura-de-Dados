@@ -14,6 +14,6 @@ popular várias quadtrees com os elementos especificados no arquivo.
 Nenhum dos parâmetros podem ser nulos e o caminho do arquivo de descrição deve ser válido.
 As quadtrees são preenchidas com as figuras e equipamentos urbanos descritos no arquivo.
 */
-void descricao_ler(const char *caminho_descricao, Tabela quadtrees);
+void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela relacoes);
 
 #endif

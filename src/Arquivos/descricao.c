@@ -248,7 +248,8 @@ void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha
 // como elementos de uma lista.
-void descricao_ler(const char *caminho_descricao, Tabela quadtrees) {
+void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela relacoes) {
+    LOG_INFO("Lendo descrição\n");
     FILE *arquivo_descricao = fopen(caminho_descricao, "r");
     if (arquivo_descricao == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_descricao);
@@ -263,12 +264,18 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees) {
     QuadTree postos = tabela_buscar(quadtrees, "postos");
     QuadTree densidades = tabela_buscar(quadtrees, "densidades");
 
+    Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
+    Tabela id_hidrante = tabela_buscar(relacoes, "id_hidrante");
+    Tabela id_semaforo = tabela_buscar(relacoes, "id_semaforo");
+    Tabela id_radio = tabela_buscar(relacoes, "id_radio");
+    Tabela id_forma = tabela_buscar(relacoes, "id_forma");
+
     NumerosMaximos maximo = criar_maximos();
-    int figuras_criadas = 0;
+    int formas_criadas = 0;
     int quadras_criadas = 0;
     int semaforos_criados = 0;
     int hidrantes_criados = 0;
-    int bases_criadas = 0;
+    int radios_criadas = 0;
     PropriedadesFiguras propriedades = criar_propriedades();
 
     char linha[TAMANHO_COMANDO];
@@ -276,40 +283,50 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees) {
         char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
-        if (strcmp("c", comando) == 0 && figuras_criadas <= maximo.lista_max_formas) {
+        // TODO Separar em funções.
+        if (strcmp("c", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
             Circulo novo_circulo = ler_circulo(linha, propriedades.cir);
-            insereQt(formas, ponto_criar_com_figura(novo_circulo), novo_circulo);
-            figuras_criadas++;
+            QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_circulo), novo_circulo);
+            tabela_inserir(id_forma, figura_obter_id(novo_circulo), novo_no);
+            formas_criadas++;
         } else if (strcmp("dd", comando) == 0) {
             Densidade nova_densidade = densidade_ler(linha);
             insereQt(densidades, ponto_criar_com_figura(nova_densidade), nova_densidade);
-        } else if (strcmp("r", comando) == 0 && figuras_criadas <= maximo.lista_max_formas) {
+        } else if (strcmp("r", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
             Retangulo novo_retangulo = ler_retangulo(linha, propriedades.ret);
-            insereQt(formas, ponto_criar_com_figura(novo_retangulo), novo_retangulo);
-            figuras_criadas++;
+            QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_retangulo), novo_retangulo);
+            tabela_inserir(id_forma, figura_obter_id(novo_retangulo), novo_no);
+            formas_criadas++;
         } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.lista_max_quadras) {
             Quadra nova_quadra = ler_quadra(linha, propriedades.qua);
-            insereQt(quadras, ponto_criar_com_figura(nova_quadra), nova_quadra);
+            QtNo novo_no = insereQt(quadras, ponto_criar_com_figura(nova_quadra), nova_quadra);
+            tabela_inserir(cep_quadra, figura_obter_id(nova_quadra), novo_no);
             quadras_criadas++;
         } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.lista_max_hidrantes) {
             Hidrante novo_hidrante = ler_hidrante(linha, propriedades.hid);
-            insereQt(hidrantes, ponto_criar_com_figura(novo_hidrante), novo_hidrante);
+            QtNo novo_no =
+                insereQt(hidrantes, ponto_criar_com_figura(novo_hidrante), novo_hidrante);
+            tabela_inserir(id_hidrante, figura_obter_id(novo_hidrante), novo_no);
             hidrantes_criados++;
         } else if (strcmp("ps", comando) == 0) {
             Posto novo_posto = posto_ler(linha);
             insereQt(postos, ponto_criar_com_figura(novo_posto), novo_posto);
         } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.lista_max_semaforos) {
             Semaforo novo_semaforo = ler_semaforo(linha, propriedades.sem);
-            insereQt(semaforos, ponto_criar_com_figura(novo_semaforo), novo_semaforo);
+            QtNo novo_no =
+                insereQt(semaforos, ponto_criar_com_figura(novo_semaforo), novo_semaforo);
+            tabela_inserir(id_semaforo, figura_obter_id(novo_semaforo), novo_no);
             semaforos_criados++;
-        } else if (strcmp("rb", comando) == 0 && bases_criadas <= maximo.lista_max_bases) {
+        } else if (strcmp("rb", comando) == 0 && radios_criadas <= maximo.lista_max_bases) {
             Radio novo_radio = ler_radio(linha, propriedades.rad);
-            insereQt(radios, ponto_criar_com_figura(novo_radio), novo_radio);
-            bases_criadas++;
-        } else if (strcmp("t", comando) == 0 && figuras_criadas <= maximo.lista_max_formas) {
+            QtNo novo_no = insereQt(radios, ponto_criar_com_figura(novo_radio), novo_radio);
+            tabela_inserir(id_radio, figura_obter_id(novo_radio), novo_no);
+            radios_criadas++;
+        } else if (strcmp("t", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
             Texto novo_texto = texto_ler(linha);
-            insereQt(formas, ponto_criar_com_figura(novo_texto), novo_texto);
-            figuras_criadas++;
+            QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_texto), novo_texto);
+            tabela_inserir(id_forma, figura_obter_id(novo_texto), novo_no);
+            formas_criadas++;
         } else if (strcmp("cq", comando) == 0) {
             definir_propriedades_quadras(linha, &propriedades.qua);
         } else if (strcmp("ch", comando) == 0) {

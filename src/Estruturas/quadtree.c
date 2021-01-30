@@ -1,4 +1,3 @@
-
 #include "quadtree.h"
 
 #include <stdlib.h>
@@ -470,48 +469,6 @@ QtNo getNoQt(QuadTree qt, double x, double y) {
         if (x >= coord_x && y >= coord_y)
             return getNoQt(quadtree->sudeste, x, y);
     }
-
-    return NULL;
-}
-
-QtNo quadtree_buscar_id(QuadTree qt, const char *id) {
-    if (qt == NULL) {
-        LOG_ERRO("Quadtree nula passado para getNoQt!\n");
-        return NULL;
-    }
-    if (id == NULL) {
-        LOG_ERRO("Não é possível buscar um id nulo em uma quadtree!\n");
-        return NULL;
-    }
-    QuadTreeImp *raiz = qt;
-    if (raiz->obter_identificador == NULL) {
-        LOG_ERRO(
-            "Não é possível buscar um id em uma quadtree que não tem a função obter_identificador "
-            "definida!\n");
-        return NULL;
-    }
-
-    Fila nos = fila_criar(NULL);
-    fila_inserir(nos, raiz);
-
-    while (!fila_esta_vazia(nos)) {
-        QuadTreeImp *quadtree = fila_remover(nos);
-        if (quadtree->no != NULL) {
-            const char *info_id = quadtree->obter_identificador(quadtree->no->info);
-            if (strcmp(info_id, id) == 0) {
-                fila_destruir(nos);
-                return quadtree->no;
-            }
-        }
-
-        if (quadtree->noroeste != NULL) {
-            fila_inserir(nos, quadtree->noroeste);
-            fila_inserir(nos, quadtree->nordeste);
-            fila_inserir(nos, quadtree->sudeste);
-            fila_inserir(nos, quadtree->sudoeste);
-        }
-    }
-    fila_destruir(nos);
 
     return NULL;
 }

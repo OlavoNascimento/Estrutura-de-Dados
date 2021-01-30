@@ -5,7 +5,7 @@
 
 #include "../Estruturas/quadtree.h"
 #include "../Estruturas/tabelahash.h"
-#include "../Objetos/Outros/morador.h"
+#include "../Objetos/EquipamentosUrbanos/morador.h"
 #include "../Utils/logging.h"
 
 // Tamanho maxímo de um comando do arquivo de moradores.
@@ -26,21 +26,22 @@ void definir_cep_pessoa(Tabela endereco, const char *linha, Morador morador) {
 }
 
 // Adiciona um morador a quadra especificada.
-void adicionar_morador(QuadTree moradores, QuadTree quadras, const char *linha, Morador morador) {
+void adicionar_morador(QuadTree moradores, Tabela cep_quadra, const char *linha, Morador morador) {
     char cep[100];
     sscanf(linha, "e %*s %*s %*s %s %*c %*d %*s", cep);
-    QtNo no = quadtree_buscar_id(quadras, cep);
+    QtNo no = tabela_buscar(cep_quadra, cep);
     if (no != NULL) {
-        Quadra quadra_pai = getInfoQt(quadras, no);
+        Quadra quadra_pai = getInfoQt(moradores, no);
         morador_ler_endereco(morador, linha, quadra_pai);
 
-        // insere um morador na quadra apenas quando endereço do morador é especificado
+        // Insere um morador na quadra apenas quando endereço do morador é especificado.
         insereQt(moradores, ponto_criar_com_figura(morador), morador);
     }
 }
 
 // Lê um arquivo de moradores fornecido a função.
 void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabela relacoes) {
+    LOG_INFO("Lendo moradores\n");
     FILE *arquivo_descricao_moradores = fopen(caminho_descricao_moradores, "r");
     if (arquivo_descricao_moradores == NULL) {
         fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição de moradores: %s!\n",
@@ -50,6 +51,7 @@ void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabe
 
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
+
     Tabela cpf_cep = tabela_buscar(relacoes, "cpf_cep");
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
 

@@ -31,7 +31,6 @@ int main(int argc, const char *argv[]) {
     LOG_INFO("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
     Tabela quadtrees = tabela_criar(desalocaQt);
-
     QuadTree formas = criaQt(figura_obter_id);
     tabela_inserir(quadtrees, "formas", formas);
     QuadTree quadras = criaQt(figura_obter_id);
@@ -44,34 +43,31 @@ int main(int argc, const char *argv[]) {
     tabela_inserir(quadtrees, "semaforos", semaforos);
     QuadTree postos = criaQt(figura_obter_id);
     tabela_inserir(quadtrees, "postos", postos);
-    QuadTree densidades = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "densidades", densidades);
     QuadTree casos = criaQt(figura_obter_id);
     tabela_inserir(quadtrees, "casos", casos);
     QuadTree moradores = criaQt(figura_obter_id);
     tabela_inserir(quadtrees, "moradores", moradores);
     QuadTree estabelecimentos = criaQt(figura_obter_id);
     tabela_inserir(quadtrees, "estabelecimentos", estabelecimentos);
+    tabela_inserir(quadtrees, "densidades", criaQt(NULL));
 
     Tabela relacoes = tabela_criar(tabela_destruir);
+    tabela_inserir(relacoes, "cpf_cep", tabela_criar(NULL));
+    tabela_inserir(relacoes, "tipo_descricao", tabela_criar(NULL));
+    tabela_inserir(relacoes, "dados_pessoa", tabela_criar(NULL));
+    tabela_inserir(relacoes, "cep_quadra", tabela_criar(NULL));
+    tabela_inserir(relacoes, "id_hidrante", tabela_criar(NULL));
+    tabela_inserir(relacoes, "id_semaforo", tabela_criar(NULL));
+    tabela_inserir(relacoes, "id_radio", tabela_criar(NULL));
+    tabela_inserir(relacoes, "id_forma", tabela_criar(NULL));
 
-    Tabela cpf_cep = tabela_criar(NULL);
-    tabela_inserir(relacoes, "cpf_cep", cpf_cep);
-    Tabela tipo_descricao = tabela_criar(NULL);
-    tabela_inserir(relacoes, "tipo_descricao", tipo_descricao);
-    Tabela dados_pessoa = tabela_criar(NULL);
-    tabela_inserir(relacoes, "dados_pessoa", dados_pessoa);
-    Tabela comercial_descricao = tabela_criar(NULL);
-    tabela_inserir(relacoes, "comercial_descricao", comercial_descricao);
+    descricao_ler(caminho_descricao, quadtrees, relacoes);
 
-    descricao_ler(caminho_descricao, quadtrees);
+    if (caminho_moradores != NULL)
+        pessoas_ler(caminho_moradores, quadtrees, relacoes);
 
-    if (caminho_moradores != NULL) {
-        // TODO Adicionar moradores_ler
-    }
-    if (caminho_estabelecimentos != NULL) {
+    if (caminho_estabelecimentos != NULL)
         comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
-    }
 
     svg_quadtrees_para_svg(caminho_svg_descricao, 9, quadras, hidrantes, semaforos, radios,
                            estabelecimentos, moradores, casos, postos, formas);
