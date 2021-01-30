@@ -41,19 +41,15 @@ Tabela tabela_criar(DestruirInfo destruir_info) {
     return tabelaImp;
 }
 
-// Funções de hashing
-int chave_divisao(int chave, int tamanho_tabela) {
-    return (chave & 0x7FFFFFFF) % tamanho_tabela;
-}
-
 // Função utilizada para transformar uma string em numero
-int chave_string(const char *id) {
-    int numero = 3;
+int chave_string(const char *id, int tamanho_tabela) {
+    int soma = 3;
     int tamanho = strlen(id);
     for (int i = 0; i < tamanho; i++) {
-        numero = 17 * numero + (int) id[i];
+        soma = 17 * soma + (int) id[i];
     }
-    return numero;
+    // Retorna o valor absoluto da soma sem ultrapassar o tamanho da tabela.
+    return (soma & 0x7FFFFFFF) % tamanho_tabela;
 }
 
 // Recebe um elemento e extrai sua chave.
@@ -80,12 +76,19 @@ void rehash(TabelaImp *tabela) {
         Lista atual = baldes_antigos[i];
         if (atual == NULL)
             continue;
-        for (ListaNo j = lista_obter_primeiro(atual); j != NULL; j = lista_obter_proximo(j)) {
-            Elemento *el = lista_obter_info(j);
+
+        ListaNo no_atual = lista_obter_primeiro(atual);
+        while (no_atual != NULL) {
+            ListaNo no_proximo = lista_obter_proximo(no_atual);
+
+            Elemento *el = lista_obter_info(no_atual);
             tabela_inserir(tabela, el->chave, el->info);
             free(el);
+
+            free(no_atual);
+            no_atual = no_proximo;
         }
-        lista_destruir(atual);
+        free(atual);
     }
     free(baldes_antigos);
 }
@@ -104,8 +107,7 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     }
     TabelaImp *tabelaImp = tabela;
 
-    int chave = chave_string(id);
-    int pos = chave_divisao(chave, tabelaImp->tamanho);
+    int pos = chave_string(id, tabelaImp->tamanho);
 
     if (tabelaImp->inf[pos] == NULL) {
         // Cria uma lista com uma função específica para extrair a chave de um elemento da tabela.
@@ -113,6 +115,10 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     }
 
     Elemento *novo_elemento = malloc(sizeof *novo_elemento);
+    if (novo_elemento == NULL) {
+        LOG_ERRO("Falha ao alocar memória para novo elemento do Hashmap!\n");
+        return;
+    }
     novo_elemento->chave = id;
     novo_elemento->info = info;
     lista_inserir_final(tabelaImp->inf[pos], novo_elemento);
@@ -120,7 +126,7 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     tabelaImp->baldes_ocupados++;
     // Dobra os baldes caso a porcentagem de ocupação da tabela tenha ultrapassado o limite
     // especificado.
-    if (tabelaImp->baldes_ocupados == (int) (tabelaImp->tamanho * PORCENTAGEM_REHASH))
+    if (tabelaImp->baldes_ocupados >= (int) (tabelaImp->tamanho * PORCENTAGEM_REHASH))
         rehash(tabelaImp);
 }
 
@@ -134,11 +140,10 @@ TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
         return NULL;
     }
     TabelaImp *tabelaImp = tabela;
-    int chave = chave_string(id);
-    int pos = chave_divisao(chave, tabelaImp->tamanho);
-
+    int pos = chave_string(id, tabelaImp->tamanho);
     if (tabelaImp->inf[pos] == NULL)
         return NULL;
+
     // Retorna o nó da lista encontrado no indice "pos" da tabela.
     ListaNo no = lista_buscar(tabelaImp->inf[pos], id);
     if (no == NULL)
@@ -148,6 +153,39 @@ TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
     return elemento->info;
 }
 
+TabelaInfo tabela_remover(Tabela tabela, const char *id) {
+    if (tabela == NULL) {
+        LOG_ERRO("Tabela de espalhamento nula passada para tabela_remover!\n");
+        return NULL;
+    }
+    if (id == NULL) {
+        LOG_ERRO("Id nulo passado para tabela_remover!\n");
+        return NULL;
+    }
+    TabelaImp *tabelaImp = tabela;
+    int pos = chave_string(id, tabelaImp->tamanho);
+    if (tabelaImp->inf[pos] == NULL)
+        return NULL;
+
+    // Retorna o nó da lista encontrado no indice "pos" da tabela.
+    ListaNo no = lista_buscar(tabelaImp->inf[pos], id);
+    if (no == NULL)
+        return NULL;
+
+    Elemento *elemento = lista_obter_info(no);
+    TabelaInfo info = elemento->info;
+
+    free(elemento);
+    lista_remover(tabelaImp->inf[pos], no);
+    if (lista_obter_tamanho(tabelaImp->inf[pos]) == 0) {
+        lista_destruir(tabelaImp->inf[pos]);
+        tabelaImp->inf[pos] = NULL;
+        tabelaImp->baldes_ocupados--;
+    }
+
+    return info;
+}
+
 void tabela_destruir(Tabela tabela) {
     TabelaImp *tabelaImp = tabela;
 
@@ -155,14 +193,21 @@ void tabela_destruir(Tabela tabela) {
         Lista atual = tabelaImp->inf[i];
         if (atual == NULL)
             continue;
+
         // Libera as chaves e informações armazenadas na lista.
-        for (ListaNo j = lista_obter_primeiro(atual); j != NULL; j = lista_obter_proximo(j)) {
-            Elemento *el = lista_obter_info(j);
+        ListaNo no_atual = lista_obter_primeiro(atual);
+        while (no_atual != NULL) {
+            ListaNo no_proximo = lista_obter_proximo(no_atual);
+
+            Elemento *el = lista_obter_info(no_atual);
             if (tabelaImp->destruir_info != NULL)
                 tabelaImp->destruir_info(el->info);
             free(el);
+
+            free(no_atual);
+            no_atual = no_proximo;
         }
-        lista_destruir(atual);
+        free(atual);
     }
     free(tabelaImp->inf);
     free(tabelaImp);

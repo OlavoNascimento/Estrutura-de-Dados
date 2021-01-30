@@ -26,9 +26,16 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info);
 /*
 Acessa uma lista da tabela e posteriormente um nó dessa lista.
 O id passado deve ser válido.
-Retorna o endereço do nó.
+Retorna a informação buscada. Caso o id não exista na tabela retorna NULL.
 */
 TabelaInfo tabela_buscar(Tabela tabela, const char *id);
+
+/*
+Remove o elemento de id especificado da tabela.
+Nenhum dos parâmetros podem ser nulos.
+Retorna a informação removida. Caso o id não exista na tabela retorna NULL.
+*/
+TabelaInfo tabela_remover(Tabela tabela, const char *id);
 
 /*
 Libera a memória alocada em todos os do array e consequentemente todos os elementos das listas.

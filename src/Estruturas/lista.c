@@ -206,8 +206,6 @@ ListaNo lista_obter_primeiro(Lista lista) {
         return NULL;
     }
     ListaImp *lista_aux = lista;
-    if (lista_aux->tamanho == 0)
-        return NULL;
     return lista_aux->primeiro;
 }
 
@@ -217,9 +215,6 @@ ListaNo lista_obter_ultimo(Lista lista) {
         return NULL;
     }
     ListaImp *lista_aux = lista;
-    if (lista_aux->tamanho == 0) {
-        return NULL;
-    }
     return lista_aux->ultimo;
 }
 
