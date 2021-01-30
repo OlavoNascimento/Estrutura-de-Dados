@@ -53,9 +53,9 @@ void caso_escrever_informacoes(Caso caso, FILE *arquivo) {
     if (strlen(casoImp->id) > 0)
         fprintf(arquivo, " id: %s,", casoImp->id);
     fprintf(arquivo,
-            " largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s, número de casos: %d\n",
-            casoImp->largura, casoImp->altura, casoImp->x, casoImp->y, casoImp->cor_borda,
-            casoImp->cor_preenchimento, casoImp->numero_de_casos);
+            " número de casos: %d, largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
+            casoImp->numero_de_casos, casoImp->largura, casoImp->altura, casoImp->x, casoImp->y,
+            casoImp->cor_borda, casoImp->cor_preenchimento);
 }
 
 // Conecta as funções do objeto Caso com as da interface figura.

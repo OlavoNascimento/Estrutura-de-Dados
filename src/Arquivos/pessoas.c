@@ -12,30 +12,30 @@
 #define LINHA_MAX 300
 
 // Um par chave/valor é criado no hashmap com o cpf e dados do morador.
-void definir_dados_pessoa(Tabela dados, const char *linha, Morador morador) {
-    char cpf[100];
-    sscanf(linha, "p %s %*s %*s %*c %*s", cpf);
-    tabela_inserir(dados, cpf, morador);
-}
-
-// Um par chave/valor é criado no hashmap com o cep e dados do morador.
-void definir_cep_pessoa(Tabela endereco, const char *linha, Morador morador) {
-    char cep[100];
-    sscanf(linha, "m %*s %s %*c %*d %*s", cep);
-    tabela_inserir(endereco, cep, morador);
+void definir_dados_pessoa(Tabela dados_pessoa, const char *linha) {
+    Morador novo_morador = morador_ler(linha);
+    tabela_inserir(dados_pessoa, figura_obter_id(novo_morador), novo_morador);
 }
 
 // Adiciona um morador a quadra especificada.
-void adicionar_morador(QuadTree moradores, Tabela cep_quadra, const char *linha, Morador morador) {
+void adicionar_morador(QuadTree moradores, Tabela cep_quadra, Tabela dados_pessoa, Tabela cpf_cep,
+                       const char *linha) {
+    char cpf[100];
     char cep[100];
-    sscanf(linha, "e %*s %*s %*s %s %*c %*d %*s", cep);
+    sscanf(linha, "m %s %s %*c %*d %*s", cpf, cep);
+
+    Morador modificar_morador = tabela_buscar(dados_pessoa, cpf);
+    if (modificar_morador == NULL)
+        return;
+    tabela_inserir(cpf_cep, cpf, cep);
+
     QtNo no = tabela_buscar(cep_quadra, cep);
     if (no != NULL) {
         Quadra quadra_pai = getInfoQt(moradores, no);
-        morador_ler_endereco(morador, linha, quadra_pai);
+        morador_ler_endereco(modificar_morador, linha, quadra_pai);
 
         // Insere um morador na quadra apenas quando endereço do morador é especificado.
-        insereQt(moradores, ponto_criar_com_figura(morador), morador);
+        insereQt(moradores, ponto_criar_com_figura(modificar_morador), modificar_morador);
     }
 }
 
@@ -49,9 +49,9 @@ void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabe
         return;
     }
 
-    QuadTree quadras = tabela_buscar(quadtrees, "quadras");
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
 
+    Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
     Tabela cpf_cep = tabela_buscar(relacoes, "cpf_cep");
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
 
@@ -61,14 +61,9 @@ void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabe
         sscanf(linha, "%s", comando);
 
         if (strcmp("p", comando) == 0) {
-            Morador novo_morador = morador_ler(linha);
-            definir_dados_pessoa(dados_pessoa, linha, novo_morador);
+            definir_dados_pessoa(dados_pessoa, linha);
         } else if (strcmp("m", comando) == 0) {
-            char cpf[100];
-            sscanf(linha, "m %s %*s %*c %*d %*s", cpf);
-            Morador modificar_morador = tabela_buscar(dados_pessoa, cpf);
-            adicionar_morador(moradores, quadras, linha, modificar_morador);
-            definir_cep_pessoa(cpf_cep, linha, modificar_morador);
+            adicionar_morador(moradores, cep_quadra, dados_pessoa, cpf_cep, linha);
         }
     }
 

@@ -40,18 +40,6 @@ typedef struct {
     char complemento[100];
 } MoradorImp;
 
-typedef struct {
-    double largura;
-    double altura;
-    double x;
-    double y;
-    char cor_borda[20];
-    char cor_preenchimento[20];
-    double arredondamento_borda;
-    char espessura_borda[20];
-    bool borda_tracejada;
-} Coordenadas;
-
 const char *morador_obter_string_tipo() {
     return "morador";
 }
@@ -313,6 +301,5 @@ void morador_definir_arredondamento_borda(Morador morador, double raio_borda) {
 
 // Libera a memória utilizada por um morador.
 void morador_destruir(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    free(moradorImp);
+    retangulo_destruir(morador);
 }

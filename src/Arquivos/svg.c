@@ -90,17 +90,17 @@ void svg_quadtrees_para_svg(const char *caminho_svg, int num_quadtrees, ...) {
         LOG_ERRO("Caminho nulo passado a lista para svg!\n");
         return;
     }
-    va_list quadtrees;
-    va_start(quadtrees, num_quadtrees);
-
-    // Calcula as proporções da imagem svg.
-    ExibicaoSVG *exibicao = svg_criar_exibicao(num_quadtrees, quadtrees);
-
     FILE *arquivo_svg = fopen(caminho_svg, "w");
     if (arquivo_svg == NULL) {
         fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
         return;
     }
+
+    va_list quadtrees;
+    va_start(quadtrees, num_quadtrees);
+
+    // Calcula as proporções da imagem svg.
+    ExibicaoSVG *exibicao = svg_criar_exibicao(num_quadtrees, quadtrees);
 
     fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf' xmlns='http://www.w3.org/2000/svg'>\n",
             exibicao->origem_x, exibicao->origem_y, exibicao->largura, exibicao->altura);
