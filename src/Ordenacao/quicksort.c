@@ -14,31 +14,35 @@ double angulo_polar(Figura min, Figura ponto) {
     return angulo * -1;
 }
 
+static inline void trocar_figuras(Figura *figuras, int i, int j) {
+    Figura temp = figuras[i];
+    figuras[i] = figuras[j];
+    figuras[j] = temp;
+}
+
 // Particiona uma lista utilizando um pivô. Todos os valores menóres que o pivô são
 // colocando antes dele e todos os maiores após ele.
-ListaNo particionar(Figura min, ListaNo inicio, ListaNo fim) {
+int particionar(Figura min, Figura *figuras, int inicio, int fim) {
     // Usa o último elemento como pivo.
-    double angulo_pivo = angulo_polar(min, lista_obter_info(fim));
-    ListaNo i = lista_obter_anterior(inicio);
+    double angulo_pivo = angulo_polar(min, figuras[fim]);
+    int i = inicio - 1;
 
-    for (ListaNo *j = inicio; j != fim; j = lista_obter_proximo(j)) {
-        if (angulo_polar(min, lista_obter_info(j)) <= angulo_pivo) {
-            i = (i == NULL) ? inicio : lista_obter_proximo(i);
-            lista_trocar_info(i, j);
+    for (int j = inicio; j < fim; j++) {
+        if (angulo_polar(min, figuras[j]) < angulo_pivo) {
+            i++;
+            trocar_figuras(figuras, i, j);
         }
     }
 
-    i = (i == NULL) ? inicio : lista_obter_proximo(i);
-    lista_trocar_info(i, fim);
-    return i;
+    trocar_figuras(figuras, i + 1, fim);
+    return i + 1;
 }
 
 // Ordena uma lista de figuras em ordem crescente utilizando o algorítmo quicksort.
-void quicksort(Figura min, ListaNo inicio, ListaNo fim) {
-    if (fim == NULL || inicio == fim || inicio == lista_obter_proximo(fim))
-        return;
-
-    ListaNo *meio = particionar(min, inicio, fim);
-    quicksort(min, inicio, lista_obter_anterior(meio));
-    quicksort(min, lista_obter_proximo(meio), fim);
+void quicksort(Figura min, Figura *figuras, int inicio, int fim) {
+    if (inicio < fim) {
+        int meio = particionar(min, figuras, inicio, fim);
+        quicksort(min, figuras, inicio, meio - 1);
+        quicksort(min, figuras, meio + 1, fim);
+    }
 }

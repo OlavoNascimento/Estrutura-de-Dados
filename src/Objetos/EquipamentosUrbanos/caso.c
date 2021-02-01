@@ -63,10 +63,10 @@ void caso_escrever_informacoes(Caso caso, FILE *arquivo) {
 // Retangulo podem ser reaproveitadas.
 static FiguraInterface caso_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, caso_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, caso_escrever_informacoes);
     figura_registrar_escrever_svg(interface, caso_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, caso_obter_tipo);
 
     figura_registrar_obter_id(interface, retangulo_obter_id);
 
@@ -102,24 +102,22 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
         LOG_ERRO("Não é possível criar um caso com uma quadra nula!\n");
         return NULL;
     }
-    const double largura = 12;
-    const double altura = 12;
-    double x = 0;
-    double y = 0;
-    quadra_inicializar_coordenada(&x, &y, largura, altura, quadra, face, numero);
 
     CasoImp *casoImp = malloc(sizeof *casoImp);
     strcpy(casoImp->id, "");
-    casoImp->largura = largura;
-    casoImp->altura = altura;
-    casoImp->x = x;
-    casoImp->y = y;
+    casoImp->largura = 12;
+    casoImp->altura = 12;
+    casoImp->x = 0;
+    casoImp->y = 0;
     strcpy(casoImp->cor_borda, "red");
     strcpy(casoImp->cor_preenchimento, "orange");
     casoImp->arredondamento_borda = 0;
     casoImp->borda_tracejada = false;
     strcpy(casoImp->espessura_borda, "1px");
     casoImp->numero_de_casos = casos;
+
+    quadra_inicializar_coordenada(&casoImp->x, &casoImp->y, casoImp->largura, casoImp->altura,
+                                  quadra, face, numero);
 
     casoImp->vtable = caso_criar_interface_figura();
     return casoImp;

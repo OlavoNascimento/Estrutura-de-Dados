@@ -547,13 +547,15 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     insereQt(formas, ponto_criar_com_figura(raio_de_selecao), raio_de_selecao);
 
     Lista nos_contidos = nosDentroCirculoQt(casos, x, y, raio);
-    Lista casos_filtrados = lista_criar(NULL, NULL);
     int total_de_casos = 0;
     // Filtra a lista de casos, mantendo apenas aqueles que estão totalmente contidos dentro do
     // círculo.
     bool cabecalho_escrito = false;
-    for (ListaNo i = lista_obter_primeiro(nos_contidos); i != NULL; i = lista_obter_proximo(i)) {
-        Figura caso = getInfoQt(formas, lista_obter_info(i));
+    ListaNo atual = lista_obter_primeiro(nos_contidos);
+    while (atual != NULL) {
+        Figura caso = getInfoQt(formas, lista_obter_info(atual));
+        ListaNo proximo = lista_obter_proximo(atual);
+
         if (circulo_contem_retangulo(raio_de_selecao, caso)) {
             if (!cabecalho_escrito) {
                 fprintf(arquivo_log, "Pontos selecionados pelo círculo: \n");
@@ -562,14 +564,15 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
 
             total_de_casos += caso_obter_numero_de_casos(caso);
             fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(caso), figura_obter_y(caso));
-            lista_inserir_final(casos_filtrados, caso);
+        } else {
+            lista_remover(nos_contidos, atual);
         }
+        atual = proximo;
     }
     if (cabecalho_escrito)
         fprintf(arquivo_log, "\n");
-    lista_destruir(nos_contidos);
-    nos_contidos = NULL;
 
+    // Busca o número de habitantes da densidade correspondente.
     Lista lista_densidades = quadtree_para_lista(densidades);
     double habitantes = densidade_buscar_habitantes_ponto(lista_densidades, x, y);
     lista_destruir(lista_densidades);
@@ -601,10 +604,21 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     fprintf(arquivo_log, "Total de casos: %d\n", total_de_casos);
     fprintf(arquivo_log, "\nCategoria de incidência: %c\n", categoria);
 
+    // Armazena os casos em um array.
+    Caso *casos_filtrados = malloc(lista_obter_tamanho(nos_contidos) * sizeof(Caso));
+    int tamanho = lista_obter_tamanho(nos_contidos);
+    int j = 0;
+    for (ListaNo i = lista_obter_primeiro(nos_contidos); i != NULL; i = lista_obter_proximo(i)) {
+        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(i));
+    }
+    lista_destruir(nos_contidos);
+    nos_contidos = NULL;
+
     // Calcula a envoltória convexa.
-    Pilha pilha_pontos_envoltoria = graham_scan(casos_filtrados);
+    Pilha pilha_pontos_envoltoria = graham_scan(tamanho, casos_filtrados);
+    free(casos_filtrados);
+    casos_filtrados = NULL;
     if (pilha_pontos_envoltoria == NULL) {
-        lista_destruir(casos_filtrados);
         free(cor_poligono);
         return;
     }
@@ -617,7 +631,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     int i = 0;
     // Carrega os pontos encontrados na matriz.
     while (!pilha_esta_vazia(pilha_pontos_envoltoria)) {
-        Figura fig = lista_obter_info(pilha_remover(pilha_pontos_envoltoria));
+        Figura fig = pilha_remover(pilha_pontos_envoltoria);
         pontos[i][0] = figura_obter_x_centro(fig);
         pontos[i][1] = figura_obter_y_centro(fig);
         i++;
@@ -638,7 +652,6 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     }
 
     free(cor_poligono);
-    lista_destruir(casos_filtrados);
     pilha_destruir(pilha_pontos_envoltoria);
 }
 
@@ -715,6 +728,7 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     // Escreve o svg das duas árvores.
     svg_quadtrees_para_svg(caminho_arquivo, 2, qt, quadtree_dados);
 
+    percorreLarguraQt(quadtree_dados, (void *) figura_destruir, NULL);
     desalocaQt(quadtree_dados);
     free(caminho_arquivo);
     free(nome_arquivo);

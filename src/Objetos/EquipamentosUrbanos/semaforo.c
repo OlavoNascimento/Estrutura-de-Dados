@@ -45,10 +45,10 @@ void semaforo_escrever_svg(Semaforo semaforo, FILE *arquivo) {
 // objeto Retangulo podem ser reaproveitadas.
 static FiguraInterface semaforo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, semaforo_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, retangulo_escrever_informacoes);
     figura_registrar_escrever_svg(interface, semaforo_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, semaforo_obter_tipo);
 
     figura_registrar_obter_id(interface, retangulo_obter_id);
 

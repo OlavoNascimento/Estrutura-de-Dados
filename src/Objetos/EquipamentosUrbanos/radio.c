@@ -42,10 +42,10 @@ void radio_escrever_svg(Radio radio, FILE *arquivo) {
 // Circulo podem ser reaproveitadas.
 static FiguraInterface radio_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, radio_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, circulo_escrever_informacoes);
     figura_registrar_escrever_svg(interface, radio_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, radio_obter_tipo);
 
     figura_registrar_obter_id(interface, circulo_obter_id);
 

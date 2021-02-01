@@ -60,10 +60,10 @@ void estabelecimento_escrever_informacoes(Estabelecimento estabelecimento, FILE 
 // objeto Retangulo podem ser reaproveitadas.
 static FiguraInterface estabelecimento_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, estabelecimento_obter_string_tipo);
+
     figura_registrar_escrever_informacoes(interface, estabelecimento_escrever_informacoes);
     figura_registrar_escrever_svg(interface, estabelecimento_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, estabelecimento_obter_string_tipo);
 
     figura_registrar_obter_id(interface, retangulo_obter_id);
 
@@ -113,18 +113,12 @@ Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const c
         return NULL;
     }
 
-    const double largura = 12;
-    const double altura = 12;
-    double x = 0;
-    double y = 0;
-    quadra_inicializar_coordenada(&x, &y, largura, altura, quadra, face, numero);
-
     EstabelecimentoImp *estImp = malloc(sizeof *estImp);
     strcpy(estImp->id, cnpj);
-    estImp->largura = largura;
-    estImp->altura = altura;
-    estImp->x = x;
-    estImp->y = y;
+    estImp->largura = 12;
+    estImp->altura = 12;
+    estImp->x = 0;
+    estImp->y = 0;
     strcpy(estImp->cor_borda, "#3a4a3f");
     strcpy(estImp->cor_preenchimento, "seagreen");
     estImp->arredondamento_borda = 0;
@@ -133,6 +127,9 @@ Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const c
     strcpy(estImp->tipo, tipo);
     strcpy(estImp->nome, nome);
     strcpy(estImp->cpf, cpf);
+
+    quadra_inicializar_coordenada(&estImp->x, &estImp->y, estImp->largura, estImp->altura, quadra,
+                                  face, numero);
 
     estImp->vtable = estabelecimento_criar_interface_figura();
     return estImp;

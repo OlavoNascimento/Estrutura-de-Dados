@@ -29,10 +29,10 @@ const char *texto_obter_tipo() {
 // Conecta as funções do objeto texto com as da interface figura.
 static FiguraInterface texto_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, texto_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, texto_escrever_informacoes);
     figura_registrar_escrever_svg(interface, texto_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, texto_obter_tipo);
 
     figura_registrar_obter_id(interface, texto_obter_id);
 

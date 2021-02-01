@@ -28,10 +28,10 @@ const char *circulo_obter_tipo() {
 // Conecta as funções do objeto círculo com as da interface figura.
 static FiguraInterface circulo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, circulo_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, circulo_escrever_informacoes);
     figura_registrar_escrever_svg(interface, circulo_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, circulo_obter_tipo);
 
     figura_registrar_obter_id(interface, circulo_obter_id);
 

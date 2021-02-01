@@ -23,63 +23,61 @@ double checar_horario(Figura a, Figura b, Figura c) {
 
 // Devolve uma pilha com os pontos de uma envoltória convexa.
 // A pilha deve ser liberada pelo o usuário!
-Pilha graham_scan(Lista figuras) {
+Pilha graham_scan(int tamanho, Figura *figuras) {
     // Não é possível formar uma envoltória convexa com menos de 3 pontos.
-    if (lista_obter_tamanho(figuras) < 3) {
+    if (tamanho < 3) {
         LOG_INFO("Não é possível criar uma envoltória convexa com menos que 3 figuras!\n");
         return NULL;
     }
 
-    ListaNo no_min = NULL;
+    int figura_min = -1;
     double min_y = DBL_MAX;
     // Encontra o caso com menor y.
-    for (ListaNo i = lista_obter_primeiro(figuras); i != NULL; i = lista_obter_proximo(i)) {
-        if (figura_obter_y(lista_obter_info(i)) < min_y) {
-            no_min = i;
-            min_y = figura_obter_y(lista_obter_info(i));
+    for (int i = 0; i < tamanho; i++) {
+        if (figura_obter_y(figuras[i]) < min_y) {
+            figura_min = i;
+            min_y = figura_obter_y(figuras[i]);
         }
     }
-    if (no_min == NULL) {
+    if (figura_min == -1) {
         LOG_ERRO("Nenhum elemento mínimo encontrado em graham scan!\n");
         return NULL;
     }
 
     // Move a figura com menor y para a primeira posição da lista.
-    lista_trocar_info(no_min, lista_obter_primeiro(figuras));
+    Figura temp = figuras[0];
+    figuras[0] = figuras[figura_min];
+    figuras[figura_min] = temp;
 
     // Ordena a lista de casos de acordo como o ângulo formado com o ponto mínimo.
-    quicksort(lista_obter_info(lista_obter_primeiro(figuras)),
-              lista_obter_proximo(lista_obter_primeiro(figuras)), lista_obter_ultimo(figuras));
+    quicksort(figuras[0], figuras, 0, tamanho - 1);
 
     Pilha pontos_envoltoria = pilha_criar(NULL);
     // Primeiro elemento está sempre dentro da envoltória.
-    pilha_inserir(pontos_envoltoria, lista_obter_primeiro(figuras));
+    pilha_inserir(pontos_envoltoria, figuras[0]);
     // Segundo elemento precisa ser verificado.
-    ListaNo segundo_elemento = lista_obter_proximo(lista_obter_primeiro(figuras));
+    Figura segundo_elemento = figuras[1];
     pilha_inserir(pontos_envoltoria, segundo_elemento);
 
-    for (ListaNo i = lista_obter_proximo(segundo_elemento); i != NULL; i = lista_obter_proximo(i)) {
-        Figura proximo_caso = lista_obter_info(i);
-        ListaNo ultimo_caso = pilha_remover(pontos_envoltoria);
+    for (int i = 2; i < tamanho; i++) {
+        Figura proximo_caso = figuras[i];
+        Figura ultimo_caso = pilha_remover(pontos_envoltoria);
 
         // Remove figuras da pilha caso ocorra uma curva em sentido anti-horário.
         while (!pilha_esta_vazia(pontos_envoltoria) &&
-               !checar_horario(lista_obter_info(pilha_obter_topo(pontos_envoltoria)),
-                               lista_obter_info(ultimo_caso), proximo_caso)) {
+               !checar_horario(pilha_obter_topo(pontos_envoltoria), ultimo_caso, proximo_caso)) {
             ultimo_caso = pilha_remover(pontos_envoltoria);
         }
 
         pilha_inserir(pontos_envoltoria, ultimo_caso);
-        pilha_inserir(pontos_envoltoria, i);
+        pilha_inserir(pontos_envoltoria, figuras[i]);
     }
 
-    ListaNo ultimo_no = pilha_remover(pontos_envoltoria);
-    ListaNo topo = pilha_obter_topo(pontos_envoltoria);
+    Figura ultimo_no = pilha_remover(pontos_envoltoria);
+    Figura topo = pilha_obter_topo(pontos_envoltoria);
     // Verifica se o último ponto é inválido.
-    if (checar_horario(lista_obter_info(topo), lista_obter_info(ultimo_no),
-                       lista_obter_info(lista_obter_primeiro(figuras)))) {
+    if (checar_horario(topo, ultimo_no, figuras[0]))
         pilha_inserir(pontos_envoltoria, ultimo_no);
-    }
 
     return pontos_envoltoria;
 }

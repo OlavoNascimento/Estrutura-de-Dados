@@ -16,6 +16,6 @@ Ordena uma lista de figuras utilizando o algorítmo quicksort.
 A lista não pode ser nula.
 A lista é ordena em ordem crescente.
 */
-void quicksort(Figura min, ListaNo inicio, ListaNo fim);
+void quicksort(Figura min, Figura *figuras, int inicio, int fim);
 
 #endif

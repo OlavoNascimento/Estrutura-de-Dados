@@ -323,7 +323,7 @@ QtNo insereQt(QuadTree qt, Ponto ponto, QtInfo info) {
     return quadtree_inserir_no(qt, no);
 }
 
-// Libera apenas a Quadtree passada a função e as Quadtrees filhas.
+// Insere os nós de uma quadtree em uma outra Quadtree.
 void reinserir_nos_quadtree(QuadTreeImp *quadtree, QuadTreeImp *raiz) {
     if (quadtree->no != NULL)
         quadtree_inserir_no(raiz, quadtree->no);

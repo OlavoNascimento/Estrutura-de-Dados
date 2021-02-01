@@ -91,12 +91,12 @@ void morador_definir_data(Morador morador) {
 
 static FiguraInterface morador_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, morador_obter_string_tipo);
+
     figura_registrar_escrever_informacoes(interface, morador_escrever_informacoes);
     figura_registrar_escrever_svg(interface, morador_escrever_svg);
 
     figura_registrar_obter_id(interface, retangulo_obter_id);
-
-    figura_registrar_obter_tipo(interface, morador_obter_string_tipo);
 
     figura_registrar_obter_x(interface, retangulo_obter_x);
     figura_registrar_obter_y(interface, retangulo_obter_y);
@@ -198,16 +198,13 @@ void morador_definir_endereco(Morador morador, const char *cep, const char face,
     moradorImp->face = face;
     moradorImp->num = num;
 
-    const double largura = 12;
-    const double altura = 12;
-    double x = 0;
-    double y = 0;
-    quadra_inicializar_coordenada(&x, &y, largura, altura, quadra, face, num);
+    moradorImp->largura = 12;
+    moradorImp->altura = 12;
+    moradorImp->x = 0;
+    moradorImp->y = 0;
 
-    moradorImp->largura = largura;
-    moradorImp->altura = altura;
-    moradorImp->x = x;
-    moradorImp->y = y;
+    quadra_inicializar_coordenada(&moradorImp->x, &moradorImp->y, moradorImp->largura,
+                                  moradorImp->altura, quadra, face, num);
 }
 
 const char *morador_obter_id(Morador morador) {

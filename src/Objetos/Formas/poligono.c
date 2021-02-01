@@ -35,10 +35,10 @@ const char *poligono_obter_id() {
 // Conecta as funções do objeto polígono com as da interface figura.
 static FiguraInterface poligono_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, poligono_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, poligono_escrever_informacoes);
     figura_registrar_escrever_svg(interface, poligono_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, poligono_obter_tipo);
 
     figura_registrar_obter_id(interface, poligono_obter_id);
 

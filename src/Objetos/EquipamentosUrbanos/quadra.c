@@ -75,10 +75,10 @@ void quadra_escrever_informacoes(Quadra quadra, FILE *arquivo) {
 // Retangulo podem ser reaproveitadas.
 static FiguraInterface quadra_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, quadra_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, quadra_escrever_informacoes);
     figura_registrar_escrever_svg(interface, quadra_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, quadra_obter_tipo);
 
     figura_registrar_obter_id(interface, retangulo_obter_id);
 

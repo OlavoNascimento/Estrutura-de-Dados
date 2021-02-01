@@ -29,10 +29,10 @@ const char *retangulo_obter_tipo() {
 // Conecta as funções do objeto retângulo com as da interface figura.
 static FiguraInterface retangulo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
+    figura_registrar_obter_tipo(interface, retangulo_obter_tipo);
+
     figura_registrar_escrever_informacoes(interface, retangulo_escrever_informacoes);
     figura_registrar_escrever_svg(interface, retangulo_escrever_svg);
-
-    figura_registrar_obter_tipo(interface, retangulo_obter_tipo);
 
     figura_registrar_obter_id(interface, retangulo_obter_id);
 
