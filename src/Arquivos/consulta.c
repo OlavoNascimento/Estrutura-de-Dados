@@ -680,8 +680,42 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
     lista_destruir(nos);
 }
 
-// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o segundo
-// com as coordenadas da figura.
+// Escreve todas as informações de um morador, especificado pelo cpf, no arquivo log. Além disso,
+// coloca uma linha vertical do morador até o topo.
+void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const char *linha,
+                                 FILE *arquivo_log) {
+    char cpf[100];
+    sscanf(linha, "dm? %s", cpf);
+
+    Lista lista_pessoa = tabela_buscar(dados_pessoa, cpf);
+
+    ListaNo no = lista_buscar(lista_pessoa, cpf);
+
+    Figura morador = lista_obter_info(no);
+
+    figura_escrever_informacoes(morador, arquivo_log);
+
+    Linha linha_vertical =
+        linha_criar(figura_obter_x_centro(morador), figura_obter_y_centro(morador),
+                    figura_obter_x_centro(morador), 0, "black", "black", false);
+    insereQt(formas, ponto_criar_com_figura(linha_vertical), linha_vertical);
+
+    // char texto_pessoa_endereco[302];
+
+    // snprintf(texto_pessoa_endereco, 302, "cpf: %s, cep: %s, face: %c, num: %d, complemento: %s",
+    //          figura_obter_id(morador), morador_obter_endereco_cep(morador),
+    //          morador_obter_endereco_face(morador), morador_obter_endereco_num(morador),
+    //          morador_obter_endereco_complemento(morador));
+
+    // TODO obter o endereço
+
+    Texto area_linha = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
+                                   figura_obter_id(morador), false);
+    insereQt(formas, ponto_criar_com_figura(area_linha), area_linha);
+}
+
+// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o
+// segundo com as coordenadas da figura.
 void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
     Texto texto_id = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_inicio(figura),
                                  "none", "black", figura_obter_id(figura), false);
@@ -819,6 +853,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
 
+    Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
     Tabela id_hidrante = tabela_buscar(relacoes, "id_hidrante");
     Tabela id_semaforo = tabela_buscar(relacoes, "id_semaforo");
@@ -863,6 +898,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             determinar_regiao_de_incidencia(formas, densidades, casos, postos, linha, arquivo_log);
         } else if (strcmp("m?", comando) == 0) {
             listar_moradores_quadra(cep_quadra, moradores, linha, arquivo_log);
+        } else if (strcmp("dm?", comando) == 0) {
+            mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {
