@@ -286,7 +286,7 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
 
     cir_x = figura_obter_x_centro(figura);
     cir_y = figura_obter_y_centro(figura);
-    Circulo circulo_de_selecao = circulo_criar("", raio, cir_x, cir_y, "", "");
+    Circulo circulo_de_selecao = circulo_criar("", raio, cir_x, cir_y, "black", "none");
 
     Lista nos_dentro_circulo = nosDentroCirculoQt(quadras, cir_x, cir_y, raio);
     ListaNo atual = lista_obter_primeiro(nos_dentro_circulo);
@@ -312,13 +312,11 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
         }
         atual = proximo;
     }
-    circulo_destruir(circulo_de_selecao);
     lista_destruir(nos_dentro_circulo);
 
     // Desenhar o raio
-    Circulo desenho_raio = circulo_criar("", raio, cir_x, cir_y, "black", "none");
-    circulo_definir_espessura_borda(desenho_raio, "2px");
-    insereQt(formas, ponto_criar_com_figura(desenho_raio), desenho_raio);
+    circulo_definir_espessura_borda(circulo_de_selecao, "2px");
+    insereQt(formas, ponto_criar_com_figura(circulo_de_selecao), circulo_de_selecao);
 
     // Desenhar anel de duas cores
     Circulo primeiro_anel = circulo_criar("", 17, cir_x, cir_y, "blue", "none");
@@ -714,8 +712,8 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
     insereQt(formas, ponto_criar_com_figura(area_linha), area_linha);
 }
 
-// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o
-// segundo com as coordenadas da figura.
+// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o segundo
+// com as coordenadas da figura.
 void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
     Texto texto_id = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_inicio(figura),
                                  "none", "black", figura_obter_id(figura), false);
@@ -772,8 +770,8 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
 void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_quadra,
                                 QuadTree hidrantes, Tabela id_hidrante, QuadTree radios,
                                 Tabela id_radio, QuadTree semaforos, Tabela id_semaforo,
-                                QuadTree moradores, QuadTree estabelecimentos, const char *linha,
-                                FILE *arquivo_log) {
+                                QuadTree moradores, Tabela dados_pessoa, QuadTree estabelecimentos,
+                                const char *linha, FILE *arquivo_log) {
     double x, y, raio;
     sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
 
@@ -785,7 +783,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
     // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
     // que estão contidas no círculo.
     QuadTree retangulos[] = {quadras, semaforos, moradores, estabelecimentos};
-    Tabela tabelas_ret[] = {cep_quadra, id_semaforo};
+    Tabela tabelas_ret[] = {cep_quadra, id_semaforo, dados_pessoa};
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
         Lista nos = nosDentroCirculoQt(retangulos[i], x, y, raio);
 
@@ -796,7 +794,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
                 fprintf(arquivo_log, "\n");
 
                 removeNoQt(retangulos[i], lista_obter_info(j));
-                if (i < 2)
+                if (i < 3)
                     tabela_remover(tabelas_ret[i], figura_obter_id(ret));
                 figura_destruir(ret);
             }
@@ -904,7 +902,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {
             remover_elementos_contidos(formas, quadras, cep_quadra, hidrantes, id_hidrante, radios,
-                                       id_radio, semaforos, id_semaforo, moradores,
+                                       id_radio, semaforos, id_semaforo, moradores, dados_pessoa,
                                        estabelecimentos, linha, arquivo_log);
         }
     }

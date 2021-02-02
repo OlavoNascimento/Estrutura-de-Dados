@@ -48,11 +48,11 @@ void estabelecimento_escrever_svg(Estabelecimento estabelecimento, FILE *arquivo
 void estabelecimento_escrever_informacoes(Estabelecimento estabelecimento, FILE *arquivo) {
     EstabelecimentoImp *estImp = estabelecimento;
     fprintf(arquivo,
-            "tipo: %s, cnpj: %s, largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s, "
-            "tipo de estabelecimento: %s, nome: %s, cpf: %s\n",
-            figura_obter_tipo(estabelecimento), estImp->id, estImp->largura, estImp->altura,
-            estImp->x, estImp->y, estImp->cor_borda, estImp->cor_preenchimento, estImp->tipo,
-            estImp->nome, estImp->cpf);
+            "tipo: %s, cnpj: %s, cpf: %s, tipo de estabelecimento: %s, nome: %s, largura: %lf, "
+            "altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
+            figura_obter_tipo(estabelecimento), estImp->id, estImp->cpf, estImp->tipo, estImp->nome,
+            estImp->largura, estImp->altura, estImp->x, estImp->y, estImp->cor_borda,
+            estImp->cor_preenchimento);
 }
 
 // Conecta as funções do objeto Estabelecimento com as da interface figura.
@@ -93,19 +93,19 @@ static FiguraInterface estabelecimento_criar_interface_figura() {
 Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const char *tipo,
                                       const char *nome, Quadra quadra, char face, int numero) {
     if (cnpj == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com cnpj NULL!\n");
+        LOG_ERRO("Não é possível criar um estabelecimento com cnpj nulo!\n");
         return NULL;
     }
     if (cpf == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com cpf NULL!\n");
+        LOG_ERRO("Não é possível criar um estabelecimento com cpf nulo!\n");
         return NULL;
     }
     if (tipo == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com tipo NULL!\n");
+        LOG_ERRO("Não é possível criar um estabelecimento com tipo nulo!\n");
         return NULL;
     }
     if (nome == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com tipo NULL!\n");
+        LOG_ERRO("Não é possível criar um estabelecimento com nome nulo!\n");
         return NULL;
     }
     if (quadra == NULL) {

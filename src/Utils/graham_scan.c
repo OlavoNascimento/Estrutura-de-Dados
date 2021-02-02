@@ -56,8 +56,7 @@ Pilha graham_scan(int tamanho, Figura *figuras) {
     // Primeiro elemento está sempre dentro da envoltória.
     pilha_inserir(pontos_envoltoria, figuras[0]);
     // Segundo elemento precisa ser verificado.
-    Figura segundo_elemento = figuras[1];
-    pilha_inserir(pontos_envoltoria, segundo_elemento);
+    pilha_inserir(pontos_envoltoria, figuras[1]);
 
     for (int i = 2; i < tamanho; i++) {
         Figura proximo_caso = figuras[i];
