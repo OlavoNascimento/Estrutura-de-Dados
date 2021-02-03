@@ -224,7 +224,6 @@ void remover_elementos(QuadTree formas, Tabela id_forma, const char *linha, FILE
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
     Lista lista_formas = quadtree_nos_para_lista(formas);
-
     ListaNo atual = lista_obter_primeiro(lista_formas);
 
     // Itera até o nó inicial.
@@ -606,8 +605,10 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     Caso *casos_filtrados = malloc(lista_obter_tamanho(nos_contidos) * sizeof(Caso));
     int tamanho = lista_obter_tamanho(nos_contidos);
     int j = 0;
-    for (ListaNo i = lista_obter_primeiro(nos_contidos); i != NULL; i = lista_obter_proximo(i)) {
-        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(i));
+
+    ListaNo no;
+    FOR_EACH_LISTA(no, nos_contidos) {
+        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no));
     }
     lista_destruir(nos_contidos);
     nos_contidos = NULL;
@@ -671,7 +672,9 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
     double y_fim = figura_obter_y_fim(quad);
 
     Lista nos = nosDentroRetanguloQt(moradores, x_inicio, y_inicio, x_fim, y_fim);
-    for (ListaNo i = lista_obter_primeiro(nos); i != NULL; i = lista_obter_proximo(i)) {
+
+    ListaNo i;
+    FOR_EACH_LISTA(i, nos) {
         Figura fig = getInfoQt(moradores, lista_obter_info(i));
         figura_escrever_informacoes(fig, arquivo_log);
     }
@@ -787,13 +790,14 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
         Lista nos = nosDentroCirculoQt(retangulos[i], x, y, raio);
 
-        for (ListaNo j = lista_obter_primeiro(nos); j != NULL; j = lista_obter_proximo(j)) {
-            Retangulo ret = getInfoQt(formas, lista_obter_info(j));
+        ListaNo no;
+        FOR_EACH_LISTA(no, nos) {
+            Retangulo ret = getInfoQt(formas, lista_obter_info(no));
             if (circulo_contem_retangulo(raio_selecao, ret)) {
                 figura_escrever_informacoes(ret, arquivo_log);
                 fprintf(arquivo_log, "\n");
 
-                removeNoQt(retangulos[i], lista_obter_info(j));
+                removeNoQt(retangulos[i], lista_obter_info(no));
                 if (i < 3)
                     tabela_remover(tabelas_ret[i], figura_obter_id(ret));
                 figura_destruir(ret);
@@ -802,20 +806,21 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
         lista_destruir(nos);
     }
 
-    // Itera por todas as figuras baseadas em círculos, escrevendo os dados e removendo as figuras
-    // que estão contidas no círculo.
+    // Itera por todas as figuras baseadas em círculos, escrevendo os dados e removendo as
+    // figuras que estão contidas no círculo.
     QuadTree circulos[] = {hidrantes, radios};
     Tabela tabelas_circ[] = {id_hidrante, id_radio};
     for (int i = 0; i < (int) (sizeof(circulos) / sizeof(circulos[0])); i++) {
         Lista nos = nosDentroCirculoQt(circulos[i], x, y, raio);
 
-        for (ListaNo j = lista_obter_primeiro(nos); j != NULL; j = lista_obter_proximo(j)) {
-            Circulo circ = getInfoQt(formas, lista_obter_info(j));
+        ListaNo no;
+        FOR_EACH_LISTA(no, nos) {
+            Circulo circ = getInfoQt(formas, lista_obter_info(no));
             if (circulo_contem_circulo(raio_selecao, circ)) {
                 figura_escrever_informacoes(circ, arquivo_log);
                 fprintf(arquivo_log, "\n");
 
-                removeNoQt(circulos[i], lista_obter_info(j));
+                removeNoQt(circulos[i], lista_obter_info(no));
                 tabela_remover(tabelas_circ[i], figura_obter_id(circ));
                 figura_destruir(circ);
             }
@@ -897,7 +902,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("m?", comando) == 0) {
             listar_moradores_quadra(cep_quadra, moradores, linha, arquivo_log);
         } else if (strcmp("dm?", comando) == 0) {
-            mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
+            // mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {

@@ -44,12 +44,12 @@ Pilha graham_scan(int tamanho, Figura *figuras) {
         return NULL;
     }
 
-    // Move a figura com menor y para a primeira posição da lista.
+    // Move a figura com menor y para a primeira posição do array.
     Figura temp = figuras[0];
     figuras[0] = figuras[figura_min];
     figuras[figura_min] = temp;
 
-    // Ordena a lista de casos de acordo como o ângulo formado com o ponto mínimo.
+    // Ordena o array de figuras de acordo como o ângulo formado com o ponto mínimo.
     quicksort(figuras[0], figuras, 0, tamanho - 1);
 
     Pilha pontos_envoltoria = pilha_criar(NULL);

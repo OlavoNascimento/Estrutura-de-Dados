@@ -13,11 +13,11 @@
 
 // Lê um tipo de estabelecimento e a descrição desse tipo. Um par chave/valor é criado no hashmap
 // passado a função.
-void definir_descricao_tipo(Tabela descricoes, const char *linha) {
+void definir_descricao_tipo(Tabela tipo_descricao, const char *linha) {
     char tipo[100];
     char descricao[100];
     sscanf(linha, "t %s %s", tipo, descricao);
-    tabela_inserir(descricoes, tipo, descricao);
+    tabela_inserir(tipo_descricao, tipo, descricao);
 }
 
 // Adiciona um estabelecimento a quadra especificada.

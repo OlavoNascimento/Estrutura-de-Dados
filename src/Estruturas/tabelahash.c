@@ -41,7 +41,7 @@ Tabela tabela_criar(DestruirInfo destruir_info) {
     return tabelaImp;
 }
 
-// Função utilizada para transformar uma string em numero
+// Função utilizada para transformar uma string em número.
 int chave_string(const char *id, int tamanho_tabela) {
     int soma = 3;
     int tamanho = strlen(id);

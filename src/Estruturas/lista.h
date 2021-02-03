@@ -14,6 +14,15 @@ typedef const char* ObterIdentificadorInfo(ListaInfo);
 typedef void DestruirInfo(ListaInfo);
 
 /*
+Itera por todos os nós de uma lista.
+A variável no deve ser um ListaNo, ele recebe o no atual da iteração. A variável lista deve ser uma
+Lista.
+Não é possível remover um nó durante a iteração!
+*/
+#define FOR_EACH_LISTA(no, lista) \
+    for (no = lista_obter_primeiro(lista); no != NULL; no = lista_obter_proximo(no))
+
+/*
 Cria o ponteiro inicial de lista dinamica duplamente encadeada.
 É possível passar uma função que extrai um identificador das informações armazenadas na lista, a
 qual é utilizada para realizar buscas na lista.

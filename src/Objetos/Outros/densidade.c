@@ -105,9 +105,9 @@ bool densidade_contem_ponto(DenImp *regiao, double x, double y) {
 
 // Retorna o número de habitantes que vivem dentro de uma densidade.
 double densidade_buscar_habitantes_ponto(Lista lista_densidades, double x, double y) {
-    for (ListaNo i = lista_obter_primeiro(lista_densidades); i != NULL;
-         i = lista_obter_proximo(i)) {
-        DenImp *regiao = lista_obter_info(i);
+    ListaNo no;
+    FOR_EACH_LISTA(no, lista_densidades) {
+        DenImp *regiao = lista_obter_info(no);
         if (densidade_contem_ponto(regiao, x, y))
             return densidade_calcular_habitantes(regiao);
     }

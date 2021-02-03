@@ -9,7 +9,7 @@
 #include "../Utils/logging.h"
 
 // Tamanho maxímo de um comando do arquivo de moradores.
-#define LINHA_MAX 300
+#define TAMANHO_COMANDO 300
 
 // Um par chave/valor é criado no hashmap com o cpf e dados do morador.
 void definir_dados_pessoa(Tabela dados_pessoa, const char *linha) {
@@ -55,9 +55,9 @@ void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabe
     Tabela cpf_cep = tabela_buscar(relacoes, "cpf_cep");
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
 
-    char linha[LINHA_MAX];
-    while (fgets(linha, LINHA_MAX, arquivo_descricao_moradores) != NULL) {
-        char comando[LINHA_MAX];
+    char linha[TAMANHO_COMANDO];
+    while (fgets(linha, TAMANHO_COMANDO, arquivo_descricao_moradores) != NULL) {
+        char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
         if (strcmp("p", comando) == 0) {

@@ -239,8 +239,9 @@ void adicionar_texto(QuadTree formas, Tabela id_forma, const char *linha) {
 // Atualiza a cor das sombras das quadras de acordo com suas densidades.
 void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
     Lista lista_densidades = quadtree_para_lista(densidades);
-    for (ListaNo i = lista_obter_primeiro(lista_densidades); i != NULL;
-         i = lista_obter_proximo(i)) {
+
+    ListaNo i;
+    FOR_EACH_LISTA(i, lista_densidades) {
         Densidade densidade = lista_obter_info(i);
         double habitantes = densidade_obter_densidade(densidade);
 
@@ -266,8 +267,8 @@ void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
         double y_fim = figura_obter_y_fim(densidade);
         Lista quadras_contidas = nosDentroRetanguloQt(quadras, x_inicio, y_inicio, x_fim, y_fim);
 
-        for (ListaNo j = lista_obter_primeiro(quadras_contidas); j != NULL;
-             j = lista_obter_proximo(j)) {
+        ListaNo j;
+        FOR_EACH_LISTA(j, quadras_contidas) {
             Quadra quad = getInfoQt(quadras, lista_obter_info(j));
             quadra_definir_cor_sombra(quad, cor);
         }

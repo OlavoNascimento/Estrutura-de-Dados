@@ -50,7 +50,6 @@ ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
     }
 
     ListaImp *lista_aux = lista;
-    NoImp *no_aux;
     NoImp *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
     novo_no->proximo = NULL;
@@ -59,9 +58,8 @@ ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
         lista_aux->primeiro = novo_no;
         novo_no->anterior = NULL;
     } else {
-        no_aux = lista_aux->ultimo;
-        no_aux->proximo = novo_no;
-        novo_no->anterior = no_aux;
+        lista_aux->ultimo->proximo = novo_no;
+        novo_no->anterior = lista_aux->ultimo;
     }
 
     lista_aux->ultimo = novo_no;
@@ -80,25 +78,24 @@ ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo p) {
     }
 
     ListaImp *lista_aux = lista;
-    NoImp *no_aux;
+    NoImp *no = p;
     NoImp *no_anterior = NULL;
     NoImp *novo_no = malloc(sizeof *novo_no);
 
     novo_no->info = info;
-    no_aux = p;
 
-    if (no_aux == lista_aux->primeiro) {  // caso seja inserido antes do primeiro
-        no_aux->anterior = novo_no;
-        novo_no->proximo = no_aux;
+    if (no == lista_aux->primeiro) {  // caso seja inserido antes do primeiro
+        no->anterior = novo_no;
+        novo_no->proximo = no;
         novo_no->anterior = NULL;
 
         lista_aux->primeiro = novo_no;
     } else {
-        no_anterior = no_aux->anterior;
-        no_aux->anterior = novo_no;
+        no_anterior = no->anterior;
+        no->anterior = novo_no;
         no_anterior->proximo = novo_no;
 
-        novo_no->proximo = no_aux;
+        novo_no->proximo = no;
         novo_no->anterior = no_anterior;
     }
     lista_aux->tamanho++;
@@ -117,26 +114,25 @@ ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo p) {
     }
 
     ListaImp *lista_aux = lista;
-    NoImp *no_aux;
+    NoImp *no = p;
     NoImp *no_proximo = NULL;
     NoImp *novo_no = malloc(sizeof *novo_no);
 
     novo_no->info = info;
-    no_aux = p;
 
-    if (no_aux == lista_aux->ultimo) {  // Caso seja inserido depois do último.
-        no_aux->proximo = novo_no;
+    if (no == lista_aux->ultimo) {  // Caso seja inserido depois do último.
+        no->proximo = novo_no;
         lista_aux->ultimo = novo_no;
 
-        novo_no->anterior = no_aux;
+        novo_no->anterior = no;
         novo_no->proximo = NULL;
     } else {
-        no_proximo = no_aux->proximo;
-        no_aux->proximo = novo_no;
+        no_proximo = no->proximo;
+        no->proximo = novo_no;
         no_proximo->anterior = novo_no;
 
         novo_no->proximo = no_proximo;
-        novo_no->anterior = no_aux;
+        novo_no->anterior = no;
     }
     lista_aux->tamanho++;
 
@@ -149,31 +145,26 @@ void lista_remover(Lista lista, ListaNo no_selecionado) {
         return;
     }
     ListaImp *lista_auxiliar = lista;
-    NoImp *no_auxiliar = no_selecionado;
-    NoImp *no_anterior = NULL;
-    NoImp *no_proximo = NULL;
+    NoImp *no = no_selecionado;
+    NoImp *no_anterior = no->anterior;
+    NoImp *no_proximo = no->proximo;
 
-    if (no_auxiliar == lista_auxiliar->primeiro) {  // Se for o primeiro elemento da lista.
-        no_proximo = no_auxiliar->proximo;
+    if (no == lista_auxiliar->primeiro) {  // Se for o primeiro elemento da lista.
         lista_auxiliar->primeiro = no_proximo;
         // Caso a lista só tenha um elemento não é necessário mudar o ponteiro do próximo elemento.
         if (no_proximo != NULL)
             no_proximo->anterior = NULL;
-    } else if (no_auxiliar == lista_auxiliar->ultimo) {  // Se for o último elemento da lista.
-        no_anterior = no_auxiliar->anterior;
+    } else if (no == lista_auxiliar->ultimo) {  // Se for o último elemento da lista.
         lista_auxiliar->ultimo = no_anterior;
         no_anterior->proximo = NULL;
     } else {  // Se estiver no meio da lista.
-        no_anterior = no_auxiliar->anterior;
-        no_proximo = no_auxiliar->proximo;
-
-        no_anterior->proximo = no_proximo;
-        no_proximo->anterior = no_anterior;
+        no_anterior->proximo = no->proximo;
+        no_proximo->anterior = no->anterior;
     }
 
     if (lista_auxiliar->destruir_info != NULL)
-        lista_auxiliar->destruir_info(no_auxiliar->info);
-    free(no_auxiliar);
+        lista_auxiliar->destruir_info(no->info);
+    free(no);
     lista_auxiliar->tamanho--;
 }
 
@@ -190,12 +181,12 @@ ListaNo lista_buscar(Lista lista, const char *id) {
         return NULL;
     }
 
-    NoImp *no_auxiliar = lista_auxiliar->primeiro;
-    while (no_auxiliar != NULL) {
-        const char *id_atual = lista_auxiliar->obter_identificador_info(no_auxiliar->info);
+    NoImp *no = lista_auxiliar->primeiro;
+    while (no != NULL) {
+        const char *id_atual = lista_auxiliar->obter_identificador_info(no->info);
         if (strcmp(id_atual, id) == 0)
-            return no_auxiliar;
-        no_auxiliar = no_auxiliar->proximo;
+            return no;
+        no = no->proximo;
     }
     return NULL;
 }
@@ -223,8 +214,8 @@ ListaInfo lista_obter_info(ListaNo p) {
         LOG_ERRO("Nó nulo passado para lista_obter_info!\n");
         return NULL;
     }
-    NoImp *no_auxiliar = p;
-    return no_auxiliar->info;
+    NoImp *no = p;
+    return no->info;
 }
 
 void lista_definir_info(ListaNo p, ListaInfo info) {
@@ -237,8 +228,8 @@ void lista_definir_info(ListaNo p, ListaInfo info) {
         return;
     }
 
-    NoImp *no_auxiliar = p;
-    no_auxiliar->info = info;
+    NoImp *no = p;
+    no->info = info;
 }
 
 ListaNo lista_obter_proximo(ListaNo p) {
@@ -246,8 +237,8 @@ ListaNo lista_obter_proximo(ListaNo p) {
         LOG_ERRO("Nó nulo passado para lista_obter_proximo!\n");
         return NULL;
     }
-    NoImp *no_aux = p;
-    return no_aux->proximo;
+    NoImp *no = p;
+    return no->proximo;
 }
 
 ListaNo lista_obter_anterior(ListaNo p) {
@@ -255,8 +246,8 @@ ListaNo lista_obter_anterior(ListaNo p) {
         LOG_ERRO("Nó nulo passado para lista_obter_anterior!\n");
         return NULL;
     }
-    NoImp *no_aux = p;
-    return no_aux->anterior;
+    NoImp *no = p;
+    return no->anterior;
 }
 
 // Troca as informações armazenadas em dois nós.
