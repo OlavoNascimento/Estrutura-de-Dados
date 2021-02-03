@@ -169,8 +169,8 @@ Lista chavesDentroCirculoQt(QuadTree qt, double x, double y, double r) {
         LOG_ERRO("Quadtree nula passada para chavesDentroCirculoQt!\n");
         return NULL;
     }
-    if (r < 1) {
-        LOG_ERRO("Raio menor que 1 passado para chavesDentroCirculoQt!\n");
+    if (r <= 0) {
+        LOG_ERRO("Raio menor ou igual a 0 passado para chavesDentroCirculoQt!\n");
         return NULL;
     }
     Lista chaves = lista_criar(obter_identificador_string, NULL);
@@ -339,22 +339,29 @@ void reinserir_nos_quadtree(QuadTreeImp *quadtree, QuadTreeImp *raiz) {
 
 // Encontra o nó especificado na Quadtree e o remove da árvore. Caso ele possua nós filhos eles são
 // re-inseridos na raiz da árvore.
-QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
-    QuadTreeImp *quadtree = qt;
+QtInfo buscar_e_remover(QuadTreeImp *quadtree, QTNoImp *no, QuadTreeImp *raiz) {
     // Nó atual não é o nó procurado.
     if (quadtree->no == NULL || (quadtree->no != no && quadtree->nordeste == NULL))
         return NULL;
 
     // Nó atual não é o procurado mas possui filhos, avalia os nós filhos.
     if (quadtree->no != no && quadtree->noroeste != NULL) {
-        QtInfo info = buscar_e_remover(quadtree->noroeste, no, raiz);
-        if (info == NULL)
-            info = buscar_e_remover(quadtree->nordeste, no, raiz);
-        if (info == NULL)
-            info = buscar_e_remover(quadtree->sudoeste, no, raiz);
-        if (info == NULL)
-            info = buscar_e_remover(quadtree->sudeste, no, raiz);
-        return info;
+        double buscado_x = ponto_obter_x(no->coordenada);
+        double buscado_y = ponto_obter_y(no->coordenada);
+        double atual_x = ponto_obter_x(quadtree->no->coordenada);
+        double atual_y = ponto_obter_y(quadtree->no->coordenada);
+
+        if (buscado_x <= atual_x && buscado_y <= atual_y)
+            return buscar_e_remover(quadtree->noroeste, no, raiz);
+
+        if (buscado_x >= atual_x && buscado_y <= atual_y)
+            return buscar_e_remover(quadtree->nordeste, no, raiz);
+
+        if (buscado_x <= atual_x && buscado_y >= atual_y)
+            return buscar_e_remover(quadtree->sudoeste, no, raiz);
+
+        if (buscado_x >= atual_x && buscado_y >= atual_y)
+            return buscar_e_remover(quadtree->sudeste, no, raiz);
     }
 
     // Nó atual é o procurado, armazena a informação.
