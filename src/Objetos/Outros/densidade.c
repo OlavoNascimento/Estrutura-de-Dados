@@ -62,10 +62,10 @@ static FiguraInterface densidade_criar_interface_figura() {
 
 Densidade densidade_criar(double x, double y, double largura, double altura, double densidade) {
     DenImp *denImp = malloc(sizeof *denImp);
-    denImp->largura = largura;
-    denImp->altura = altura;
     denImp->x = x;
     denImp->y = y;
+    denImp->largura = largura;
+    denImp->altura = altura;
     denImp->densidade = densidade;
 
     denImp->vtable = densidade_criar_interface_figura();
@@ -73,11 +73,11 @@ Densidade densidade_criar(double x, double y, double largura, double altura, dou
 }
 
 Densidade densidade_ler(const char *linha) {
-    double densidade;
     double x;
     double y;
     double largura;
     double altura;
+    double densidade;
     sscanf(linha, "dd %lf %lf %lf %lf %lf", &x, &y, &largura, &altura, &densidade);
     return densidade_criar(x, y, largura, altura, densidade);
 }
@@ -89,32 +89,22 @@ double densidade_obter_densidade(Densidade densidade) {
 }
 
 // Retorna o número de habitantes contidos na área da densidade.
-double densidade_calcular_habitantes(DenImp *regiao) {
+double densidade_calcular_habitantes(Densidade densidade) {
+    DenImp *regiao = densidade;
     return regiao->densidade * (regiao->largura / 1000) * (regiao->altura / 1000);
 }
 
-// Retorna true se um ponto é contido dentro da densidade.
-bool densidade_contem_ponto(DenImp *regiao, double x, double y) {
-    if (x >= regiao->x && y >= regiao->y) {
-        if (x <= (regiao->x + regiao->largura) && y <= (regiao->y + regiao->altura)) {
-            return true;
-        }
-    }
-    return false;
+// Retorna verdadeiro se um ponto é contido dentro da densidade.
+bool densidade_contem_ponto(Densidade densidade, double x, double y) {
+    DenImp *regiao = densidade;
+    if (x < regiao->x || y < regiao->y)
+        return false;
+    if (x > regiao->x + regiao->largura || y > regiao->y + regiao->altura)
+        return false;
+    return true;
 }
 
-// Retorna o número de habitantes que vivem dentro de uma densidade.
-double densidade_buscar_habitantes_ponto(Lista lista_densidades, double x, double y) {
-    ListaNo no;
-    FOR_EACH_LISTA(no, lista_densidades) {
-        DenImp *regiao = lista_obter_info(no);
-        if (densidade_contem_ponto(regiao, x, y))
-            return densidade_calcular_habitantes(regiao);
-    }
-    return 0;
-}
-
-// Retorna true se uma quadra esta contida por uma densidade.
+// Retorna verdadeiro se uma quadra esta contida por uma densidade.
 bool densidade_contem_quadra(DenImp *densidade, Figura quadra) {
     if (densidade->x > figura_obter_x_inicio(quadra) ||
         densidade->x + densidade->largura < figura_obter_x_fim(quadra))

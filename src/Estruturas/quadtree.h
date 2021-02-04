@@ -111,25 +111,13 @@ Retorna a informação armazenada na árvore no nó referenciado por pNo.
 QtInfo getInfoQt(QuadTree qt, QtNo pNo);
 
 /*
-Retorna uma lista com as informações de uma quadtree. Necessário para comandos que precisam iterar
-pelas informações da Quadtree de forma condicional, já que a especificação fornecida não oferece um
-procedimento padrão para realizar essas opereções.
-É utilizada para manter a funcionalidade dos comandos de consulta pnt* e delf* do T1. Ademais é
-empregada em partes do projeto que precisam ordenar os dados (shellsort e quicksort) da Quadtree.
-O parâmetro qt não pode ser nulo.
-Retorna uma lista contendo as informações da quadtree. O usuário é responsável por liberar a
-memória.
-*/
-Lista quadtree_para_lista(QuadTree qt);
-
-/*
-Retorna uma lista com os nós de uma quadtree. Necessário para comandos que precisam iterar
-pelas informações da Quadtree de forma condicional e remover os nós, já que a especificação
-fornecida não oferece um procedimento padrão para realizar essas opereções.
-É utilizada para manter a funcionalidade dos comandos pnt* e delf* do T1. Ademais é empregada em
-partes do projeto que precisam ordenar os dados (shellsort e quicksort) da Quadtree.
-O parâmetro qt não pode ser nulo.
-Retorna uma lista contendo os nós da quadtree. O usuário é responsável por liberar a memória.
+Retorna uma lista com os nós de uma quadtree. É utilizada *APENAS* para manter a funcionalidade dos
+comandos pnt* e delf* do T1.
+Necessário para comandos que precisam iterar pelas informações da Quadtree de forma condicional e
+remover os nós, já que a especificação fornecida não oferece um procedimento padrão para realizar
+essas operações.
+O parâmetro qt não pode ser nulo. Retorna uma lista contendo os nós da quadtree. O usuário é
+responsável por liberar a memória.
 */
 Lista quadtree_nos_para_lista(QuadTree qt);
 

@@ -299,6 +299,7 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
                     figura_obter_id(quadra));
             figura_escrever_informacoes(figura, arquivo_log);
             fprintf(arquivo_log, "\n");
+
             if (remover_quadras) {
                 removeNoQt(quadras, lista_obter_info(atual));
                 tabela_remover(cep_quadra, figura_obter_id(quadra));
@@ -488,6 +489,10 @@ void adicionar_caso(QuadTree casos, Tabela cep_quadra, const char *linha) {
     }
 }
 
+void salvar_info_em_lista(QtInfo info, ExtraInfo lista) {
+    lista_inserir_final(lista, info);
+}
+
 void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, const char *linha,
                           FILE *arquivo_log) {
     int k;
@@ -504,12 +509,13 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, c
     Caso caso = caso_criar(k, getInfoQt(formas, no_quadra), face, numero);
     insereQt(formas, ponto_criar_com_figura(caso), caso);
 
-    Lista lista_postos = quadtree_para_lista(postos);
+    Lista lista_postos = lista_criar(NULL, NULL);
+    percorreLarguraQt(postos, salvar_info_em_lista, lista_postos);
     if (lista_obter_tamanho(lista_postos) == 0) {
-        LOG_INFO("Nenhum posto encontrado!\n");
         lista_destruir(lista_postos);
         return;
     }
+
     shellsort(lista_postos, lista_obter_tamanho(lista_postos) / 2, figura_obter_x(caso),
               figura_obter_y(caso));
 
@@ -533,8 +539,8 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, c
 }
 
 // Utiliza um círculo para definir os casos que devem ser contidos por uma envoltória convexa.
-void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadTree casos,
-                                     QuadTree postos, const char *linha, FILE *arquivo_log) {
+void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree postos,
+                                     Lista densidades, const char *linha, FILE *arquivo_log) {
     double x, y, raio;
     sscanf(linha, "ci %lf %lf %lf", &x, &y, &raio);
 
@@ -570,12 +576,17 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
         fprintf(arquivo_log, "\n");
 
     // Busca o número de habitantes da densidade correspondente.
-    Lista lista_densidades = quadtree_para_lista(densidades);
-    double habitantes = densidade_buscar_habitantes_ponto(lista_densidades, x, y);
-    lista_destruir(lista_densidades);
-    lista_densidades = NULL;
+    double habitantes = 0;
+    for_each_lista(den_no, densidades) {
+        Densidade regiao = lista_obter_info(den_no);
+        if (densidade_contem_ponto(regiao, x, y))
+            habitantes = densidade_calcular_habitantes(regiao);
+    }
 
-    double incidencia = (total_de_casos / habitantes) * 100000;
+    double incidencia = 0;
+    if (habitantes > 0)
+        incidencia = (total_de_casos / habitantes) * 100000;
+
     char categoria = '\0';
     char *cor_poligono = malloc(sizeof *cor_poligono * 8);
     cor_poligono[0] = '\0';
@@ -597,18 +608,15 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
         categoria = 'E';
         strcpy(cor_poligono, "#800080");
     }
-    // Escreve as informações no arquivo de log
     fprintf(arquivo_log, "Total de casos: %d\n", total_de_casos);
     fprintf(arquivo_log, "\nCategoria de incidência: %c\n", categoria);
 
     // Armazena os casos em um array.
-    Caso *casos_filtrados = malloc(lista_obter_tamanho(nos_contidos) * sizeof(Caso));
     int tamanho = lista_obter_tamanho(nos_contidos);
+    Caso *casos_filtrados = malloc(tamanho * sizeof(Caso));
     int j = 0;
-
-    ListaNo no;
-    FOR_EACH_LISTA(no, nos_contidos) {
-        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no));
+    for_each_lista(no_contido, nos_contidos) {
+        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no_contido));
     }
     lista_destruir(nos_contidos);
     nos_contidos = NULL;
@@ -617,10 +625,8 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree densidades, QuadT
     Pilha pilha_pontos_envoltoria = graham_scan(tamanho, casos_filtrados);
     free(casos_filtrados);
     casos_filtrados = NULL;
-    if (pilha_pontos_envoltoria == NULL) {
-        free(cor_poligono);
+    if (pilha_pontos_envoltoria == NULL)
         return;
-    }
 
     // Aloca uma matriz para armazenar os pontos encontrados.
     double **pontos = malloc(pilha_obter_tamanho(pilha_pontos_envoltoria) * sizeof(double *));
@@ -673,8 +679,7 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
 
     Lista nos = nosDentroRetanguloQt(moradores, x_inicio, y_inicio, x_fim, y_fim);
 
-    ListaNo i;
-    FOR_EACH_LISTA(i, nos) {
+    for_each_lista(i, nos) {
         Figura fig = getInfoQt(moradores, lista_obter_info(i));
         figura_escrever_informacoes(fig, arquivo_log);
     }
@@ -790,8 +795,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
         Lista nos = nosDentroCirculoQt(retangulos[i], x, y, raio);
 
-        ListaNo no;
-        FOR_EACH_LISTA(no, nos) {
+        for_each_lista(no, nos) {
             Retangulo ret = getInfoQt(formas, lista_obter_info(no));
             if (circulo_contem_retangulo(raio_selecao, ret)) {
                 figura_escrever_informacoes(ret, arquivo_log);
@@ -813,8 +817,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
     for (int i = 0; i < (int) (sizeof(circulos) / sizeof(circulos[0])); i++) {
         Lista nos = nosDentroCirculoQt(circulos[i], x, y, raio);
 
-        ListaNo no;
-        FOR_EACH_LISTA(no, nos) {
+        for_each_lista(no, nos) {
             Circulo circ = getInfoQt(formas, lista_obter_info(no));
             if (circulo_contem_circulo(raio_selecao, circ)) {
                 figura_escrever_informacoes(circ, arquivo_log);
@@ -832,7 +835,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
-                  Tabela relacoes) {
+                  Tabela listas, Tabela relacoes) {
     LOG_INFO("Lendo consulta\n");
     FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
@@ -851,10 +854,11 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree radios = tabela_buscar(quadtrees, "radios");
     QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
     QuadTree postos = tabela_buscar(quadtrees, "postos");
-    QuadTree densidades = tabela_buscar(quadtrees, "densidades");
     QuadTree casos = tabela_buscar(quadtrees, "casos");
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
+
+    Lista densidades = tabela_buscar(listas, "densidades");
 
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
@@ -898,11 +902,11 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("soc", comando) == 0) {
             postos_mais_proximos(postos, cep_quadra, formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {
-            determinar_regiao_de_incidencia(formas, densidades, casos, postos, linha, arquivo_log);
+            determinar_regiao_de_incidencia(formas, casos, postos, densidades, linha, arquivo_log);
         } else if (strcmp("m?", comando) == 0) {
             listar_moradores_quadra(cep_quadra, moradores, linha, arquivo_log);
         } else if (strcmp("dm?", comando) == 0) {
-            // mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
+            mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {

@@ -15,12 +15,11 @@ typedef void DestruirInfo(ListaInfo);
 
 /*
 Itera por todos os nós de uma lista.
-A variável no deve ser um ListaNo, ele recebe o no atual da iteração. A variável lista deve ser uma
-Lista.
+Será criado um ListaNo contendo o nó atual. A variável lista deve ser uma Lista não nula.
 Não é possível remover um nó durante a iteração!
 */
-#define FOR_EACH_LISTA(no, lista) \
-    for (no = lista_obter_primeiro(lista); no != NULL; no = lista_obter_proximo(no))
+#define for_each_lista(nome, lista) \
+    for (ListaNo nome = lista_obter_primeiro(lista); nome != NULL; nome = lista_obter_proximo(nome))
 
 /*
 Cria o ponteiro inicial de lista dinamica duplamente encadeada.

@@ -10,7 +10,7 @@
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
 
-// Margem entre o svg e as figuras mais próximas das bordas.
+// Margem entre as bordas do svg e as figuras.
 #define SVG_MARGEM 14
 
 // Utilizado para representar as proporções de um arquivo svg.

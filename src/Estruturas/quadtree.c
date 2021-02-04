@@ -432,22 +432,6 @@ Lista quadtree_nos_para_lista(QuadTree qt) {
     return dados;
 }
 
-void salvar_info_em_lista(QtInfo info, ExtraInfo lista) {
-    lista_inserir_final(lista, info);
-}
-
-// Percorre uma Quadtree em largura e armazena todos as informações em uma lista.
-Lista quadtree_para_lista(QuadTree qt) {
-    if (qt == NULL) {
-        LOG_ERRO("Quadtree nula passada para quadtree_para_lista!\n");
-        return NULL;
-    }
-    QuadTreeImp *quadtree = qt;
-    Lista lista = lista_criar(quadtree->obter_identificador, NULL);
-    percorreLarguraQt(qt, salvar_info_em_lista, lista);
-    return lista;
-}
-
 QtNo getNoQt(QuadTree qt, double x, double y) {
     if (qt == NULL) {
         LOG_ERRO("Quadtree nula passado para getNoQt!\n");

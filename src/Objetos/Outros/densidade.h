@@ -43,12 +43,16 @@ O parâmetro densidade não pode ser nulo.
 double densidade_obter_densidade(Densidade densidade);
 
 /*
-Checa se um ponto está contido por uma das densidades armazenadas em uma lista e retorna o número de
-habitantes.
-O parâmetro lista_densidades não pode ser nulo.
-Retorna o número de habitantes que vivem dentro da densidade.
+Retorna o número de habitantes contidos na área da densidade.
+O parâmetro densidade não pode ser nulo.
 */
-double densidade_buscar_habitantes_ponto(Lista lista_densidades, double x, double y);
+double densidade_calcular_habitantes(Densidade densidade);
+
+/*
+Retorna verdadeiro se um ponto é contido dentro da densidade.
+O parâmetro densidade não pode ser nulo.
+*/
+bool densidade_contem_ponto(Densidade densidade, double x, double y);
 
 /*
 Libera a memória alocada por uma densidade.

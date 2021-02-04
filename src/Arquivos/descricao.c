@@ -127,9 +127,9 @@ void definir_propriedades_circulos(PropriedadesCirculos *prop, const char *linha
 }
 
 // Cria uma densidade e adiciona na estrutura.
-void adicionar_densidade(QuadTree densidades, const char *linha) {
+void adicionar_densidade(Lista densidades, const char *linha) {
     Densidade nova_densidade = densidade_ler(linha);
-    insereQt(densidades, ponto_criar_com_figura(nova_densidade), nova_densidade);
+    lista_inserir_final(densidades, nova_densidade);
 }
 
 // Cria um hidrante, aplica as propriedades definidas e adiciona nas estruturas.
@@ -150,6 +150,12 @@ void adicionar_hidrante(QuadTree hidrantes, Tabela id_hidrante, PropriedadesHidr
 void definir_propriedades_hidrantes(PropriedadesHidrantes *prop, const char *linha) {
     sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
     prop->definido = true;
+}
+
+// Cria um posto e adiciona na estrutura.
+void adicionar_posto(QuadTree postos, const char *linha) {
+    Posto novo_posto = posto_ler(linha);
+    insereQt(postos, ponto_criar_com_figura(novo_posto), novo_posto);
 }
 
 // Cria uma quadra, aplica as propriedades definidas e adiciona nas estruturas.
@@ -237,11 +243,8 @@ void adicionar_texto(QuadTree formas, Tabela id_forma, const char *linha) {
 }
 
 // Atualiza a cor das sombras das quadras de acordo com suas densidades.
-void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
-    Lista lista_densidades = quadtree_para_lista(densidades);
-
-    ListaNo i;
-    FOR_EACH_LISTA(i, lista_densidades) {
+void atualizar_sombras_quadras(QuadTree quadras, Lista densidades) {
+    for_each_lista(i, densidades) {
         Densidade densidade = lista_obter_info(i);
         double habitantes = densidade_obter_densidade(densidade);
 
@@ -267,19 +270,18 @@ void atualizar_sombras_quadras(QuadTree quadras, QuadTree densidades) {
         double y_fim = figura_obter_y_fim(densidade);
         Lista quadras_contidas = nosDentroRetanguloQt(quadras, x_inicio, y_inicio, x_fim, y_fim);
 
-        ListaNo j;
-        FOR_EACH_LISTA(j, quadras_contidas) {
+        for_each_lista(j, quadras_contidas) {
             Quadra quad = getInfoQt(quadras, lista_obter_info(j));
             quadra_definir_cor_sombra(quad, cor);
         }
         lista_destruir(quadras_contidas);
     }
-    lista_destruir(lista_densidades);
 }
 
 // Lê um arquivo de descrição fornecido a função e adiciona as figuras descritas em suas linha
 // como elementos de uma lista.
-void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela relacoes) {
+void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela listas,
+                   Tabela relacoes) {
     LOG_INFO("Lendo descrição\n");
     FILE *arquivo_descricao = fopen(caminho_descricao, "r");
     if (arquivo_descricao == NULL) {
@@ -293,7 +295,8 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela relac
     QuadTree radios = tabela_buscar(quadtrees, "radios");
     QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
     QuadTree postos = tabela_buscar(quadtrees, "postos");
-    QuadTree densidades = tabela_buscar(quadtrees, "densidades");
+
+    Lista densidades = tabela_buscar(listas, "densidades");
 
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
     Tabela id_hidrante = tabela_buscar(relacoes, "id_hidrante");
@@ -329,8 +332,7 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela relac
             adicionar_hidrante(hidrantes, id_hidrante, propriedades.hidrantes, linha);
             hidrantes_criados++;
         } else if (strcmp("ps", comando) == 0) {
-            Posto novo_posto = posto_ler(linha);
-            insereQt(postos, ponto_criar_com_figura(novo_posto), novo_posto);
+            adicionar_posto(postos, linha);
         } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.lista_max_semaforos) {
             adicionar_semaforo(semaforos, id_semaforo, propriedades.semaforos, linha);
             semaforos_criados++;
