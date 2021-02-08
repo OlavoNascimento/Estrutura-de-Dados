@@ -10,8 +10,8 @@ typedef struct Lista_s *Lista;
 typedef struct ListaNo_s *ListaNo;
 typedef void *ListaInfo;
 
-typedef const char *ObterIdentificadorInfo(ListaInfo info);
-typedef void DestruirInfo(ListaInfo info);
+typedef const char *ObterIdentificadorLista(ListaInfo info);
+typedef void ListaDestruirInfoListaInfo info);
 typedef void MapInfoLista(ListaInfo info, void *extra);
 
 /*
@@ -30,7 +30,8 @@ Também é possível especificar uma função que libere a memória alocada pela
 para que ao liberar a memória da lista suas informações também sejam liberadas.
 Retorna o endereço para uma lista vazia.
 */
-Lista lista_criar(ObterIdentificadorInfo obter_identificador_info, DestruirInfo destruir_info);
+Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
+                  DestruirInfoLista destruir_info);
 
 /*
 Insere um elemento no final da lista.

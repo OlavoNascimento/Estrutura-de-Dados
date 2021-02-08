@@ -8,10 +8,11 @@ existem no projeto. Disponibiliza funções para modificar criar, modificar e de
 
 #include <stdbool.h>
 
-typedef void* Fila;
-typedef void* FilaInfo;
+typedef struct Fila_s* Fila;
 
-typedef void DestruirInfo(FilaInfo);
+typedef* FilaInfo;
+
+typedef void FilaDestruirInfo(FilaInfo info);
 
 /*
 Cria uma fila.
@@ -19,7 +20,7 @@ Cria uma fila.
 ao liberar a memória da fila suas informações também sejam liberadas.
 Retorna o endereço para uma fila vazia.
 */
-Fila fila_criar(DestruirInfo destruir_info);
+Fila fila_criar(FilaDestruirInfo destruir_info);
 
 /*
 Verifica se uma fila está vazia.

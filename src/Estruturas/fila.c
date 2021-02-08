@@ -5,20 +5,20 @@
 
 #include "../Utils/logging.h"
 
-typedef struct N {
+struct No {
     FilaInfo info;
-    struct N *proximo;
-} No;
+    struct No *proximo;
+};
 
-typedef struct {
-    DestruirInfo *destruir_info;
+struct Fila_s {
+    FilaDestruirInfo *destruir_info;
     int tamanho;
-    No *primeiro;
-    No *ultimo;
-} FilaImp;
+    struct No *primeiro;
+    struct No *ultimo;
+};
 
-Fila fila_criar(DestruirInfo destruir_info) {
-    FilaImp *fila = malloc(sizeof *fila);
+Fila fila_criar(FilaDestruirInfo destruir_info) {
+    Fila fila = malloc(sizeof *fila);
     if (fila == NULL) {
         LOG_ERRO("Erro ao alocar espaço para a fila!\n");
         return NULL;
@@ -30,61 +30,53 @@ Fila fila_criar(DestruirInfo destruir_info) {
     return fila;
 }
 
-bool fila_esta_vazia(Fila fila) {
-    FilaImp *filaImp = fila;
-    return filaImp->primeiro == NULL;
-}
-
-int fila_obter_tamanho(Fila fila) {
-    FilaImp *filaImp = fila;
-    return filaImp->tamanho;
-}
-
 void fila_inserir(Fila fila, FilaInfo info) {
-    FilaImp *filaImp = fila;
-    No *novo_no = malloc(sizeof *novo_no);
+    struct No *novo_no = malloc(sizeof *novo_no);
     novo_no->info = info;
     novo_no->proximo = NULL;
 
-    if (filaImp->primeiro == NULL) {
-        filaImp->primeiro = novo_no;
+    if (fila->primeiro == NULL) {
+        fila->primeiro = novo_no;
     } else {
-        filaImp->ultimo->proximo = novo_no;
+        fila->ultimo->proximo = novo_no;
     }
-    filaImp->ultimo = novo_no;
-    filaImp->tamanho++;
+    fila->ultimo = novo_no;
+    fila->tamanho++;
 }
 
 FilaInfo fila_remover(Fila fila) {
-    FilaImp *filaImp = fila;
     if (fila_esta_vazia(fila))
         return NULL;
+    FilaInfo info = fila->primeiro->info;
 
-    FilaInfo info = filaImp->primeiro->info;
-
-    No *primeiro = filaImp->primeiro;
-    filaImp->primeiro = primeiro->proximo;
+    struct No *primeiro = fila->primeiro;
+    fila->primeiro = primeiro->proximo;
     free(primeiro);
-    filaImp->tamanho--;
+    fila->tamanho--;
 
     return info;
 }
 
+bool fila_esta_vazia(Fila fila) {
+    return fila->primeiro == NULL;
+}
+
+int fila_obter_tamanho(Fila fila) {
+    return fila->tamanho;
+}
+
 FilaInfo fila_obter_info(Fila fila) {
-    FilaImp *filaImp = fila;
     if (fila_esta_vazia(fila))
         return NULL;
-    return filaImp->primeiro->info;
+    return fila->primeiro->info;
 }
 
 void fila_destruir(Fila fila) {
-    FilaImp *filaImp = fila;
-
-    No *no_atual = filaImp->primeiro;
+    struct No *no_atual = fila->primeiro;
     while (no_atual != NULL) {
-        No *no_proximo = no_atual->proximo;
-        if (filaImp->destruir_info != NULL)
-            filaImp->destruir_info(no_atual->info);
+        struct No *no_proximo = no_atual->proximo;
+        if (fila->destruir_info != NULL)
+            fila->destruir_info(no_atual->info);
         free(no_atual);
         no_atual = no_proximo;
     }

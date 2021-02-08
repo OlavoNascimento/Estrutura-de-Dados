@@ -5,19 +5,19 @@
 
 #include "../Utils/logging.h"
 
-typedef struct N {
+struct No {
     PilhaInfo info;
-    struct N *proximo;
-} No;
+    struct No *proximo;
+};
 
-typedef struct {
-    DestruirInfo *destruir_info;
+struct Pilha_s {
+    PilhaDestruirInfo *destruir_info;
     int tamanho;
-    No *topo;
-} PilhaImp;
+    struct No *topo;
+};
 
-Pilha pilha_criar(DestruirInfo destruir_info) {
-    PilhaImp *pilha = malloc(sizeof *pilha);
+Pilha pilha_criar(PilhaDestruirInfo destruir_info) {
+    Pilha pilha = malloc(sizeof *pilha);
     if (pilha == NULL) {
         LOG_ERRO("Erro ao alocar espaço para a pilha!\n");
         return NULL;
@@ -29,53 +29,49 @@ Pilha pilha_criar(DestruirInfo destruir_info) {
 }
 
 bool pilha_esta_vazia(Pilha pilha) {
-    PilhaImp *pilhaImp = pilha;
-    return pilhaImp->topo == NULL;
+    return pilha->topo == NULL;
 }
 
 int pilha_obter_tamanho(Pilha pilha) {
-    PilhaImp *pilhaImp = pilha;
-    return pilhaImp->tamanho;
+    return pilha->tamanho;
 }
 
 void pilha_inserir(Pilha pilha, PilhaInfo info) {
-    PilhaImp *pilhaImp = pilha;
-    No *novo_no = malloc(sizeof *novo_no);
+    struct No *novo_no = malloc(sizeof *novo_no);
+    if (novo_no == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para novo elemento da pilha!\n");
+        return;
+    }
     novo_no->info = info;
-    novo_no->proximo = pilhaImp->topo;
-    pilhaImp->topo = novo_no;
-    pilhaImp->tamanho++;
+    novo_no->proximo = pilha->topo;
+    pilha->topo = novo_no;
+    pilha->tamanho++;
 }
 
 PilhaInfo pilha_remover(Pilha pilha) {
-    PilhaImp *pilhaImp = pilha;
     if (pilha_esta_vazia(pilha))
         return NULL;
 
-    PilhaInfo info = pilhaImp->topo->info;
-    No *topo = pilhaImp->topo;
-    pilhaImp->topo = topo->proximo;
+    PilhaInfo info = pilha->topo->info;
+    struct No *topo = pilha->topo;
+    pilha->topo = topo->proximo;
     free(topo);
-    pilhaImp->tamanho--;
-
+    pilha->tamanho--;
     return info;
 }
 
 PilhaInfo pilha_obter_topo(Pilha pilha) {
-    PilhaImp *pilhaImp = pilha;
     if (pilha_esta_vazia(pilha))
         return NULL;
-    return pilhaImp->topo->info;
+    return pilha->topo->info;
 }
 
 void pilha_destruir(Pilha pilha) {
-    PilhaImp *pilhaImp = pilha;
-
-    No *no_atual = pilhaImp->topo;
+    struct No *no_atual = pilha->topo;
     while (no_atual != NULL) {
-        No *no_proximo = no_atual->proximo;
-        if (pilhaImp->destruir_info != NULL)
-            pilhaImp->destruir_info(no_atual->info);
+        struct No *no_proximo = no_atual->proximo;
+        if (pilha->destruir_info != NULL)
+            pilha->destruir_info(no_atual->info);
         free(no_atual);
         no_atual = no_proximo;
     }

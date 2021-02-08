@@ -8,10 +8,11 @@ no projeto. Disponibiliza funções para modificar criar, modificar e destruir a
 
 #include <stdbool.h>
 
-typedef void* Pilha;
-typedef void* PilhaInfo;
+typedef struct Pilha_s *Pilha;
 
-typedef void DestruirInfo(PilhaInfo);
+typedef void *PilhaInfo;
+
+typedef void PilhaDestruirInfo(PilhaInfo info);
 
 /*
 Cria uma pilha.
@@ -19,7 +20,7 @@ Cria uma pilha.
 ao liberar a memória da fila suas informações também sejam liberadas.
 Retorna o endereço para uma pilha vazia.
 */
-Pilha pilha_criar(DestruirInfo destruir_info);
+Pilha pilha_criar(PilhaDestruirInfo destruir_info);
 
 /*
 Verifica se uma pilha está vazia.
