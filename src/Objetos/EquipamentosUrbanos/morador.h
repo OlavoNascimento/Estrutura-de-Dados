@@ -111,6 +111,13 @@ Retorna o cep de um morador.
 const char *morador_obter_endereco_cep(Morador morador);
 
 /*
+Obtém o complemento do endereço de um morador.
+O parâmetro morador não pode ser nulo.
+Retorna o complemento do endereço de um morador.
+*/
+const char *morador_obter_endereco_complemento(Morador morador);
+
+/*
 Obtém a face do endereço de um morador.
 O parâmetro morador não pode ser nulo.
 Retorna a face do endereço de um morador.

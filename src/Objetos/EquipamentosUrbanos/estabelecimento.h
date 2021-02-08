@@ -1,5 +1,5 @@
-#ifndef CASO_H
-#define CASO_H
+#ifndef ESTABELECIMENTO_H
+#define ESTABELECIMENTO_H
 
 /*
 Este módulo define um Estabelecimento, o qual representa um retângulo com informações adicionais
