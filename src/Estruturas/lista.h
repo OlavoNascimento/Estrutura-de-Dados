@@ -6,9 +6,9 @@ Este módulo define uma Lista, responsável por armazenar os diferentes tipos de
 existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a lista.
 */
 
-typedef void *Lista;
+typedef struct Lista_s *Lista;
+typedef struct ListaNo_s *ListaNo;
 typedef void *ListaInfo;
-typedef void *ListaNo;
 
 typedef const char *ObterIdentificadorInfo(ListaInfo info);
 typedef void DestruirInfo(ListaInfo info);
@@ -31,13 +31,6 @@ para que ao liberar a memória da lista suas informações também sejam liberad
 Retorna o endereço para uma lista vazia.
 */
 Lista lista_criar(ObterIdentificadorInfo obter_identificador_info, DestruirInfo destruir_info);
-
-/*
-Obtém o tamanho da lista (número de nós).
-O parâmetro lista não pode ser nulo e deve ser uma lista existente.
-retorna um inteiro igual ao tamanho da lista.
-*/
-int lista_obter_tamanho(Lista lista);
 
 /*
 Insere um elemento no final da lista.
@@ -71,7 +64,28 @@ Acessa um nó da lista.
 O id passado deve ser válido.
 Retorna o endereço do nó.
 */
-ListaNo lista_buscar(Lista lista, const char id[100]);
+ListaNo lista_buscar(Lista lista, const char *id);
+
+/*
+Troca as informações armazenadas em dois nós.
+Ambos os parâmetros não podem ser nulos.
+Os nós tem suas informações trocadas.
+*/
+void lista_trocar_info(ListaNo no1, ListaNo no2);
+
+/*
+Aplica uma função a todas as informações de uma lista.
+Os parâmetros lista e f não podem ser nulos.
+A função f é aplicada em todas as informações da lista.
+*/
+void lista_map(Lista lis, MapInfoLista f, void *extra);
+
+/*
+Obtém o tamanho da lista (número de nós).
+O parâmetro lista não pode ser nulo e deve ser uma lista existente.
+retorna um inteiro igual ao tamanho da lista.
+*/
+int lista_obter_tamanho(Lista lista);
 
 /*
 Acessa o primeiro elemento da lista
@@ -109,20 +123,6 @@ lista.
 Retorna o endereço do elemento posterior de p.
 */
 ListaNo lista_obter_anterior(ListaNo p);
-
-/*
-Troca as informações armazenadas em dois nós.
-Ambos os parâmetros não podem ser nulos.
-Os nós tem suas informações trocadas.
-*/
-void lista_trocar_info(ListaNo no1, ListaNo no2);
-
-/*
-Aplica uma função a todas as informações de uma lista.
-Os parâmetros lista e f não podem ser nulos.
-A função f é aplicada em todas as informações da lista.
-*/
-void lista_map(Lista lis, MapInfoLista f, void *extra);
 
 /*
 Libera a memória alocada em todos os elementos da lista.

@@ -39,7 +39,7 @@ void insertion_sort(Lista lista_postos, double x, double y) {
             aux = no1;
             aux_prev = lista_obter_anterior(no1);
 
-            while (aux != NULL && aux_prev != NULL && aux != lista_obter_primeiro) {
+            while (aux != NULL && aux_prev != NULL) {
                 distance1 = calcular_distancia(aux, x, y);
                 distance2 = calcular_distancia(aux_prev, x, y);
 

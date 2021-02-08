@@ -155,10 +155,12 @@ double poligono_calcular_area(Poligono poligono) {
     PoligonoImp *polImp = poligono;
     double area = 0;
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
+        int proximo_indice = (i + 1) % polImp->numero_de_pontos;
+
         double x = polImp->pontos[i][0];
         double y = polImp->pontos[i][1];
-        double x1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][0];
-        double y1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][1];
+        double x1 = polImp->pontos[proximo_indice][0];
+        double y1 = polImp->pontos[proximo_indice][1];
         area += x * y1 - x1 * y;
     }
     return area / 2;
@@ -193,10 +195,12 @@ double poligono_obter_x_centro(Poligono poligono) {
     PoligonoImp *polImp = poligono;
     double valor = 0;
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
+        int proximo_indice = (i + 1) % polImp->numero_de_pontos;
+
         double x = polImp->pontos[i][0];
         double y = polImp->pontos[i][1];
-        double x1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][0];
-        double y1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][1];
+        double x1 = polImp->pontos[proximo_indice][0];
+        double y1 = polImp->pontos[proximo_indice][1];
         valor += (x + x1) * (x * y1 - x1 * y);
     }
     return valor / (6 * poligono_calcular_area(poligono));
@@ -207,10 +211,12 @@ double poligono_obter_y_centro(Poligono poligono) {
     PoligonoImp *polImp = poligono;
     double valor = 0;
     for (int i = 0; i < polImp->numero_de_pontos; i++) {
+        int proximo_indice = (i + 1) % polImp->numero_de_pontos;
+
         double x = polImp->pontos[i][0];
         double y = polImp->pontos[i][1];
-        double x1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][0];
-        double y1 = polImp->pontos[(i + 1) % polImp->numero_de_pontos][1];
+        double x1 = polImp->pontos[proximo_indice][0];
+        double y1 = polImp->pontos[proximo_indice][1];
         valor += (y + y1) * (x * y1 - x1 * y);
     }
     return valor / (6 * poligono_calcular_area(poligono));

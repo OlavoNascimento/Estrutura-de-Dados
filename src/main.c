@@ -31,7 +31,7 @@ Tabela criar_tabela_quadtrees() {
 
 // Cria uma nova tabela contendo listas que armazenam figuras que não precisam de buscas espacias.
 Tabela criar_tabela_listas() {
-    Tabela listas = tabela_criar(lista_destruir);
+    Tabela listas = tabela_criar((void *) lista_destruir);
     tabela_inserir(listas, "densidades", lista_criar(NULL, figura_destruir));
     return listas;
 }

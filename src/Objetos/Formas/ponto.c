@@ -20,7 +20,7 @@ Ponto ponto_criar(double x, double y) {
     return ponImp;
 }
 
-// Cria e inicializa um struct PontoImp com coordenadas iguais a de uma figura.
+// Cria e inicializa um Ponto com coordenadas iguais a de uma figura.
 Ponto ponto_criar_com_figura(Figura fig) {
     if (fig == NULL) {
         LOG_ERRO("Figura nula passada para ponto_criar_com_figura!\n");

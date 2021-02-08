@@ -3,17 +3,36 @@
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
   "cSpell.words": [
+    "atualizar",
+    "caminho",
     "catac",
+    "checar",
     "circulo",
     "circulos",
+    "corb",
+    "criar",
     "de",
+    "delf",
+    "delimitacao",
+    "descricao",
     "dmprbt",
+    "exibicao",
+    "figuras",
     "incidencia",
+    "interseccao",
+    "ligacao",
+    "obrigatorios",
+    "parametros",
     "pivo",
+    "proporcao",
     "proximos",
     "regiao",
     "retangulos",
-    "selecao"
+    "selecao",
+    "retangulo",
+    "retangulos",
+    "selecao",
+    "svg"
   ],
   "files.associations": {
     "circulo.h": "c",
@@ -37,6 +56,7 @@
     "stdbool.h": "c",
     "cmath": "c",
     "windows.h": "c",
-    "exception": "c"
+    "exception": "c",
+    "functional": "cpp"
   }
 }

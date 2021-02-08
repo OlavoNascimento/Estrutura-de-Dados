@@ -126,7 +126,7 @@ void svg_escrever_listas(const char *caminho_svg, int num_listas, ...) {
 
     va_list listas;
     va_start(listas, num_listas);
-    escrever_arquivo_svg(caminho_svg, num_listas, listas, lista_map);
+    escrever_arquivo_svg(caminho_svg, num_listas, listas, (void *) lista_map);
     va_end(listas);
 }
 
@@ -140,6 +140,6 @@ void svg_escrever_quadtrees(const char *caminho_svg, int num_quadtrees, ...) {
 
     va_list quadtrees;
     va_start(quadtrees, num_quadtrees);
-    escrever_arquivo_svg(caminho_svg, num_quadtrees, quadtrees, percorreLarguraQt);
+    escrever_arquivo_svg(caminho_svg, num_quadtrees, quadtrees, (void *) percorreLarguraQt);
     va_end(quadtrees);
 }
