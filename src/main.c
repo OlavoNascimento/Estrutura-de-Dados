@@ -17,24 +17,15 @@
 // Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espacias.
 Tabela criar_tabela_quadtrees() {
     Tabela quadtrees = tabela_criar(desalocaQt);
-    QuadTree formas = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "formas", formas);
-    QuadTree quadras = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "quadras", quadras);
-    QuadTree hidrantes = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "hidrantes", hidrantes);
-    QuadTree radios = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "radios", radios);
-    QuadTree semaforos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "semaforos", semaforos);
-    QuadTree postos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "postos", postos);
-    QuadTree casos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "casos", casos);
-    QuadTree moradores = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "moradores", moradores);
-    QuadTree estabelecimentos = criaQt(figura_obter_id);
-    tabela_inserir(quadtrees, "estabelecimentos", estabelecimentos);
+    tabela_inserir(quadtrees, "formas", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "quadras", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "hidrantes", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "radios", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "semaforos", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "postos", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "casos", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "moradores", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "estabelecimentos", criaQt(figura_obter_id));
     return quadtrees;
 }
 
@@ -98,7 +89,7 @@ int main(int argc, const char *argv[]) {
     if (caminho_estabelecimentos != NULL)
         comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
 
-    svg_quadtrees_para_svg(caminho_svg_descricao, 9, quadras, hidrantes, semaforos, radios,
+    svg_escrever_quadtrees(caminho_svg_descricao, 9, quadras, hidrantes, semaforos, radios,
                            estabelecimentos, moradores, casos, postos, formas);
 
     if (caminho_consulta != NULL) {
@@ -110,7 +101,7 @@ int main(int argc, const char *argv[]) {
         LOG_INFO("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
         consulta_ler(caminho_consulta, caminho_registro_consulta, quadtrees, listas, relacoes);
-        svg_quadtrees_para_svg(caminho_svg_consulta, 9, quadras, hidrantes, semaforos, radios,
+        svg_escrever_quadtrees(caminho_svg_consulta, 9, quadras, hidrantes, semaforos, radios,
                                estabelecimentos, moradores, casos, postos, formas);
 
         free(caminho_registro_consulta);

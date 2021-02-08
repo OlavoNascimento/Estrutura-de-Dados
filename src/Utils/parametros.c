@@ -176,7 +176,7 @@ char *parametros_obter_caminho_svg_descricao(const Parametros params) {
         return NULL;
 
     // Extrai o nome base do arquivo e altera sua extensão
-    char *nome_svg_descricao = alterar_sufixo(paramsImp->caminho_descricao, 1, ".svg");
+    char *nome_svg_descricao = alterar_extensao(paramsImp->caminho_descricao, 1, ".svg");
     char *caminho_svg_descricao = unir_caminhos(paramsImp->nome_dir_saida, nome_svg_descricao);
     free(nome_svg_descricao);
     return caminho_svg_descricao;
@@ -194,7 +194,7 @@ char *parametros_obter_caminho_svg_consulta(const Parametros params) {
     char *nome_base_consulta = extrair_nome_base(paramsImp->caminho_consulta);
     // Adiciona o nome da consulta como sufixo do nome do registro
     char *nome_svg_consulta =
-        alterar_sufixo(paramsImp->caminho_descricao, 3, "-", nome_base_consulta, ".svg");
+        alterar_extensao(paramsImp->caminho_descricao, 3, "-", nome_base_consulta, ".svg");
     char *caminho_svg_consulta = unir_caminhos(paramsImp->nome_dir_saida, nome_svg_consulta);
     free(nome_base_consulta);
     free(nome_svg_consulta);
@@ -213,7 +213,7 @@ char *parametros_obter_caminho_registro_consulta(const Parametros params) {
     char *nome_base_consulta = extrair_nome_base(paramsImp->caminho_consulta);
     // Adiciona o nome da consulta como sufixo do nome do registro
     char *nome_registro_consulta =
-        alterar_sufixo(paramsImp->caminho_descricao, 3, "-", nome_base_consulta, ".txt");
+        alterar_extensao(paramsImp->caminho_descricao, 3, "-", nome_base_consulta, ".txt");
     char *caminho_registro_consulta =
         unir_caminhos(paramsImp->nome_dir_saida, nome_registro_consulta);
     free(nome_base_consulta);

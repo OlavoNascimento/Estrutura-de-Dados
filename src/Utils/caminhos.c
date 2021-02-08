@@ -123,7 +123,7 @@ char *extrair_nome_diretorio(const char *caminho_arquivo) {
 
 // Cria uma string baseado em um nome de arquivo passado a função, porém sua extensão é
 // substituida por sufixos adicionais.
-char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...) {
+char *alterar_extensao(const char *caminho_arquivo, int num_sufixos, ...) {
     if (caminho_arquivo == NULL) {
         LOG_ERRO("Caminho de arquivo nulo fornecida ao alterar sufixo!\n");
         return NULL;

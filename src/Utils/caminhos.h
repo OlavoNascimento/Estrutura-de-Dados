@@ -41,6 +41,6 @@ substituem a extensão do arquivo. O parâmetro caminho_arquivo não pode ser nu
 string contendo o nome do arquivo com sua extensão substituida pelos sufixos passados. O usuário
 é responsável por liberar a memória alocada!
 */
-char *alterar_sufixo(const char *caminho_arquivo, int num_sufixos, ...);
+char *alterar_extensao(const char *caminho_arquivo, int num_sufixos, ...);
 
 #endif

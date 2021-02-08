@@ -2,17 +2,17 @@
 siguel
 
 # Svg files
-*.svg
+**/*.svg
 
 # Input/Output/Query text files
-*.geo
-*.qry
-*.ec
-*.pm
-*.txt
+**/*.geo
+**/*.qry
+**/*.ec
+**/*.pm
+**/*.txt
 
 # Valgrind files
-vgcore*
+**/vgcore*
 
 # Prerequisites
 *.d
