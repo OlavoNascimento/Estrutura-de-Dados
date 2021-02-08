@@ -218,20 +218,6 @@ ListaInfo lista_obter_info(ListaNo p) {
     return no->info;
 }
 
-void lista_definir_info(ListaNo p, ListaInfo info) {
-    if (p == NULL) {
-        LOG_ERRO("Nó nulo passado para lista_definir_info!\n");
-        return;
-    }
-    if (info == NULL) {
-        LOG_ERRO("Informação nula passada para lista_definir_info!\n");
-        return;
-    }
-
-    NoImp *no = p;
-    no->info = info;
-}
-
 ListaNo lista_obter_proximo(ListaNo p) {
     if (p == NULL) {
         LOG_ERRO("Nó nulo passado para lista_obter_proximo!\n");
@@ -256,10 +242,19 @@ void lista_trocar_info(ListaNo no1, ListaNo no2) {
         LOG_ERRO("Nó nulo passado para lista_trocar_info!\n");
         return;
     }
+    NoImp *noImp1 = no1;
+    NoImp *noImp2 = no2;
 
     ListaInfo temp = lista_obter_info(no1);
-    lista_definir_info(no1, lista_obter_info(no2));
-    lista_definir_info(no2, temp);
+    noImp1->info = lista_obter_info(no2);
+    noImp2->info = temp;
+}
+
+// Aplica uma função a todas as informações de uma lista.
+void lista_map(Lista lis, MapInfoLista f, void *extra) {
+    for_each_lista(no, lis) {
+        f(lista_obter_info(no), extra);
+    }
 }
 
 void lista_destruir(Lista lista) {

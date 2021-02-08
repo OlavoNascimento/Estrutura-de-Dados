@@ -6,12 +6,13 @@ Este módulo define uma Lista, responsável por armazenar os diferentes tipos de
 existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a lista.
 */
 
-typedef void* Lista;
-typedef void* ListaInfo;
-typedef void* ListaNo;
+typedef void *Lista;
+typedef void *ListaInfo;
+typedef void *ListaNo;
 
-typedef const char* ObterIdentificadorInfo(ListaInfo);
-typedef void DestruirInfo(ListaInfo);
+typedef const char *ObterIdentificadorInfo(ListaInfo info);
+typedef void DestruirInfo(ListaInfo info);
+typedef void MapInfoLista(ListaInfo info, void *extra);
 
 /*
 Itera por todos os nós de uma lista.
@@ -94,13 +95,6 @@ Retorna o endereço para as informações do nó especificado por p.
 ListaInfo lista_obter_info(ListaNo p);
 
 /*
-Substitui a figura armazena em um nó
-Ambos os parámetros não podem ser nulos.
-O nó tem sua figura original substituida pela figura passada como parâmetro para a função.
-*/
-void lista_definir_info(ListaNo p, ListaInfo info);
-
-/*
 Acessa o elemento posterior ao elemento p.
 Ambos parâmetros não podem ser nulos e o parâmetro p deve indicar um endereço válido que esteja na
 lista.
@@ -122,6 +116,13 @@ Ambos os parâmetros não podem ser nulos.
 Os nós tem suas informações trocadas.
 */
 void lista_trocar_info(ListaNo no1, ListaNo no2);
+
+/*
+Aplica uma função a todas as informações de uma lista.
+Os parâmetros lista e f não podem ser nulos.
+A função f é aplicada em todas as informações da lista.
+*/
+void lista_map(Lista lis, MapInfoLista f, void *extra);
 
 /*
 Libera a memória alocada em todos os elementos da lista.
