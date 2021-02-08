@@ -116,10 +116,19 @@ comandos pnt* e delf* do T1.
 Necessário para comandos que precisam iterar pelas informações da Quadtree de forma condicional e
 remover os nós, já que a especificação fornecida não oferece um procedimento padrão para realizar
 essas operações.
-O parâmetro qt não pode ser nulo. Retorna uma lista contendo os nós da quadtree. O usuário é
-responsável por liberar a memória.
+O parâmetro qt não pode ser nulo.
+Retorna uma lista contendo os nós da quadtree. O usuário é responsável por liberar a memória.
 */
 Lista quadtree_nos_para_lista(QuadTree qt);
+
+/*
+Cria uma representação de uma Quadtree utilizando figuras e armazena em um lista. Usado pelo comando
+dmprbt.
+O parâmetro quadtree não pode ser nulo.
+Retorna uma lista contendo as figuras que representam a Quadtree. A lista deve ser liberada pelo
+usuário.
+*/
+Lista quadtree_escrever_svg(QuadTree quadtree);
 
 /*
 Libera memória alocada pela implementação da árvore.

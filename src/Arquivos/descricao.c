@@ -72,20 +72,17 @@ typedef struct {
 } PropriedadesFiguras;
 
 typedef struct {
-    int lista_max_formas;
-    int lista_max_quadras;
-    int lista_max_semaforos;
-    int lista_max_hidrantes;
-    int lista_max_bases;
+    int formas;
+    int quadras;
+    int semaforos;
+    int hidrantes;
+    int radios;
 } NumerosMaximos;
 
 // Inicializa os valores máximo de cada tipo de figura inicialmente como 1000.
 NumerosMaximos criar_maximos() {
-    NumerosMaximos propMax = {.lista_max_bases = 1000,
-                              .lista_max_formas = 1000,
-                              .lista_max_hidrantes = 1000,
-                              .lista_max_quadras = 1000,
-                              .lista_max_semaforos = 1000};
+    NumerosMaximos propMax = {
+        .radios = 1000, .formas = 1000, .hidrantes = 1000, .quadras = 1000, .semaforos = 1000};
     return propMax;
 }
 
@@ -104,8 +101,8 @@ PropriedadesFiguras criar_propriedades() {
 
 // Define o máximo de figuras que devem ser criadas para cada tipo de figura.
 void definir_max_figuras(NumerosMaximos *propMax, const char *linha) {
-    sscanf(linha, "%*s %d %d %d %d %d", &propMax->lista_max_formas, &propMax->lista_max_quadras,
-           &propMax->lista_max_hidrantes, &propMax->lista_max_semaforos, &propMax->lista_max_bases);
+    sscanf(linha, "%*s %d %d %d %d %d", &propMax->formas, &propMax->quadras, &propMax->hidrantes,
+           &propMax->semaforos, &propMax->radios);
 }
 
 // Cria um círculo, aplica as propriedades definidas e adiciona nas estruturas.
@@ -317,29 +314,29 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
         char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
-        if (strcmp("c", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
+        if (strcmp("c", comando) == 0 && formas_criadas <= maximo.formas) {
             adicionar_circulo(formas, id_forma, propriedades.circulos, linha);
             formas_criadas++;
         } else if (strcmp("dd", comando) == 0) {
             adicionar_densidade(densidades, linha);
-        } else if (strcmp("r", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
+        } else if (strcmp("r", comando) == 0 && formas_criadas <= maximo.formas) {
             adicionar_retangulo(formas, id_forma, propriedades.retangulos, linha);
             formas_criadas++;
-        } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.lista_max_quadras) {
+        } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.quadras) {
             adicionar_quadra(quadras, cep_quadra, propriedades.quadras, linha);
             quadras_criadas++;
-        } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.lista_max_hidrantes) {
+        } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.hidrantes) {
             adicionar_hidrante(hidrantes, id_hidrante, propriedades.hidrantes, linha);
             hidrantes_criados++;
         } else if (strcmp("ps", comando) == 0) {
             adicionar_posto(postos, linha);
-        } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.lista_max_semaforos) {
+        } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.semaforos) {
             adicionar_semaforo(semaforos, id_semaforo, propriedades.semaforos, linha);
             semaforos_criados++;
-        } else if (strcmp("rb", comando) == 0 && radios_criadas <= maximo.lista_max_bases) {
+        } else if (strcmp("rb", comando) == 0 && radios_criadas <= maximo.radios) {
             adicionar_radio(radios, id_radio, propriedades.radios, linha);
             radios_criadas++;
-        } else if (strcmp("t", comando) == 0 && formas_criadas <= maximo.lista_max_formas) {
+        } else if (strcmp("t", comando) == 0 && formas_criadas <= maximo.formas) {
             adicionar_texto(formas, id_forma, linha);
             formas_criadas++;
         } else if (strcmp("cq", comando) == 0) {
@@ -355,11 +352,11 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
             definir_propriedades_retangulos(&propriedades.retangulos, linha);
         } else if (strcmp("nx", comando) == 0) {
             definir_max_figuras(&maximo, linha);
-            LOG_INFO("Novo valor máximo de formas: %d\n", maximo.lista_max_formas);
-            LOG_INFO("Novo valor máximo de quadras: %d\n", maximo.lista_max_quadras);
-            LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximo.lista_max_hidrantes);
-            LOG_INFO("Novo valor máximo de semaforos: %d\n", maximo.lista_max_semaforos);
-            LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximo.lista_max_bases);
+            LOG_INFO("Novo valor máximo de formas: %d\n", maximo.formas);
+            LOG_INFO("Novo valor máximo de quadras: %d\n", maximo.quadras);
+            LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximo.hidrantes);
+            LOG_INFO("Novo valor máximo de semaforos: %d\n", maximo.semaforos);
+            LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximo.radios);
         }
     }
 

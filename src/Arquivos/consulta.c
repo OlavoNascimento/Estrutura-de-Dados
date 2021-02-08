@@ -553,9 +553,9 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
 
     Lista nos_contidos = nosDentroCirculoQt(casos, x, y, raio);
     int total_de_casos = 0;
+    bool cabecalho_escrito = false;
     // Filtra a lista de casos, mantendo apenas aqueles que estão totalmente contidos dentro do
     // círculo.
-    bool cabecalho_escrito = false;
     ListaNo atual = lista_obter_primeiro(nos_contidos);
     while (atual != NULL) {
         Figura caso = getInfoQt(formas, lista_obter_info(atual));
@@ -577,12 +577,24 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     if (cabecalho_escrito)
         fprintf(arquivo_log, "\n");
 
+    // Armazena os casos filtrados em um array.
+    int tamanho = lista_obter_tamanho(nos_contidos);
+    Caso *casos_filtrados = malloc(tamanho * sizeof(Caso));
+    int j = 0;
+    for_each_lista(no_contido, nos_contidos) {
+        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no_contido));
+    }
+    lista_destruir(nos_contidos);
+    nos_contidos = NULL;
+
     // Busca o número de habitantes da densidade correspondente.
     double habitantes = 0;
     for_each_lista(den_no, densidades) {
         Densidade regiao = lista_obter_info(den_no);
-        if (densidade_contem_ponto(regiao, x, y))
+        if (densidade_contem_ponto(regiao, x, y)) {
             habitantes = densidade_calcular_habitantes(regiao);
+            break;
+        }
     }
 
     double incidencia = 0;
@@ -613,26 +625,19 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     fprintf(arquivo_log, "Total de casos: %d\n", total_de_casos);
     fprintf(arquivo_log, "\nCategoria de incidência: %c\n", categoria);
 
-    // Armazena os casos em um array.
-    int tamanho = lista_obter_tamanho(nos_contidos);
-    Caso *casos_filtrados = malloc(tamanho * sizeof(Caso));
-    int j = 0;
-    for_each_lista(no_contido, nos_contidos) {
-        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no_contido));
-    }
-    lista_destruir(nos_contidos);
-    nos_contidos = NULL;
-
     // Calcula a envoltória convexa.
     Pilha pilha_pontos_envoltoria = graham_scan(tamanho, casos_filtrados);
     free(casos_filtrados);
     casos_filtrados = NULL;
-    if (pilha_pontos_envoltoria == NULL)
+    if (pilha_pontos_envoltoria == NULL) {
+        free(cor_poligono);
         return;
+    }
 
     // Aloca uma matriz para armazenar os pontos encontrados.
-    double **pontos = malloc(pilha_obter_tamanho(pilha_pontos_envoltoria) * sizeof(double *));
-    for (int i = 0; i < pilha_obter_tamanho(pilha_pontos_envoltoria); i++)
+    const int tamanho_pilha = pilha_obter_tamanho(pilha_pontos_envoltoria);
+    double **pontos = malloc(tamanho_pilha * sizeof(double *));
+    for (int i = 0; i < tamanho_pilha; i++)
         pontos[i] = malloc(2 * sizeof(*pontos[i]));
 
     int i = 0;
@@ -644,10 +649,8 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
         i++;
     }
 
-    // Cria o polígono com os pontos encontrados e adiciona a lista de formas.
-    Poligono poligono = poligono_criar(pontos, i, "red", cor_poligono, 0.4);
+    Poligono poligono = poligono_criar(pontos, tamanho_pilha, "red", cor_poligono, 0.4);
     insereQt(formas, ponto_criar_com_figura(poligono), poligono);
-    // Escreve a área do polígono no arquivo de log.
     fprintf(arquivo_log, "\nÁrea da envoltória convexa: %lf\n", poligono_calcular_area(poligono));
 
     // Adiciona um posto de campanha caso necessário.
@@ -741,22 +744,6 @@ void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dad
     figura_escrever_informacoes(morador, arquivo_log);
 }
 
-// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o
-// segundo com as coordenadas da figura.
-void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
-    Texto texto_id = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_inicio(figura),
-                                 "none", "black", figura_obter_id(figura), false);
-    insereQt(quadtree, ponto_criar_com_figura(texto_id), texto_id);
-
-    char texto_cords[500];
-    texto_cords[0] = '\0';
-    snprintf(texto_cords, 500, "(%d,%d)", (int) figura_obter_x(figura),
-             (int) figura_obter_y(figura));
-    Texto coordenadas = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_fim(figura),
-                                    "none", "black", texto_cords, false);
-    insereQt(quadtree, ponto_criar_com_figura(coordenadas), coordenadas);
-}
-
 // Cria um arquivo svg com o nome especificado, o qual contem as figuras da quadtree selecionada,
 // assim como os ids e coordenadas de cada figura.
 void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree hidrantes,
@@ -778,19 +765,16 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
         return;
 
     char *diretorios = extrair_nome_diretorio(caminho_log);
-    char *nome_arquivo = alterar_sufixo(nome, 1, ".svg");
+    char *nome_arquivo = alterar_extensao(nome, 1, ".svg");
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
     LOG_INFO("Arquivo dmprbt: %s\n", caminho_arquivo);
 
-    // Quadtree contendo os ids e coordenadas das figuras da quadtree selecionada.
-    QuadTree quadtree_dados = criaQt(NULL);
-    percorreLarguraQt(qt, armazenar_dados_no, quadtree_dados);
+    Lista lista_dados = quadtree_escrever_svg(qt);
 
     // Escreve o svg das duas árvores.
-    svg_quadtrees_para_svg(caminho_arquivo, 2, qt, quadtree_dados);
+    svg_escrever_listas(caminho_arquivo, 1, lista_dados);
 
-    percorreLarguraQt(quadtree_dados, (void *) figura_destruir, NULL);
-    desalocaQt(quadtree_dados);
+    lista_destruir(lista_dados);
     free(caminho_arquivo);
     free(nome_arquivo);
     free(diretorios);

@@ -108,7 +108,6 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     TabelaImp *tabelaImp = tabela;
 
     int pos = chave_string(id, tabelaImp->tamanho);
-
     if (tabelaImp->inf[pos] == NULL) {
         // Cria uma lista com uma função específica para extrair a chave de um elemento da tabela.
         tabelaImp->inf[pos] = lista_criar(extrair_chave_elemento, NULL);
@@ -140,6 +139,7 @@ TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
         return NULL;
     }
     TabelaImp *tabelaImp = tabela;
+
     int pos = chave_string(id, tabelaImp->tamanho);
     if (tabelaImp->inf[pos] == NULL)
         return NULL;
@@ -163,6 +163,7 @@ TabelaInfo tabela_remover(Tabela tabela, const char *id) {
         return NULL;
     }
     TabelaImp *tabelaImp = tabela;
+
     int pos = chave_string(id, tabelaImp->tamanho);
     if (tabelaImp->inf[pos] == NULL)
         return NULL;
