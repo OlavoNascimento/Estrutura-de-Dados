@@ -57,6 +57,8 @@
     "cmath": "c",
     "windows.h": "c",
     "exception": "c",
-    "functional": "cpp"
+    "functional": "cpp",
+    "logging.h": "c",
+    "caminhos.h": "c"
   }
 }

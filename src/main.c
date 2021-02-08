@@ -16,7 +16,7 @@
 
 // Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espacias.
 Tabela criar_tabela_quadtrees() {
-    Tabela quadtrees = tabela_criar(desalocaQt);
+    Tabela quadtrees = tabela_criar((void *) desalocaQt);
     tabela_inserir(quadtrees, "formas", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "quadras", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "hidrantes", criaQt(figura_obter_id));

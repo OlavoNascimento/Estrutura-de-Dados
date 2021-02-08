@@ -15,8 +15,9 @@ Para cada nó visitado é invocada um procedimento que processa a informação c
 #include "../Objetos/Formas/ponto.h"
 #include "lista.h"
 
-typedef void *QuadTree;
-typedef void *QtNo;
+typedef struct QuadTree_s *QuadTree;
+typedef struct QtNo_s *QtNo;
+
 typedef void *QtInfo;
 typedef const char *InfoKey;
 typedef void *ExtraInfo;

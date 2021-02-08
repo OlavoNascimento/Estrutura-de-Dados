@@ -378,7 +378,7 @@ void remove_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, QuadTree hid
 
 // Encontra todas as quadras contidas dentro de um círculo e muda a corda da borda e escreve o id no
 // arquivo de log.
-void circulo_contem_quadras(QuadTree *quadras, const char *linha, FILE *arquivo_log) {
+void circulo_contem_quadras(QuadTree quadras, const char *linha, FILE *arquivo_log) {
     double cir_x, cir_y, raio;
     char cor_borda[20];
     sscanf(linha, "cbq %lf %lf %lf %s", &cir_x, &cir_y, &raio, cor_borda);
