@@ -17,7 +17,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Posto;
+typedef struct Posto_s *Posto;
 
 /*
 Cria e inicializa um Posto com os valores passados.

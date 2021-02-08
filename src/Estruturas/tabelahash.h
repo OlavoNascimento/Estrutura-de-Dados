@@ -1,6 +1,8 @@
 #ifndef TABELAHASH_H
 #define TABELAHASH_H
 
+// TODO Adicionar apresentação módulo.
+
 #include "lista.h"
 
 typedef struct Tabela_s *Tabela;

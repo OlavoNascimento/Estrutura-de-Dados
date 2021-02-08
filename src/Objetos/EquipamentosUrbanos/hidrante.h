@@ -18,7 +18,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Hidrante;
+typedef struct Hidrante_s *Hidrante;
 
 /*
 Cria e inicializa um Hidrante com os valores passados.

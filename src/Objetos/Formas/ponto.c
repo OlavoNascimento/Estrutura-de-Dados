@@ -7,17 +7,21 @@
 #include "../../Interfaces/figura.h"
 #include "../../Utils/logging.h"
 
-typedef struct {
+struct Ponto_s {
     double x;
     double y;
-} PontoImp;
+};
 
-// Cria e inicializa um struct PontoImp com os valores passados.
+// Cria e inicializa um Ponto com os valores passados.
 Ponto ponto_criar(double x, double y) {
-    PontoImp *ponImp = malloc(sizeof *ponImp);
-    ponImp->x = x;
-    ponImp->y = y;
-    return ponImp;
+    Ponto ponto = malloc(sizeof *ponto);
+    if (ponto == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para um novo ponto!\n");
+        return NULL;
+    }
+    ponto->x = x;
+    ponto->y = y;
+    return ponto;
 }
 
 // Cria e inicializa um Ponto com coordenadas iguais a de uma figura.
@@ -31,34 +35,29 @@ Ponto ponto_criar_com_figura(Figura fig) {
 
 // Retorna a coordenada x de um ponto.
 double ponto_obter_x(Ponto ponto) {
-    PontoImp *ponImp = ponto;
-    return ponImp->x;
+    return ponto->x;
 }
 
 // Retorna a coordenada y de um ponto.
 double ponto_obter_y(Ponto ponto) {
-    PontoImp *ponImp = ponto;
-    return ponImp->y;
+    return ponto->y;
 }
 
 // Retorna verdadeiro se um ponto está contido dentro de um retângulo.
 bool ponto_contido_em_retangulo(Ponto ponto, double x1, double y1, double x2, double y2) {
-    PontoImp *ponImp = ponto;
-    if (ponImp->x < x1 || ponImp->x > x2)
+    if (ponto->x < x1 || ponto->x > x2)
         return false;
-    if (ponImp->y < y1 || ponImp->y > y2)
+    if (ponto->y < y1 || ponto->y > y2)
         return false;
     return true;
 }
 
 // Retorna verdadeiro se um ponto está contido dentro de um círculo.
 bool ponto_contido_em_circulo(Ponto ponto, double x, double y, double raio) {
-    PontoImp *ponImp = ponto;
-    return pow((ponImp->x - x), 2) + pow((ponImp->y - y), 2) <= pow(raio, 2);
+    return pow((ponto->x - x), 2) + pow((ponto->y - y), 2) <= pow(raio, 2);
 }
 
 // Libera a memória alocada por um ponto.
 void ponto_destruir(Ponto ponto) {
-    PontoImp *ponImp = ponto;
-    free(ponImp);
+    free(ponto);
 }

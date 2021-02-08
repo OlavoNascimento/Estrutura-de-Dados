@@ -19,7 +19,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Semaforo;
+typedef struct Semaforo_s *Semaforo;
 
 /*
 Cria e inicializa um Semaforo a partir dos parâmetros passados pela função semaforo_ler.

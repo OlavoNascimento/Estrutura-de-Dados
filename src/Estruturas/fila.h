@@ -8,9 +8,9 @@ existem no projeto. Disponibiliza funções para modificar criar, modificar e de
 
 #include <stdbool.h>
 
-typedef struct Fila_s* Fila;
+typedef struct Fila_s *Fila;
 
-typedef* FilaInfo;
+typedef void *FilaInfo;
 
 typedef void FilaDestruirInfo(FilaInfo info);
 

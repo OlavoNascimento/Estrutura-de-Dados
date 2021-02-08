@@ -19,7 +19,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Poligono;
+typedef struct Poligono_s *Poligono;
 
 /*
 Cria e inicializa um Poligono com os valores passados.

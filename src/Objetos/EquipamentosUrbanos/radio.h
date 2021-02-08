@@ -18,7 +18,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Radio;
+typedef struct Radio_s *Radio;
 
 /*
 Cria e inicializa um Radio com os valores passados.

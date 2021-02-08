@@ -19,7 +19,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Linha;
+typedef struct Linha_s *Linha;
 
 /*
 Cria e inicializa um struct Linha com os valores passados.

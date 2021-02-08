@@ -35,7 +35,7 @@
 // Margem entre o retângulo criado pela função envolver_figuras e as figuras que ele envolve.
 #define MARGEM_CONTORNO 2
 
-Retangulo *criar_delimitacao_figuras(Figura figura1, Figura figura2) {
+Retangulo criar_delimitacao_figuras(Figura figura1, Figura figura2) {
     // Coordenada x do contorno é a menor coordenada x entre as duas figuras.
     double x =
         min(figura_obter_x_inicio(figura1), figura_obter_x_inicio(figura2)) - MARGEM_CONTORNO;
@@ -73,19 +73,18 @@ void checar_interseccao(QuadTree formas, Tabela id_forma, const char *linha, FIL
     const char *tipo_fig2 = figura_obter_tipo(fig2);
     bool intersectam = false;
     if (strcmp(tipo_fig1, "círculo") == 0 && strcmp(tipo_fig1, tipo_fig2) == 0) {
-        intersectam = circulo_checar_interseccao(fig1, fig2);
+        intersectam = circulo_checar_interseccao((Circulo) fig1, (Circulo) fig2);
     } else if (strcmp(tipo_fig1, "retângulo") == 0 && strcmp(tipo_fig1, tipo_fig2) == 0) {
-        intersectam = retangulo_checar_interseccao(fig1, fig2);
+        intersectam = retangulo_checar_interseccao((Retangulo) fig1, (Retangulo) fig2);
     } else if (strcmp(tipo_fig1, "círculo") == 0 && strcmp(tipo_fig2, "retângulo") == 0) {
-        intersectam = circulo_intersecta_retangulo(fig1, fig2);
+        intersectam = circulo_intersecta_retangulo((Circulo) fig1, (Retangulo) fig2);
     } else if (strcmp(tipo_fig1, "retângulo") == 0 && strcmp(tipo_fig2, "círculo") == 0) {
-        intersectam = circulo_intersecta_retangulo(fig2, fig1);
+        intersectam = circulo_intersecta_retangulo((Circulo) fig2, (Retangulo) fig1);
     } else {
         return;
     }
 
     Retangulo contorno = criar_delimitacao_figuras(fig1, fig2);
-
     if (intersectam) {
         // Adiciona uma mensagem de sobreposição caso as figuras se intersectem.
         Texto aviso =
@@ -579,7 +578,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
 
     // Armazena os casos filtrados em um array.
     int tamanho = lista_obter_tamanho(nos_contidos);
-    Caso *casos_filtrados = malloc(tamanho * sizeof(Caso));
+    Figura *casos_filtrados = malloc(tamanho * sizeof(Caso));
     int j = 0;
     for_each_lista(no_contido, nos_contidos) {
         casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no_contido));

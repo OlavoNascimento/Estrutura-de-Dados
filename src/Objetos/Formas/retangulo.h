@@ -22,7 +22,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Retangulo;
+typedef struct Retangulo_s *Retangulo;
 
 /*
 Cria e inicializa uma Retangulo com os valores passados.

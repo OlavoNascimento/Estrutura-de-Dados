@@ -13,14 +13,15 @@ struct ListaNo_s {
 };
 
 struct Lista_s {
-    ObterIdentificadorInfo *obter_identificador_info;
-    DestruirInfo *destruir_info;
+    ObterIdentificadorLista *obter_identificador_info;
+    ListaDestruirInfo *destruir_info;
     int tamanho;
     struct ListaNo_s *primeiro;
     struct ListaNo_s *ultimo;
 };
 
-Lista lista_criar(ObterIdentificadorInfo obter_identificador_info, DestruirInfo destruir_info) {
+Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
+                  ListaDestruirInfo destruir_info) {
     Lista lista = malloc(sizeof *lista);
     if (lista == NULL) {
         LOG_ERRO("Erro ao alocar espaço para uma nova lista!\n");

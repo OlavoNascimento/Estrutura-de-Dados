@@ -28,7 +28,7 @@ Suas propriedades são:
 
 #include "../EquipamentosUrbanos/quadra.h"
 
-typedef void *Morador;
+typedef struct Morador_s *Morador;
 
 /*
 Cria e inicializa um Morador com os valores passados.

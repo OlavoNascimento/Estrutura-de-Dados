@@ -11,7 +11,7 @@
 #include "../Outros/texto.h"
 #include "quadra.h"
 
-typedef struct {
+struct Estabelecimento_s {
     FiguraInterface vtable;
     char id[100];
     double largura;
@@ -26,18 +26,18 @@ typedef struct {
     char tipo[100];
     char nome[100];
     char cpf[100];
-} EstabelecimentoImp;
+};
 
 const char *estabelecimento_obter_string_tipo() {
     return "estabelecimento";
 }
 
 // Escreve no svg as informações de um estabelecimento.
-void estabelecimento_escrever_svg(Estabelecimento estabelecimento, FILE *arquivo) {
-    retangulo_escrever_svg(estabelecimento, arquivo);
+void estabelecimento_escrever_svg(Estabelecimento est, FILE *arquivo) {
+    retangulo_escrever_svg((Retangulo) est, arquivo);
 
-    double x = figura_obter_x_centro(estabelecimento);
-    double y = figura_obter_y_centro(estabelecimento) + 6;
+    double x = figura_obter_x_centro(est);
+    double y = figura_obter_y_centro(est) + 6;
     // Rótulo do estabelecimento.
     Texto texto_estabelecimento = texto_criar("", x, y, "none", "white", "E", true);
     texto_escrever_svg(texto_estabelecimento, arquivo);
@@ -45,51 +45,50 @@ void estabelecimento_escrever_svg(Estabelecimento estabelecimento, FILE *arquivo
 }
 
 // Escreve todos os dados de uma estabelecimento em um arquivo.
-void estabelecimento_escrever_informacoes(Estabelecimento estabelecimento, FILE *arquivo) {
-    EstabelecimentoImp *estImp = estabelecimento;
+void estabelecimento_escrever_informacoes(Estabelecimento est, FILE *arquivo) {
     fprintf(arquivo,
             "tipo: %s, cnpj: %s, cpf: %s, tipo de estabelecimento: %s, nome: %s, largura: %lf, "
             "altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
-            figura_obter_tipo(estabelecimento), estImp->id, estImp->cpf, estImp->tipo, estImp->nome,
-            estImp->largura, estImp->altura, estImp->x, estImp->y, estImp->cor_borda,
-            estImp->cor_preenchimento);
+            figura_obter_tipo(est), est->id, est->cpf, est->tipo, est->nome, est->largura,
+            est->altura, est->x, est->y, est->cor_borda, est->cor_preenchimento);
 }
 
 // Conecta as funções do objeto Estabelecimento com as da interface figura.
-// Como o struct EstabelecimentoImp é idêntico ao struct RetanguloImp as funções utilizadas em um
+// Como o struct Estabelecimento_s é idêntico ao struct Retangulo_s as funções utilizadas em um
 // objeto Retangulo podem ser reaproveitadas.
 static FiguraInterface estabelecimento_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, estabelecimento_obter_string_tipo);
+    figura_registrar_obter_tipo(interface, (void *) estabelecimento_obter_string_tipo);
 
-    figura_registrar_escrever_informacoes(interface, estabelecimento_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, estabelecimento_escrever_svg);
+    figura_registrar_escrever_informacoes(interface, (void *) estabelecimento_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (void *) estabelecimento_escrever_svg);
 
-    figura_registrar_obter_id(interface, retangulo_obter_id);
+    figura_registrar_obter_id(interface, (void *) retangulo_obter_id);
 
-    figura_registrar_obter_x(interface, retangulo_obter_x);
-    figura_registrar_obter_y(interface, retangulo_obter_y);
+    figura_registrar_obter_x(interface, (void *) retangulo_obter_x);
+    figura_registrar_obter_y(interface, (void *) retangulo_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, retangulo_obter_x);
-    figura_registrar_obter_y_inicio(interface, retangulo_obter_y);
+    figura_registrar_obter_x_inicio(interface, (void *) retangulo_obter_x);
+    figura_registrar_obter_y_inicio(interface, (void *) retangulo_obter_y);
 
-    figura_registrar_obter_x_fim(interface, retangulo_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, retangulo_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (void *) retangulo_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (void *) retangulo_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, retangulo_obter_x_centro);
-    figura_registrar_obter_y_centro(interface, retangulo_obter_y_centro);
+    figura_registrar_obter_x_centro(interface, (void *) retangulo_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, (void *) retangulo_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, retangulo_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, retangulo_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (void *) retangulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (void *) retangulo_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, retangulo_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface, retangulo_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(interface, (void *) retangulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(interface,
+                                               (void *) retangulo_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, retangulo_destruir);
+    figura_registrar_destruir(interface, (void *) retangulo_destruir);
     return interface;
 }
 
-// Cria e inicializa um struct EstabelecimentoImp com os valores passados.
+// Cria e inicializa um Estabelecimento com os valores passados.
 Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const char *tipo,
                                       const char *nome, Quadra quadra, char face, int numero) {
     if (cnpj == NULL) {
@@ -113,26 +112,26 @@ Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const c
         return NULL;
     }
 
-    EstabelecimentoImp *estImp = malloc(sizeof *estImp);
-    strcpy(estImp->id, cnpj);
-    estImp->largura = 12;
-    estImp->altura = 12;
-    estImp->x = 0;
-    estImp->y = 0;
-    strcpy(estImp->cor_borda, "#3a4a3f");
-    strcpy(estImp->cor_preenchimento, "seagreen");
-    estImp->arredondamento_borda = 0;
-    estImp->borda_tracejada = false;
-    strcpy(estImp->espessura_borda, "1px");
-    strcpy(estImp->tipo, tipo);
-    strcpy(estImp->nome, nome);
-    strcpy(estImp->cpf, cpf);
+    Estabelecimento est = malloc(sizeof *est);
+    strcpy(est->id, cnpj);
+    est->largura = 12;
+    est->altura = 12;
+    est->x = 0;
+    est->y = 0;
+    strcpy(est->cor_borda, "#3a4a3f");
+    strcpy(est->cor_preenchimento, "seagreen");
+    est->arredondamento_borda = 0;
+    est->borda_tracejada = false;
+    strcpy(est->espessura_borda, "1px");
+    strcpy(est->tipo, tipo);
+    strcpy(est->nome, nome);
+    strcpy(est->cpf, cpf);
 
-    quadra_inicializar_coordenada(&estImp->x, &estImp->y, estImp->largura, estImp->altura, quadra,
-                                  face, numero);
+    quadra_inicializar_coordenada(&est->x, &est->y, est->largura, est->altura, quadra, face,
+                                  numero);
 
-    estImp->vtable = estabelecimento_criar_interface_figura();
-    return estImp;
+    est->vtable = estabelecimento_criar_interface_figura();
+    return est;
 }
 
 // Cria um estabelecimento com base em informações de uma linha.
@@ -147,83 +146,77 @@ Estabelecimento estabelecimento_ler(const char *linha, Quadra quadra) {
     return estabelecimento_criar(cnpj, cpf, tipo, nome, quadra, face, numero);
 }
 
-// Retorna o cnpj de um estabelecimento.
-const char *estabelecimento_obter_id(Estabelecimento estabelecimento) {
-    return retangulo_obter_id(estabelecimento);
-}
-
 // Retorna o tipo de um estabelecimento.
-const char *estabelecimento_obter_tipo(Estabelecimento estabelecimento) {
-    EstabelecimentoImp *est = estabelecimento;
+const char *estabelecimento_obter_tipo(Estabelecimento est) {
     return est->tipo;
 }
 
 // Retorna o nome de um estabelecimento.
-const char *estabelecimento_obter_nome(Estabelecimento estabelecimento) {
-    EstabelecimentoImp *est = estabelecimento;
+const char *estabelecimento_obter_nome(Estabelecimento est) {
     return est->nome;
 }
 
 // Retorna o cpf de um estabelecimento.
-const char *estabelecimento_obter_cpf(Estabelecimento estabelecimento) {
-    EstabelecimentoImp *est = estabelecimento;
+const char *estabelecimento_obter_cpf(Estabelecimento est) {
     return est->cpf;
 }
 
+// Retorna o cnpj de um estabelecimento.
+const char *estabelecimento_obter_id(Estabelecimento est) {
+    return retangulo_obter_id((Retangulo) est);
+}
+
 // Retorna a coordenada x de um estabelecimento.
-double estabelecimento_obter_x(Estabelecimento estabelecimento) {
-    return retangulo_obter_x(estabelecimento);
+double estabelecimento_obter_x(Estabelecimento est) {
+    return retangulo_obter_x((Retangulo) est);
 }
 
 // Retorna a coordenada y de um estabelecimento.
-double estabelecimento_obter_y(Estabelecimento estabelecimento) {
-    return retangulo_obter_y(estabelecimento);
+double estabelecimento_obter_y(Estabelecimento est) {
+    return retangulo_obter_y((Retangulo) est);
 }
 
 // Retorna a largura de um estabelecimento.
-double estabelecimento_obter_largura(Estabelecimento estabelecimento) {
-    return retangulo_obter_largura(estabelecimento);
+double estabelecimento_obter_largura(Estabelecimento est) {
+    return retangulo_obter_largura((Retangulo) est);
 }
 
 // Retorna a altura de um estabelecimento.
-double estabelecimento_obter_altura(Estabelecimento estabelecimento) {
-    return retangulo_obter_altura(estabelecimento);
+double estabelecimento_obter_altura(Estabelecimento est) {
+    return retangulo_obter_altura((Retangulo) est);
 }
 
 // Retorna a cor da borda de um estabelecimento.
-const char *estabelecimento_obter_cor_borda(Estabelecimento estabelecimento) {
-    return retangulo_obter_cor_borda(estabelecimento);
+const char *estabelecimento_obter_cor_borda(Estabelecimento est) {
+    return retangulo_obter_cor_borda((Retangulo) est);
 }
 
 // Define a cor da borda de um estabelecimento.
-void estabelecimento_definir_cor_borda(Estabelecimento estabelecimento, const char *cor_borda) {
-    retangulo_definir_cor_borda(estabelecimento, cor_borda);
+void estabelecimento_definir_cor_borda(Estabelecimento est, const char *cor_borda) {
+    retangulo_definir_cor_borda((Retangulo) est, cor_borda);
 }
 
 // Retorna a cor de preenchimento de um estabelecimento.
-const char *estabelecimento_obter_cor_preenchimento(Estabelecimento estabelecimento) {
-    return retangulo_obter_cor_preenchimento(estabelecimento);
+const char *estabelecimento_obter_cor_preenchimento(Estabelecimento est) {
+    return retangulo_obter_cor_preenchimento((Retangulo) est);
 }
 
 // Define a cor de preenchimento de um estabelecimento.
-void estabelecimento_definir_cor_preenchimento(Estabelecimento estabelecimento,
-                                               const char *cor_preenchimento) {
-    retangulo_definir_cor_preenchimento(estabelecimento, cor_preenchimento);
+void estabelecimento_definir_cor_preenchimento(Estabelecimento est, const char *cor_preenchimento) {
+    retangulo_definir_cor_preenchimento((Retangulo) est, cor_preenchimento);
 }
 
 // Define a espessura da borda de um estabelecimento.
-void estabelecimento_definir_espessura_borda(Estabelecimento estabelecimento,
-                                             const char *espessura_borda) {
-    retangulo_definir_espessura_borda(estabelecimento, espessura_borda);
+void estabelecimento_definir_espessura_borda(Estabelecimento est, const char *espessura_borda) {
+    retangulo_definir_espessura_borda((Retangulo) est, espessura_borda);
 }
 
 // Define o arredondamento da borda de um estabelecimento.
-void estabelecimento_definir_arredondamento_borda(Estabelecimento estabelecimento,
-                                                  double raio_borda) {
-    retangulo_definir_arredondamento_borda(estabelecimento, raio_borda);
+void estabelecimento_definir_arredondamento_borda(Estabelecimento est, double raio_borda) {
+    retangulo_definir_arredondamento_borda((Retangulo) est, raio_borda);
 }
 
 // Libera a memória alocada por um estabelecimento.
-void estabelecimento_destruir(Estabelecimento estabelecimento) {
-    retangulo_destruir(estabelecimento);
+void estabelecimento_destruir(Estabelecimento est) {
+    retangulo_destruir((Retangulo) est);
 }

@@ -23,7 +23,7 @@ Suas propriedades são:
 
 #include "quadra.h"
 
-typedef void *Caso;
+typedef struct Caso_s *Caso;
 
 /*
 Cria e inicializa um Caso com os valores passados.

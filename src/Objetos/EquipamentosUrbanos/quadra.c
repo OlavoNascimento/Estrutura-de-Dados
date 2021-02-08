@@ -11,7 +11,7 @@
 #include "../Formas/retangulo.h"
 #include "../Outros/texto.h"
 
-typedef struct {
+struct Quadra_s {
     FiguraInterface vtable;
     char id[100];
     double largura;
@@ -24,7 +24,7 @@ typedef struct {
     char espessura_borda[20];
     bool borda_tracejada;
     char cor_sombra[20];
-} QuadraImp;
+};
 
 const char *quadra_obter_tipo() {
     return "quadra";
@@ -32,22 +32,19 @@ const char *quadra_obter_tipo() {
 
 // Escreve no svg as informações de uma quadra.
 void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
-    QuadraImp *quadImp = quadra;
-
     fprintf(arquivo, "\t<rect");
-    if (strlen(quadImp->id) > 0)
-        fprintf(arquivo, " id='%s'", quadImp->id);
+    if (strlen(quadra->id) > 0)
+        fprintf(arquivo, " id='%s'", quadra->id);
 
     fprintf(arquivo,
             " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf' "
             "stroke-width='%s'",
-            quadImp->largura, quadImp->altura, quadImp->x, quadImp->y, quadImp->cor_borda,
-            quadImp->cor_preenchimento, quadImp->arredondamento_borda, quadImp->espessura_borda);
+            quadra->largura, quadra->altura, quadra->x, quadra->y, quadra->cor_borda,
+            quadra->cor_preenchimento, quadra->arredondamento_borda, quadra->espessura_borda);
 
-    if (strlen(quadImp->cor_sombra) > 0)
-        fprintf(arquivo, " filter='url(%s)'", quadImp->cor_sombra);
-
-    if (quadImp->borda_tracejada)
+    if (strlen(quadra->cor_sombra) > 0)
+        fprintf(arquivo, " filter='url(%s)'", quadra->cor_sombra);
+    if (quadra->borda_tracejada)
         fprintf(arquivo, " style='stroke-dasharray: 2'");
     fprintf(arquivo, "/>\n");
 
@@ -61,56 +58,56 @@ void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
 
 // Escreve todos os dados de uma quadra em um arquivo.
 void quadra_escrever_informacoes(Quadra quadra, FILE *arquivo) {
-    QuadraImp *quadImp = quadra;
     fprintf(arquivo, "tipo: %s,", figura_obter_tipo(quadra));
-    if (strlen(quadImp->id) > 0)
-        fprintf(arquivo, " cep: %s,", quadImp->id);
+    if (strlen(quadra->id) > 0)
+        fprintf(arquivo, " cep: %s,", quadra->id);
     fprintf(arquivo, " largura: %lf, altura: %lf, x: %lf, y: %lf, corb: %s, corp: %s\n",
-            quadImp->largura, quadImp->altura, quadImp->x, quadImp->y, quadImp->cor_borda,
-            quadImp->cor_preenchimento);
+            quadra->largura, quadra->altura, quadra->x, quadra->y, quadra->cor_borda,
+            quadra->cor_preenchimento);
 }
 
 // Conecta as funções do objeto Quadra com as da interface figura.
-// Como o struct QuadraImp é idêntico ao struct RetanguloImp as funções utilizadas em um objeto
+// Como o struct Quadra_s é idêntico ao struct Retangulo_s as funções utilizadas em um objeto
 // Retangulo podem ser reaproveitadas.
 static FiguraInterface quadra_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, quadra_obter_tipo);
+    figura_registrar_obter_tipo(interface, (void *) quadra_obter_tipo);
 
-    figura_registrar_escrever_informacoes(interface, quadra_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, quadra_escrever_svg);
+    figura_registrar_escrever_informacoes(interface, (void *) quadra_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (void *) quadra_escrever_svg);
 
-    figura_registrar_obter_id(interface, retangulo_obter_id);
+    figura_registrar_obter_id(interface, (void *) retangulo_obter_id);
 
-    figura_registrar_obter_x(interface, retangulo_obter_x);
-    figura_registrar_obter_y(interface, retangulo_obter_y);
+    figura_registrar_obter_x(interface, (void *) retangulo_obter_x);
+    figura_registrar_obter_y(interface, (void *) retangulo_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, retangulo_obter_x);
-    figura_registrar_obter_y_inicio(interface, retangulo_obter_y);
+    figura_registrar_obter_x_inicio(interface, (void *) retangulo_obter_x);
+    figura_registrar_obter_y_inicio(interface, (void *) retangulo_obter_y);
 
-    figura_registrar_obter_x_fim(interface, retangulo_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, retangulo_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (void *) retangulo_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (void *) retangulo_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, retangulo_obter_x_centro);
-    figura_registrar_obter_y_centro(interface, retangulo_obter_y_centro);
+    figura_registrar_obter_x_centro(interface, (void *) retangulo_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, (void *) retangulo_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, retangulo_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, retangulo_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (void *) retangulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (void *) retangulo_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, retangulo_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface, retangulo_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(interface, (void *) retangulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(interface,
+                                               (void *) retangulo_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, retangulo_destruir);
+    figura_registrar_destruir(interface, (void *) retangulo_destruir);
     return interface;
 }
 
-// Cria e inicializa um struct QuadraImp com os valores passados.
+// Cria e inicializa um Quadra com os valores passados.
 Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y) {
     if (id == NULL) {
         LOG_ERRO("Não é possível criar uma quadra com id NULL!\n");
         return NULL;
     }
-    QuadraImp *quaImp = malloc(sizeof *quaImp);
+    Quadra quaImp = malloc(sizeof *quaImp);
     strcpy(quaImp->id, id);
     quaImp->largura = largura;
     quaImp->altura = altura;
@@ -169,66 +166,6 @@ void quadra_inicializar_coordenada(double *x, double *y, double largura, double 
     }
 }
 
-// Retorna o id de uma quadra
-const char *quadra_obter_id(Quadra quadra) {
-    return retangulo_obter_id(quadra);
-}
-
-// Retorna a coordenada x de uma quadra.
-double quadra_obter_x(Quadra quadra) {
-    return retangulo_obter_x(quadra);
-}
-
-// Retorna a coordenada y de uma quadra.
-double quadra_obter_y(Quadra quadra) {
-    return retangulo_obter_y(quadra);
-}
-
-// Retorna a largura de uma quadra.
-double quadra_obter_largura(Quadra quadra) {
-    return retangulo_obter_largura(quadra);
-}
-
-// Retorna a altura de uma quadra.
-double quadra_obter_altura(Quadra quadra) {
-    return retangulo_obter_altura(quadra);
-}
-
-// Retorna a cor da borda de uma quadra.
-const char *quadra_obter_cor_borda(Quadra quadra) {
-    return retangulo_obter_cor_borda(quadra);
-}
-
-// Define a cor da borda de uma quadra.
-void quadra_definir_cor_borda(Quadra quadra, const char *cor_borda) {
-    retangulo_definir_cor_borda(quadra, cor_borda);
-}
-
-// Retorna a cor de preenchimento de uma quadra.
-const char *quadra_obter_cor_preenchimento(Quadra quadra) {
-    return retangulo_obter_cor_preenchimento(quadra);
-}
-
-// Define a cor de preenchimento de uma quadra.
-void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimento) {
-    retangulo_definir_cor_preenchimento(quadra, cor_preenchimento);
-}
-
-// Define a espessura da borda de uma quadra.
-void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda) {
-    retangulo_definir_espessura_borda(quadra, espessura_borda);
-}
-
-// Define se a borda da quadra é tracejada.
-void quadra_definir_borda_tracejada(Quadra quadra, bool tracejado) {
-    retangulo_definir_borda_tracejada(quadra, tracejado);
-}
-
-// Define o arredondamento da borda da quadra.
-void quadra_definir_arredondamento_borda(Quadra quadra, double arredondamento_borda) {
-    retangulo_definir_arredondamento_borda(quadra, arredondamento_borda);
-}
-
 // Define a cor da sombra de uma quadra.
 void quadra_definir_cor_sombra(Quadra quadra, const char *cor_sombra) {
     if (cor_sombra == NULL) {
@@ -236,11 +173,70 @@ void quadra_definir_cor_sombra(Quadra quadra, const char *cor_sombra) {
                  figura_obter_tipo(quadra));
         return;
     }
-    QuadraImp *quaImp = quadra;
-    strcpy(quaImp->cor_sombra, cor_sombra);
+    strcpy(quadra->cor_sombra, cor_sombra);
+}
+
+// Retorna o id de uma quadra
+const char *quadra_obter_id(Quadra quadra) {
+    return retangulo_obter_id((Retangulo) quadra);
+}
+
+// Retorna a coordenada x de uma quadra.
+double quadra_obter_x(Quadra quadra) {
+    return retangulo_obter_x((Retangulo) quadra);
+}
+
+// Retorna a coordenada y de uma quadra.
+double quadra_obter_y(Quadra quadra) {
+    return retangulo_obter_y((Retangulo) quadra);
+}
+
+// Retorna a largura de uma quadra.
+double quadra_obter_largura(Quadra quadra) {
+    return retangulo_obter_largura((Retangulo) quadra);
+}
+
+// Retorna a altura de uma quadra.
+double quadra_obter_altura(Quadra quadra) {
+    return retangulo_obter_altura((Retangulo) quadra);
+}
+
+// Retorna a cor da borda de uma quadra.
+const char *quadra_obter_cor_borda(Quadra quadra) {
+    return retangulo_obter_cor_borda((Retangulo) quadra);
+}
+
+// Define a cor da borda de uma quadra.
+void quadra_definir_cor_borda(Quadra quadra, const char *cor_borda) {
+    retangulo_definir_cor_borda((Retangulo) quadra, cor_borda);
+}
+
+// Retorna a cor de preenchimento de uma quadra.
+const char *quadra_obter_cor_preenchimento(Quadra quadra) {
+    return retangulo_obter_cor_preenchimento((Retangulo) quadra);
+}
+
+// Define a cor de preenchimento de uma quadra.
+void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimento) {
+    retangulo_definir_cor_preenchimento((Retangulo) quadra, cor_preenchimento);
+}
+
+// Define a espessura da borda de uma quadra.
+void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda) {
+    retangulo_definir_espessura_borda((Retangulo) quadra, espessura_borda);
+}
+
+// Define se a borda da quadra é tracejada.
+void quadra_definir_borda_tracejada(Quadra quadra, bool tracejado) {
+    retangulo_definir_borda_tracejada((Retangulo) quadra, tracejado);
+}
+
+// Define o arredondamento da borda da quadra.
+void quadra_definir_arredondamento_borda(Quadra quadra, double arredondamento_borda) {
+    retangulo_definir_arredondamento_borda((Retangulo) quadra, arredondamento_borda);
 }
 
 // Libera a memória alocada por uma quadra.
 void quadra_destruir(Quadra quadra) {
-    retangulo_destruir(quadra);
+    retangulo_destruir((Retangulo) quadra);
 }

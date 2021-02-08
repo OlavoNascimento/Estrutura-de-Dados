@@ -20,7 +20,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Quadra;
+typedef struct Quadra_s *Quadra;
 
 /*
 Cria e inicializa uma Quadra com os valores passados.

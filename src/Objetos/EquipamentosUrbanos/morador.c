@@ -12,7 +12,7 @@
 #include "../Outros/texto.h"
 #include "morador.h"
 
-typedef struct {
+struct Morador_s {
     FiguraInterface vtable;
     char cpf[100];
     double largura;
@@ -25,6 +25,7 @@ typedef struct {
     char espessura_borda[20];
     bool borda_tracejada;
 
+    // Informações
     char nome[100];
     char sobrenome[100];
     char sexo;
@@ -33,12 +34,12 @@ typedef struct {
     int ano;
     char data[20];
 
-    // endereço
+    // Endereço
     char cep[100];
     char face;
     int num;
     char complemento[100];
-} MoradorImp;
+};
 
 const char *morador_obter_string_tipo() {
     return "morador";
@@ -46,7 +47,7 @@ const char *morador_obter_string_tipo() {
 
 // Escreve no svg as informações de um morador.
 void morador_escrever_svg(Morador morador, FILE *arquivo) {
-    retangulo_escrever_svg(morador, arquivo);
+    retangulo_escrever_svg((Retangulo) morador, arquivo);
 
     double x = figura_obter_x_centro(morador);
     double y = figura_obter_y_centro(morador) + 6;
@@ -58,69 +59,65 @@ void morador_escrever_svg(Morador morador, FILE *arquivo) {
 
 // Escreve todos os dados de uma morador em um arquivo.
 void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
-    MoradorImp *moradorImp = morador;
     fprintf(arquivo,
             "tipo: %s, cpf: %s, nome: %s, sobrenome: %s, sexo: %c, data: %s, x: %lf y: %lf, corb: "
             "%s, corp: %s\n",
-            figura_obter_tipo(moradorImp), moradorImp->cpf, moradorImp->nome, moradorImp->sobrenome,
-            moradorImp->sexo, morador_obter_data(moradorImp), moradorImp->x, moradorImp->y,
-            moradorImp->cor_borda, moradorImp->cor_preenchimento);
+            figura_obter_tipo(morador), morador->cpf, morador->nome, morador->sobrenome,
+            morador->sexo, morador_obter_data(morador), morador->x, morador->y, morador->cor_borda,
+            morador->cor_preenchimento);
 }
 
 void morador_definir_data(Morador morador) {
-    MoradorImp *moradorImp = morador;
     char buffer[20];
-    if (moradorImp->dia < 10) {
-        if (moradorImp->mes < 10) {
-            snprintf(buffer, sizeof(buffer), "0%d/0%d/%d", moradorImp->dia, moradorImp->mes,
-                     moradorImp->ano);
+    if (morador->dia < 10) {
+        if (morador->mes < 10) {
+            snprintf(buffer, sizeof(buffer), "0%d/0%d/%d", morador->dia, morador->mes,
+                     morador->ano);
         } else {
-            snprintf(buffer, sizeof(buffer), "0%d/%d/%d", moradorImp->dia, moradorImp->mes,
-                     moradorImp->ano);
+            snprintf(buffer, sizeof(buffer), "0%d/%d/%d", morador->dia, morador->mes, morador->ano);
         }
-    } else if (moradorImp->mes < 10) {
-        snprintf(buffer, sizeof(buffer), "%d/0%d/%d", moradorImp->dia, moradorImp->mes,
-                 moradorImp->ano);
+    } else if (morador->mes < 10) {
+        snprintf(buffer, sizeof(buffer), "%d/0%d/%d", morador->dia, morador->mes, morador->ano);
     } else {
-        snprintf(buffer, sizeof(buffer), "%d/%d/%d", moradorImp->dia, moradorImp->mes,
-                 moradorImp->ano);
+        snprintf(buffer, sizeof(buffer), "%d/%d/%d", morador->dia, morador->mes, morador->ano);
     }
 
-    strcpy(moradorImp->data, buffer);
+    strcpy(morador->data, buffer);
 }
 
 static FiguraInterface morador_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, morador_obter_string_tipo);
+    figura_registrar_obter_tipo(interface, (void *) morador_obter_string_tipo);
 
-    figura_registrar_escrever_informacoes(interface, morador_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, morador_escrever_svg);
+    figura_registrar_escrever_informacoes(interface, (void *) morador_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (void *) morador_escrever_svg);
 
-    figura_registrar_obter_id(interface, retangulo_obter_id);
+    figura_registrar_obter_id(interface, (void *) retangulo_obter_id);
 
-    figura_registrar_obter_x(interface, retangulo_obter_x);
-    figura_registrar_obter_y(interface, retangulo_obter_y);
+    figura_registrar_obter_x(interface, (void *) retangulo_obter_x);
+    figura_registrar_obter_y(interface, (void *) retangulo_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, retangulo_obter_x);
-    figura_registrar_obter_y_inicio(interface, retangulo_obter_y);
+    figura_registrar_obter_x_inicio(interface, (void *) retangulo_obter_x);
+    figura_registrar_obter_y_inicio(interface, (void *) retangulo_obter_y);
 
-    figura_registrar_obter_x_fim(interface, retangulo_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, retangulo_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (void *) retangulo_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (void *) retangulo_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, retangulo_obter_x_centro);
-    figura_registrar_obter_y_centro(interface, retangulo_obter_y_centro);
+    figura_registrar_obter_x_centro(interface, (void *) retangulo_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, (void *) retangulo_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, retangulo_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, retangulo_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (void *) retangulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (void *) retangulo_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, retangulo_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface, retangulo_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(interface, (void *) retangulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(interface,
+                                               (void *) retangulo_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, morador_destruir);
+    figura_registrar_destruir(interface, (void *) morador_destruir);
     return interface;
 }
 
-// Cria e inicializa um struct MoradorImp com os valores passados.
+// Cria e inicializa um Morador com os valores passados.
 Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, const char sexo,
                       int dia, int mes, int ano) {
     if (cpf == NULL) {
@@ -135,34 +132,34 @@ Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, 
         LOG_ERRO("Não é possível criar um morador com sobrenome NULL!\n");
         return NULL;
     }
-    MoradorImp *moradorImp = malloc(sizeof *moradorImp);
-    strcpy(moradorImp->cpf, cpf);
-    strcpy(moradorImp->nome, nome);
-    strcpy(moradorImp->sobrenome, sobrenome);
-    moradorImp->sexo = sexo;
-    moradorImp->dia = dia;
-    moradorImp->mes = mes;
-    moradorImp->ano = ano;
+    Morador morador = malloc(sizeof *morador);
+    strcpy(morador->cpf, cpf);
+    strcpy(morador->nome, nome);
+    strcpy(morador->sobrenome, sobrenome);
+    morador->sexo = sexo;
+    morador->dia = dia;
+    morador->mes = mes;
+    morador->ano = ano;
 
-    morador_definir_data(moradorImp);
+    morador_definir_data(morador);
 
-    strcpy(moradorImp->cep, "não registrado");
-    strcpy(moradorImp->complemento, "-");
-    moradorImp->num = 0;
-    moradorImp->face = '-';
+    strcpy(morador->cep, "não registrado");
+    strcpy(morador->complemento, "-");
+    morador->num = 0;
+    morador->face = '-';
 
-    moradorImp->largura = 0;
-    moradorImp->altura = 0;
-    moradorImp->x = 0;
-    moradorImp->y = 0;
-    strcpy(moradorImp->cor_borda, "#3a464a");
-    strcpy(moradorImp->cor_preenchimento, "#2d3b40");
-    moradorImp->arredondamento_borda = 0;
-    moradorImp->borda_tracejada = false;
-    strcpy(moradorImp->espessura_borda, "1px");
+    morador->largura = 0;
+    morador->altura = 0;
+    morador->x = 0;
+    morador->y = 0;
+    strcpy(morador->cor_borda, "#3a464a");
+    strcpy(morador->cor_preenchimento, "#2d3b40");
+    morador->arredondamento_borda = 0;
+    morador->borda_tracejada = false;
+    strcpy(morador->espessura_borda, "1px");
 
-    moradorImp->vtable = morador_criar_interface_figura();
-    return moradorImp;
+    morador->vtable = morador_criar_interface_figura();
+    return morador;
 }
 
 // Cria um morador com base em informações de uma linha.
@@ -192,48 +189,37 @@ void morador_ler_endereco(Morador morador, const char *linha, Quadra quadra) {
 
 void morador_definir_endereco(Morador morador, const char *cep, const char face, int num,
                               const char *complemento, Quadra quadra) {
-    MoradorImp *moradorImp = morador;
-    strcpy(moradorImp->cep, cep);
-    strcpy(moradorImp->complemento, complemento);
-    moradorImp->face = face;
-    moradorImp->num = num;
+    strcpy(morador->cep, cep);
+    strcpy(morador->complemento, complemento);
+    morador->face = face;
+    morador->num = num;
 
-    moradorImp->largura = 12;
-    moradorImp->altura = 12;
-    moradorImp->x = 0;
-    moradorImp->y = 0;
-
-    quadra_inicializar_coordenada(&moradorImp->x, &moradorImp->y, moradorImp->largura,
-                                  moradorImp->altura, quadra, face, num);
-}
-
-const char *morador_obter_id(Morador morador) {
-    return retangulo_obter_id(morador);
+    morador->largura = 12;
+    morador->altura = 12;
+    morador->x = 0;
+    morador->y = 0;
+    quadra_inicializar_coordenada(&morador->x, &morador->y, morador->largura, morador->altura,
+                                  quadra, face, num);
 }
 
 const char *morador_obter_nome(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->nome;
+    return morador->nome;
 }
 
 const char *morador_obter_sobrenome(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->sobrenome;
+    return morador->sobrenome;
 }
 
 char morador_obter_sexo(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->sexo;
+    return morador->sexo;
 }
 
 const char *morador_obter_data(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->data;
+    return morador->data;
 }
 
 const char *morador_obter_endereco_cep(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->cep;
+    return morador->cep;
 }
 
 const char *morador_obter_endereco_complemento(Morador morador) {
@@ -242,66 +228,68 @@ const char *morador_obter_endereco_complemento(Morador morador) {
 }
 
 char morador_obter_endereco_face(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->face;
+    return morador->face;
 }
 
 int morador_obter_endereco_num(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->num;
+    return morador->num;
+}
+
+const char *morador_obter_id(Morador morador) {
+    return retangulo_obter_id((Retangulo) morador);
 }
 
 // Retorna a coordenada x de um morador.
 double morador_obter_x(Morador morador) {
-    return retangulo_obter_x(morador);
+    return retangulo_obter_x((Retangulo) morador);
 }
 
 // Retorna a coordenada y de um morador.
 double morador_obter_y(Morador morador) {
-    return retangulo_obter_y(morador);
+    return retangulo_obter_y((Retangulo) morador);
 }
 
 // Retorna a largura de um morador.
 double morador_obter_largura(Morador morador) {
-    return retangulo_obter_largura(morador);
+    return retangulo_obter_largura((Retangulo) morador);
 }
 
 // Retorna a altura de um morador.
 double morador_obter_altura(Morador morador) {
-    return retangulo_obter_altura(morador);
+    return retangulo_obter_altura((Retangulo) morador);
 }
 
 // Retorna a cor da borda de um morador.
 const char *morador_obter_cor_borda(Morador morador) {
-    return retangulo_obter_cor_borda(morador);
+    return retangulo_obter_cor_borda((Retangulo) morador);
 }
 
 // Define a cor da borda de um morador.
 void morador_definir_cor_borda(Morador morador, const char *cor_borda) {
-    retangulo_definir_cor_borda(morador, cor_borda);
+    retangulo_definir_cor_borda((Retangulo) morador, cor_borda);
 }
 
 // Retorna a cor de preenchimento de um morador.
 const char *morador_obter_cor_preenchimento(Morador morador) {
-    return retangulo_obter_cor_preenchimento(morador);
+    return retangulo_obter_cor_preenchimento((Retangulo) morador);
 }
 
 // Define a cor de preenchimento de um morador.
 void morador_definir_cor_preenchimento(Morador morador, const char *cor_preenchimento) {
-    retangulo_definir_cor_preenchimento(morador, cor_preenchimento);
+    retangulo_definir_cor_preenchimento((Retangulo) morador, cor_preenchimento);
 }
 
 // Define a espessura da borda de um morador.
 void morador_definir_espessura_borda(Morador morador, const char *espessura_borda) {
-    retangulo_definir_espessura_borda(morador, espessura_borda);
+    retangulo_definir_espessura_borda((Retangulo) morador, espessura_borda);
 }
 
 // Define o arredondamento da borda de um morador.
 void morador_definir_arredondamento_borda(Morador morador, double raio_borda) {
-    retangulo_definir_arredondamento_borda(morador, raio_borda);
+    retangulo_definir_arredondamento_borda((Retangulo) morador, raio_borda);
 }
 
 // Libera a memória utilizada por um morador.
 void morador_destruir(Morador morador) {
-    retangulo_destruir(morador);
+    retangulo_destruir((Retangulo) morador);
 }

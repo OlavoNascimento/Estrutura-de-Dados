@@ -20,7 +20,7 @@ Suas propriedades são:
 #include "../../Estruturas/lista.h"
 #include "../../Interfaces/figura.h"
 
-typedef void *Densidade;
+typedef struct Densidade_s *Densidade;
 
 /*
 Cria e inicializa um Densidade com os valores passados.

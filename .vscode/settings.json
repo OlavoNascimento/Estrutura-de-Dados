@@ -59,6 +59,7 @@
     "exception": "c",
     "functional": "cpp",
     "logging.h": "c",
-    "caminhos.h": "c"
+    "caminhos.h": "c",
+    "fila.h": "c"
   }
 }

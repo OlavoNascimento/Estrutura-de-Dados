@@ -26,7 +26,7 @@ Suas propriedades são:
 
 #include "quadra.h"
 
-typedef void *Estabelecimento;
+typedef struct Estabelecimento_s *Estabelecimento;
 
 /*
 Cria e inicializa um Estabelecimento com os valores passados.

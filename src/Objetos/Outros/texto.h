@@ -18,7 +18,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Texto;
+typedef struct Texto_s *Texto;
 
 /*
 Cria e inicializa uma Texto com os valores passados.

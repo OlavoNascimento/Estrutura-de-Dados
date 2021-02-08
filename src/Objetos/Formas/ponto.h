@@ -13,7 +13,7 @@ Suas propriedades são:
 
 #include "../../Interfaces/figura.h"
 
-typedef void *Ponto;
+typedef struct Ponto_s *Ponto;
 
 /*
 Cria e inicializa Ponto com os valores passados.

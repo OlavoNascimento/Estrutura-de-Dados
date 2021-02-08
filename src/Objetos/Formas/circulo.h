@@ -19,7 +19,7 @@ Suas propriedades são:
 #include <stdbool.h>
 #include <stdio.h>
 
-typedef void *Circulo;
+typedef struct Circulo_s *Circulo;
 
 /*
 Cria e inicializa Circulo com os valores passados.
