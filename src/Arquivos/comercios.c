@@ -20,8 +20,16 @@ void definir_descricao_tipo(Tabela tipo_descricao, const char *linha) {
     tabela_inserir(tipo_descricao, tipo, descricao);
 }
 
+void definir_cnpj_estabelecimento(Estabelecimento est, Tabela cnpj_estabelecimento,
+                                  const char *linha) {
+    char cnpj[100];
+    sscanf(linha, "e %s %*s %*s %*s %*c %*d %*s", cnpj);
+    tabela_inserir(cnpj_estabelecimento, cnpj, est);
+}
+
 // Adiciona um estabelecimento a quadra especificada.
-void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra, const char *linha) {
+void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra,
+                               Tabela cnpj_estabelecimento, const char *linha) {
     char cep[100];
     sscanf(linha, "e %*s %*s %*s %s %*c %*d %*s", cep);
     QtNo no = tabela_buscar(cep_quadra, cep);
@@ -29,6 +37,8 @@ void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra, con
         Quadra quadra_pai = getInfoQt(estabelecimentos, no);
         Estabelecimento est = estabelecimento_ler(linha, quadra_pai);
         insereQt(estabelecimentos, ponto_criar_com_figura(est), est);
+
+        definir_cnpj_estabelecimento(est, cnpj_estabelecimento, linha);
     }
 }
 
@@ -46,6 +56,7 @@ void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relac
 
     Tabela tipo_descricao = tabela_buscar(relacoes, "tipo_descricao");
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
+    Tabela cnpj_estabelecimento = tabela_buscar(relacoes, "cnpj_estabelecimento");
 
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_comercios) != NULL) {
@@ -55,7 +66,7 @@ void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relac
         if (strcmp("t", comando) == 0) {
             definir_descricao_tipo(tipo_descricao, linha);
         } else if (strcmp("e", comando) == 0) {
-            adicionar_estabelecimento(estabelecimentos, cep_quadra, linha);
+            adicionar_estabelecimento(estabelecimentos, cep_quadra, cnpj_estabelecimento, linha);
         }
     }
 

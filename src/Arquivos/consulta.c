@@ -12,6 +12,8 @@
 #include "../Estruturas/tabelahash.h"
 #include "../Interfaces/figura.h"
 #include "../Objetos/EquipamentosUrbanos/caso.h"
+#include "../Objetos/EquipamentosUrbanos/estabelecimento.h"
+#include "../Objetos/EquipamentosUrbanos/morador.h"
 #include "../Objetos/EquipamentosUrbanos/posto.h"
 #include "../Objetos/EquipamentosUrbanos/quadra.h"
 #include "../Objetos/Formas/circulo.h"
@@ -706,22 +708,41 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
                     figura_obter_x_centro(morador), 0, "black", "black", false);
     insereQt(formas, ponto_criar_com_figura(linha_vertical), linha_vertical);
 
-    // char texto_pessoa_endereco[302];
+    char texto_pessoa_endereco[302];
 
-    // snprintf(texto_pessoa_endereco, 302, "cpf: %s, cep: %s, face: %c, num: %d, complemento: %s",
-    //          figura_obter_id(morador), morador_obter_endereco_cep(morador),
-    //          morador_obter_endereco_face(morador), morador_obter_endereco_num(morador),
-    //          morador_obter_endereco_complemento(morador));
-
-    // TODO obter o endereço
+    snprintf(texto_pessoa_endereco, 302, "cpf: %s, cep: %s, face: %c, num: %d, complemento: %s",
+             figura_obter_id(morador), morador_obter_endereco_cep(morador),
+             morador_obter_endereco_face(morador), morador_obter_endereco_num(morador),
+             morador_obter_endereco_complemento(morador));
 
     Texto area_linha = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
                                    figura_obter_id(morador), false);
     insereQt(formas, ponto_criar_com_figura(area_linha), area_linha);
 }
 
-// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o segundo
-// com as coordenadas da figura.
+void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dados_pessoa,
+                                         const char *linha, FILE *arquivo_log) {
+    char cpf[100];
+    char cnpj[100];
+    sscanf(linha, "de? %s", cnpj);
+
+    Lista lista_estabelecimento = tabela_buscar(cnpj_estabelecimento, cnpj);
+    ListaNo no_estabelecimento = lista_buscar(lista_estabelecimento, cnpj);
+    Figura estabelecimento = lista_obter_info(no_estabelecimento);
+
+    strcpy(cpf, estabelecimento_obter_cpf(estabelecimento));
+
+    Lista lista_pessoa = tabela_buscar(dados_pessoa, cpf);
+    ListaNo no_pessoa = lista_buscar(lista_pessoa, cpf);
+    Figura morador = lista_obter_info(no_pessoa);
+
+    figura_escrever_informacoes(estabelecimento, arquivo_log);
+    fprintf(arquivo_log, "Dados do proprietário: ");
+    figura_escrever_informacoes(morador, arquivo_log);
+}
+
+// Adiciona dois textos a uma quadtree, um representando o id da figura passada a função e o
+// segundo com as coordenadas da figura.
 void armazenar_dados_no(Figura figura, ExtraInfo quadtree) {
     Texto texto_id = texto_criar("", figura_obter_x_fim(figura), figura_obter_y_inicio(figura),
                                  "none", "black", figura_obter_id(figura), false);
@@ -862,6 +883,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
 
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
+    Tabela cnpj_estabelecimento = tabela_buscar(relacoes, "cnpj_estabelecimento");
     Tabela id_hidrante = tabela_buscar(relacoes, "id_hidrante");
     Tabela id_semaforo = tabela_buscar(relacoes, "id_semaforo");
     Tabela id_radio = tabela_buscar(relacoes, "id_radio");
@@ -907,6 +929,9 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             listar_moradores_quadra(cep_quadra, moradores, linha, arquivo_log);
         } else if (strcmp("dm?", comando) == 0) {
             mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
+        } else if (strcmp("de?", comando) == 0) {
+            mostrar_informacoes_estabelecimento(cnpj_estabelecimento, dados_pessoa, linha,
+                                                arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {
