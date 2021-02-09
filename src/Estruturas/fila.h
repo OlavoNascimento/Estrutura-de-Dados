@@ -1,6 +1,7 @@
 #ifndef FILA_H
 #define FILA_H
 
+// TODO Melhorar comentário módulo.
 /*
 Este módulo define uma Fila, responsável por armazenar os diferentes tipos de informações que
 existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a fila.

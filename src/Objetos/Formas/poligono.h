@@ -11,8 +11,8 @@ Suas propriedades são:
     altura
     x: Coordenada x do círculo no plano.
     y: Coordenada y do círculo no plano.
-    cor_borda
-    cor_preenchimento
+    cor da borda
+    cor de preenchimento
     opacidade: Opacidade do polígono no svg.
 */
 

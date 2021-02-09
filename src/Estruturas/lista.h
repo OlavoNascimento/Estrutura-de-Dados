@@ -1,6 +1,7 @@
 #ifndef LISTA_H
 #define LISTA_H
 
+// TODO Melhorar comentário módulo.
 /*
 Este módulo define uma Lista, responsável por armazenar os diferentes tipos de informações que
 existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a lista.
@@ -8,6 +9,7 @@ existem no projeto. Disponibiliza funções para modificar criar, modificar e de
 
 typedef struct Lista_s *Lista;
 typedef struct ListaNo_s *ListaNo;
+
 typedef void *ListaInfo;
 
 typedef const char *ObterIdentificadorLista(ListaInfo info);
@@ -16,7 +18,7 @@ typedef void MapInfoLista(ListaInfo info, void *extra);
 
 /*
 Itera por todos os nós de uma lista.
-Será criado um ListaNo contendo o nó atual. A variável lista deve ser uma Lista não nula.
+Será criado um ListaNo com o nome especificado. A variável lista deve ser do tipo Lista e não nula.
 Não é possível remover um nó durante a iteração!
 */
 #define for_each_lista(nome, lista) \
@@ -45,20 +47,20 @@ Insere um elemento posterior a um determinado nó "p".
 Todos os parâmetros não podem ser nulos e o parâmetro p deve ser um elemento válido da lista.
 É retornado o endereço do elemento inserido.
 */
-ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo p);
+ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo no);
 
 /*
 Insere um elemento anterior a um determinado nó "p".
 Todos os parâmetros não podem ser nulos e o parâmetro p deve ser um elemento válido da lista.
 É retornado o endereço do elemento inserido.
 */
-ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo p);
+ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo no);
 
 /*
 Remove um elemento da lista.
 Todos os parâmetros não podem ser nulos e o parâmetro lista deve ser uma lista existente.
 */
-void lista_remover(Lista lista, ListaNo no_selecionado);
+void lista_remover(Lista lista, ListaNo no);
 
 /*
 Acessa um nó da lista.
@@ -107,7 +109,7 @@ Acessa as informações de um nó.
 O parâmetro p não pode ser NULL e deve indicar um endereço válido que esteja na lista.
 Retorna o endereço para as informações do nó especificado por p.
 */
-ListaInfo lista_obter_info(ListaNo p);
+ListaInfo lista_obter_info(ListaNo no);
 
 /*
 Acessa o elemento posterior ao elemento p.
@@ -115,7 +117,7 @@ Ambos parâmetros não podem ser nulos e o parâmetro p deve indicar um endereç
 lista.
 Retorna o endereço do elemento posterior de p.
 */
-ListaNo lista_obter_proximo(ListaNo p);
+ListaNo lista_obter_proximo(ListaNo no);
 
 /*
 Acessa o elemento anterior ao elemento p.
@@ -123,7 +125,7 @@ Ambos parâmetros não podem ser nulos e o parâmetro p deve indicar um endereç
 lista.
 Retorna o endereço do elemento posterior de p.
 */
-ListaNo lista_obter_anterior(ListaNo p);
+ListaNo lista_obter_anterior(ListaNo no);
 
 /*
 Libera a memória alocada em todos os elementos da lista.

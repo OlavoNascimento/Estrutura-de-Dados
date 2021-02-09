@@ -12,10 +12,8 @@ Suas propriedades são:
     altura
     x: Coordenada x do estabelecimento no plano.
     y: Coordenada y do estabelecimento no plano.
-    cor_borda
-    cor_preenchimento
-    arredondamento_borda
-    espessura_borda
+    cor de borda
+    cor de preenchimento
     tipo: tipo de estabelecimento.
     nome: nome do estabelecimento.
     cpf: cpf do proprietário.

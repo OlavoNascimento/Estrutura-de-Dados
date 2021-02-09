@@ -12,11 +12,8 @@ Suas propriedades são:
     altura
     x: Coordenada x do retângulo no plano.
     y: Coordenada y do retângulo no plano.
-    cor_borda
-    cor_preenchimento
-    arredondamento_borda
-    espessura_borda
-    borda_tracejada
+    cor da borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>
@@ -25,7 +22,7 @@ Suas propriedades são:
 typedef struct Retangulo_s *Retangulo;
 
 /*
-Cria e inicializa uma Retangulo com os valores passados.
+Cria e inicializa um Retangulo com os valores passados.
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
@@ -33,7 +30,7 @@ Retangulo retangulo_criar(const char id[100], double largura, double altura, dou
                           const char cor_borda[20], const char cor_preenchimento[20]);
 
 /*
-Cria e inicializa uma Retangulo a partir de um texto obtido no arquivo .geo.
+Cria e inicializa um Retangulo a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */

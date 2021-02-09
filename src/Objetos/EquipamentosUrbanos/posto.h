@@ -9,9 +9,8 @@ Suas propriedades são:
     raio
     x: Coordenada x do posto no plano.
     y: Coordenada y do posto no plano.
-    cor_borda
-    cor_preenchimento
-    espessura_borda
+    cor da borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>

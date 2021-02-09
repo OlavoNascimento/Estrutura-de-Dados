@@ -1,6 +1,7 @@
 #ifndef PILHA_H
 #define PILHA_H
 
+// TODO Melhorar comentário módulo.
 /*
 Este módulo define uma Pilha, responsável por armazenar os diferentes tipos de figuras que existem
 no projeto. Disponibiliza funções para modificar criar, modificar e destruir a pilha.

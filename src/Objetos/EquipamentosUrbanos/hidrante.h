@@ -10,9 +10,8 @@ Suas propriedades são:
     raio
     x: Coordenada x do hidrante no plano.
     y: Coordenada y do hidrante no plano.
-    cor_borda
-    cor_preenchimento
-    espessura_borda
+    cor da borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>

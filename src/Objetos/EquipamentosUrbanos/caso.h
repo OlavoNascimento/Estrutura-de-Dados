@@ -12,10 +12,8 @@ Suas propriedades são:
     altura
     x: Coordenada x do caso no plano.
     y: Coordenada y do caso no plano.
-    cor_borda
-    cor_preenchimento
-    arredondamento_borda
-    espessura_borda
+    cor de borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>

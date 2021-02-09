@@ -151,7 +151,7 @@ Quadra quadra_ler(const char *linha) {
 void quadra_inicializar_coordenada(double *x, double *y, double largura, double altura,
                                    Quadra quadra, char face, int numero) {
     if (face != 'N' && face != 'S' && face != 'L' && face != 'O') {
-        LOG_AVISO("Face inválida passada para quadra_inicializar_coordenada");
+        LOG_AVISO("Face inválida passada para quadra_inicializar_coordenada!\n");
         return;
     }
 

@@ -11,9 +11,8 @@ Suas propriedades são:
     altura
     x: Coordenada x do semáforo no plano.
     y: Coordenada y do semáforo no plano.
-    cor_borda
-    cor_preenchimento
-    espessura_borda
+    cor da borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>

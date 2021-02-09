@@ -10,8 +10,8 @@ Suas propriedades são:
     id: Identificador do texto.
     x: Coordenada x do texto no plano.
     y: Coordenada y do texto no plano.
-    cor_borda
-    cor_preenchimento
+    cor da borda
+    cor de preenchimento
     conteudo
 */
 
@@ -21,7 +21,7 @@ Suas propriedades são:
 typedef struct Texto_s *Texto;
 
 /*
-Cria e inicializa uma Texto com os valores passados.
+Cria e inicializa um Texto com os valores passados.
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
 Caso o parâmetro centralizar seja verdadeiro a cordenada x,y passa a representar o centro do
 conteúdo. Se for falso, a coordenada x,y indica onde o conteúdo deve iniciar.
@@ -31,7 +31,7 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
                   const char cor_preenchimento[20], const char conteudo[500], bool centralizar);
 
 /*
-Cria e inicializa uma Texto a partir de um texto obtido no arquivo .geo.
+Cria e inicializa um Texto a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */

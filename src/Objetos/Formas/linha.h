@@ -11,8 +11,8 @@ Suas propriedades são:
     y: Coordenada y inicial da linha no plano.
     x1: Coordenada x final da linha no plano.
     y1: Coordenada y final da linha no plano.
-    cor_borda
-    cor_preenchimento
+    cor da borda
+    cor de preenchimento
     tracejado: Define se a linha deve ser continua ou tracejada no arquivo svg.
 */
 
@@ -22,7 +22,7 @@ Suas propriedades são:
 typedef struct Linha_s *Linha;
 
 /*
-Cria e inicializa um struct Linha com os valores passados.
+Cria e inicializa uma Linha com os valores passados.
 O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */

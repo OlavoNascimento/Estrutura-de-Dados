@@ -11,10 +11,8 @@ Suas propriedades são:
     altura
     x: Coordenada x da quadra no plano.
     y: Coordenada y da quadra no plano.
-    cor_borda
-    cor_preenchimento
-    arredondamento_borda;
-    espessura_borda
+    cor da borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>

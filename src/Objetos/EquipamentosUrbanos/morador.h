@@ -13,10 +13,8 @@ Suas propriedades são:
     altura
     x: Coordenada x do morador no plano.
     y: Coordenada y do morador no plano.
-    cor_borda
-    cor_preenchimento
-    arredondamento_borda
-    espessura_borda
+    cor da borda
+    cor de preenchimento
     tipo: tipo de morador.
     nome: nome do morador.
     sobrenome: sobrenome do morador.

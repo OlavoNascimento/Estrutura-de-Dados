@@ -23,14 +23,14 @@ Suas propriedades são:
 typedef struct Densidade_s *Densidade;
 
 /*
-Cria e inicializa um Densidade com os valores passados.
+Cria e inicializa uma Densidade com os valores passados.
 A densidade não pode ser menor que zero.
 O usuário é responsável por liberar a memória alocada!
 */
 Densidade densidade_criar(double x, double y, double largura, double altura, double densidade);
 
 /*
-Cria e inicializa um Densidade a partir de um texto obtido no arquivo .geo.
+Cria e inicializa uma Densidade a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */

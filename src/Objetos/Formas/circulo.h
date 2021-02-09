@@ -11,9 +11,8 @@ Suas propriedades são:
     raio
     x: Coordenada x do círculo no plano.
     y: Coordenada y do círculo no plano.
-    cor_borda
-    cor_preenchimento
-    espessura_borda
+    cor da borda
+    cor de preenchimento
 */
 
 #include <stdbool.h>
@@ -22,7 +21,7 @@ Suas propriedades são:
 typedef struct Circulo_s *Circulo;
 
 /*
-Cria e inicializa Circulo com os valores passados.
+Cria e inicializa um Circulo com os valores passados.
 O raio deve ser maior que 0. O id e as cores não podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
@@ -30,7 +29,7 @@ Circulo circulo_criar(const char id[100], double raio, double x, double y, const
                       const char cor_preenchimento[20]);
 
 /*
-Cria e inicializa Circulo a partir de um texto obtido no arquivo .geo.
+Cria e inicializa um Circulo a partir de um texto obtido no arquivo .geo.
 O parâmetro linha não pode ser nulo.
 O usuário é responsável por liberar a memória alocada!
 */
