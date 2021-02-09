@@ -41,6 +41,7 @@ Tabela criar_tabela_relacoes() {
     Tabela relacoes = tabela_criar((void *) tabela_destruir);
     tabela_inserir(relacoes, "cpf_cep", tabela_criar(NULL));
     tabela_inserir(relacoes, "tipo_descricao", tabela_criar(NULL));
+    tabela_inserir(relacoes, "cnpj_estabelecimento", tabela_criar(NULL));
     tabela_inserir(relacoes, "dados_pessoa", tabela_criar(figura_destruir));
     tabela_inserir(relacoes, "cep_quadra", tabela_criar(NULL));
     tabela_inserir(relacoes, "id_hidrante", tabela_criar(NULL));

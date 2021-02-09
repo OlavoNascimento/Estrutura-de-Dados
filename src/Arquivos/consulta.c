@@ -580,9 +580,9 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     int tamanho = lista_obter_tamanho(nos_contidos);
     Figura *casos_filtrados = malloc(tamanho * sizeof(Caso));
     if (casos_filtrados == NULL) {
-        printf(stderr, "Falha ao alocar memória para array de casos!\n");
+        LOG_ERRO("Falha ao alocar memória!\n");
         lista_destruir(nos_contidos);
-        return NULL;
+        return;
     }
     int j = 0;
     for_each_lista(no_contido, nos_contidos) {
@@ -608,9 +608,9 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     char categoria = '\0';
     char *cor_poligono = malloc(sizeof *cor_poligono * 8);
     if (cor_poligono == NULL) {
-        printf(stderr, "Falha ao alocar memória para cor do polígono!\n");
+        LOG_ERRO("Falha ao alocar memória!\n");
         free(casos_filtrados);
-        return NULL;
+        return;
     }
     cor_poligono[0] = '\0';
 
@@ -647,8 +647,8 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     const int tamanho_pilha = pilha_obter_tamanho(pilha_pontos_envoltoria);
     double **pontos = malloc(tamanho_pilha * sizeof(double *));
     if (pontos == NULL) {
-        LOG_ERRO("Falha ao alocar memória para matriz de pontos!\n");
-        return NULL;
+        LOG_ERRO("Falha ao alocar memória!\n");
+        return;
     }
     for (int i = 0; i < tamanho_pilha; i++)
         pontos[i] = malloc(2 * sizeof(*pontos[i]));
@@ -686,7 +686,7 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
 
     QtNo no = tabela_buscar(cep_quadra, cep);
     if (no == NULL) {
-        LOG_ERRO("Quadra buscada pelo comando m? não encontrada!\n");
+        printf("Quadra buscada pelo comando m? não encontrada!\n");
         return;
     }
     Quadra quad = getInfoQt(moradores, no);
@@ -738,23 +738,21 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
 
 void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dados_pessoa,
                                          const char *linha, FILE *arquivo_log) {
-    char cpf[100];
     char cnpj[100];
     sscanf(linha, "de? %s", cnpj);
 
-    Lista lista_estabelecimento = tabela_buscar(cnpj_estabelecimento, cnpj);
-    ListaNo no_estabelecimento = lista_buscar(lista_estabelecimento, cnpj);
-    Figura estabelecimento = lista_obter_info(no_estabelecimento);
+    Estabelecimento estabelecimento = tabela_buscar(cnpj_estabelecimento, cnpj);
+    if (estabelecimento == NULL)
+        return;
 
-    strcpy(cpf, estabelecimento_obter_cpf(estabelecimento));
-
-    Lista lista_pessoa = tabela_buscar(dados_pessoa, cpf);
-    ListaNo no_pessoa = lista_buscar(lista_pessoa, cpf);
-    Figura morador = lista_obter_info(no_pessoa);
+    Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(estabelecimento));
+    if (morador == NULL)
+        return;
 
     figura_escrever_informacoes(estabelecimento, arquivo_log);
     fprintf(arquivo_log, "Dados do proprietário: ");
     figura_escrever_informacoes(morador, arquivo_log);
+    fprintf(arquivo_log, "\n");
 }
 
 // Cria um arquivo svg com o nome especificado, o qual contem as figuras da quadtree selecionada,
@@ -857,12 +855,12 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     LOG_INFO("Lendo consulta\n");
     FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
-        LOG_ERRO("ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);
+        LOG_ERRO("Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);
         return;
     }
     FILE *arquivo_log = fopen(caminho_log, "w");
     if (arquivo_log == NULL) {
-        LOG_ERRO("ERRO: Falha ao criar arquivo de log: %s!\n", caminho_log);
+        LOG_ERRO("Falha ao criar arquivo de log: %s!\n", caminho_log);
         return;
     }
 

@@ -282,7 +282,7 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
     LOG_INFO("Lendo descrição\n");
     FILE *arquivo_descricao = fopen(caminho_descricao, "r");
     if (arquivo_descricao == NULL) {
-        LOG_ERRO("ERRO: Falha ao ler arquivo de descrição: %s!\n", caminho_descricao);
+        LOG_ERRO("Falha ao ler arquivo de descrição: %s!\n", caminho_descricao);
         return;
     }
 

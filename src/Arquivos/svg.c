@@ -96,7 +96,7 @@ void escrever_arquivo_svg(const char *caminho_svg, int num_estruturas, va_list e
                           void estrutura_map(void *estrutura, AplicarInfo f, void *extra)) {
     FILE *arquivo_svg = fopen(caminho_svg, "w");
     if (arquivo_svg == NULL) {
-        LOG_ERRO("ERRO: Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
+        LOG_ERRO("Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
         return;
     }
 

@@ -13,7 +13,7 @@
 
 // Elemento armazenado nas listas da tabela.
 struct Elemento {
-    const char *chave;
+    char chave[100];
     TabelaInfo info;
 };
 
@@ -48,7 +48,7 @@ Tabela tabela_criar(TabelaDestruirInfo destruir_info) {
 }
 
 // Função utilizada para transformar uma string em número.
-int chave_string(const char *id, int tamanho_tabela) {
+int chave_string(const char id[100], int tamanho_tabela) {
     int soma = 3;
     int tamanho = strlen(id);
     for (int i = 0; i < tamanho; i++) {
@@ -74,7 +74,7 @@ void rehash(Tabela tabela) {
     Lista *baldes_novos = malloc(tabela->tamanho * sizeof *baldes_novos);
     if (baldes_novos == NULL) {
         LOG_ERRO("Falha ao alocar espaço para baldes de um Hashmap!\n");
-        return NULL;
+        return;
     }
     tabela->inf = baldes_novos;
 
@@ -105,7 +105,7 @@ void rehash(Tabela tabela) {
 }
 
 // Insere uma informação na tabela que pode ser acessada através do id fornecido.
-void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
+void tabela_inserir(Tabela tabela, const char id[100], TabelaInfo info) {
     if (id == NULL) {
         LOG_AVISO("Id nulo passado para tabela_inserir!\n");
         return;
@@ -123,9 +123,9 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     struct Elemento *novo_elemento = malloc(sizeof *novo_elemento);
     if (novo_elemento == NULL) {
         LOG_ERRO("Falha ao alocar memória\n");
-        return NULL;
+        return;
     }
-    novo_elemento->chave = id;
+    strcpy(novo_elemento->chave, id);
     novo_elemento->info = info;
     lista_inserir_final(tabela->inf[pos], novo_elemento);
 
@@ -136,7 +136,7 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
         rehash(tabela);
 }
 
-TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
+TabelaInfo tabela_buscar(Tabela tabela, const char id[100]) {
     if (tabela == NULL) {
         LOG_AVISO("Tabela de espalhamento nula passada para tabela_buscar!\n");
         return NULL;
@@ -159,7 +159,7 @@ TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
     return elemento->info;
 }
 
-TabelaInfo tabela_remover(Tabela tabela, const char *id) {
+TabelaInfo tabela_remover(Tabela tabela, const char id[100]) {
     if (id == NULL) {
         LOG_AVISO("Id nulo passado para tabela_remover!\n");
         return NULL;

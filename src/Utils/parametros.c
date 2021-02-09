@@ -78,12 +78,12 @@ Parametros parametros_ler(int argc, const char *argv[]) {
 bool parametros_checar_obrigatorios(const Parametros params) {
     ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL) {
-        LOG_ERRO("ERRO: Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
+        LOG_ERRO("Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
         return false;
     }
 
     if (paramsImp->nome_dir_saida == NULL) {
-        LOG_ERRO("ERRO: Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
+        LOG_ERRO("Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
         return false;
     }
     return true;

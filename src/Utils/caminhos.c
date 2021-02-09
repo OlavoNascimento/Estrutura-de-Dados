@@ -26,7 +26,7 @@ void criar_diretorio(const char *diretorio) {
 
     char *caminho = malloc((strlen(diretorio) + 1) * sizeof *caminho);
     if (caminho == NULL)
-        return NULL;
+        return;
 
     strcpy(caminho, diretorio);
     // Avança caractere por caractere até encontrar o separador de diretórios do sistema, quando o
@@ -52,7 +52,7 @@ char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
 
     char *uniao = malloc(strlen(diretorio) + strlen(nome_arquivo) + 2);
     if (uniao == NULL)
-        return;
+        return NULL;
 
     if (strlen(diretorio) == 0 || strlen(nome_arquivo) == 0)
         sprintf(uniao, "%s%s", diretorio, nome_arquivo);

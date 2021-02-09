@@ -227,8 +227,7 @@ const char *morador_obter_endereco_cep(Morador morador) {
 }
 
 const char *morador_obter_endereco_complemento(Morador morador) {
-    MoradorImp *moradorImp = morador;
-    return moradorImp->complemento;
+    return morador->complemento;
 }
 
 char morador_obter_endereco_face(Morador morador) {

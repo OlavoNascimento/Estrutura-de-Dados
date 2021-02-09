@@ -20,13 +20,6 @@ void definir_descricao_tipo(Tabela tipo_descricao, const char *linha) {
     tabela_inserir(tipo_descricao, tipo, descricao);
 }
 
-void definir_cnpj_estabelecimento(Estabelecimento est, Tabela cnpj_estabelecimento,
-                                  const char *linha) {
-    char cnpj[100];
-    sscanf(linha, "e %s %*s %*s %*s %*c %*d %*s", cnpj);
-    tabela_inserir(cnpj_estabelecimento, cnpj, est);
-}
-
 // Adiciona um estabelecimento a quadra especificada.
 void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra,
                                Tabela cnpj_estabelecimento, const char *linha) {
@@ -37,8 +30,7 @@ void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra,
         Quadra quadra_pai = getInfoQt(estabelecimentos, no);
         Estabelecimento est = estabelecimento_ler(linha, quadra_pai);
         insereQt(estabelecimentos, ponto_criar_com_figura(est), est);
-
-        definir_cnpj_estabelecimento(est, cnpj_estabelecimento, linha);
+        tabela_inserir(cnpj_estabelecimento, figura_obter_id(est), est);
     }
 }
 
@@ -48,7 +40,7 @@ void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relac
     LOG_INFO("Lendo estabelecimentos\n");
     FILE *arquivo_comercios = fopen(caminho_comercios, "r");
     if (arquivo_comercios == NULL) {
-        LOG_ERRO("ERRO: Falha ao ler arquivo de comércios: %s!\n", caminho_comercios);
+        LOG_ERRO("Falha ao ler arquivo de comércios: %s!\n", caminho_comercios);
         return;
     }
 

@@ -34,7 +34,7 @@ void fila_inserir(Fila fila, FilaInfo info) {
     struct No *novo_no = malloc(sizeof *novo_no);
     if (novo_no == NULL) {
         LOG_ERRO("Falha ao alocar memória\n");
-        return NULL;
+        return;
     }
     novo_no->info = info;
     novo_no->proximo = NULL;
