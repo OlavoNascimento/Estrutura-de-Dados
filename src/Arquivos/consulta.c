@@ -696,7 +696,6 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
     double y_fim = figura_obter_y_fim(quad);
 
     Lista nos = nosDentroRetanguloQt(moradores, x_inicio, y_inicio, x_fim, y_fim);
-
     for_each_lista(i, nos) {
         Figura fig = getInfoQt(moradores, lista_obter_info(i));
         figura_escrever_informacoes(fig, arquivo_log);
@@ -711,12 +710,9 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
     char cpf[100];
     sscanf(linha, "dm? %s", cpf);
 
-    Lista lista_pessoa = tabela_buscar(dados_pessoa, cpf);
-
-    ListaNo no = lista_buscar(lista_pessoa, cpf);
-
-    Figura morador = lista_obter_info(no);
-
+    Morador morador = tabela_buscar(dados_pessoa, cpf);
+    if (morador == NULL)
+        return;
     figura_escrever_informacoes(morador, arquivo_log);
 
     Linha linha_vertical =
@@ -852,7 +848,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
                   Tabela listas, Tabela relacoes) {
-    LOG_INFO("Lendo consulta\n");
+    printf("Lendo consulta\n");
     FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
         LOG_ERRO("Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);

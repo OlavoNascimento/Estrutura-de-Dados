@@ -65,8 +65,8 @@ int main(int argc, const char *argv[]) {
     char *caminho_moradores = parametros_obter_caminho_moradores(params);
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
 
-    LOG_INFO("Arquivo descrição: %s\n", caminho_descricao);
-    LOG_INFO("Arquivo svg descrição: %s\n", caminho_svg_descricao);
+    printf("Arquivo descrição: %s\n", caminho_descricao);
+    printf("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
     Tabela quadtrees = criar_tabela_quadtrees();
     Tabela listas = criar_tabela_listas();
@@ -97,9 +97,9 @@ int main(int argc, const char *argv[]) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
         char *caminho_svg_consulta = parametros_obter_caminho_svg_consulta(params);
 
-        LOG_INFO("Arquivo consulta: %s\n", caminho_consulta);
-        LOG_INFO("Arquivo log: %s\n", caminho_registro_consulta);
-        LOG_INFO("Arquivo svg consulta: %s\n", caminho_svg_consulta);
+        printf("Arquivo consulta: %s\n", caminho_consulta);
+        printf("Arquivo log: %s\n", caminho_registro_consulta);
+        printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
         consulta_ler(caminho_consulta, caminho_registro_consulta, quadtrees, listas, relacoes);
         svg_escrever_quadtrees(caminho_svg_consulta, 9, quadras, hidrantes, semaforos, radios,

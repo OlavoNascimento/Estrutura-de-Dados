@@ -41,7 +41,7 @@ void adicionar_morador(QuadTree moradores, Tabela cep_quadra, Tabela dados_pesso
 
 // Lê um arquivo de moradores fornecido a função.
 void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabela relacoes) {
-    LOG_INFO("Lendo moradores\n");
+    printf("Lendo moradores\n");
     FILE *arquivo_descricao_moradores = fopen(caminho_descricao_moradores, "r");
     if (arquivo_descricao_moradores == NULL) {
         LOG_ERRO("Falha ao ler arquivo de descrição de moradores: %s!\n",

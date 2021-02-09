@@ -279,7 +279,7 @@ void atualizar_sombras_quadras(QuadTree quadras, Lista densidades) {
 // como elementos de uma lista.
 void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela listas,
                    Tabela relacoes) {
-    LOG_INFO("Lendo descrição\n");
+    printf("Lendo descrição\n");
     FILE *arquivo_descricao = fopen(caminho_descricao, "r");
     if (arquivo_descricao == NULL) {
         LOG_ERRO("Falha ao ler arquivo de descrição: %s!\n", caminho_descricao);
