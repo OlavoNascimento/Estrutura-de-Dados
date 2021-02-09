@@ -62,20 +62,20 @@ static FiguraInterface circulo_criar_interface_figura() {
 Circulo circulo_criar(const char id[100], double raio, double x, double y, const char cor_borda[20],
                       const char cor_preenchimento[20]) {
     if (id == NULL) {
-        LOG_ERRO("Não é possível criar um círculo com id NULL!\n");
+        LOG_AVISO("Não é possível criar um círculo com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um círculo com cor de borda NULL!\n");
+        LOG_AVISO("Não é possível criar um círculo com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um círculo com cor de preenchimento NULL!\n");
+        LOG_AVISO("Não é possível criar um círculo com cor de preenchimento NULL!\n");
         return NULL;
     }
     Circulo circulo = malloc(sizeof *circulo);
     if (circulo == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para um novo circulo!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     strcpy(circulo->id, id);
@@ -193,8 +193,8 @@ const char *circulo_obter_cor_borda(Circulo circulo) {
 // Define a cor da borda de um círculo.
 void circulo_definir_cor_borda(Circulo circulo, const char *cor_borda) {
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor da borda de um %s!\n",
-                 figura_obter_tipo(circulo));
+        LOG_AVISO("Não é possível definir NULL como cor da borda de um %s!\n",
+                  figura_obter_tipo(circulo));
         return;
     }
     strcpy(circulo->cor_borda, cor_borda);
@@ -208,8 +208,8 @@ const char *circulo_obter_cor_preenchimento(Circulo circulo) {
 // Define a cor de preenchimento de um círculo.
 void circulo_definir_cor_preenchimento(Circulo circulo, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor de preenchimento de um %s!\n",
-                 figura_obter_tipo(circulo));
+        LOG_AVISO("Não é possível definir NULL como cor de preenchimento de um %s!\n",
+                  figura_obter_tipo(circulo));
         return;
     }
     strcpy(circulo->cor_preenchimento, cor_preenchimento);
@@ -218,8 +218,8 @@ void circulo_definir_cor_preenchimento(Circulo circulo, const char *cor_preenchi
 // Define a espessura da borda de um círculo.
 void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como tamanho da espessura da borda de um %s!\n",
-                 figura_obter_tipo(circulo));
+        LOG_AVISO("Não é possível definir NULL como tamanho da espessura da borda de um %s!\n",
+                  figura_obter_tipo(circulo));
         return;
     }
 
@@ -229,8 +229,8 @@ void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_bord
 // Define a opacidade de um círculo.
 void circulo_definir_opacidade(Circulo circulo, double opacidade) {
     if (opacidade < 0 || opacidade > 1) {
-        LOG_ERRO("A opacidade de um %s deve ser maior ou igual a zero 0 e menor ou igual a 1!\n",
-                 figura_obter_tipo(circulo));
+        LOG_AVISO("A opacidade de um %s deve ser maior ou igual a zero 0 e menor ou igual a 1!\n",
+                  figura_obter_tipo(circulo));
         return;
     }
     circulo->opacidade = opacidade;

@@ -74,6 +74,10 @@ static FiguraInterface posto_criar_interface_figura() {
 // Cria e inicializa um Posto com os valores passados.
 Posto posto_criar(double x, double y) {
     Posto posto = malloc(sizeof *posto);
+    if (posto == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(posto->id, "");
     posto->raio = 10;
     posto->x = x;

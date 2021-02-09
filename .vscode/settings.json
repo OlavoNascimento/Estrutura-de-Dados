@@ -32,7 +32,8 @@
     "retangulo",
     "retangulos",
     "selecao",
-    "svg"
+    "svg",
+    "uniao"
   ],
   "files.associations": {
     "circulo.h": "c",

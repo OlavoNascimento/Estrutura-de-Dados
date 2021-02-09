@@ -44,8 +44,8 @@ void pessoas_ler(const char *caminho_descricao_moradores, Tabela quadtrees, Tabe
     LOG_INFO("Lendo moradores\n");
     FILE *arquivo_descricao_moradores = fopen(caminho_descricao_moradores, "r");
     if (arquivo_descricao_moradores == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de descrição de moradores: %s!\n",
-                caminho_descricao_moradores);
+        LOG_ERRO("ERRO: Falha ao ler arquivo de descrição de moradores: %s!\n",
+                 caminho_descricao_moradores);
         return;
     }
 

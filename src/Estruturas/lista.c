@@ -24,7 +24,7 @@ Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
                   ListaDestruirInfo destruir_info) {
     Lista lista = malloc(sizeof *lista);
     if (lista == NULL) {
-        LOG_ERRO("Erro ao alocar espaço para uma nova lista!\n");
+        LOG_ERRO("Falha ao alocar espaço para uma nova lista!\n");
         return NULL;
     }
     lista->obter_identificador_info = obter_identificador_info;
@@ -37,11 +37,15 @@ Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
 
 ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
     if (info == NULL) {
-        LOG_ERRO("Informação nula passada para lista_inserir_final!\n");
+        LOG_AVISO("Informação nula passada para lista_inserir_final!\n");
         return NULL;
     }
 
     ListaNo novo_no = malloc(sizeof *novo_no);
+    if (novo_no == NULL) {
+        LOG_ERRO("Falha ao alocar espaço para um novo elemento de uma lista!\n");
+        return NULL;
+    }
     novo_no->info = info;
     novo_no->proximo = NULL;
 
@@ -60,19 +64,22 @@ ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
 
 ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo no) {
     if (no == NULL) {
-        LOG_ERRO("Nó nulo passado para lista_inserir_antes!\n");
+        LOG_AVISO("Nó nulo passado para lista_inserir_antes!\n");
         return NULL;
     }
     if (info == NULL) {
-        LOG_ERRO("Informação nula passada para lista_inserir_antes!\n");
+        LOG_AVISO("Informação nula passada para lista_inserir_antes!\n");
         return NULL;
     }
 
     ListaNo no_anterior = NULL;
     ListaNo novo_no = malloc(sizeof *novo_no);
+    if (novo_no == NULL) {
+        LOG_ERRO("Falha ao alocar espaço para um novo elemento de uma lista!\n");
+        return NULL;
+    }
 
     novo_no->info = info;
-
     if (no == lista->primeiro) {  // caso seja inserido antes do primeiro
         no->anterior = novo_no;
         novo_no->proximo = no;
@@ -94,16 +101,20 @@ ListaNo lista_inserir_antes(Lista lista, ListaInfo info, ListaNo no) {
 
 ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo no) {
     if (no == NULL) {
-        LOG_ERRO("Nó nulo passado para lista_inserir_depois!\n");
+        LOG_AVISO("Nó nulo passado para lista_inserir_depois!\n");
         return NULL;
     }
     if (info == NULL) {
-        LOG_ERRO("Informação nula passada para lista_inserir_depois!\n");
+        LOG_AVISO("Informação nula passada para lista_inserir_depois!\n");
         return NULL;
     }
 
     ListaNo no_proximo = NULL;
     ListaNo novo_no = malloc(sizeof *novo_no);
+    if (novo_no == NULL) {
+        LOG_ERRO("Falha ao alocar espaço para um novo elemento de uma lista!\n");
+        return NULL;
+    }
 
     novo_no->info = info;
 
@@ -151,7 +162,7 @@ void lista_remover(Lista lista, ListaNo no) {
 
 ListaNo lista_buscar(Lista lista, const char *id) {
     if (lista->obter_identificador_info == NULL) {
-        LOG_ERRO(
+        LOG_AVISO(
             "Não é possível buscar em uma lista que não possui a função obter_identificador_info "
             "definida!\n");
         return NULL;

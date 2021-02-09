@@ -121,18 +121,22 @@ static FiguraInterface morador_criar_interface_figura() {
 Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, const char sexo,
                       int dia, int mes, int ano) {
     if (cpf == NULL) {
-        LOG_ERRO("Não é possível criar um morador com cpf NULL!\n");
+        LOG_AVISO("Não é possível criar um morador com cpf NULL!\n");
         return NULL;
     }
     if (nome == NULL) {
-        LOG_ERRO("Não é possível criar um morador com nome NULL!\n");
+        LOG_AVISO("Não é possível criar um morador com nome NULL!\n");
         return NULL;
     }
     if (sobrenome == NULL) {
-        LOG_ERRO("Não é possível criar um morador com sobrenome NULL!\n");
+        LOG_AVISO("Não é possível criar um morador com sobrenome NULL!\n");
         return NULL;
     }
     Morador morador = malloc(sizeof *morador);
+    if (morador == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(morador->cpf, cpf);
     strcpy(morador->nome, nome);
     strcpy(morador->sobrenome, sobrenome);

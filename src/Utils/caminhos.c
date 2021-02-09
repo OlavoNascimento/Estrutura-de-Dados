@@ -20,11 +20,14 @@
 // Cria todos os diretórios especificados no caminho passado a função.
 void criar_diretorio(const char *diretorio) {
     if (diretorio == NULL) {
-        LOG_ERRO("Diretório nulo fornecida ao criar diretório!\n");
+        LOG_AVISO("Diretório nulo fornecida ao criar diretório!\n");
         return;
     }
 
     char *caminho = malloc((strlen(diretorio) + 1) * sizeof *caminho);
+    if (caminho == NULL)
+        return NULL;
+
     strcpy(caminho, diretorio);
     // Avança caractere por caractere até encontrar o separador de diretórios do sistema, quando o
     // separador é encontrado cria o diretório especificado até aquele ponto.
@@ -43,16 +46,14 @@ void criar_diretorio(const char *diretorio) {
 // Concatena um diretório com um arquivo fornecido, separados por uma / ou \.
 char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
     if (diretorio == NULL || nome_arquivo == NULL) {
-        LOG_ERRO("Variável nula fornecida ao unir caminhos!\n");
+        LOG_AVISO("Variável nula fornecida ao unir caminhos!\n");
         return NULL;
     }
 
     char *uniao = malloc(strlen(diretorio) + strlen(nome_arquivo) + 2);
-    if (uniao == NULL) {
-        LOG_ERRO("Falha ao alocar memória paro o caminho %s%c%s!\n", diretorio,
-                 SEPARADOR_DE_DIRETORIOS, nome_arquivo);
-        return NULL;
-    }
+    if (uniao == NULL)
+        return;
+
     if (strlen(diretorio) == 0 || strlen(nome_arquivo) == 0)
         sprintf(uniao, "%s%s", diretorio, nome_arquivo);
     else
@@ -64,7 +65,7 @@ char *unir_caminhos(const char *diretorio, const char *nome_arquivo) {
 // formato: /diretório/.../nome-arquivo.ext
 char *extrair_nome_base(const char *caminho_arquivo) {
     if (caminho_arquivo == NULL) {
-        LOG_ERRO("Caminho de arquivo nulo fornecida ao extrair nome base!\n");
+        LOG_AVISO("Caminho de arquivo nulo fornecida ao extrair nome base!\n");
         return NULL;
     }
 
@@ -101,11 +102,14 @@ char *extrair_nome_base(const char *caminho_arquivo) {
 // Extrai os diretórios de uma string no formato: /diretório1/diretório2/.../nome-arquivo.ext
 char *extrair_nome_diretorio(const char *caminho_arquivo) {
     if (caminho_arquivo == NULL) {
-        LOG_ERRO("Caminho de arquivo nulo fornecida a extrair nome diretório!\n");
+        LOG_AVISO("Caminho de arquivo nulo fornecida a extrair nome diretório!\n");
         return NULL;
     }
 
     char *caminho_diretorios = malloc((strlen(caminho_arquivo) + 1) * sizeof *caminho_diretorios);
+    if (caminho_diretorios == NULL)
+        return NULL;
+
     strcpy(caminho_diretorios, caminho_arquivo);
 
     // Avança até a última / ou \ no caminho do arquivo.
@@ -125,11 +129,14 @@ char *extrair_nome_diretorio(const char *caminho_arquivo) {
 // substituida por sufixos adicionais.
 char *alterar_extensao(const char *caminho_arquivo, int num_sufixos, ...) {
     if (caminho_arquivo == NULL) {
-        LOG_ERRO("Caminho de arquivo nulo fornecida ao alterar sufixo!\n");
+        LOG_AVISO("Caminho de arquivo nulo fornecida ao alterar sufixo!\n");
         return NULL;
     }
 
     char *sufixo_final = malloc(sizeof *sufixo_final);
+    if (sufixo_final == NULL)
+        return NULL;
+
     sufixo_final[0] = '\0';
 
     va_list sufixos;
@@ -142,7 +149,7 @@ char *alterar_extensao(const char *caminho_arquivo, int num_sufixos, ...) {
         char *tmp =
             realloc(sufixo_final, (strlen(sufixo_final) + strlen(sufixo) + 1) * sizeof *tmp);
         if (tmp == NULL) {
-            LOG_ERRO("Falha ao alocar memória para novo sufixo!\n");
+            LOG_AVISO("Falha ao alocar memória para novo sufixo!\n");
             free(sufixo_final);
             return NULL;
         }
@@ -155,6 +162,9 @@ char *alterar_extensao(const char *caminho_arquivo, int num_sufixos, ...) {
     char *nome_arquivo = extrair_nome_base(caminho_arquivo);
 
     char *novo_nome = malloc((strlen(nome_arquivo) + strlen(sufixo_final) + 1) * sizeof *novo_nome);
+    if (novo_nome == NULL)
+        return NULL;
+
     sprintf(novo_nome, "%s%s", nome_arquivo, sufixo_final);
 
     free(nome_arquivo);

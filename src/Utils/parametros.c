@@ -20,6 +20,10 @@ typedef struct {
 // Retorna uma struct com todos os parâmetros que podem ser lidos pelo programa.
 Parametros parametros_criar() {
     ParametrosImp *params = malloc(sizeof *params);
+    if (params == NULL) {
+        LOG_ERRO("Falha ao alocar memória para parâmetros!\n");
+        return NULL;
+    }
     params->nome_dir_entrada = NULL;
     params->caminho_descricao = NULL;
     params->caminho_consulta = NULL;
@@ -74,12 +78,12 @@ Parametros parametros_ler(int argc, const char *argv[]) {
 bool parametros_checar_obrigatorios(const Parametros params) {
     ParametrosImp *paramsImp = params;
     if (paramsImp->caminho_descricao == NULL) {
-        fprintf(stderr, "ERRO: Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
+        LOG_ERRO("ERRO: Parâmetro obrigatório -f (arquivo .geo) não foi fornecido!\n");
         return false;
     }
 
     if (paramsImp->nome_dir_saida == NULL) {
-        fprintf(stderr, "ERRO: Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
+        LOG_ERRO("ERRO: Parâmetro obrigatório -o (diretório de saída) não foi fornecido!\n");
         return false;
     }
     return true;

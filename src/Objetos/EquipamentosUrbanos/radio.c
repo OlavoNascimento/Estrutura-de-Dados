@@ -74,10 +74,14 @@ static FiguraInterface radio_criar_interface_figura() {
 // Cria e inicializa um Radio com os valores passados.
 Radio radio_criar(const char id[100], double raio, double x, double y) {
     if (id == NULL) {
-        LOG_ERRO("Não é possível criar um rádio com id NULL!\n");
+        LOG_AVISO("Não é possível criar um rádio com id NULL!\n");
         return NULL;
     }
     Radio radio = malloc(sizeof *radio);
+    if (radio == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(radio->id, id);
     radio->raio = raio;
     radio->x = x;

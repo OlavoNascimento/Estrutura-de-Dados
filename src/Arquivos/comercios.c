@@ -48,7 +48,7 @@ void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relac
     LOG_INFO("Lendo estabelecimentos\n");
     FILE *arquivo_comercios = fopen(caminho_comercios, "r");
     if (arquivo_comercios == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de comércios: %s!\n", caminho_comercios);
+        LOG_ERRO("ERRO: Falha ao ler arquivo de comércios: %s!\n", caminho_comercios);
         return;
     }
 

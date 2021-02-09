@@ -75,10 +75,14 @@ static FiguraInterface hidrante_criar_interface_figura() {
 // Cria e inicializa um Hidrante com os valores passados.
 Hidrante hidrante_criar(const char id[100], double raio, double x, double y) {
     if (id == NULL) {
-        LOG_ERRO("Não é possível criar um hidrante com id NULL!\n");
+        LOG_AVISO("Não é possível criar um hidrante com id NULL!\n");
         return NULL;
     }
     Hidrante hidrante = malloc(sizeof *hidrante);
+    if (hidrante == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(hidrante->id, id);
     hidrante->raio = raio;
     hidrante->x = x;

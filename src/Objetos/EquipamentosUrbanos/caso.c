@@ -94,15 +94,19 @@ static FiguraInterface caso_criar_interface_figura() {
 // Cria e inicializa um Caso com os valores passados.
 Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
     if (casos <= 0) {
-        LOG_ERRO("Não é possível criar um caso menor ou igual a zero!\n");
+        LOG_AVISO("Não é possível criar um caso menor ou igual a zero!\n");
         return NULL;
     }
     if (quadra == NULL) {
-        LOG_ERRO("Não é possível criar um caso com uma quadra nula!\n");
+        LOG_AVISO("Não é possível criar um caso com uma quadra nula!\n");
         return NULL;
     }
 
     Caso caso = malloc(sizeof *caso);
+    if (caso == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(caso->id, "");
     caso->largura = 12;
     caso->altura = 12;

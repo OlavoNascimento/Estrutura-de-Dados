@@ -20,7 +20,7 @@ struct Fila_s {
 Fila fila_criar(FilaDestruirInfo destruir_info) {
     Fila fila = malloc(sizeof *fila);
     if (fila == NULL) {
-        LOG_ERRO("Erro ao alocar espaço para a fila!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     fila->destruir_info = destruir_info;
@@ -32,6 +32,10 @@ Fila fila_criar(FilaDestruirInfo destruir_info) {
 
 void fila_inserir(Fila fila, FilaInfo info) {
     struct No *novo_no = malloc(sizeof *novo_no);
+    if (novo_no == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     novo_no->info = info;
     novo_no->proximo = NULL;
 

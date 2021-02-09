@@ -579,6 +579,11 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     // Armazena os casos filtrados em um array.
     int tamanho = lista_obter_tamanho(nos_contidos);
     Figura *casos_filtrados = malloc(tamanho * sizeof(Caso));
+    if (casos_filtrados == NULL) {
+        printf(stderr, "Falha ao alocar memória para array de casos!\n");
+        lista_destruir(nos_contidos);
+        return NULL;
+    }
     int j = 0;
     for_each_lista(no_contido, nos_contidos) {
         casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no_contido));
@@ -602,6 +607,11 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
 
     char categoria = '\0';
     char *cor_poligono = malloc(sizeof *cor_poligono * 8);
+    if (cor_poligono == NULL) {
+        printf(stderr, "Falha ao alocar memória para cor do polígono!\n");
+        free(casos_filtrados);
+        return NULL;
+    }
     cor_poligono[0] = '\0';
 
     // Define a categoria e cor do polígono baseado na incidência.
@@ -636,6 +646,10 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     // Aloca uma matriz para armazenar os pontos encontrados.
     const int tamanho_pilha = pilha_obter_tamanho(pilha_pontos_envoltoria);
     double **pontos = malloc(tamanho_pilha * sizeof(double *));
+    if (pontos == NULL) {
+        LOG_ERRO("Falha ao alocar memória para matriz de pontos!\n");
+        return NULL;
+    }
     for (int i = 0; i < tamanho_pilha; i++)
         pontos[i] = malloc(2 * sizeof(*pontos[i]));
 
@@ -672,7 +686,7 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
 
     QtNo no = tabela_buscar(cep_quadra, cep);
     if (no == NULL) {
-        fprintf(stderr, "Quadra buscada pelo comando m? não encontrada!\n");
+        LOG_ERRO("Quadra buscada pelo comando m? não encontrada!\n");
         return;
     }
     Quadra quad = getInfoQt(moradores, no);
@@ -843,12 +857,12 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     LOG_INFO("Lendo consulta\n");
     FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
-        fprintf(stderr, "ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);
+        LOG_ERRO("ERRO: Falha ao ler arquivo de consulta: %s!\n", caminho_consulta);
         return;
     }
     FILE *arquivo_log = fopen(caminho_log, "w");
     if (arquivo_log == NULL) {
-        fprintf(stderr, "ERRO: Falha ao criar arquivo de log: %s!\n", caminho_log);
+        LOG_ERRO("ERRO: Falha ao criar arquivo de log: %s!\n", caminho_log);
         return;
     }
 

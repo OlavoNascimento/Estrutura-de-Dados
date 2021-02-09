@@ -59,7 +59,7 @@ static FiguraInterface densidade_criar_interface_figura() {
 Densidade densidade_criar(double x, double y, double largura, double altura, double densidade) {
     Densidade den = malloc(sizeof *den);
     if (den == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para uma nova densidade!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     den->x = x;

@@ -19,7 +19,7 @@ struct Pilha_s {
 Pilha pilha_criar(PilhaDestruirInfo destruir_info) {
     Pilha pilha = malloc(sizeof *pilha);
     if (pilha == NULL) {
-        LOG_ERRO("Erro ao alocar espaço para a pilha!\n");
+        LOG_ERRO("Falha ao alocar espaço para uma nova pilha!\n");
         return NULL;
     }
     pilha->tamanho = 0;
@@ -39,7 +39,7 @@ int pilha_obter_tamanho(Pilha pilha) {
 void pilha_inserir(Pilha pilha, PilhaInfo info) {
     struct No *novo_no = malloc(sizeof *novo_no);
     if (novo_no == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para novo elemento da pilha!\n");
+        LOG_ERRO("Falha ao alocar memória para novo elemento da pilha!\n");
         return;
     }
     novo_no->info = info;

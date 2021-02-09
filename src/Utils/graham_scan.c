@@ -40,7 +40,7 @@ Pilha graham_scan(int tamanho, Figura *figuras) {
         }
     }
     if (figura_min == -1) {
-        LOG_ERRO("Nenhum elemento mínimo encontrado em graham scan!\n");
+        LOG_AVISO("Nenhum elemento mínimo encontrado em graham scan!\n");
         return NULL;
     }
 

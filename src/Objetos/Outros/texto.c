@@ -63,7 +63,7 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
                   const char cor_preenchimento[20], const char conteudo[500], bool centralizar) {
     Texto texto = malloc(sizeof *texto);
     if (texto == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para um novo texto!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     strcpy(texto->id, id);
@@ -159,7 +159,7 @@ const char *texto_obter_cor_borda(Texto texto) {
 // Define a cor da borda de um texto.
 void texto_definir_cor_borda(Texto texto, const char *cor_borda) {
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor da borda de um texto!\n");
+        LOG_AVISO("Não é possível definir NULL como cor da borda de um texto!\n");
         return;
     }
     strcpy(texto->cor_borda, cor_borda);
@@ -173,7 +173,7 @@ const char *texto_obter_cor_preenchimento(Texto texto) {
 // Define a cor de preenchimento de um texto.
 void texto_definir_cor_preenchimento(Texto texto, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor de preenchimento de um texto!\n");
+        LOG_AVISO("Não é possível definir NULL como cor de preenchimento de um texto!\n");
         return;
     }
     strcpy(texto->cor_preenchimento, cor_preenchimento);

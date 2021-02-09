@@ -78,10 +78,14 @@ static FiguraInterface semaforo_criar_interface_figura() {
 // Cria e inicializa um Semaforo com os valores passados.
 Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y) {
     if (id == NULL) {
-        LOG_ERRO("Não é possível criar um semáforo com id NULL!\n");
+        LOG_AVISO("Não é possível criar um semáforo com id NULL!\n");
         return NULL;
     }
     Semaforo semaforo = malloc(sizeof *semaforo);
+    if (semaforo == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(semaforo->id, id);
     semaforo->largura = largura;
     semaforo->altura = altura;

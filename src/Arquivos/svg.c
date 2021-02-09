@@ -40,6 +40,10 @@ ProporcoesSVG *svg_criar_proporcao(int num_estruturas, va_list estruturas,
     va_copy(copia_estruturas, estruturas);
 
     ProporcoesSVG *exi = malloc(sizeof *exi);
+    if (exi == NULL) {
+        LOG_ERRO("Falha ao alocar memória para proporções do svg!\n");
+        return NULL;
+    }
     exi->origem_x = DBL_MAX;
     exi->origem_y = DBL_MAX;
     exi->largura = DBL_MIN;
@@ -92,7 +96,7 @@ void escrever_arquivo_svg(const char *caminho_svg, int num_estruturas, va_list e
                           void estrutura_map(void *estrutura, AplicarInfo f, void *extra)) {
     FILE *arquivo_svg = fopen(caminho_svg, "w");
     if (arquivo_svg == NULL) {
-        fprintf(stderr, "ERRO: Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
+        LOG_ERRO("ERRO: Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
         return;
     }
 
@@ -120,7 +124,7 @@ void escrever_arquivo_svg(const char *caminho_svg, int num_estruturas, va_list e
 // em um arquivo svg localizado no caminho especificado.
 void svg_escrever_listas(const char *caminho_svg, int num_listas, ...) {
     if (caminho_svg == NULL) {
-        LOG_ERRO("Caminho nulo passado para svg_escrever_listas!\n");
+        LOG_AVISO("Caminho nulo passado para svg_escrever_listas!\n");
         return;
     }
 
@@ -134,7 +138,7 @@ void svg_escrever_listas(const char *caminho_svg, int num_listas, ...) {
 // em um arquivo svg localizado no caminho especificado.
 void svg_escrever_quadtrees(const char *caminho_svg, int num_quadtrees, ...) {
     if (caminho_svg == NULL) {
-        LOG_ERRO("Caminho nulo passado para svg_escrever_quadtrees!\n");
+        LOG_AVISO("Caminho nulo passado para svg_escrever_quadtrees!\n");
         return;
     }
 

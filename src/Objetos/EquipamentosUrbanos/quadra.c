@@ -104,24 +104,28 @@ static FiguraInterface quadra_criar_interface_figura() {
 // Cria e inicializa um Quadra com os valores passados.
 Quadra quadra_criar(const char id[100], double largura, double altura, double x, double y) {
     if (id == NULL) {
-        LOG_ERRO("Não é possível criar uma quadra com id NULL!\n");
+        LOG_AVISO("Não é possível criar uma quadra com id NULL!\n");
         return NULL;
     }
-    Quadra quaImp = malloc(sizeof *quaImp);
-    strcpy(quaImp->id, id);
-    quaImp->largura = largura;
-    quaImp->altura = altura;
-    quaImp->x = x;
-    quaImp->y = y;
-    strcpy(quaImp->cor_borda, "saddlebrown");
-    strcpy(quaImp->cor_preenchimento, "coral");
-    quaImp->arredondamento_borda = 0;
-    quaImp->borda_tracejada = false;
-    strcpy(quaImp->espessura_borda, "1px");
-    strcpy(quaImp->cor_sombra, "");
+    Quadra quadra = malloc(sizeof *quadra);
+    if (quadra == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
+    strcpy(quadra->id, id);
+    quadra->largura = largura;
+    quadra->altura = altura;
+    quadra->x = x;
+    quadra->y = y;
+    strcpy(quadra->cor_borda, "saddlebrown");
+    strcpy(quadra->cor_preenchimento, "coral");
+    quadra->arredondamento_borda = 0;
+    quadra->borda_tracejada = false;
+    strcpy(quadra->espessura_borda, "1px");
+    strcpy(quadra->cor_sombra, "");
 
-    quaImp->vtable = quadra_criar_interface_figura();
-    return quaImp;
+    quadra->vtable = quadra_criar_interface_figura();
+    return quadra;
 }
 
 // Cria uma quadra com base em informações de uma linha.
@@ -147,7 +151,7 @@ Quadra quadra_ler(const char *linha) {
 void quadra_inicializar_coordenada(double *x, double *y, double largura, double altura,
                                    Quadra quadra, char face, int numero) {
     if (face != 'N' && face != 'S' && face != 'L' && face != 'O') {
-        LOG_ERRO("Face inválida passada para quadra_inicializar_coordenada");
+        LOG_AVISO("Face inválida passada para quadra_inicializar_coordenada");
         return;
     }
 
@@ -169,8 +173,8 @@ void quadra_inicializar_coordenada(double *x, double *y, double largura, double 
 // Define a cor da sombra de uma quadra.
 void quadra_definir_cor_sombra(Quadra quadra, const char *cor_sombra) {
     if (cor_sombra == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor da sombra de uma %s!\n",
-                 figura_obter_tipo(quadra));
+        LOG_AVISO("Não é possível definir NULL como cor da sombra de uma %s!\n",
+                  figura_obter_tipo(quadra));
         return;
     }
     strcpy(quadra->cor_sombra, cor_sombra);

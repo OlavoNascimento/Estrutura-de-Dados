@@ -63,20 +63,20 @@ static FiguraInterface retangulo_criar_interface_figura() {
 Retangulo retangulo_criar(const char id[100], double largura, double altura, double x, double y,
                           const char cor_borda[20], const char cor_preenchimento[20]) {
     if (id == NULL) {
-        LOG_ERRO("Não é possível criar um retângulo com id NULL!\n");
+        LOG_AVISO("Não é possível criar um retângulo com id NULL!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um retângulo com cor de borda NULL!\n");
+        LOG_AVISO("Não é possível criar um retângulo com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um retângulo com cor de preenchimento NULL!\n");
+        LOG_AVISO("Não é possível criar um retângulo com cor de preenchimento NULL!\n");
         return NULL;
     }
     Retangulo retangulo = malloc(sizeof *retangulo);
     if (retangulo == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para um novo retangulo!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     strcpy(retangulo->id, id);
@@ -216,8 +216,8 @@ const char *retangulo_obter_cor_borda(Retangulo retangulo) {
 // Define a cor da borda de um retângulo.
 void retangulo_definir_cor_borda(Retangulo retangulo, const char *cor_borda) {
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor da borda de um %s!\n",
-                 figura_obter_tipo(retangulo));
+        LOG_AVISO("Não é possível definir NULL como cor da borda de um %s!\n",
+                  figura_obter_tipo(retangulo));
         return;
     }
 
@@ -232,8 +232,8 @@ const char *retangulo_obter_cor_preenchimento(Retangulo retangulo) {
 // Define a cor de preenchimento de um retângulo.
 void retangulo_definir_cor_preenchimento(Retangulo retangulo, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor de preenchimento de um %s!\n",
-                 figura_obter_tipo(retangulo));
+        LOG_AVISO("Não é possível definir NULL como cor de preenchimento de um %s!\n",
+                  figura_obter_tipo(retangulo));
         return;
     }
 
@@ -243,8 +243,8 @@ void retangulo_definir_cor_preenchimento(Retangulo retangulo, const char *cor_pr
 // Define a espessura da borda de um retângulo.
 void retangulo_definir_espessura_borda(Retangulo retangulo, const char *espessura_borda) {
     if (espessura_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como tamanho da espessura da borda de um %s!\n",
-                 figura_obter_tipo(retangulo));
+        LOG_AVISO("Não é possível definir NULL como tamanho da espessura da borda de um %s!\n",
+                  figura_obter_tipo(retangulo));
         return;
     }
 

@@ -92,27 +92,31 @@ static FiguraInterface estabelecimento_criar_interface_figura() {
 Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const char *tipo,
                                       const char *nome, Quadra quadra, char face, int numero) {
     if (cnpj == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com cnpj nulo!\n");
+        LOG_AVISO("Não é possível criar um estabelecimento com cnpj nulo!\n");
         return NULL;
     }
     if (cpf == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com cpf nulo!\n");
+        LOG_AVISO("Não é possível criar um estabelecimento com cpf nulo!\n");
         return NULL;
     }
     if (tipo == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com tipo nulo!\n");
+        LOG_AVISO("Não é possível criar um estabelecimento com tipo nulo!\n");
         return NULL;
     }
     if (nome == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com nome nulo!\n");
+        LOG_AVISO("Não é possível criar um estabelecimento com nome nulo!\n");
         return NULL;
     }
     if (quadra == NULL) {
-        LOG_ERRO("Não é possível criar um estabelecimento com uma quadra nula!\n");
+        LOG_AVISO("Não é possível criar um estabelecimento com uma quadra nula!\n");
         return NULL;
     }
 
     Estabelecimento est = malloc(sizeof *est);
+    if (est == NULL) {
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
+    }
     strcpy(est->id, cnpj);
     est->largura = 12;
     est->altura = 12;

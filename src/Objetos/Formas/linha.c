@@ -67,7 +67,7 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
                   const char cor_preenchimento[20], bool tracejado) {
     Linha linha = malloc(sizeof *linha);
     if (linha == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para uma nova linha!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     linha->x1 = x1;
@@ -137,8 +137,8 @@ const char *linha_obter_cor_borda(Linha linha) {
 // Define a cor da borda de uma linha.
 void linha_definir_cor_borda(Linha linha, const char *cor_borda) {
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor da borda de %s!\n",
-                 figura_obter_tipo(linha));
+        LOG_AVISO("Não é possível definir NULL como cor da borda de %s!\n",
+                  figura_obter_tipo(linha));
         return;
     }
     strcpy(linha->cor_borda, cor_borda);
@@ -152,8 +152,8 @@ const char *linha_obter_cor_preenchimento(Linha linha) {
 // Define a cor de preenchimento de uma linha.
 void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor de preenchimento de %s!\n",
-                 figura_obter_tipo(linha));
+        LOG_AVISO("Não é possível definir NULL como cor de preenchimento de %s!\n",
+                  figura_obter_tipo(linha));
         return;
     }
     strcpy(linha->cor_preenchimento, cor_preenchimento);

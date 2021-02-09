@@ -16,7 +16,7 @@ struct Ponto_s {
 Ponto ponto_criar(double x, double y) {
     Ponto ponto = malloc(sizeof *ponto);
     if (ponto == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para um novo ponto!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
     ponto->x = x;
@@ -27,7 +27,7 @@ Ponto ponto_criar(double x, double y) {
 // Cria e inicializa um Ponto com coordenadas iguais a de uma figura.
 Ponto ponto_criar_com_figura(Figura fig) {
     if (fig == NULL) {
-        LOG_ERRO("Figura nula passada para ponto_criar_com_figura!\n");
+        LOG_AVISO("Figura nula passada para ponto_criar_com_figura!\n");
         return NULL;
     }
     return ponto_criar(figura_obter_x(fig), figura_obter_y(fig));

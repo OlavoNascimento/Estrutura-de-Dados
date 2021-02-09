@@ -27,13 +27,19 @@ struct Tabela_s {
 Tabela tabela_criar(TabelaDestruirInfo destruir_info) {
     Tabela tabela = malloc(sizeof *tabela);
     if (tabela == NULL) {
-        LOG_ERRO("Erro ao alocar espaço para uma nova tabela de espalhamento!\n");
+        LOG_ERRO("Falha ao alocar espaço para uma Hashmap!\n");
         return NULL;
     }
     tabela->destruir_info = destruir_info;
-    tabela->inf = malloc(TAMANHO_INICIAL * sizeof(Lista *));
     tabela->tamanho = TAMANHO_INICIAL;
     tabela->baldes_ocupados = 0;
+
+    tabela->inf = malloc(TAMANHO_INICIAL * sizeof(Lista *));
+    if (tabela->inf == NULL) {
+        LOG_ERRO("Falha ao alocar memória para baldes de um Hashmap!\n");
+        free(tabela);
+        return NULL;
+    }
 
     for (int i = 0; i < tabela->tamanho; i++)
         tabela->inf[i] = NULL;
@@ -65,7 +71,12 @@ void rehash(Tabela tabela) {
 
     Lista *baldes_antigos = tabela->inf;
     // Novo array de baldes é o dobro do anterior.
-    tabela->inf = malloc(tabela->tamanho * sizeof(Lista *));
+    Lista *baldes_novos = malloc(tabela->tamanho * sizeof *baldes_novos);
+    if (baldes_novos == NULL) {
+        LOG_ERRO("Falha ao alocar espaço para baldes de um Hashmap!\n");
+        return NULL;
+    }
+    tabela->inf = baldes_novos;
 
     // Inicia todos os novos baldes como NULL.
     for (int i = 0; i < tabela->tamanho; i++)
@@ -96,10 +107,10 @@ void rehash(Tabela tabela) {
 // Insere uma informação na tabela que pode ser acessada através do id fornecido.
 void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
     if (id == NULL) {
-        LOG_INFO("Id nulo passado para tabela_inserir!\n");
+        LOG_AVISO("Id nulo passado para tabela_inserir!\n");
         return;
     } else if (info == NULL) {
-        LOG_INFO("Informação nula passada para tabela_inserir!\n");
+        LOG_AVISO("Informação nula passada para tabela_inserir!\n");
         return;
     }
 
@@ -111,8 +122,8 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
 
     struct Elemento *novo_elemento = malloc(sizeof *novo_elemento);
     if (novo_elemento == NULL) {
-        LOG_ERRO("Falha ao alocar memória para novo elemento do Hashmap!\n");
-        return;
+        LOG_ERRO("Falha ao alocar memória\n");
+        return NULL;
     }
     novo_elemento->chave = id;
     novo_elemento->info = info;
@@ -127,11 +138,11 @@ void tabela_inserir(Tabela tabela, const char *id, TabelaInfo info) {
 
 TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
     if (tabela == NULL) {
-        LOG_ERRO("Tabela de espalhamento nula passada para tabela_buscar!\n");
+        LOG_AVISO("Tabela de espalhamento nula passada para tabela_buscar!\n");
         return NULL;
     }
     if (id == NULL) {
-        LOG_ERRO("Id nulo passado para tabela_buscar!\n");
+        LOG_AVISO("Id nulo passado para tabela_buscar!\n");
         return NULL;
     }
 
@@ -150,7 +161,7 @@ TabelaInfo tabela_buscar(Tabela tabela, const char *id) {
 
 TabelaInfo tabela_remover(Tabela tabela, const char *id) {
     if (id == NULL) {
-        LOG_ERRO("Id nulo passado para tabela_remover!\n");
+        LOG_AVISO("Id nulo passado para tabela_remover!\n");
         return NULL;
     }
 

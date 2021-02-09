@@ -70,24 +70,24 @@ static FiguraInterface poligono_criar_interface_figura() {
 Poligono poligono_criar(double **pontos, int numero_de_pontos, const char cor_borda[20],
                         const char cor_preenchimento[20], double opacidade) {
     if (pontos == NULL) {
-        LOG_ERRO("Endereço dos pontos é nulo ao criar polígono!\n");
+        LOG_AVISO("Endereço dos pontos é nulo ao criar polígono!\n");
         return NULL;
     }
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível criar um polígono com cor de borda NULL!\n");
+        LOG_AVISO("Não é possível criar um polígono com cor de borda NULL!\n");
         return NULL;
     }
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível criar um polígono com cor de preenchimento NULL!\n");
+        LOG_AVISO("Não é possível criar um polígono com cor de preenchimento NULL!\n");
         return NULL;
     }
     if (opacidade < 0 || opacidade > 1) {
-        LOG_ERRO("Não é possível criar um polígono com opacidade menor que 0 ou maior que 1!\n");
+        LOG_AVISO("Não é possível criar um polígono com opacidade menor que 0 ou maior que 1!\n");
         return NULL;
     }
     Poligono poligono = malloc(sizeof *poligono);
     if (poligono == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para um novo poligono!\n");
+        LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
 
@@ -233,8 +233,8 @@ const char *poligono_obter_cor_borda(Poligono poligono) {
 // Define a cor da borda de um polígono.
 void poligono_definir_cor_borda(Poligono poligono, const char *cor_borda) {
     if (cor_borda == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor da borda de um %s!\n",
-                 figura_obter_tipo(poligono));
+        LOG_AVISO("Não é possível definir NULL como cor da borda de um %s!\n",
+                  figura_obter_tipo(poligono));
         return;
     }
     strcpy(poligono->cor_borda, cor_borda);
@@ -248,8 +248,8 @@ const char *poligono_obter_cor_preenchimento(Poligono poligono) {
 // Define a cor de preenchimento de um polígono.
 void poligono_definir_cor_preenchimento(Poligono poligono, const char *cor_preenchimento) {
     if (cor_preenchimento == NULL) {
-        LOG_ERRO("Não é possível definir NULL como cor de preenchimento de um %s!\n",
-                 figura_obter_tipo(poligono));
+        LOG_AVISO("Não é possível definir NULL como cor de preenchimento de um %s!\n",
+                  figura_obter_tipo(poligono));
         return;
     }
     strcpy(poligono->cor_preenchimento, cor_preenchimento);
