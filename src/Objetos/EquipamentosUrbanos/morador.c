@@ -12,6 +12,13 @@
 #include "../Outros/texto.h"
 #include "morador.h"
 
+struct Endereco {
+    char cep[100];
+    char face;
+    int num;
+    char complemento[100];
+};
+
 struct Morador_s {
     FiguraInterface vtable;
     char cpf[100];
@@ -33,12 +40,7 @@ struct Morador_s {
     int mes;
     int ano;
     char data[20];
-
-    // Endereço
-    char cep[100];
-    char face;
-    int num;
-    char complemento[100];
+    struct Endereco endereco;
 };
 
 const char *morador_obter_string_tipo() {
@@ -59,12 +61,13 @@ void morador_escrever_svg(Morador morador, FILE *arquivo) {
 
 // Escreve todos os dados de uma morador em um arquivo.
 void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
-    fprintf(arquivo,
-            "tipo: %s, cpf: %s, nome: %s, sobrenome: %s, sexo: %c, data: %s, x: %lf y: %lf, corb: "
-            "%s, corp: %s\n",
+    fprintf(arquivo, "tipo: %s, cpf: %s, nome: %s, sobrenome: %s, sexo: %c, data: %s",
             figura_obter_tipo(morador), morador->cpf, morador->nome, morador->sobrenome,
-            morador->sexo, morador_obter_data(morador), morador->x, morador->y, morador->cor_borda,
-            morador->cor_preenchimento);
+            morador->sexo, morador->data);
+    fprintf(arquivo, ", cep: % s, face: % c, num: %d, complemento: %s", morador->endereco.cep,
+            morador->endereco.face, morador->endereco.num, morador->endereco.complemento);
+    fprintf(arquivo, ", x: %lf y: %lf, corb: %s, corp: %s\n", morador->x, morador->y,
+            morador->cor_borda, morador->cor_preenchimento);
 }
 
 void morador_definir_data(Morador morador) {
@@ -144,13 +147,10 @@ Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, 
     morador->dia = dia;
     morador->mes = mes;
     morador->ano = ano;
-
     morador_definir_data(morador);
 
-    strcpy(morador->cep, "não registrado");
-    strcpy(morador->complemento, "-");
-    morador->num = 0;
-    morador->face = '-';
+    struct Endereco endereco = {.cep = "não registrado", .complemento = "-", .num = 0, .face = '-'};
+    morador->endereco = endereco;
 
     morador->largura = 0;
     morador->altura = 0;
@@ -193,10 +193,10 @@ void morador_ler_endereco(Morador morador, const char *linha, Quadra quadra) {
 
 void morador_definir_endereco(Morador morador, const char *cep, const char face, int num,
                               const char *complemento, Quadra quadra) {
-    strcpy(morador->cep, cep);
-    strcpy(morador->complemento, complemento);
-    morador->face = face;
-    morador->num = num;
+    strcpy(morador->endereco.cep, cep);
+    strcpy(morador->endereco.complemento, complemento);
+    morador->endereco.face = face;
+    morador->endereco.num = num;
 
     morador->largura = 12;
     morador->altura = 12;
@@ -223,19 +223,19 @@ const char *morador_obter_data(Morador morador) {
 }
 
 const char *morador_obter_endereco_cep(Morador morador) {
-    return morador->cep;
+    return morador->endereco.cep;
 }
 
 const char *morador_obter_endereco_complemento(Morador morador) {
-    return morador->complemento;
+    return morador->endereco.complemento;
 }
 
 char morador_obter_endereco_face(Morador morador) {
-    return morador->face;
+    return morador->endereco.face;
 }
 
 int morador_obter_endereco_num(Morador morador) {
-    return morador->num;
+    return morador->endereco.num;
 }
 
 const char *morador_obter_id(Morador morador) {

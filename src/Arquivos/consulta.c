@@ -714,21 +714,23 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
     if (morador == NULL)
         return;
     figura_escrever_informacoes(morador, arquivo_log);
+    fprintf(arquivo_log, "\n");
 
     Linha linha_vertical =
         linha_criar(figura_obter_x_centro(morador), figura_obter_y_centro(morador),
                     figura_obter_x_centro(morador), 0, "black", "black", false);
     insereQt(formas, ponto_criar_com_figura(linha_vertical), linha_vertical);
 
-    char texto_pessoa_endereco[302];
-
-    snprintf(texto_pessoa_endereco, 302, "cpf: %s, cep: %s, face: %c, num: %d, complemento: %s",
-             figura_obter_id(morador), morador_obter_endereco_cep(morador),
+    char texto_pessoa_endereco[1024];
+    snprintf(texto_pessoa_endereco, 1024,
+             "cpf: %s, nome: %s %s, cep: %s, face: %c, num: %d, complemento: %s",
+             morador_obter_id(morador), morador_obter_nome(morador),
+             morador_obter_sobrenome(morador), morador_obter_endereco_cep(morador),
              morador_obter_endereco_face(morador), morador_obter_endereco_num(morador),
              morador_obter_endereco_complemento(morador));
 
     Texto area_linha = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
-                                   figura_obter_id(morador), false);
+                                   texto_pessoa_endereco, false);
     insereQt(formas, ponto_criar_com_figura(area_linha), area_linha);
 }
 

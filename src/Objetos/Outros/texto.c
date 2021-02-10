@@ -18,7 +18,7 @@ struct Texto_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char conteudo[500];
+    char conteudo[1024];
     bool centralizar;
 };
 
@@ -60,7 +60,7 @@ static FiguraInterface texto_criar_interface_figura() {
 
 // Cria e inicializa um struct Texto com os valores passados.
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20], const char conteudo[500], bool centralizar) {
+                  const char cor_preenchimento[20], const char conteudo[1024], bool centralizar) {
     Texto texto = malloc(sizeof *texto);
     if (texto == NULL) {
         LOG_ERRO("Falha ao alocar memória\n");
@@ -85,7 +85,7 @@ Texto texto_ler(const char *linha) {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char conteudo[500];
+    char conteudo[1024];
     sscanf(linha, "%*s %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
            conteudo);
     return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo, false);

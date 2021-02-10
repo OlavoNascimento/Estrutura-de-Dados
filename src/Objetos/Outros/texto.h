@@ -28,7 +28,7 @@ conteúdo. Se for falso, a coordenada x,y indica onde o conteúdo deve iniciar.
 O usuário é responsável por liberar a memória alocada!
 */
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20], const char conteudo[500], bool centralizar);
+                  const char cor_preenchimento[20], const char conteudo[1024], bool centralizar);
 
 /*
 Cria e inicializa um Texto a partir de um texto obtido no arquivo .geo.

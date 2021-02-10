@@ -452,7 +452,7 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
     Retangulo ret_coord = retangulo_criar("", largura * 2 + 2, altura, x, y, "black", "#f1ffe8");
     lista_inserir_final(saida, ret_coord);
 
-    char texto_cords[500];
+    char texto_cords[1024];
     texto_cords[0] = '\0';
     snprintf(texto_cords, 500, "(%d,%d)", (int) ponto_obter_x(qt->no->coordenada),
              (int) ponto_obter_y(qt->no->coordenada));

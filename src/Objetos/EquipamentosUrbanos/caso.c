@@ -37,7 +37,7 @@ void caso_escrever_svg(Caso caso, FILE *arquivo) {
     double x = figura_obter_x_centro(caso);
     double y = figura_obter_y_centro(caso) + 4;
     // Converte o número de casos para uma string.
-    char conteudo[500];
+    char conteudo[1024];
     snprintf(conteudo, 500, "%d", caso->numero_de_casos);
     // Rótulo do caso.
     Texto texto_quadra = texto_criar("", x, y, "none", "white", conteudo, true);
