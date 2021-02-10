@@ -12,14 +12,6 @@ O argumento caminho_svg não pode ser nulo, assim como as listas passadas. O par
 num_listas deve ser igual a quantidade de listas passadas a função.
 Cria um arquivo svg no caminho especificado.
 */
-void svg_escrever_listas(const char *caminho_svg, int num_listas, ...);
-
-/*
-Escreve o svg correspondente a todas as quadtrees passadas como argumento.
-O argumento caminho_svg não pode ser nulo, assim como as quadtrees passadas. O parâmetro
-num_quadtrees deve ser igual a quantidade de quadtrees passadas a função.
-Cria um arquivo svg no caminho especificado.
-*/
-void svg_escrever_quadtrees(const char *caminho_svg, int num_quadtrees, ...);
+void svg_escrever(const char *caminho_svg, int num_listas, ...);
 
 #endif

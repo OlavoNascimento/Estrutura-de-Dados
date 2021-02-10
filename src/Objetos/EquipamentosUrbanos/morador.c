@@ -64,7 +64,7 @@ void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
     fprintf(arquivo, "tipo: %s, cpf: %s, nome: %s, sobrenome: %s, sexo: %c, data: %s",
             figura_obter_tipo(morador), morador->cpf, morador->nome, morador->sobrenome,
             morador->sexo, morador->data);
-    fprintf(arquivo, ", cep: % s, face: % c, num: %d, complemento: %s", morador->endereco.cep,
+    fprintf(arquivo, ", cep: %s, face: %c, num: %d, complemento: %s", morador->endereco.cep,
             morador->endereco.face, morador->endereco.num, morador->endereco.complemento);
     fprintf(arquivo, ", x: %lf y: %lf, corb: %s, corp: %s\n", morador->x, morador->y,
             morador->cor_borda, morador->cor_preenchimento);

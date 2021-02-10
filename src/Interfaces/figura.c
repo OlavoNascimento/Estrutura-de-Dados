@@ -1,6 +1,5 @@
 #include "figura.h"
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,8 +35,8 @@ typedef struct {
 
 // Cria e retorna uma interface que pode ser populada com as funções de uma figura específica.
 FiguraInterface figura_interface_criar() {
-    FiguraInterface figuraInterfaceImp = calloc(1, sizeof *figuraInterfaceImp);
-    return figuraInterfaceImp;
+    FiguraInterface interface = calloc(1, sizeof *interface);
+    return interface;
 }
 
 // Registra a função escrever_informacoes na interface.

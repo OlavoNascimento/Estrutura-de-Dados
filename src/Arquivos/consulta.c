@@ -781,7 +781,7 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     Lista lista_dados = quadtree_escrever_svg(qt);
 
     // Escreve o svg das duas árvores.
-    svg_escrever_listas(caminho_arquivo, 1, lista_dados);
+    svg_escrever(caminho_arquivo, 1, lista_dados);
 
     lista_destruir(lista_dados);
     free(caminho_arquivo);

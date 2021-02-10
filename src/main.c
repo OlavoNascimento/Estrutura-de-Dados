@@ -90,8 +90,8 @@ int main(int argc, const char *argv[]) {
     if (caminho_estabelecimentos != NULL)
         comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
 
-    svg_escrever_quadtrees(caminho_svg_descricao, 9, quadras, hidrantes, semaforos, radios,
-                           estabelecimentos, moradores, casos, postos, formas);
+    svg_escrever(caminho_svg_descricao, 9, quadras, hidrantes, semaforos, radios, estabelecimentos,
+                 moradores, casos, postos, formas);
 
     if (caminho_consulta != NULL) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
@@ -102,8 +102,8 @@ int main(int argc, const char *argv[]) {
         printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
         consulta_ler(caminho_consulta, caminho_registro_consulta, quadtrees, listas, relacoes);
-        svg_escrever_quadtrees(caminho_svg_consulta, 9, quadras, hidrantes, semaforos, radios,
-                               estabelecimentos, moradores, casos, postos, formas);
+        svg_escrever(caminho_svg_consulta, 9, quadras, hidrantes, semaforos, radios,
+                     estabelecimentos, moradores, casos, postos, formas);
 
         free(caminho_registro_consulta);
         free(caminho_svg_consulta);

@@ -8,7 +8,6 @@ Ao chamar uma das funções que recebem uma Figura como argumento, o objeto inte
 ponteiro de uma função registrada anteriormente, tornando polimorfismo possível.
 */
 
-#include <stdbool.h>
 #include <stdio.h>
 
 /*

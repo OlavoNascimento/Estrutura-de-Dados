@@ -6,14 +6,13 @@
 #include <stdlib.h>
 
 #include "../Estruturas/quadtree.h"
+#include "../Interfaces/estrutura_mapeavel.h"
 #include "../Interfaces/figura.h"
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
 
 // Margem entre as bordas do svg e as figuras.
 #define SVG_MARGEM 14
-
-typedef void AplicarInfo(void *info, void *extra);
 
 // Utilizado para representar as proporções de um arquivo svg.
 typedef struct {
@@ -34,8 +33,7 @@ void svg_atualizar_proporcao(Figura figura, ProporcoesSVG *exi) {
 
 // Retorna uma struct que representa as proporcoes de um arquivo svg. Para isso é preciso iterar por
 // todas as figuras de uma estrutura, atualizando a struct conforme necessário.
-ProporcoesSVG *svg_criar_proporcao(int num_estruturas, va_list estruturas,
-                                   void estrutura_map(void *estrutura, visitaNo f, void *extra)) {
+ProporcoesSVG *svg_criar_proporcao(int num_estruturas, va_list estruturas) {
     va_list copia_estruturas;
     va_copy(copia_estruturas, estruturas);
 
@@ -52,7 +50,7 @@ ProporcoesSVG *svg_criar_proporcao(int num_estruturas, va_list estruturas,
     // Encontra os valores necessários para que todas as figuras apareçam no arquivo svg.
     for (int i = 0; i < num_estruturas; i++) {
         void *estrutura = va_arg(copia_estruturas, void *);
-        estrutura_map(estrutura, (void *) svg_atualizar_proporcao, exi);
+        estrutura_map(estrutura, (EstruturaAplicarInfo *) svg_atualizar_proporcao, exi);
     }
 
     exi->origem_x -= SVG_MARGEM;
@@ -92,16 +90,23 @@ void escrever_definicoes_sombras(FILE *arquivo) {
 }
 
 // Escreve um arquivo svg utilizando as figuras armazenadas nas estruturas fornecidas.
-void escrever_arquivo_svg(const char *caminho_svg, int num_estruturas, va_list estruturas,
-                          void estrutura_map(void *estrutura, AplicarInfo f, void *extra)) {
+void svg_escrever(const char *caminho_svg, int num_estruturas, ...) {
+    if (caminho_svg == NULL) {
+        LOG_AVISO("Caminho nulo passado para svg_escrever!\n");
+        return;
+    }
+
     FILE *arquivo_svg = fopen(caminho_svg, "w");
     if (arquivo_svg == NULL) {
         LOG_ERRO("Arquivo svg %s não pode ser criado para escrita!\n", caminho_svg);
         return;
     }
 
+    va_list estruturas;
+    va_start(estruturas, num_estruturas);
+
     // Calcula as proporções da imagem svg.
-    ProporcoesSVG *proporcoes = svg_criar_proporcao(num_estruturas, estruturas, estrutura_map);
+    ProporcoesSVG *proporcoes = svg_criar_proporcao(num_estruturas, estruturas);
 
     fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf' xmlns='http://www.w3.org/2000/svg'>\n",
             proporcoes->origem_x, proporcoes->origem_y, proporcoes->largura, proporcoes->altura);
@@ -111,39 +116,12 @@ void escrever_arquivo_svg(const char *caminho_svg, int num_estruturas, va_list e
     // Itera pelas estruturas e escreve suas figuras.
     for (int i = 0; i < num_estruturas; i++) {
         void *estrutura = va_arg(estruturas, void *);
-        estrutura_map(estrutura, (void *) figura_escrever_svg, arquivo_svg);
+        estrutura_map(estrutura, (EstruturaAplicarInfo *) figura_escrever_svg, arquivo_svg);
     }
 
     fprintf(arquivo_svg, "</svg>\n");
 
     free(proporcoes);
+    va_end(estruturas);
     fclose(arquivo_svg);
-}
-
-// Transforma as figuras das listas em um código svg que as representam, salvando o resultado
-// em um arquivo svg localizado no caminho especificado.
-void svg_escrever_listas(const char *caminho_svg, int num_listas, ...) {
-    if (caminho_svg == NULL) {
-        LOG_AVISO("Caminho nulo passado para svg_escrever_listas!\n");
-        return;
-    }
-
-    va_list listas;
-    va_start(listas, num_listas);
-    escrever_arquivo_svg(caminho_svg, num_listas, listas, (void *) lista_map);
-    va_end(listas);
-}
-
-// Transforma as figuras das quadtrees em um código svg que as representam, salvando o resultado
-// em um arquivo svg localizado no caminho especificado.
-void svg_escrever_quadtrees(const char *caminho_svg, int num_quadtrees, ...) {
-    if (caminho_svg == NULL) {
-        LOG_AVISO("Caminho nulo passado para svg_escrever_quadtrees!\n");
-        return;
-    }
-
-    va_list quadtrees;
-    va_start(quadtrees, num_quadtrees);
-    escrever_arquivo_svg(caminho_svg, num_quadtrees, quadtrees, (void *) percorreLarguraQt);
-    va_end(quadtrees);
 }

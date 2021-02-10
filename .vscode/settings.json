@@ -16,19 +16,22 @@
     "delimitacao",
     "descricao",
     "dmprbt",
+    "estrutura",
     "exibicao",
     "figuras",
+    "funcao",
+    "h",
     "incidencia",
     "interseccao",
     "ligacao",
+    "map",
+    "mapeavel",
     "obrigatorios",
     "parametros",
     "pivo",
     "proporcao",
     "proximos",
     "regiao",
-    "retangulos",
-    "selecao",
     "retangulo",
     "retangulos",
     "selecao",
@@ -61,6 +64,7 @@
     "functional": "cpp",
     "logging.h": "c",
     "caminhos.h": "c",
-    "fila.h": "c"
+    "fila.h": "c",
+    "estrutura_mapeavel.h": "c"
   }
 }

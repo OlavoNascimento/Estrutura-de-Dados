@@ -5,6 +5,7 @@
 
 #include "../Estruturas/fila.h"
 #include "../Estruturas/lista.h"
+#include "../Interfaces/estrutura_mapeavel.h"
 #include "../Interfaces/figura.h"
 #include "../Objetos/Formas/linha.h"
 #include "../Objetos/Formas/ponto.h"
@@ -19,6 +20,7 @@ struct QtNo_s {
 };
 
 struct QuadTree_s {
+    FuncEstruturaMap *map;
     funcGetChave *obter_identificador;
     struct QtNo_s *no;
     struct QuadTree_s *noroeste;
@@ -34,6 +36,7 @@ QuadTree criaQt(funcGetChave f) {
         return NULL;
     }
     quadtree->obter_identificador = f;
+    quadtree->map = (FuncEstruturaMap *) percorreLarguraQt;
     quadtree->no = NULL;
     quadtree->noroeste = NULL;
     quadtree->nordeste = NULL;

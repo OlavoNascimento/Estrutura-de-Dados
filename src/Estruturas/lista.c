@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../Interfaces/estrutura_mapeavel.h"
 #include "../Utils/logging.h"
 
 struct ListaNo_s {
@@ -13,6 +14,7 @@ struct ListaNo_s {
 };
 
 struct Lista_s {
+    FuncEstruturaMap *map;
     ObterIdentificadorLista *obter_identificador_info;
     ListaDestruirInfo *destruir_info;
     int tamanho;
@@ -29,6 +31,7 @@ Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
     }
     lista->obter_identificador_info = obter_identificador_info;
     lista->destruir_info = destruir_info;
+    lista->map = (FuncEstruturaMap *) lista_map;
     lista->tamanho = 0;
     lista->primeiro = NULL;
     lista->ultimo = NULL;
