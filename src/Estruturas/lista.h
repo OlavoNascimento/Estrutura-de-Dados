@@ -60,7 +60,7 @@ ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo no);
 Remove um elemento da lista.
 Todos os parâmetros não podem ser nulos e o parâmetro lista deve ser uma lista existente.
 */
-void lista_remover(Lista lista, ListaNo no);
+ListaInfo lista_remover(Lista lista, ListaNo no);
 
 /*
 Acessa um nó da lista.

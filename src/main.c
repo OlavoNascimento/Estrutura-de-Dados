@@ -16,7 +16,7 @@
 
 // Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espacias.
 Tabela criar_tabela_quadtrees() {
-    Tabela quadtrees = tabela_criar((void *) desalocaQt);
+    Tabela quadtrees = tabela_criar((TabelaDestruirInfo *) desalocaQt);
     tabela_inserir(quadtrees, "quadras", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "hidrantes", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "radios", criaQt(figura_obter_id));
@@ -30,7 +30,7 @@ Tabela criar_tabela_quadtrees() {
 
 // Cria uma nova tabela contendo listas que armazenam figuras que não precisam de buscas espacias.
 Tabela criar_tabela_listas() {
-    Tabela listas = tabela_criar((void *) lista_destruir);
+    Tabela listas = tabela_criar((TabelaDestruirInfo *) lista_destruir);
     tabela_inserir(listas, "formas", lista_criar(figura_obter_id, figura_destruir));
     tabela_inserir(listas, "densidades", lista_criar(NULL, figura_destruir));
     return listas;
@@ -38,7 +38,7 @@ Tabela criar_tabela_listas() {
 
 // Cria uma nova tabela contendo tabelas que relacionam os dados das figuras.
 Tabela criar_tabela_relacoes() {
-    Tabela relacoes = tabela_criar((void *) tabela_destruir);
+    Tabela relacoes = tabela_criar((TabelaDestruirInfo *) tabela_destruir);
     tabela_inserir(relacoes, "cpf_cep", tabela_criar(NULL));
     tabela_inserir(relacoes, "tipo_descricao", tabela_criar(NULL));
     tabela_inserir(relacoes, "cnpj_estabelecimento", tabela_criar(NULL));

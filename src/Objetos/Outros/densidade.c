@@ -41,18 +41,18 @@ double densidade_obter_y_fim(Densidade densidade) {
 // Conecta as funções do objeto Densidade com as da interface figura.
 static FiguraInterface densidade_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, (void *) densidade_obter_tipo);
+    figura_registrar_obter_tipo(interface, densidade_obter_tipo);
 
-    figura_registrar_obter_x(interface, (void *) densidade_obter_x);
-    figura_registrar_obter_y(interface, (void *) densidade_obter_y);
+    figura_registrar_obter_x(interface, (ObterX *) densidade_obter_x);
+    figura_registrar_obter_y(interface, (ObterY *) densidade_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, (void *) densidade_obter_x);
-    figura_registrar_obter_y_inicio(interface, (void *) densidade_obter_y);
+    figura_registrar_obter_x_inicio(interface, (ObterXInicio *) densidade_obter_x);
+    figura_registrar_obter_y_inicio(interface, (ObterYInicio *) densidade_obter_y);
 
-    figura_registrar_obter_x_fim(interface, (void *) densidade_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, (void *) densidade_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (ObterXFim *) densidade_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (ObterYFim *) densidade_obter_y_fim);
 
-    figura_registrar_destruir(interface, (void *) densidade_destruir);
+    figura_registrar_destruir(interface, (Destruir *) densidade_destruir);
     return interface;
 }
 

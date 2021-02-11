@@ -29,33 +29,35 @@ const char *retangulo_obter_tipo() {
 // Conecta as funções do objeto retângulo com as da interface figura.
 static FiguraInterface retangulo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, (void *) retangulo_obter_tipo);
+    figura_registrar_obter_tipo(interface, retangulo_obter_tipo);
 
-    figura_registrar_escrever_informacoes(interface, (void *) retangulo_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, (void *) retangulo_escrever_svg);
+    figura_registrar_escrever_informacoes(interface,
+                                          (EscreverInformacoes *) retangulo_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (EscreverSvg *) retangulo_escrever_svg);
 
-    figura_registrar_obter_id(interface, (void *) retangulo_obter_id);
+    figura_registrar_obter_id(interface, (ObterId *) retangulo_obter_id);
 
-    figura_registrar_obter_x(interface, (void *) retangulo_obter_x);
-    figura_registrar_obter_y(interface, (void *) retangulo_obter_y);
+    figura_registrar_obter_x(interface, (ObterX *) retangulo_obter_x);
+    figura_registrar_obter_y(interface, (ObterY *) retangulo_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, (void *) retangulo_obter_x);
-    figura_registrar_obter_y_inicio(interface, (void *) retangulo_obter_y);
+    figura_registrar_obter_x_inicio(interface, (ObterXInicio *) retangulo_obter_x);
+    figura_registrar_obter_y_inicio(interface, (ObterYInicio *) retangulo_obter_y);
 
-    figura_registrar_obter_x_fim(interface, (void *) retangulo_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, (void *) retangulo_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (ObterXFim *) retangulo_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (ObterYFim *) retangulo_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, (void *) retangulo_obter_x_centro);
-    figura_registrar_obter_y_centro(interface, (void *) retangulo_obter_y_centro);
+    figura_registrar_obter_x_centro(interface, (ObterXCentro *) retangulo_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, (ObterYCentro *) retangulo_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, (void *) retangulo_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, (void *) retangulo_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (ObterCorBorda *) retangulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (DefinirCorBorda *) retangulo_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, (void *) retangulo_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface,
-                                               (void *) retangulo_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(
+        interface, (ObterCorPreenchimento *) retangulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(
+        interface, (DefinirCorPreenchimento *) retangulo_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, (void *) retangulo_destruir);
+    figura_registrar_destruir(interface, (Destruir *) retangulo_destruir);
     return interface;
 }
 

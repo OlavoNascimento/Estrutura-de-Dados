@@ -33,32 +33,35 @@ const char *linha_obter_id() {
 // Conecta as funções do objeto linha com as da interface figura.
 static FiguraInterface linha_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, (void *) linha_obter_tipo);
+    figura_registrar_obter_tipo(interface, linha_obter_tipo);
 
-    figura_registrar_escrever_informacoes(interface, (void *) linha_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, (void *) linha_escrever_svg);
+    figura_registrar_escrever_informacoes(interface,
+                                          (EscreverInformacoes *) linha_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (EscreverSvg *) linha_escrever_svg);
 
-    figura_registrar_obter_id(interface, (void *) linha_obter_id);
+    figura_registrar_obter_id(interface, (ObterId *) linha_obter_id);
 
-    figura_registrar_obter_x(interface, (void *) linha_obter_x);
-    figura_registrar_obter_y(interface, (void *) linha_obter_y);
+    figura_registrar_obter_x(interface, (ObterX *) linha_obter_x);
+    figura_registrar_obter_y(interface, (ObterY *) linha_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, (void *) linha_obter_x);
-    figura_registrar_obter_y_inicio(interface, (void *) linha_obter_y);
+    figura_registrar_obter_x_inicio(interface, (ObterXInicio *) linha_obter_x);
+    figura_registrar_obter_y_inicio(interface, (ObterYInicio *) linha_obter_y);
 
-    figura_registrar_obter_x_fim(interface, (void *) linha_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, (void *) linha_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (ObterXFim *) linha_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (ObterYFim *) linha_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, (void *) linha_obter_x_centro);
-    figura_registrar_obter_y_centro(interface, (void *) linha_obter_y_centro);
+    figura_registrar_obter_x_centro(interface, (ObterXCentro *) linha_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, (ObterYCentro *) linha_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, (void *) linha_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, (void *) linha_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (ObterCorBorda *) linha_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (DefinirCorBorda *) linha_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, (void *) linha_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface, (void *) linha_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(
+        interface, (ObterCorPreenchimento *) linha_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(
+        interface, (DefinirCorPreenchimento *) linha_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, (void *) linha_destruir);
+    figura_registrar_destruir(interface, (Destruir *) linha_destruir);
     return interface;
 }
 

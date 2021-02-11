@@ -140,7 +140,7 @@ ListaNo lista_inserir_depois(Lista lista, ListaInfo info, ListaNo no) {
     return novo_no;
 }
 
-void lista_remover(Lista lista, ListaNo no) {
+ListaInfo lista_remover(Lista lista, ListaNo no) {
     ListaNo no_anterior = no->anterior;
     ListaNo no_proximo = no->proximo;
 
@@ -157,10 +157,10 @@ void lista_remover(Lista lista, ListaNo no) {
         no_proximo->anterior = no->anterior;
     }
 
-    if (lista->destruir_info != NULL)
-        lista->destruir_info(no->info);
+    ListaInfo info = no->info;
     free(no);
     lista->tamanho--;
+    return info;
 }
 
 ListaNo lista_buscar(Lista lista, const char *id) {

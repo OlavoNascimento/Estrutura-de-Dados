@@ -36,33 +36,35 @@ const char *poligono_obter_id() {
 // Conecta as funções do objeto polígono com as da interface figura.
 static FiguraInterface poligono_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, (void *) poligono_obter_tipo);
+    figura_registrar_obter_tipo(interface, poligono_obter_tipo);
 
-    figura_registrar_escrever_informacoes(interface, (void *) poligono_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, (void *) poligono_escrever_svg);
+    figura_registrar_escrever_informacoes(interface,
+                                          (EscreverInformacoes *) poligono_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (EscreverSvg *) poligono_escrever_svg);
 
-    figura_registrar_obter_id(interface, (void *) poligono_obter_id);
+    figura_registrar_obter_id(interface, (ObterId *) poligono_obter_id);
 
-    figura_registrar_obter_x(interface, (void *) poligono_obter_x);
-    figura_registrar_obter_y(interface, (void *) poligono_obter_y);
+    figura_registrar_obter_x(interface, (ObterX *) poligono_obter_x);
+    figura_registrar_obter_y(interface, (ObterY *) poligono_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, (void *) poligono_obter_x);
-    figura_registrar_obter_y_inicio(interface, (void *) poligono_obter_y);
+    figura_registrar_obter_x_inicio(interface, (ObterXInicio *) poligono_obter_x);
+    figura_registrar_obter_y_inicio(interface, (ObterYInicio *) poligono_obter_y);
 
-    figura_registrar_obter_x_fim(interface, (void *) poligono_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, (void *) poligono_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (ObterXFim *) poligono_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (ObterYFim *) poligono_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, (void *) poligono_obter_x_centro);
-    figura_registrar_obter_y_centro(interface, (void *) poligono_obter_y_centro);
+    figura_registrar_obter_x_centro(interface, (ObterXCentro *) poligono_obter_x_centro);
+    figura_registrar_obter_y_centro(interface, (ObterYCentro *) poligono_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, (void *) poligono_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, (void *) poligono_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (ObterCorBorda *) poligono_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (DefinirCorBorda *) poligono_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, (void *) poligono_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface,
-                                               (void *) poligono_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(
+        interface, (ObterCorPreenchimento *) poligono_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(
+        interface, (DefinirCorPreenchimento *) poligono_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, (void *) poligono_destruir);
+    figura_registrar_destruir(interface, (Destruir *) poligono_destruir);
     return interface;
 }
 

@@ -28,33 +28,35 @@ const char *circulo_obter_tipo() {
 // Conecta as funções do objeto círculo com as da interface figura.
 static FiguraInterface circulo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
-    figura_registrar_obter_tipo(interface, (void *) circulo_obter_tipo);
+    figura_registrar_obter_tipo(interface, circulo_obter_tipo);
 
-    figura_registrar_escrever_informacoes(interface, (void *) circulo_escrever_informacoes);
-    figura_registrar_escrever_svg(interface, (void *) circulo_escrever_svg);
+    figura_registrar_escrever_informacoes(interface,
+                                          (EscreverInformacoes *) circulo_escrever_informacoes);
+    figura_registrar_escrever_svg(interface, (EscreverSvg *) circulo_escrever_svg);
 
-    figura_registrar_obter_id(interface, (void *) circulo_obter_id);
+    figura_registrar_obter_id(interface, (ObterId *) circulo_obter_id);
 
-    figura_registrar_obter_x(interface, (void *) circulo_obter_x);
-    figura_registrar_obter_y(interface, (void *) circulo_obter_y);
+    figura_registrar_obter_x(interface, (ObterX *) circulo_obter_x);
+    figura_registrar_obter_y(interface, (ObterY *) circulo_obter_y);
 
-    figura_registrar_obter_x_inicio(interface, (void *) circulo_obter_x_inicio);
-    figura_registrar_obter_y_inicio(interface, (void *) circulo_obter_y_inicio);
+    figura_registrar_obter_x_inicio(interface, (ObterXInicio *) circulo_obter_x_inicio);
+    figura_registrar_obter_y_inicio(interface, (ObterYInicio *) circulo_obter_y_inicio);
 
-    figura_registrar_obter_x_fim(interface, (void *) circulo_obter_x_fim);
-    figura_registrar_obter_y_fim(interface, (void *) circulo_obter_y_fim);
+    figura_registrar_obter_x_fim(interface, (ObterXFim *) circulo_obter_x_fim);
+    figura_registrar_obter_y_fim(interface, (ObterYFim *) circulo_obter_y_fim);
 
-    figura_registrar_obter_x_centro(interface, (void *) circulo_obter_x);
-    figura_registrar_obter_y_centro(interface, (void *) circulo_obter_y);
+    figura_registrar_obter_x_centro(interface, (ObterXCentro *) circulo_obter_x);
+    figura_registrar_obter_y_centro(interface, (ObterYCentro *) circulo_obter_y);
 
-    figura_registrar_obter_cor_borda(interface, (void *) circulo_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, (void *) circulo_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (ObterCorBorda *) circulo_obter_cor_borda);
+    figura_registrar_definir_cor_borda(interface, (DefinirCorBorda *) circulo_definir_cor_borda);
 
-    figura_registrar_obter_cor_preenchimento(interface, (void *) circulo_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(interface,
-                                               (void *) circulo_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(
+        interface, (ObterCorPreenchimento *) circulo_obter_cor_preenchimento);
+    figura_registrar_definir_cor_preenchimento(
+        interface, (DefinirCorPreenchimento *) circulo_definir_cor_preenchimento);
 
-    figura_registrar_destruir(interface, (void *) circulo_destruir);
+    figura_registrar_destruir(interface, (Destruir *) circulo_destruir);
     return interface;
 }
 
