@@ -106,14 +106,14 @@ void definir_max_figuras(NumerosMaximos *propMax, const char *linha) {
 }
 
 // Cria um círculo, aplica as propriedades definidas e adiciona nas estruturas.
-void adicionar_circulo(QuadTree formas, Tabela id_forma, PropriedadesCirculos prop,
+void adicionar_circulo(Lista formas, Tabela id_forma, PropriedadesCirculos prop,
                        const char *linha) {
     Circulo novo_circulo = circulo_ler(linha);
     if (prop.definido) {
         circulo_definir_espessura_borda(novo_circulo, prop.espessura_borda);
     }
 
-    QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_circulo), novo_circulo);
+    ListaNo novo_no = lista_inserir_final(formas, novo_circulo);
     tabela_inserir(id_forma, figura_obter_id(novo_circulo), novo_no);
 }
 
@@ -176,14 +176,14 @@ void definir_propriedades_quadras(PropriedadesQuadras *prop, const char *linha) 
 }
 
 // Cria um retângulo, aplica as propriedades definidas e adiciona nas estruturas.
-void adicionar_retangulo(QuadTree formas, Tabela id_forma, PropriedadesRetangulos prop,
+void adicionar_retangulo(Lista formas, Tabela id_forma, PropriedadesRetangulos prop,
                          const char *linha) {
     Retangulo novo_retangulo = retangulo_ler(linha);
     if (prop.definido) {
         retangulo_definir_espessura_borda(novo_retangulo, prop.espessura_borda);
     }
 
-    QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_retangulo), novo_retangulo);
+    ListaNo novo_no = lista_inserir_final(formas, novo_retangulo);
     tabela_inserir(id_forma, figura_obter_id(novo_retangulo), novo_no);
 }
 
@@ -233,9 +233,9 @@ void definir_propriedades_semaforos(PropriedadesSemaforos *prop, const char *lin
 }
 
 // Cria um texto e adiciona nas estruturas.
-void adicionar_texto(QuadTree formas, Tabela id_forma, const char *linha) {
+void adicionar_texto(Lista formas, Tabela id_forma, const char *linha) {
     Texto novo_texto = texto_ler(linha);
-    QtNo novo_no = insereQt(formas, ponto_criar_com_figura(novo_texto), novo_texto);
+    ListaNo novo_no = lista_inserir_final(formas, novo_texto);
     tabela_inserir(id_forma, figura_obter_id(novo_texto), novo_no);
 }
 
@@ -286,13 +286,13 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
         return;
     }
 
-    QuadTree formas = tabela_buscar(quadtrees, "formas");
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
     QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
     QuadTree radios = tabela_buscar(quadtrees, "radios");
     QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
     QuadTree postos = tabela_buscar(quadtrees, "postos");
 
+    Lista formas = tabela_buscar(listas, "formas");
     Lista densidades = tabela_buscar(listas, "densidades");
 
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");

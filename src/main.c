@@ -17,7 +17,6 @@
 // Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espacias.
 Tabela criar_tabela_quadtrees() {
     Tabela quadtrees = tabela_criar((void *) desalocaQt);
-    tabela_inserir(quadtrees, "formas", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "quadras", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "hidrantes", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "radios", criaQt(figura_obter_id));
@@ -32,6 +31,7 @@ Tabela criar_tabela_quadtrees() {
 // Cria uma nova tabela contendo listas que armazenam figuras que não precisam de buscas espacias.
 Tabela criar_tabela_listas() {
     Tabela listas = tabela_criar((void *) lista_destruir);
+    tabela_inserir(listas, "formas", lista_criar(figura_obter_id, figura_destruir));
     tabela_inserir(listas, "densidades", lista_criar(NULL, figura_destruir));
     return listas;
 }
@@ -72,7 +72,7 @@ int main(int argc, const char *argv[]) {
     Tabela listas = criar_tabela_listas();
     Tabela relacoes = criar_tabela_relacoes();
 
-    QuadTree formas = tabela_buscar(quadtrees, "formas");
+    Lista formas = tabela_buscar(listas, "formas");
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
     QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
     QuadTree radios = tabela_buscar(quadtrees, "radios");
@@ -116,7 +116,6 @@ int main(int argc, const char *argv[]) {
     free(caminho_svg_descricao);
     parametros_destruir(params);
 
-    percorreLarguraQt(formas, (void *) figura_destruir, NULL);
     percorreLarguraQt(quadras, (void *) figura_destruir, NULL);
     percorreLarguraQt(hidrantes, (void *) figura_destruir, NULL);
     percorreLarguraQt(radios, (void *) figura_destruir, NULL);

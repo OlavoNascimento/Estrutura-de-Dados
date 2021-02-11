@@ -374,29 +374,6 @@ QtInfo removeNoQt(QuadTree qt, QtNo pNo) {
     return buscar_e_remover(qt, pNo, qt);
 }
 
-// Percorre uma Quadtree em largura e armazena todos os nós em uma lista.
-Lista quadtree_nos_para_lista(QuadTree qt) {
-    Lista dados = lista_criar(NULL, NULL);
-    Fila nos = fila_criar(NULL);
-    fila_inserir(nos, qt);
-
-    while (!fila_esta_vazia(nos)) {
-        QuadTree qt = fila_remover(nos);
-        if (qt->no != NULL)
-            lista_inserir_final(dados, qt->no);
-
-        if (qt->noroeste != NULL) {
-            fila_inserir(nos, qt->noroeste);
-            fila_inserir(nos, qt->nordeste);
-            fila_inserir(nos, qt->sudeste);
-            fila_inserir(nos, qt->sudoeste);
-        }
-    }
-    fila_destruir(nos);
-
-    return dados;
-}
-
 QtNo getNoQt(QuadTree qt, double x, double y) {
     if (qt->no == NULL)
         return NULL;
@@ -424,8 +401,8 @@ QtNo getNoQt(QuadTree qt, double x, double y) {
 }
 
 QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
-    if (qt == NULL || pNo == NULL) {
-        LOG_AVISO("Valor nulo passado para getInfoQt!\n");
+    if (pNo == NULL) {
+        LOG_INFO("%p\n", qt);
         return NULL;
     }
     return pNo->info;

@@ -58,16 +58,16 @@ Retangulo criar_delimitacao_figuras(Figura figura1, Figura figura2) {
 
 // Executa o comando o? especificado no arquivo de consulta, verificando se duas figuras se
 // sobrepõem.
-void checar_interseccao(QuadTree formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
+void checar_interseccao(Lista formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
     char id1[100], id2[100];
     sscanf(linha, "o? %s %s", id1, id2);
 
-    QtNo no1 = tabela_buscar(id_forma, id1);
-    QtNo no2 = tabela_buscar(id_forma, id2);
+    ListaNo no1 = tabela_buscar(id_forma, id1);
+    ListaNo no2 = tabela_buscar(id_forma, id2);
     if (no1 == NULL || no2 == NULL)
         return;
-    Figura fig1 = getInfoQt(formas, no1);
-    Figura fig2 = getInfoQt(formas, no2);
+    Figura fig1 = lista_obter_info(no1);
+    Figura fig2 = lista_obter_info(no2);
 
     const char *tipo_fig1 = figura_obter_tipo(fig1);
     const char *tipo_fig2 = figura_obter_tipo(fig2);
@@ -90,36 +90,29 @@ void checar_interseccao(QuadTree formas, Tabela id_forma, const char *linha, FIL
         Texto aviso =
             texto_criar("", figura_obter_x_centro(contorno), figura_obter_y_centro(contorno) + 4,
                         "None", "Black", "sobrepoe", true);
-        insereQt(formas, ponto_criar_com_figura(aviso), aviso);
+        lista_inserir_final(formas, aviso);
     } else {
         // Adiciona traços a borda do retângulo de contorno caso as figuras não se intersectem.
         retangulo_definir_borda_tracejada(contorno, true);
     }
-    insereQt(formas, ponto_criar_com_figura(contorno), contorno);
+    lista_inserir_final(formas, contorno);
 
     fprintf(arquivo_log, "o? %s %s\n", id1, id2);
     fprintf(arquivo_log, "%s: %s %s: %s %s\n\n", id1, tipo_fig1, id2, tipo_fig2,
             intersectam ? "SIM" : "NAO");
 }
 
-// Cria um círculo com as coordenadas especificadas e com cores que dependem de um valor booleano.
-Circulo criar_ponto(double ponto_x, double ponto_y, bool interno) {
-    Circulo ponto = circulo_criar("", 1, ponto_x, ponto_y, interno ? "blue" : "magenta",
-                                  interno ? "blue" : "magenta");
-    return ponto;
-}
-
 // Executa o comando i? especificado no arquivo de consulta, verificando se um ponto é interno a uma
 // figura, conecta este ponto e a figura utilizando uma linha.
-void checar_ponto_interno(QuadTree formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
+void checar_ponto_interno(Lista formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
     char id[100];
     double ponto_x = 0, ponto_y = 0;
     sscanf(linha, "i? %s %lf %lf", id, &ponto_x, &ponto_y);
 
-    QtNo no = tabela_buscar(id_forma, id);
+    ListaNo no = tabela_buscar(id_forma, id);
     if (no == NULL)
         return;
-    Figura figura = getInfoQt(formas, no);
+    Figura figura = lista_obter_info(no);
 
     const char *tipo_figura = figura_obter_tipo(figura);
     bool interno = false;
@@ -131,14 +124,15 @@ void checar_ponto_interno(QuadTree formas, Tabela id_forma, const char *linha, F
         return;
     }
 
-    Circulo ponto = criar_ponto(ponto_x, ponto_y, interno);
-    insereQt(formas, ponto_criar_com_figura(ponto), ponto);
+    Circulo ponto = circulo_criar("", 1, ponto_x, ponto_y, interno ? "blue" : "magenta",
+                                  interno ? "blue" : "magenta");
+    lista_inserir_final(formas, ponto);
 
     Linha ligacao =
         linha_criar(figura_obter_x_centro(ponto), figura_obter_y_centro(ponto),
                     figura_obter_x_centro(figura), figura_obter_y_centro(figura),
                     figura_obter_cor_borda(ponto), figura_obter_cor_preenchimento(ponto), false);
-    insereQt(formas, ponto_criar_com_figura(ligacao), ligacao);
+    lista_inserir_final(formas, ligacao);
 
     fprintf(arquivo_log, "i? %s %lf %lf\n", id, ponto_x, ponto_y);
     fprintf(arquivo_log, "%s: %s %s\n\n", id, figura_obter_tipo(figura),
@@ -147,14 +141,14 @@ void checar_ponto_interno(QuadTree formas, Tabela id_forma, const char *linha, F
 
 // Executa o comando pnt especificado no arquivo de consulta, alterando a cor de preenchimento e
 // borda da figura com id igual ao id que segue o comando pnt.
-void alterar_cor(QuadTree formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
+void alterar_cor(Tabela id_forma, const char *linha, FILE *arquivo_log) {
     char id[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt %s %s %s", id, nova_corb, nova_corp);
 
-    QtNo no = tabela_buscar(id_forma, id);
+    ListaNo no = tabela_buscar(id_forma, id);
     if (no == NULL)
         return;
-    Figura fig = getInfoQt(formas, no);
+    Figura fig = lista_obter_info(no);
 
     fprintf(arquivo_log, "pnt %s %s %s\n", id, nova_corb, nova_corp);
     fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
@@ -165,101 +159,82 @@ void alterar_cor(QuadTree formas, Tabela id_forma, const char *linha, FILE *arqu
 
 // Executa o comando pnt* especificado no arquivo de consulta, alterando a cor de preenchimento e
 // borda de todas as figuras entre id_inicial e id_final (inclusive).
-void alterar_cores(QuadTree formas, const char *linha, FILE *arquivo_log) {
+void alterar_cores(Lista formas, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100], nova_corb[20], nova_corp[20];
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, nova_corb, nova_corp);
 
-    Lista lista_formas = quadtree_nos_para_lista(formas);
-    ListaNo atual = lista_obter_primeiro(lista_formas);
-
-    // Itera até o nó inicial.
-    while (atual != NULL) {
-        Figura fig = getInfoQt(formas, lista_obter_info(atual));
-        const char *id_atual = figura_obter_id(fig);
-        if (strcmp(id_atual, id_inicial) == 0)
-            break;
-
-        atual = lista_obter_proximo(atual);
-    }
-
+    bool inicio_encontrado = false;
     // Itera até o nó final.
-    while (atual != NULL) {
-        Figura fig = getInfoQt(formas, lista_obter_info(atual));
+    for_each_lista(atual, formas) {
+        Figura fig = lista_obter_info(atual);
         const char *id_atual = figura_obter_id(fig);
 
-        fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
-        fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
+        if (strcmp(id_atual, id_inicial) == 0 || inicio_encontrado) {
+            fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
+            fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
 
-        figura_definir_cor_borda(fig, nova_corb);
-        figura_definir_cor_preenchimento(fig, nova_corp);
+            figura_definir_cor_borda(fig, nova_corb);
+            figura_definir_cor_preenchimento(fig, nova_corp);
+            inicio_encontrado = true;
+        }
+
         if (strcmp(id_atual, id_final) == 0)
             break;
-        atual = lista_obter_proximo(atual);
     }
-    lista_destruir(lista_formas);
 }
 
 // Executa o comando delf especificado no arquivo de consulta, removendo a figura com id igual ao id
 // que segue o comando delf.
-void remover_elemento(QuadTree formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
+void remover_elemento(Lista formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
     char id[100];
     sscanf(linha, "delf %s", id);
-    QtNo no = tabela_buscar(id_forma, id);
+    ListaNo no = tabela_buscar(id_forma, id);
     if (no == NULL)
         return;
-    Figura fig = getInfoQt(formas, no);
+    Figura fig = lista_obter_info(no);
 
     fprintf(arquivo_log, "delf %s\n", id);
     figura_escrever_informacoes(fig, arquivo_log);
     fprintf(arquivo_log, "\n");
 
-    removeNoQt(formas, no);
+    lista_remover(formas, no);
     tabela_remover(id_forma, figura_obter_id(fig));
     figura_destruir(fig);
 }
 
 // Executa o comando delf* especificado pelo arquivo de consulta, removendo todas as figuras que se
 // encontrem entre id_inicial e id_final (inclusive).
-void remover_elementos(QuadTree formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
+void remover_elementos(Lista formas, Tabela id_forma, const char *linha, FILE *arquivo_log) {
     char id_inicial[100], id_final[100];
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
-    Lista lista_formas = quadtree_nos_para_lista(formas);
-    ListaNo atual = lista_obter_primeiro(lista_formas);
-
-    // Itera até o nó inicial.
-    while (atual != NULL) {
-        Figura fig = getInfoQt(formas, lista_obter_info(atual));
-        const char *id_atual = figura_obter_id(fig);
-        if (strcmp(id_atual, id_inicial) == 0)
-            break;
-        atual = lista_obter_proximo(atual);
-    }
-
+    bool inicio_encontrado = false;
+    ListaNo atual = lista_obter_primeiro(formas);
     // Itera até o nó final.
     while (atual != NULL) {
-        Figura fig = getInfoQt(formas, lista_obter_info(atual));
+        Figura fig = lista_obter_info(atual);
         const char *id_atual = figura_obter_id(fig);
-
-        fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
-        figura_escrever_informacoes(fig, arquivo_log);
-        fprintf(arquivo_log, "\n");
-
         ListaNo proximo = lista_obter_proximo(atual);
+
         if (strcmp(id_atual, id_final) == 0)
             proximo = NULL;
 
-        removeNoQt(formas, lista_obter_info(atual));
-        tabela_remover(id_forma, figura_obter_id(fig));
+        if (strcmp(id_atual, id_inicial) == 0 || inicio_encontrado) {
+            fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
+            figura_escrever_informacoes(fig, arquivo_log);
+            fprintf(arquivo_log, "\n");
+            inicio_encontrado = true;
+        }
 
+        lista_remover(formas, atual);
+        tabela_remover(id_forma, figura_obter_id(fig));
         figura_destruir(fig);
         atual = proximo;
     }
-    lista_destruir(lista_formas);
 }
 
 void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante,
-                         Tabela id_semaforo, Tabela id_radio, QuadTree formas, const char *linha,
+                         Tabela id_semaforo, Tabela id_radio, Lista formas, const char *linha,
                          FILE *arquivo_log) {
     double raio;
     double cir_x, cir_y;
@@ -282,7 +257,7 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
         no_id = tabela_buscar(id_semaforo, id);
     if (no_id == NULL)
         return;
-    Figura figura = getInfoQt(formas, no_id);
+    Figura figura = getInfoQt(NULL, no_id);
 
     cir_x = figura_obter_x_centro(figura);
     cir_y = figura_obter_y_centro(figura);
@@ -292,7 +267,7 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
     ListaNo atual = lista_obter_primeiro(nos_dentro_circulo);
     while (atual != NULL) {
         ListaNo proximo = lista_obter_proximo(atual);
-        Figura quadra = getInfoQt(formas, lista_obter_info(atual));
+        Figura quadra = getInfoQt(NULL, lista_obter_info(atual));
 
         bool contido = circulo_contem_retangulo(circulo_de_selecao, quadra);
         if (contido) {
@@ -317,21 +292,21 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
 
     // Desenhar o raio
     circulo_definir_espessura_borda(circulo_de_selecao, "2px");
-    insereQt(formas, ponto_criar_com_figura(circulo_de_selecao), circulo_de_selecao);
+    lista_inserir_final(formas, circulo_de_selecao);
 
     // Desenhar anel de duas cores
     Circulo primeiro_anel = circulo_criar("", 17, cir_x, cir_y, "blue", "none");
     circulo_definir_espessura_borda(primeiro_anel, "5px");
-    insereQt(formas, ponto_criar_com_figura(primeiro_anel), primeiro_anel);
+    lista_inserir_final(formas, primeiro_anel);
 
     Circulo segundo_anel = circulo_criar("", 12, cir_x, cir_y, "yellow", "none");
     circulo_definir_espessura_borda(segundo_anel, "5px");
-    insereQt(formas, ponto_criar_com_figura(segundo_anel), segundo_anel);
+    lista_inserir_final(formas, segundo_anel);
 }
 
 void remove_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, QuadTree hidrantes,
                                Tabela id_hidrante, QuadTree semaforos, Tabela id_semaforo,
-                               QuadTree radios, Tabela id_radio, QuadTree formas, const char *linha,
+                               QuadTree radios, Tabela id_radio, Lista formas, const char *linha,
                                FILE *arquivo_log) {
     char id[100];
     sscanf(linha, "del %s\n", id);
@@ -357,7 +332,7 @@ void remove_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, QuadTree hid
     if (no == NULL)
         return;
 
-    Figura figura = getInfoQt(formas, no);
+    Figura figura = getInfoQt(NULL, no);
     double centro_x = figura_obter_x_centro(figura);
     double centro_y = figura_obter_y_centro(figura);
 
@@ -365,10 +340,10 @@ void remove_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, QuadTree hid
     fprintf(arquivo_log, "\n");
 
     Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black", "black", false);
-    insereQt(formas, ponto_criar_com_figura(linha_vertical), linha_vertical);
+    lista_inserir_final(formas, linha_vertical);
 
     Texto rotulo = texto_criar("", centro_x + 1, 0, "none", "black", id, false);
-    insereQt(formas, ponto_criar_com_figura(rotulo), rotulo);
+    lista_inserir_final(formas, rotulo);
 
     removeNoQt(qt, no);
     tabela_remover(tabela, figura_obter_id(figura));
@@ -423,13 +398,13 @@ void informacoes_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, Tabela 
 }
 
 // Encontra o total das áreas das quadras contidas dentro de um retângulo
-void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char *linha,
+void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *linha,
                                   FILE *arquivo_log) {
     double x, y, largura, altura;
     sscanf(linha, "car %lf %lf %lf %lf", &x, &y, &largura, &altura);
 
     Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
-    insereQt(formas, ponto_criar_com_figura(contorno), contorno);
+    lista_inserir_final(formas, contorno);
 
     Lista nos_contidos = nosDentroRetanguloQt(quadras, x, y, x + largura, y + altura);
     if (lista_obter_tamanho(nos_contidos) == 0) {
@@ -440,7 +415,7 @@ void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char 
     double area_total = 0;
     ListaNo atual = lista_obter_primeiro(nos_contidos);
     while (atual != NULL) {
-        Retangulo ret = getInfoQt(formas, lista_obter_info(atual));
+        Retangulo ret = getInfoQt(NULL, lista_obter_info(atual));
 
         if (retangulo_contem_retangulo(contorno, ret)) {
             double figura_x_inicio = figura_obter_x_inicio(ret);
@@ -458,7 +433,7 @@ void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char 
             Texto area_quadra =
                 texto_criar("", figura_obter_x_centro(ret), figura_obter_y_centro(ret) + 4, "none",
                             "black", texto_area_figura, true);
-            insereQt(formas, ponto_criar_com_figura(area_quadra), area_quadra);
+            lista_inserir_final(formas, area_quadra);
 
             fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(ret), area_figura);
         }
@@ -467,14 +442,14 @@ void retangulo_area_total_contida(QuadTree formas, QuadTree quadras, const char 
     lista_destruir(nos_contidos);
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black", "black", false);
-    insereQt(formas, ponto_criar_com_figura(linha_vertical), linha_vertical);
+    lista_inserir_final(formas, linha_vertical);
 
     char texto_area_total[100];
     // Converte o valor total da área para string
     snprintf(texto_area_total, 100, "%lf", area_total);
 
     Texto area_linha = texto_criar("", x + 1, 0, "none", "black", texto_area_total, false);
-    insereQt(formas, ponto_criar_com_figura(area_linha), area_linha);
+    lista_inserir_final(formas, area_linha);
 
     fprintf(arquivo_log, "Área total: %lf\n\n", area_total);
 }
@@ -494,7 +469,7 @@ void salvar_info_em_lista(QtInfo info, ExtraInfo lista) {
     lista_inserir_final(lista, info);
 }
 
-void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, const char *linha,
+void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, const char *linha,
                           FILE *arquivo_log) {
     int k;
     int numero;
@@ -507,8 +482,8 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, c
         return;
 
     // Desenhar o caso azul
-    Caso caso = caso_criar(k, getInfoQt(formas, no_quadra), face, numero);
-    insereQt(formas, ponto_criar_com_figura(caso), caso);
+    Caso caso = caso_criar(k, getInfoQt(NULL, no_quadra), face, numero);
+    lista_inserir_final(formas, caso);
 
     Lista lista_postos = lista_criar(NULL, NULL);
     percorreLarguraQt(postos, salvar_info_em_lista, lista_postos);
@@ -528,7 +503,7 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, c
         Linha linha_posto = linha_criar(figura_obter_x_centro(caso), figura_obter_y_centro(caso),
                                         figura_obter_x_centro(posto), figura_obter_y_centro(posto),
                                         "black", "black", true);
-        insereQt(formas, ponto_criar_com_figura(linha_posto), linha_posto);
+        lista_inserir_final(formas, linha_posto);
 
         fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(posto), figura_obter_y(posto));
 
@@ -540,7 +515,7 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, QuadTree formas, c
 }
 
 // Utiliza um círculo para definir os casos que devem ser contidos por uma envoltória convexa.
-void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree postos,
+void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree postos,
                                      Lista densidades, const char *linha, FILE *arquivo_log) {
     double x, y, raio;
     sscanf(linha, "ci %lf %lf %lf", &x, &y, &raio);
@@ -548,7 +523,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     // Adiciona o círculo a lista de formas.
     Circulo raio_de_selecao = circulo_criar("", raio, x, y, "green", "none");
     circulo_definir_espessura_borda(raio_de_selecao, "4px");
-    insereQt(formas, ponto_criar_com_figura(raio_de_selecao), raio_de_selecao);
+    lista_inserir_final(formas, raio_de_selecao);
 
     Lista nos_contidos = nosDentroCirculoQt(casos, x, y, raio);
     int total_de_casos = 0;
@@ -557,7 +532,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     // círculo.
     ListaNo atual = lista_obter_primeiro(nos_contidos);
     while (atual != NULL) {
-        Figura caso = getInfoQt(formas, lista_obter_info(atual));
+        Figura caso = getInfoQt(NULL, lista_obter_info(atual));
         ListaNo proximo = lista_obter_proximo(atual);
 
         if (circulo_contem_retangulo(raio_de_selecao, caso)) {
@@ -586,7 +561,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     }
     int j = 0;
     for_each_lista(no_contido, nos_contidos) {
-        casos_filtrados[j++] = getInfoQt(formas, lista_obter_info(no_contido));
+        casos_filtrados[j++] = getInfoQt(NULL, lista_obter_info(no_contido));
     }
     lista_destruir(nos_contidos);
     nos_contidos = NULL;
@@ -663,7 +638,7 @@ void determinar_regiao_de_incidencia(QuadTree formas, QuadTree casos, QuadTree p
     }
 
     Poligono poligono = poligono_criar(pontos, tamanho_pilha, "red", cor_poligono, 0.4);
-    insereQt(formas, ponto_criar_com_figura(poligono), poligono);
+    lista_inserir_final(formas, poligono);
     fprintf(arquivo_log, "\nÁrea da envoltória convexa: %lf\n", poligono_calcular_area(poligono));
 
     // Adiciona um posto de campanha caso necessário.
@@ -705,7 +680,7 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
 
 // Escreve todas as informações de um morador, especificado pelo cpf, no arquivo log. Além disso,
 // coloca uma linha vertical do morador até o topo.
-void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const char *linha,
+void mostrar_informacoes_morador(Lista formas, Tabela dados_pessoa, const char *linha,
                                  FILE *arquivo_log) {
     char cpf[100];
     sscanf(linha, "dm? %s", cpf);
@@ -719,7 +694,7 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
     Linha linha_vertical =
         linha_criar(figura_obter_x_centro(morador), figura_obter_y_centro(morador),
                     figura_obter_x_centro(morador), 0, "black", "black", false);
-    insereQt(formas, ponto_criar_com_figura(linha_vertical), linha_vertical);
+    lista_inserir_final(formas, linha_vertical);
 
     char texto_pessoa_endereco[1024];
     snprintf(texto_pessoa_endereco, 1024,
@@ -731,7 +706,7 @@ void mostrar_informacoes_morador(QuadTree formas, Tabela dados_pessoa, const cha
 
     Texto area_linha = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
                                    texto_pessoa_endereco, false);
-    insereQt(formas, ponto_criar_com_figura(area_linha), area_linha);
+    lista_inserir_final(formas, area_linha);
 }
 
 void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dados_pessoa,
@@ -780,7 +755,7 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
 
     Lista lista_dados = quadtree_escrever_svg(qt);
 
-    // Escreve o svg das duas árvores.
+    // Escreve o svg da lista.
     svg_escrever(caminho_arquivo, 1, lista_dados);
 
     lista_destruir(lista_dados);
@@ -789,7 +764,7 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     free(diretorios);
 }
 
-void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_quadra,
+void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadra,
                                 QuadTree hidrantes, Tabela id_hidrante, QuadTree radios,
                                 Tabela id_radio, QuadTree semaforos, Tabela id_semaforo,
                                 QuadTree moradores, Tabela dados_pessoa, QuadTree estabelecimentos,
@@ -800,7 +775,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
     // Adiciona o círculo a Quadtree formas.
     Circulo raio_selecao = circulo_criar("", raio, x, y, "#6C6753", "#CCFF00");
     circulo_definir_opacidade(raio_selecao, 0.5);
-    insereQt(formas, ponto_criar_com_figura(raio_selecao), raio_selecao);
+    lista_inserir_final(formas, raio_selecao);
 
     // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
     // que estão contidas no círculo.
@@ -810,7 +785,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
         Lista nos = nosDentroCirculoQt(retangulos[i], x, y, raio);
 
         for_each_lista(no, nos) {
-            Retangulo ret = getInfoQt(formas, lista_obter_info(no));
+            Retangulo ret = getInfoQt(NULL, lista_obter_info(no));
             if (circulo_contem_retangulo(raio_selecao, ret)) {
                 figura_escrever_informacoes(ret, arquivo_log);
                 fprintf(arquivo_log, "\n");
@@ -832,7 +807,7 @@ void remover_elementos_contidos(QuadTree formas, QuadTree quadras, Tabela cep_qu
         Lista nos = nosDentroCirculoQt(circulos[i], x, y, raio);
 
         for_each_lista(no, nos) {
-            Circulo circ = getInfoQt(formas, lista_obter_info(no));
+            Circulo circ = getInfoQt(NULL, lista_obter_info(no));
             if (circulo_contem_circulo(raio_selecao, circ)) {
                 figura_escrever_informacoes(circ, arquivo_log);
                 fprintf(arquivo_log, "\n");
@@ -862,7 +837,6 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         return;
     }
 
-    QuadTree formas = tabela_buscar(quadtrees, "formas");
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
     QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
     QuadTree radios = tabela_buscar(quadtrees, "radios");
@@ -872,6 +846,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
 
+    Lista formas = tabela_buscar(listas, "formas");
     Lista densidades = tabela_buscar(listas, "densidades");
 
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
@@ -892,7 +867,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("i?", comando) == 0) {
             checar_ponto_interno(formas, id_forma, linha, arquivo_log);
         } else if (strcmp("pnt", comando) == 0) {
-            alterar_cor(formas, id_forma, linha, arquivo_log);
+            alterar_cor(id_forma, linha, arquivo_log);
         } else if (strcmp("pnt*", comando) == 0) {
             alterar_cores(formas, linha, arquivo_log);
         } else if (strcmp("delf", comando) == 0) {
