@@ -71,23 +71,12 @@ void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
 }
 
 void morador_definir_data(Morador morador) {
-    char buffer[20];
-    if (morador->dia < 10) {
-        if (morador->mes < 10) {
-            snprintf(buffer, sizeof(buffer), "0%d/0%d/%d", morador->dia, morador->mes,
-                     morador->ano);
-        } else {
-            snprintf(buffer, sizeof(buffer), "0%d/%d/%d", morador->dia, morador->mes, morador->ano);
-        }
-    } else if (morador->mes < 10) {
-        snprintf(buffer, sizeof(buffer), "%d/0%d/%d", morador->dia, morador->mes, morador->ano);
-    } else {
-        snprintf(buffer, sizeof(buffer), "%d/%d/%d", morador->dia, morador->mes, morador->ano);
-    }
-
-    strcpy(morador->data, buffer);
+    snprintf(morador->data, sizeof(morador->data), "%02d/%02d/%d", morador->dia, morador->mes,
+             morador->ano);
 }
 
+// Registra as funções do objeto Morador na interface FiguraInterface.
+// Como o tipo Morador é derivado do tipo Retangulo as funções podem ser reaproveitadas.
 static FiguraInterface morador_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, morador_obter_string_tipo);
@@ -135,6 +124,10 @@ Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, 
     }
     if (sobrenome == NULL) {
         LOG_AVISO("Não é possível criar um morador com sobrenome NULL!\n");
+        return NULL;
+    }
+    if (dia > 31 || mes > 12) {
+        LOG_AVISO("Não é possível criar um morador com data inválida!\n");
         return NULL;
     }
     Morador morador = malloc(sizeof *morador);
