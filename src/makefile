@@ -5,7 +5,7 @@ EXECUTABLE = siguel
 CC = gcc
 
 # Flags de compilação
-CFLAGS = -fstack-protector-all -std=c99 -W -Wall
+CFLAGS = -fstack-protector-all -std=c99 -O3 -W -Wall
 # Flags de linking
 LDFLAGS = -lm
 
