@@ -14,7 +14,7 @@
 #include "./Utils/logging.h"
 #include "./Utils/parametros.h"
 
-// Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espacias.
+// Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espaciais.
 Tabela criar_tabela_quadtrees() {
     Tabela quadtrees = tabela_criar((TabelaDestruirInfo *) desalocaQt);
     tabela_inserir(quadtrees, "quadras", criaQt(figura_obter_id));
@@ -28,7 +28,7 @@ Tabela criar_tabela_quadtrees() {
     return quadtrees;
 }
 
-// Cria uma nova tabela contendo listas que armazenam figuras que não precisam de buscas espacias.
+// Cria uma nova tabela contendo listas que armazenam figuras que não precisam de buscas espaciais.
 Tabela criar_tabela_listas() {
     Tabela listas = tabela_criar((TabelaDestruirInfo *) lista_destruir);
     tabela_inserir(listas, "formas", lista_criar(figura_obter_id, figura_destruir));

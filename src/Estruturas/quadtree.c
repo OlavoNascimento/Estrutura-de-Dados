@@ -247,6 +247,7 @@ QtNo quadtree_inserir_no(QuadTree qt, QtNo no) {
     }
 
     // Nó já possui informação e coordenada associadas a ele, é necessário subdividir a árvore.
+    // TODO Melhorar uso de memória da quadtree.
     if (qt->noroeste == NULL) {
         qt->noroeste = criaQt(qt->obter_identificador);
         qt->nordeste = criaQt(qt->obter_identificador);
@@ -402,7 +403,7 @@ QtNo getNoQt(QuadTree qt, double x, double y) {
 
 QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
     if (pNo == NULL) {
-        LOG_INFO("%p\n", qt);
+        printf("%p\n", qt);
         return NULL;
     }
     return pNo->info;

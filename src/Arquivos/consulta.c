@@ -535,10 +535,10 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
     // círculo.
     ListaNo atual = lista_obter_primeiro(nos_contidos);
     while (atual != NULL) {
-        Figura caso = getInfoQt(NULL, lista_obter_info(atual));
+        Caso caso = getInfoQt(NULL, lista_obter_info(atual));
         ListaNo proximo = lista_obter_proximo(atual);
 
-        if (circulo_contem_retangulo(raio_de_selecao, caso)) {
+        if (circulo_contem_retangulo(raio_de_selecao, (Retangulo) caso)) {
             if (!cabecalho_escrito) {
                 fprintf(arquivo_log, "Pontos selecionados pelo círculo: \n");
                 cabecalho_escrito = true;
@@ -613,7 +613,7 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
     fprintf(arquivo_log, "\nCategoria de incidência: %c\n", categoria);
 
     // Calcula a envoltória convexa.
-    Pilha pilha_pontos_envoltoria = graham_scan(tamanho, casos_filtrados);
+    Pilha pilha_pontos_envoltoria = graham_scan(tamanho, &casos_filtrados);
     free(casos_filtrados);
     casos_filtrados = NULL;
     if (pilha_pontos_envoltoria == NULL) {
@@ -626,19 +626,27 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
     double **pontos = malloc(tamanho_pilha * sizeof(double *));
     if (pontos == NULL) {
         LOG_ERRO("Falha ao alocar memória!\n");
+        free(cor_poligono);
         return;
     }
-    for (int i = 0; i < tamanho_pilha; i++)
-        pontos[i] = malloc(2 * sizeof(*pontos[i]));
 
     int i = 0;
     // Carrega os pontos encontrados na matriz.
     while (!pilha_esta_vazia(pilha_pontos_envoltoria)) {
+        pontos[i] = malloc(2 * sizeof(*pontos[i]));
+        if (pontos[i] == NULL) {
+            LOG_ERRO("Falha ao alocar memória!\n");
+            free(pontos);
+            free(cor_poligono);
+            return;
+        }
         Figura fig = pilha_remover(pilha_pontos_envoltoria);
         pontos[i][0] = figura_obter_x_centro(fig);
         pontos[i][1] = figura_obter_y_centro(fig);
         i++;
     }
+    pilha_destruir(pilha_pontos_envoltoria);
+    pilha_pontos_envoltoria = NULL;
 
     Poligono poligono = poligono_criar(pontos, tamanho_pilha, "red", cor_poligono, 0.4);
     lista_inserir_final(formas, poligono);
@@ -654,7 +662,6 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
     }
 
     free(cor_poligono);
-    pilha_destruir(pilha_pontos_envoltoria);
 }
 
 // Escreve as informações de todos os moradores de uma quadra no arquivo log.
