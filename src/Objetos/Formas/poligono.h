@@ -107,6 +107,14 @@ Retorna a coordenada y do centróide de um polígono.
 */
 double poligono_obter_y_centro(Poligono poligono);
 
+// Encontra e inicializa as coordenadas x e y da centroide de um polígono.
+// Argumentos:
+//      quadra: Polígono a ser obtido as coordenadas da centroide.
+//      x: Coordenada x
+//      y: Coordenada y
+// Inicializa os parâmetros x e y com as coordenadas encontradas.
+void poligono_obter_centroide(Poligono poligono, double *x, double *y);
+
 /*
 Obtém a cor da borda de um polígono.
 O parâmetro circulo não pode ser nulo.

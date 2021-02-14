@@ -202,6 +202,25 @@ double poligono_obter_x_centro(Poligono poligono) {
     return valor / (6 * poligono_calcular_area(poligono));
 }
 
+// Encontra e inicializa as coordenadas x e y da centroide de um polígono.
+void poligono_obter_centroide(Poligono poligono, double *x, double *y) {
+    double valorx = 0;
+    double valory = 0;
+    double area = poligono_calcular_area(poligono);
+    for (int i = 0; i < poligono->numero_de_pontos; i++) {
+        int proximo_indice = (i + 1) % poligono->numero_de_pontos;
+
+        double x = poligono->pontos[i][0];
+        double y = poligono->pontos[i][1];
+        double x1 = poligono->pontos[proximo_indice][0];
+        double y1 = poligono->pontos[proximo_indice][1];
+        valorx += (x + x1) * (x * y1 - x1 * y);
+        valory += (y + y1) * (x * y1 - x1 * y);
+    }
+    *x = valorx / (6 * area);
+    *y = valory / (6 * area);
+}
+
 // Retorna a cordenada y do centroide de um polígono.
 double poligono_obter_y_centro(Poligono poligono) {
     double valor = 0;
