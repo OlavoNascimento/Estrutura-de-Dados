@@ -643,8 +643,9 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
 
     // Adiciona um posto de campanha caso necessário.
     if (categoria == 'E') {
-        double x_centroide = poligono_obter_x_centro(poligono);
-        double y_centroide = poligono_obter_y_centro(poligono);
+        double x_centroide;
+        double y_centroide;
+        poligono_obter_centroide(poligono, &x_centroide, &y_centroide);
         Posto centroide = posto_criar(x_centroide, y_centroide);
         insereQt(postos, ponto_criar_com_figura(centroide), centroide);
     }
