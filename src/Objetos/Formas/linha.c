@@ -31,7 +31,7 @@ const char *linha_obter_id() {
     return "";
 }
 
-// Conecta as funções do objeto linha com as da interface figura.
+// Registra as funções do objeto linha na interface FiguraInterface.
 static FiguraInterface linha_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, linha_obter_tipo);

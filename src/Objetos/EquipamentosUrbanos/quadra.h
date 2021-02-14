@@ -3,7 +3,8 @@
 
 /*
 Este módulo define uma Quadra, o qual representa um retângulo com cores e rótulo especifico ao seu
-tipo para fácil diferenciação no arquivo svg.
+tipo para fácil diferenciação no arquivo svg, assim como funções específicas ao seu tipo como
+quadra_inicializar_coordenada e quadra_definir_cor_sombra.
 
 Suas propriedades são:
     id: Identificador da quadra.

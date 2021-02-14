@@ -26,7 +26,7 @@ const char *texto_obter_tipo() {
     return "texto";
 }
 
-// Conecta as funções do objeto texto com as da interface figura.
+// Registra as funções do objeto texto na interface FiguraInterface.
 static FiguraInterface texto_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, texto_obter_tipo);

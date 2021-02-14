@@ -53,9 +53,8 @@ void estabelecimento_escrever_informacoes(Estabelecimento est, FILE *arquivo) {
             est->altura, est->x, est->y, est->cor_borda, est->cor_preenchimento);
 }
 
-// Conecta as funções do objeto Estabelecimento com as da interface figura.
-// Como o struct Estabelecimento_s é idêntico ao struct Retangulo_s as funções utilizadas em um
-// objeto Retangulo podem ser reaproveitadas.
+// Registra as funções do objeto Estabelecimento na interface FiguraInterface.
+// Como o tipo Estabelecimento é derivado do tipo Retangulo as funções podem ser reaproveitadas.
 static FiguraInterface estabelecimento_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, estabelecimento_obter_string_tipo);

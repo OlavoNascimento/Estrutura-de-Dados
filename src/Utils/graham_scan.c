@@ -69,17 +69,16 @@ int filtrar_vertices(int tamanho, Figura **figuras) {
         const double x = figura_obter_x(fig);
         const double y = figura_obter_y(fig);
         for (int j = 0; j < 4; j++) {
-            // Calcula o produto vetorial dos vértices.
+            int proximo = (j + 1) % 4;
             // > 0: figura fora do polígono.
             // = 0: figura na linha do polígono.
             // < 0: figura dentro do polígono.
-            double produto_vetorial =
-                (y - figura_obter_y(poligono[j])) *
-                    (figura_obter_x(poligono[(j + 1) % 4]) - figura_obter_x(poligono[j])) -
-                (x - figura_obter_x(poligono[j])) *
-                    (figura_obter_y(poligono[(j + 1) % 4]) - figura_obter_y(poligono[j]));
-            // Insere apenas os vértices fora do polígono encontrado.
-            if (produto_vetorial > 0) {
+            double pv =
+                produto_vetorial(figura_obter_x(poligono[proximo]) - figura_obter_x(poligono[j]),
+                                 figura_obter_y(poligono[proximo]) - figura_obter_y(poligono[j]),
+                                 x - figura_obter_x(poligono[j]), y - figura_obter_y(poligono[j]));
+            // Insere apenas as figuras fora do polígono encontrado.
+            if (pv > 0) {
                 lista_inserir_final(filtrados, fig);
                 break;
             }
@@ -157,9 +156,8 @@ Pilha graham_scan(int tamanho, Figura **figuras) {
     }
 
     Figura ultimo_no = pilha_remover(pontos_envoltoria);
-    Figura topo = pilha_obter_topo(pontos_envoltoria);
-    // Verifica se o último ponto é inválido.
-    if (checar_horario(topo, ultimo_no, (*figuras)[0]))
+    // Verifica se o último ponto é válido.
+    if (checar_horario(pilha_obter_topo(pontos_envoltoria), ultimo_no, (*figuras)[0]))
         pilha_inserir(pontos_envoltoria, ultimo_no);
 
     return pontos_envoltoria;

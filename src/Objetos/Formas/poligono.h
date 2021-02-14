@@ -2,11 +2,12 @@
 #define POLIGONO_H
 
 /*
-Este módulo define um Poligono, o qual possui propriedades inerentes ao seu tipo como raio e suas
-coordenadas espaciais, assim como propriedades para alterar sua visualização no arquivo svg, como as
-cores de borda e preenchimento e a espessura de sua borda.
+Este módulo define um Poligono, o qual possui propriedades coordenadas espaciais, assim como
+propriedades para alterar sua visualização no arquivo svg, como as cores de borda e preenchimento e
+opacidade.
 
 Suas propriedades são:
+    área
     largura
     altura
     x: Coordenada x do círculo no plano.
@@ -23,9 +24,10 @@ typedef struct Poligono_s *Poligono;
 
 /*
 Cria e inicializa um Poligono com os valores passados.
-pontos: Array de pontos que compõem o polígono.
-numero_de_pontos: Número de pontos que compõem o polígono.
-A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
+    pontos: Array de pontos que compõem o polígono.
+    numero_de_pontos: Número de pontos que compõem o polígono.
+    opacidade: opacidade do polígono no svg.
+O id e as cores não podem ser nulos.
 A opacidade deve estar entre 0 e 1 (inclusivo).
 O usuário é responsável por liberar a memória alocada!
 */
@@ -109,11 +111,11 @@ double poligono_obter_y_centro(Poligono poligono);
 
 // Encontra e inicializa as coordenadas x e y da centroide de um polígono.
 // Argumentos:
-//      quadra: Polígono a ser obtido as coordenadas da centroide.
+//      poligono: Polígono a ser obtido as coordenadas do centroide.
 //      x: Coordenada x
 //      y: Coordenada y
 // Inicializa os parâmetros x e y com as coordenadas encontradas.
-void poligono_obter_centroide(Poligono poligono, double *x, double *y);
+void poligono_inicializar_centroide(Poligono poligono, double *x, double *y);
 
 /*
 Obtém a cor da borda de um polígono.

@@ -40,9 +40,8 @@ void semaforo_escrever_svg(Semaforo semaforo, FILE *arquivo) {
     texto_destruir(texto_semaforo);
 }
 
-// Conecta as funções do objeto Semaforo com as da interface figura.
-// Como o struct Semaforo_s é idêntico ao struct Retangulo_s as funções utilizadas em um
-// objeto Retangulo podem ser reaproveitadas.
+// Registra as funções do objeto Semaforo na interface FiguraInterface.
+// Como o tipo Semaforo é derivado do tipo Retangulo as funções podem ser reaproveitadas.
 static FiguraInterface semaforo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, semaforo_obter_tipo);

@@ -26,7 +26,7 @@ const char *retangulo_obter_tipo() {
     return "retângulo";
 }
 
-// Conecta as funções do objeto retângulo com as da interface figura.
+// Registra as funções do objeto retângulo na interface FiguraInterface.
 static FiguraInterface retangulo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, retangulo_obter_tipo);

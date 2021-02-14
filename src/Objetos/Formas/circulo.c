@@ -25,7 +25,7 @@ const char *circulo_obter_tipo() {
     return "círculo";
 }
 
-// Conecta as funções do objeto círculo com as da interface figura.
+// Registra as funções do objeto círculo na interface FiguraInterface.
 static FiguraInterface circulo_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, circulo_obter_tipo);
@@ -107,21 +107,19 @@ Circulo circulo_ler(const char *linha) {
 
 // Retorna verdadeiro se dois círculos se intersectam.
 bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
-    double dist = (circulo1->x - circulo2->x) * (circulo1->x - circulo2->x) +
-                  (circulo1->y - circulo2->y) * (circulo1->y - circulo2->y);
-    double raios = (circulo1->raio + circulo2->raio) * (circulo1->raio + circulo2->raio);
-    return dist <= raios;
+    return pow(circulo1->x - circulo2->x, 2) + pow(circulo1->y - circulo2->y, 2) <=
+           pow(circulo1->raio + circulo2->raio, 2);
 }
 
 // Retorna verdadeiro se o circulo1 contem o círculo2.
 bool circulo_contem_circulo(Circulo circulo1, Circulo circulo2) {
-    double dist = sqrt(pow(circulo2->x - circulo1->x, 2) + pow(circulo2->y - circulo1->y, 2));
-    return circulo1->raio >= dist + circulo2->raio;
+    return circulo1->raio >=
+           circulo2->raio + hypot(circulo2->x - circulo1->x, circulo2->y - circulo1->y);
 }
 
 // Retorna verdadeiro se um ponto se encontra dentro de um círculo.
 bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
-    return pow((ponto_x - circulo->x), 2) + pow((ponto_y - circulo->y), 2) <= pow(circulo->raio, 2);
+    return pow(ponto_x - circulo->x, 2) + pow(ponto_y - circulo->y, 2) <= pow(circulo->raio, 2);
 }
 
 // Escreve todos os dados de um círculo em um arquivo.

@@ -36,9 +36,8 @@ void radio_escrever_svg(Radio radio, FILE *arquivo) {
     texto_destruir(texto_radio_base);
 }
 
-// Conecta as funções do objeto Radio com as da interface figura.
-// Como o struct Radio_s é idêntico ao struct Circulo_s as funções utilizadas em um objeto
-// Circulo podem ser reaproveitadas.
+// Registra as funções do objeto Radio na interface FiguraInterface.
+// Como o tipo Radio é derivado do tipo Circulo as funções podem ser reaproveitadas.
 static FiguraInterface radio_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, radio_obter_tipo);

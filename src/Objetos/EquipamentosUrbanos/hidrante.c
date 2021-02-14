@@ -37,9 +37,8 @@ void hidrante_escrever_svg(Hidrante hidrante, FILE *arquivo) {
     texto_destruir(texto_hidrante);
 }
 
-// Conecta as funções do objeto Hidrante com as da interface figura.
-// Como o struct Hidrante_s é idêntico ao struct Circulo_s as funções utilizadas em um objeto
-// Circulo podem ser reaproveitadas.
+// Registra as funções do objeto Hidrante na interface FiguraInterface.
+// Como o tipo Hidrante é derivado do tipo Circulo as funções podem ser reaproveitadas.
 static FiguraInterface hidrante_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, hidrante_obter_tipo);

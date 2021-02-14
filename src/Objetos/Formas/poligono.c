@@ -21,6 +21,7 @@ struct Poligono_s {
     char cor_preenchimento[20];
     double opacidade;
     double **pontos;
+    double area;
 };
 
 const char *poligono_obter_tipo() {
@@ -33,7 +34,7 @@ const char *poligono_obter_id() {
     return "";
 }
 
-// Conecta as funções do objeto polígono com as da interface figura.
+// Registra as funções do objeto polígono na interface FiguraInterface.
 static FiguraInterface poligono_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, poligono_obter_tipo);
@@ -114,6 +115,7 @@ Poligono poligono_criar(double **pontos, int numero_de_pontos, const char cor_bo
     strcpy(poligono->cor_borda, cor_borda);
     strcpy(poligono->cor_preenchimento, cor_preenchimento);
     poligono->opacidade = opacidade;
+    poligono->area = -1;
 
     poligono->vtable = poligono_criar_interface_figura();
     return poligono;
@@ -164,7 +166,8 @@ double poligono_calcular_area(Poligono poligono) {
         double y1 = poligono->pontos[proximo_indice][1];
         area += x * y1 - x1 * y;
     }
-    return area / 2;
+    poligono->area = area / 2;
+    return poligono->area;
 }
 
 // Retorna a coordenada x de polígono.
@@ -187,8 +190,11 @@ double poligono_obter_y_fim(Poligono poligono) {
     return poligono->y + poligono->altura;
 }
 
+// TODO Alterar.
 // Retorna a cordenada x do centroide de um polígono.
 double poligono_obter_x_centro(Poligono poligono) {
+    // Usa a área já calculada se possível.
+    double area = poligono->area != -1 ? poligono->area : poligono_calcular_area(poligono);
     double valor = 0;
     for (int i = 0; i < poligono->numero_de_pontos; i++) {
         int proximo_indice = (i + 1) % poligono->numero_de_pontos;
@@ -199,14 +205,14 @@ double poligono_obter_x_centro(Poligono poligono) {
         double y1 = poligono->pontos[proximo_indice][1];
         valor += (x + x1) * (x * y1 - x1 * y);
     }
-    return valor / (6 * poligono_calcular_area(poligono));
+    return valor / (6 * area);
 }
 
 // Encontra e inicializa as coordenadas x e y da centroide de um polígono.
-void poligono_obter_centroide(Poligono poligono, double *x, double *y) {
-    double valorx = 0;
-    double valory = 0;
-    double area = poligono_calcular_area(poligono);
+void poligono_inicializar_centroide(Poligono poligono, double *x, double *y) {
+    double valor_x = 0;
+    double valor_y = 0;
+    double area = poligono->area != -1 ? poligono->area : poligono_calcular_area(poligono);
     for (int i = 0; i < poligono->numero_de_pontos; i++) {
         int proximo_indice = (i + 1) % poligono->numero_de_pontos;
 
@@ -214,15 +220,17 @@ void poligono_obter_centroide(Poligono poligono, double *x, double *y) {
         double y = poligono->pontos[i][1];
         double x1 = poligono->pontos[proximo_indice][0];
         double y1 = poligono->pontos[proximo_indice][1];
-        valorx += (x + x1) * (x * y1 - x1 * y);
-        valory += (y + y1) * (x * y1 - x1 * y);
+        valor_x += (x + x1) * (x * y1 - x1 * y);
+        valor_y += (y + y1) * (x * y1 - x1 * y);
     }
-    *x = valorx / (6 * area);
-    *y = valory / (6 * area);
+    *x = valor_x / (6 * area);
+    *y = valor_y / (6 * area);
 }
 
 // Retorna a cordenada y do centroide de um polígono.
 double poligono_obter_y_centro(Poligono poligono) {
+    // Usa a área já calculada se possível.
+    double area = poligono->area != -1 ? poligono->area : poligono_calcular_area(poligono);
     double valor = 0;
     for (int i = 0; i < poligono->numero_de_pontos; i++) {
         int proximo_indice = (i + 1) % poligono->numero_de_pontos;
@@ -233,7 +241,7 @@ double poligono_obter_y_centro(Poligono poligono) {
         double y1 = poligono->pontos[proximo_indice][1];
         valor += (y + y1) * (x * y1 - x1 * y);
     }
-    return valor / (6 * poligono_calcular_area(poligono));
+    return valor / (6 * area);
 }
 
 // Retorna a largura de polígono.

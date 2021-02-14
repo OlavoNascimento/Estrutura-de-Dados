@@ -2,10 +2,9 @@
 #define MORADOR_H
 
 /*
-Este módulo define um Morador, o qual representa um retângulo com informações adicionais
-como cpf, nome, sobrenome e data de nascimento
- ademais possui cores e rótulo específico ao seu tipo para fácil
-diferenciação no arquivo svg.
+Este módulo define um Morador, o qual representa um retângulo com informações adicionais como cpf,
+nome, sobrenome e data de nascimento. Ademais possui cores e rótulo específico ao seu tipo para
+fácil diferenciação no arquivo svg.
 
 Suas propriedades são:
     id: cpf do morador

@@ -136,7 +136,6 @@ char *alterar_extensao(const char *caminho_arquivo, int num_sufixos, ...) {
     char *sufixo_final = malloc(sizeof *sufixo_final);
     if (sufixo_final == NULL)
         return NULL;
-
     sufixo_final[0] = '\0';
 
     va_list sufixos;

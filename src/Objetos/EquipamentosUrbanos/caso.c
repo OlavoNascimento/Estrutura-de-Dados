@@ -56,9 +56,8 @@ void caso_escrever_informacoes(Caso caso, FILE *arquivo) {
             caso->cor_preenchimento);
 }
 
-// Conecta as funções do objeto Caso com as da interface figura.
-// Como o struct Caso_s é idêntico ao struct Retangulo_s as funções utilizadas em um objeto
-// Retangulo podem ser reaproveitadas.
+// Registra as funções do objeto Caso na interface FiguraInterface.
+// Como o tipo Caso é derivado do tipo Retangulo as funções podem ser reaproveitadas.
 static FiguraInterface caso_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, caso_obter_tipo);

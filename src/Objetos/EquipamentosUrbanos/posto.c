@@ -36,9 +36,8 @@ void posto_escrever_svg(Posto posto, FILE *arquivo) {
     texto_destruir(texto_posto);
 }
 
-// Conecta as funções do objeto Posto com as da interface figura.
-// Como o struct Hidrante_s é idêntica ao struct Circulo_s as funções utilizadas em um objeto
-// Circulo podem ser reaproveitadas.
+// Registra as funções do objeto Posto na interface FiguraInterface.
+// Como o tipo Hidrante é derivado do tipo Circulo as funções podem ser reaproveitadas.
 static FiguraInterface posto_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, posto_obter_tipo);

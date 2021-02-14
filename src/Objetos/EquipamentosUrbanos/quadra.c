@@ -66,9 +66,8 @@ void quadra_escrever_informacoes(Quadra quadra, FILE *arquivo) {
             quadra->cor_preenchimento);
 }
 
-// Conecta as funções do objeto Quadra com as da interface figura.
-// Como o struct Quadra_s é idêntico ao struct Retangulo_s as funções utilizadas em um objeto
-// Retangulo podem ser reaproveitadas.
+// Registra as funções do objeto Quadra na interface FiguraInterface.
+// Como o tipo Quadra é derivado do tipo Retangulo as funções podem ser reaproveitadas.
 static FiguraInterface quadra_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, quadra_obter_tipo);
@@ -152,11 +151,6 @@ Quadra quadra_ler(const char *linha) {
 //      numero: Distância do elemento e o início da face.
 void quadra_inicializar_coordenada(double *x, double *y, double largura, double altura,
                                    Quadra quadra, char face, int numero) {
-    if (face != 'N' && face != 'S' && face != 'L' && face != 'O') {
-        LOG_AVISO("Face inválida passada para quadra_inicializar_coordenada!\n");
-        return;
-    }
-
     if (face == 'N') {
         *y = figura_obter_y_fim(quadra) - altura;
         *x = figura_obter_x(quadra) - largura / 2 + numero;
@@ -169,6 +163,8 @@ void quadra_inicializar_coordenada(double *x, double *y, double largura, double 
     } else if (face == 'O') {
         *y = figura_obter_y(quadra) - altura / 2 + numero;
         *x = figura_obter_x_fim(quadra) - largura;
+    } else {
+        LOG_AVISO("Face inválida passada para quadra_inicializar_coordenada!\n");
     }
 }
 

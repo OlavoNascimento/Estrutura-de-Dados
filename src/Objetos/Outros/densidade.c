@@ -38,7 +38,7 @@ double densidade_obter_y_fim(Densidade densidade) {
     return densidade->y + densidade->altura;
 }
 
-// Conecta as funções do objeto Densidade com as da interface figura.
+// Registra as funções do objeto Densidade na interface FiguraInterface.
 static FiguraInterface densidade_criar_interface_figura() {
     FiguraInterface interface = figura_interface_criar();
     figura_registrar_obter_tipo(interface, densidade_obter_tipo);
