@@ -16,6 +16,11 @@ double min(double a, double b) {
     return a < b ? a : b;
 }
 
+// Calcula o produto de dois vetores.
+double produto_vetorial(double a_x, double a_y, double b_x, double b_y) {
+    return a_x * b_y - b_x * a_y;
+}
+
 // Retorna verdadeiro caso um circulo e um retângulo se intersectem.
 bool circulo_intersecta_retangulo(Circulo circulo, Retangulo retangulo) {
     const double ret_x_fim = retangulo_obter_x(retangulo) + retangulo_obter_largura(retangulo);

@@ -15,8 +15,7 @@ double calcular_distancia(ListaNo no1, double x, double y) {
 
     double cat1 = fabs(x - x_no);
     double cat2 = fabs(y - y_no);
-
-    return sqrt(pow(cat1, 2) + pow(cat2, 2));
+    return hypot(cat1, cat2);
 }
 
 void insertion_sort(Lista lista_postos, double x, double y) {
