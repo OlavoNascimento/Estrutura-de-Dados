@@ -52,8 +52,7 @@ Retangulo criar_delimitacao_figuras(Figura figura1, Figura figura2) {
     double altura =
         max(figura_obter_y_fim(figura1), figura_obter_y_fim(figura2)) - y + MARGEM_CONTORNO;
 
-    Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
-    return contorno;
+    return retangulo_criar("", largura, altura, x, y, "black", "none");
 }
 
 // Executa o comando o? especificado no arquivo de consulta, verificando se duas figuras se
@@ -164,12 +163,11 @@ void alterar_cores(Lista formas, const char *linha, FILE *arquivo_log) {
     sscanf(linha, "pnt* %s %s %s %s", id_inicial, id_final, nova_corb, nova_corp);
 
     bool inicio_encontrado = false;
-    // Itera até o nó final.
-    for_each_lista(atual, formas) {
-        Figura fig = lista_obter_info(atual);
+    for_each_lista(no, formas) {
+        Figura fig = lista_obter_info(no);
         const char *id_atual = figura_obter_id(fig);
 
-        if (strcmp(id_atual, id_inicial) == 0 || inicio_encontrado) {
+        if (inicio_encontrado || strcmp(id_atual, id_inicial) == 0) {
             fprintf(arquivo_log, "pnt* %s %s %s %s\n", id_inicial, id_final, nova_corb, nova_corp);
             fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(fig), figura_obter_y(fig));
 
@@ -177,7 +175,6 @@ void alterar_cores(Lista formas, const char *linha, FILE *arquivo_log) {
             figura_definir_cor_preenchimento(fig, nova_corp);
             inicio_encontrado = true;
         }
-
         if (strcmp(id_atual, id_final) == 0)
             break;
     }
@@ -210,7 +207,6 @@ void remover_elementos(Lista formas, Tabela id_forma, const char *linha, FILE *a
 
     bool inicio_encontrado = false;
     ListaNo atual = lista_obter_primeiro(formas);
-    // Itera até o nó final.
     while (atual != NULL) {
         Figura fig = lista_obter_info(atual);
         const char *id_atual = figura_obter_id(fig);
@@ -218,8 +214,7 @@ void remover_elementos(Lista formas, Tabela id_forma, const char *linha, FILE *a
 
         if (strcmp(id_atual, id_final) == 0)
             proximo = NULL;
-
-        if (strcmp(id_atual, id_inicial) == 0 || inicio_encontrado) {
+        if (inicio_encontrado || strcmp(id_atual, id_inicial) == 0) {
             fprintf(arquivo_log, "delf* %s %s\n", id_inicial, id_final);
             figura_escrever_informacoes(fig, arquivo_log);
             fprintf(arquivo_log, "\n");
@@ -264,13 +259,10 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
     Circulo circulo_de_selecao = circulo_criar("", raio, cir_x, cir_y, "black", "none");
 
     Lista nos_dentro_circulo = nosDentroCirculoQt(quadras, cir_x, cir_y, raio);
-    ListaNo atual = lista_obter_primeiro(nos_dentro_circulo);
-    while (atual != NULL) {
-        ListaNo proximo = lista_obter_proximo(atual);
+    for_each_lista(atual, nos_dentro_circulo) {
         Figura quadra = getInfoQt(NULL, lista_obter_info(atual));
 
-        bool contido = circulo_contem_retangulo(circulo_de_selecao, quadra);
-        if (contido) {
+        if (circulo_contem_retangulo(circulo_de_selecao, quadra)) {
             fprintf(arquivo_log, "id %s: %s, equipamento ", figura_obter_tipo(quadra),
                     figura_obter_id(quadra));
             figura_escrever_informacoes(figura, arquivo_log);
@@ -281,12 +273,11 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
                 tabela_remover(cep_quadra, figura_obter_id(quadra));
                 figura_destruir(quadra);
             } else {
-                figura_definir_cor_borda(quadra, "olive");
-                figura_definir_cor_preenchimento(quadra, "beige");
+                quadra_definir_cor_borda(quadra, "olive");
+                quadra_definir_cor_preenchimento(quadra, "beige");
                 quadra_definir_arredondamento_borda(quadra, 20);
             }
         }
-        atual = proximo;
     }
     lista_destruir(nos_dentro_circulo);
 
@@ -360,16 +351,13 @@ void circulo_contem_quadras(QuadTree quadras, const char *linha, FILE *arquivo_l
     Circulo circulo_de_selecao = circulo_criar("", raio, cir_x, cir_y, "", "");
 
     Lista nos_contidos = nosDentroCirculoQt(quadras, cir_x, cir_y, raio);
-    ListaNo atual = lista_obter_primeiro(nos_contidos);
-    while (atual != NULL) {
+    for_each_lista(atual, nos_contidos) {
         Figura quadra = getInfoQt(quadras, lista_obter_info(atual));
 
         if (circulo_contem_retangulo(circulo_de_selecao, quadra)) {
             figura_definir_cor_borda(quadra, cor_borda);
             fprintf(arquivo_log, "cep: %s\n\n", figura_obter_id(quadra));
         }
-
-        atual = lista_obter_proximo(atual);
     }
     circulo_destruir(circulo_de_selecao);
     lista_destruir(nos_contidos);
@@ -416,31 +404,24 @@ void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *li
     }
 
     double area_total = 0;
-    ListaNo atual = lista_obter_primeiro(nos_contidos);
-    while (atual != NULL) {
-        Retangulo ret = getInfoQt(NULL, lista_obter_info(atual));
+    for_each_lista(atual, nos_contidos) {
+        Quadra quadra = getInfoQt(NULL, lista_obter_info(atual));
 
-        if (retangulo_contem_retangulo(contorno, ret)) {
-            double figura_x_inicio = figura_obter_x_inicio(ret);
-            double figura_y_inicio = figura_obter_y_inicio(ret);
-            double figura_x_fim = figura_obter_x_fim(ret);
-            double figura_y_fim = figura_obter_y_fim(ret);
-            double area_figura =
-                (figura_x_fim - figura_x_inicio) * (figura_y_fim - figura_y_inicio);
-            area_total += area_figura;
+        if (retangulo_contem_retangulo(contorno, (Retangulo) quadra)) {
+            double area_quadra = quadra_obter_largura(quadra) * quadra_obter_altura(quadra);
+            area_total += area_quadra;
 
-            char texto_area_figura[100];
+            char string_area[100];
             // Converte o valor da área da figura para string
-            snprintf(texto_area_figura, 100, "%lf", area_figura);
+            snprintf(string_area, 100, "%lf", area_quadra);
 
-            Texto area_quadra =
-                texto_criar("", figura_obter_x_centro(ret), figura_obter_y_centro(ret) + 4, "none",
-                            "black", texto_area_figura, true);
-            lista_inserir_final(formas, area_quadra);
+            Texto texto_area_quadra =
+                texto_criar("", figura_obter_x_centro(quadra), figura_obter_y_centro(quadra) + 4,
+                            "none", "black", string_area, true);
+            lista_inserir_final(formas, texto_area_quadra);
 
-            fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(ret), area_figura);
+            fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(quadra), area_quadra);
         }
-        atual = lista_obter_proximo(atual);
     }
     lista_destruir(nos_contidos);
 
@@ -543,7 +524,6 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
                 fprintf(arquivo_log, "Pontos selecionados pelo círculo: \n");
                 cabecalho_escrito = true;
             }
-
             total_de_casos += caso_obter_numero_de_casos(caso);
             fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(caso), figura_obter_y(caso));
         } else {
@@ -556,7 +536,7 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
 
     // Armazena os casos filtrados em um array.
     int tamanho = lista_obter_tamanho(nos_contidos);
-    Figura *casos_filtrados = malloc(tamanho * sizeof(Caso));
+    Figura *casos_filtrados = malloc(tamanho * sizeof *casos_filtrados);
     if (casos_filtrados == NULL) {
         LOG_ERRO("Falha ao alocar memória!\n");
         lista_destruir(nos_contidos);
@@ -819,6 +799,7 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     else
         return;
 
+    // TODO Corrigir nome dmprbt
     char *diretorios = extrair_nome_diretorio(caminho_log);
     char *nome_arquivo = alterar_extensao(nome, 1, ".svg");
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);

@@ -245,8 +245,7 @@ void atualizar_sombras_quadras(QuadTree quadras, Lista densidades) {
         Densidade densidade = lista_obter_info(i);
         double habitantes = densidade_obter_densidade(densidade);
 
-        char cor[20];
-        cor[0] = '\0';
+        char cor[20] = {'\0'};
         if (habitantes >= 10 && habitantes <= 500) {
             strcpy(cor, "#sombra_10_500");
         } else if (habitantes > 500 && habitantes <= 1500) {
