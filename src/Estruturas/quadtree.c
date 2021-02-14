@@ -70,27 +70,24 @@ void *quadtree_extrair_no(QuadTree qt) {
 // informação necessária e adiciona-la na lista.
 void valores_dentro_retangulo(QuadTree qt, double x1, double y1, double x2, double y2,
                               Lista valores, void *extrair_valor(QuadTree qt)) {
+    // O nó não tem filhos.
+    if (qt == NULL || qt->no == NULL)
+        return;
+
     // Caso o ponto esteja contido no retângulo usa a função passada como argumento para extrair a
     // informação que será armazenada na lista.
-    if (qt->no != NULL && ponto_contido_em_retangulo(qt->no->coordenada, x1, y1, x2, y2))
+    if (ponto_contido_em_retangulo(qt->no->coordenada, x1, y1, x2, y2))
         lista_inserir_final(valores, extrair_valor(qt));
-
-    // O nó não tem filhos.
-    if (qt->nordeste == NULL)
-        return;
 
     double coord_x = ponto_obter_x(qt->no->coordenada);
     double coord_y = ponto_obter_y(qt->no->coordenada);
     // Verifica se é possível avançar em cada uma das direções sem sair dos limites do retângulo.
     if (coord_x >= x1 && coord_y >= y1)
         valores_dentro_retangulo(qt->noroeste, x1, y1, x2, y2, valores, extrair_valor);
-
     if (coord_x <= x2 && coord_y >= y1)
         valores_dentro_retangulo(qt->nordeste, x1, y1, x2, y2, valores, extrair_valor);
-
     if (coord_x >= x1 && coord_y <= y2)
         valores_dentro_retangulo(qt->sudoeste, x1, y1, x2, y2, valores, extrair_valor);
-
     if (coord_x <= x2 && coord_y <= y2)
         valores_dentro_retangulo(qt->sudeste, x1, y1, x2, y2, valores, extrair_valor);
 }
@@ -136,27 +133,24 @@ Lista nosDentroRetanguloQt(QuadTree qt, double x1, double y1, double x2, double 
 // informação necessária e adiciona-la na lista.
 void valores_dentro_circulo(QuadTree qt, double x, double y, double raio, Lista valores,
                             void *extrair_valor(QuadTree qt)) {
+    // O nó não tem filhos.
+    if (qt == NULL || qt->no == NULL)
+        return;
+
     // Caso o ponto esteja contido no circulo usa a função passada como argumento para extrair a
     // informação que será armazenada na lista.
-    if (qt->no != NULL && ponto_contido_em_circulo(qt->no->coordenada, x, y, raio))
+    if (ponto_contido_em_circulo(qt->no->coordenada, x, y, raio))
         lista_inserir_final(valores, extrair_valor(qt));
-
-    // O nó não tem filhos.
-    if (qt->nordeste == NULL)
-        return;
 
     double coord_x = ponto_obter_x(qt->no->coordenada);
     double coord_y = ponto_obter_y(qt->no->coordenada);
     // Verifica se é possível avançar em cada uma das direções sem sair dos limites do círculo.
     if (coord_x >= x - raio && coord_y >= y - raio)
         valores_dentro_circulo(qt->noroeste, x, y, raio, valores, extrair_valor);
-
     if (coord_x <= x + raio && coord_y >= y - raio)
         valores_dentro_circulo(qt->nordeste, x, y, raio, valores, extrair_valor);
-
     if (coord_x >= x - raio && coord_y <= y + raio)
         valores_dentro_circulo(qt->sudoeste, x, y, raio, valores, extrair_valor);
-
     if (coord_x <= x + raio && coord_y <= y + raio)
         valores_dentro_circulo(qt->sudeste, x, y, raio, valores, extrair_valor);
 }
@@ -195,22 +189,13 @@ Lista nosDentroCirculoQt(QuadTree qt, double x, double y, double r) {
 }
 
 void percorreProfundidadeQt(QuadTree qt, visitaNo f, ExtraInfo ei) {
-    if (f == NULL) {
-        LOG_AVISO(
-            "Não é possível percorrer em profundidade uma quadtree sem uma função a ser aplicada "
-            "nos nós!\n");
+    if (qt == NULL || qt->no == NULL)
         return;
-    }
-
-    if (qt->no != NULL)
-        f(qt->no->info, ei);
-
-    if (qt->noroeste != NULL) {
-        percorreProfundidadeQt(qt->noroeste, f, ei);
-        percorreProfundidadeQt(qt->nordeste, f, ei);
-        percorreProfundidadeQt(qt->sudeste, f, ei);
-        percorreProfundidadeQt(qt->sudoeste, f, ei);
-    }
+    f(qt->no->info, ei);
+    percorreProfundidadeQt(qt->noroeste, f, ei);
+    percorreProfundidadeQt(qt->nordeste, f, ei);
+    percorreProfundidadeQt(qt->sudeste, f, ei);
+    percorreProfundidadeQt(qt->sudoeste, f, ei);
 }
 
 void percorreLarguraQt(QuadTree qt, visitaNo f, ExtraInfo ei) {
@@ -226,10 +211,10 @@ void percorreLarguraQt(QuadTree qt, visitaNo f, ExtraInfo ei) {
 
     while (!fila_esta_vazia(nos)) {
         QuadTree atual = fila_remover(nos);
-        if (atual->no != NULL)
-            f(atual->no->info, ei);
+        if (atual != NULL) {
+            if (atual->no != NULL)
+                f(atual->no->info, ei);
 
-        if (atual->noroeste != NULL) {
             fila_inserir(nos, atual->noroeste);
             fila_inserir(nos, atual->nordeste);
             fila_inserir(nos, atual->sudeste);
@@ -239,20 +224,11 @@ void percorreLarguraQt(QuadTree qt, visitaNo f, ExtraInfo ei) {
     fila_destruir(nos);
 }
 
-QtNo quadtree_inserir_no(QuadTree qt, QtNo no) {
+void quadtree_inserir_no(QuadTree qt, QtNo no) {
     // Nó atual não possui informação e coordenada associadas a ele.
     if (qt->no == NULL) {
         qt->no = no;
-        return no;
-    }
-
-    // Nó já possui informação e coordenada associadas a ele, é necessário subdividir a árvore.
-    // TODO Melhorar uso de memória da quadtree.
-    if (qt->noroeste == NULL) {
-        qt->noroeste = criaQt(qt->obter_identificador);
-        qt->nordeste = criaQt(qt->obter_identificador);
-        qt->sudoeste = criaQt(qt->obter_identificador);
-        qt->sudeste = criaQt(qt->obter_identificador);
+        return;
     }
 
     double novo_ponto_x = ponto_obter_x(no->coordenada);
@@ -261,19 +237,24 @@ QtNo quadtree_inserir_no(QuadTree qt, QtNo no) {
     double coord_y = ponto_obter_y(qt->no->coordenada);
 
     // Verifica em qual direção o novo nó deve ser inserido.
-    if (novo_ponto_x <= coord_x && novo_ponto_y <= coord_y)
+    if (novo_ponto_x <= coord_x && novo_ponto_y <= coord_y) {
+        if (qt->noroeste == NULL)
+            qt->noroeste = criaQt(qt->obter_identificador);
         return quadtree_inserir_no(qt->noroeste, no);
-
-    if (novo_ponto_x >= coord_x && novo_ponto_y <= coord_y)
+    }
+    if (novo_ponto_x >= coord_x && novo_ponto_y <= coord_y) {
+        if (qt->nordeste == NULL)
+            qt->nordeste = criaQt(qt->obter_identificador);
         return quadtree_inserir_no(qt->nordeste, no);
-
-    if (novo_ponto_x <= coord_x && novo_ponto_y >= coord_y)
+    }
+    if (novo_ponto_x <= coord_x && novo_ponto_y >= coord_y) {
+        if (qt->sudoeste == NULL)
+            qt->sudoeste = criaQt(qt->obter_identificador);
         return quadtree_inserir_no(qt->sudoeste, no);
-
-    if (novo_ponto_x >= coord_x && novo_ponto_y >= coord_y)
-        return quadtree_inserir_no(qt->sudeste, no);
-
-    return NULL;
+    }
+    if (qt->sudeste == NULL)
+        qt->sudeste = criaQt(qt->obter_identificador);
+    return quadtree_inserir_no(qt->sudeste, no);
 }
 
 QtNo insereQt(QuadTree qt, Ponto ponto, QtInfo info) {
@@ -292,16 +273,16 @@ QtNo insereQt(QuadTree qt, Ponto ponto, QtInfo info) {
     }
     no->coordenada = ponto;
     no->info = info;
-
-    return quadtree_inserir_no(qt, no);
+    quadtree_inserir_no(qt, no);
+    return no;
 }
 
 // Insere os nós de uma quadtree em uma outra Quadtree.
 void reinserir_nos_quadtree(QuadTree qt, QuadTree raiz) {
-    if (qt->no != NULL)
+    if (qt == NULL)
+        return;
+    if (qt->no != NULL) {
         quadtree_inserir_no(raiz, qt->no);
-
-    if (qt->noroeste != NULL) {
         reinserir_nos_quadtree(qt->noroeste, raiz);
         reinserir_nos_quadtree(qt->nordeste, raiz);
         reinserir_nos_quadtree(qt->sudeste, raiz);
@@ -314,11 +295,11 @@ void reinserir_nos_quadtree(QuadTree qt, QuadTree raiz) {
 // re-inseridos na raiz da árvore.
 QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
     // Nó atual não é o nó procurado.
-    if (qt->no == NULL || (qt->no != no && qt->nordeste == NULL))
+    if (qt == NULL || qt->no == NULL)
         return NULL;
 
     // Nó atual não é o procurado mas possui filhos, avalia os nós filhos.
-    if (qt->no != no && qt->noroeste != NULL) {
+    if (qt->no != no) {
         double buscado_x = ponto_obter_x(no->coordenada);
         double buscado_y = ponto_obter_y(no->coordenada);
         double atual_x = ponto_obter_x(qt->no->coordenada);
@@ -326,15 +307,11 @@ QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
 
         if (buscado_x <= atual_x && buscado_y <= atual_y)
             return buscar_e_remover(qt->noroeste, no, raiz);
-
         if (buscado_x >= atual_x && buscado_y <= atual_y)
             return buscar_e_remover(qt->nordeste, no, raiz);
-
         if (buscado_x <= atual_x && buscado_y >= atual_y)
             return buscar_e_remover(qt->sudoeste, no, raiz);
-
-        if (buscado_x >= atual_x && buscado_y >= atual_y)
-            return buscar_e_remover(qt->sudeste, no, raiz);
+        return buscar_e_remover(qt->sudeste, no, raiz);
     }
 
     // Nó atual é o procurado.
@@ -345,25 +322,21 @@ QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
     qt->no = NULL;
 
     // Caso o nó que será removido tenha filhos, insere os nós filhos na raiz da árvore.
-    if (qt->noroeste != NULL) {
-        QuadTree noroeste = qt->noroeste;
-        qt->noroeste = NULL;
+    QuadTree noroeste = qt->noroeste;
+    qt->noroeste = NULL;
+    reinserir_nos_quadtree(noroeste, raiz);
 
-        QuadTree nordeste = qt->nordeste;
-        qt->nordeste = NULL;
+    QuadTree nordeste = qt->nordeste;
+    qt->nordeste = NULL;
+    reinserir_nos_quadtree(nordeste, raiz);
 
-        QuadTree sudoeste = qt->sudoeste;
-        qt->sudoeste = NULL;
+    QuadTree sudoeste = qt->sudoeste;
+    qt->sudoeste = NULL;
+    reinserir_nos_quadtree(sudoeste, raiz);
 
-        QuadTree sudeste = qt->sudeste;
-        qt->sudeste = NULL;
-
-        reinserir_nos_quadtree(noroeste, raiz);
-        reinserir_nos_quadtree(nordeste, raiz);
-        reinserir_nos_quadtree(sudoeste, raiz);
-        reinserir_nos_quadtree(sudeste, raiz);
-    }
-
+    QuadTree sudeste = qt->sudeste;
+    qt->sudeste = NULL;
+    reinserir_nos_quadtree(sudeste, raiz);
     return info;
 }
 
@@ -376,7 +349,7 @@ QtInfo removeNoQt(QuadTree qt, QtNo pNo) {
 }
 
 QtNo getNoQt(QuadTree qt, double x, double y) {
-    if (qt->no == NULL)
+    if (qt == NULL || qt->no == NULL)
         return NULL;
 
     double coord_x = ponto_obter_x(qt->no->coordenada);
@@ -384,21 +357,13 @@ QtNo getNoQt(QuadTree qt, double x, double y) {
     if (coord_x == x && coord_y == y)
         return qt->no;
 
-    if (qt->noroeste != NULL) {
-        if (x <= coord_x && y <= coord_y)
-            return getNoQt(qt->noroeste, x, y);
-
-        if (x >= coord_x && y <= coord_y)
-            return getNoQt(qt->nordeste, x, y);
-
-        if (x <= coord_x && y >= coord_y)
-            return getNoQt(qt->sudoeste, x, y);
-
-        if (x >= coord_x && y >= coord_y)
-            return getNoQt(qt->sudeste, x, y);
-    }
-
-    return NULL;
+    if (x <= coord_x && y <= coord_y)
+        return getNoQt(qt->noroeste, x, y);
+    if (x >= coord_x && y <= coord_y)
+        return getNoQt(qt->nordeste, x, y);
+    if (x <= coord_x && y >= coord_y)
+        return getNoQt(qt->sudoeste, x, y);
+    return getNoQt(qt->sudeste, x, y);
 }
 
 QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
@@ -433,8 +398,7 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
     Retangulo ret_coord = retangulo_criar("", largura * 2 + 2, altura, x, y, "black", "#f1ffe8");
     lista_inserir_final(saida, ret_coord);
 
-    char texto_cords[1024];
-    texto_cords[0] = '\0';
+    char texto_cords[1024] = {'\0'};
     snprintf(texto_cords, 500, "(%d,%d)", (int) ponto_obter_x(qt->no->coordenada),
              (int) ponto_obter_y(qt->no->coordenada));
     Texto coordenadas =
@@ -452,7 +416,7 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
                     "black", figura_obter_id(qt->no->info), true);
     lista_inserir_final(saida, texto_id);
 
-    // Conecta o nó atual a sua posição (noroeste, nordeste, sudoeste, sudeste) no pai.
+    // Conecta o nó atual a sua posição (noroeste/nordeste/sudoeste/sudeste) no pai.
     if (pai != NULL) {
         Linha ligacao = linha_criar(figura_obter_x_centro(pai), figura_obter_y_fim(pai),
                                     figura_obter_x_inicio(ret_id), figura_obter_y_inicio(ret_id),
@@ -486,17 +450,15 @@ Lista quadtree_escrever_svg(QuadTree qt) {
 }
 
 void desalocaQt(QuadTree qt) {
+    if (qt == NULL)
+        return;
     if (qt->no != NULL) {
         ponto_destruir(qt->no->coordenada);
         free(qt->no);
-    }
-
-    if (qt->noroeste != NULL) {
         desalocaQt(qt->noroeste);
         desalocaQt(qt->nordeste);
         desalocaQt(qt->sudeste);
         desalocaQt(qt->sudoeste);
     }
-
     free(qt);
 }
