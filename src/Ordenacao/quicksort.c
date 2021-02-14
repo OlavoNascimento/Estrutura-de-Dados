@@ -11,7 +11,7 @@
 double angulo_polar(Figura min, Figura ponto) {
     double angulo = atan2(figura_obter_y(ponto) - figura_obter_y(min),
                           figura_obter_x(ponto) - figura_obter_x(min));
-    // O eixo y é invertido, então é necessário inverter o angulo.
+    // O eixo y é invertido, então é necessário inverter o ângulo.
     return angulo * -1;
 }
 
@@ -21,7 +21,7 @@ static inline void trocar_figuras(Figura *figuras, int i, int j) {
     figuras[j] = temp;
 }
 
-// Particiona uma lista utilizando um pivô. Todos os valores menóres que o pivô são colocados antes
+// Particiona um array utilizando um pivô. Todos os valores menóres que o pivô são colocados antes
 // dele e todos os maiores após ele.
 int particionar(Figura min, Figura *figuras, int inicio, int fim) {
     // Usa o último elemento como pivo.

@@ -324,18 +324,19 @@ QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
     // Caso o nó que será removido tenha filhos, insere os nós filhos na raiz da árvore.
     QuadTree noroeste = qt->noroeste;
     qt->noroeste = NULL;
-    reinserir_nos_quadtree(noroeste, raiz);
 
     QuadTree nordeste = qt->nordeste;
     qt->nordeste = NULL;
-    reinserir_nos_quadtree(nordeste, raiz);
 
     QuadTree sudoeste = qt->sudoeste;
     qt->sudoeste = NULL;
-    reinserir_nos_quadtree(sudoeste, raiz);
 
     QuadTree sudeste = qt->sudeste;
     qt->sudeste = NULL;
+
+    reinserir_nos_quadtree(noroeste, raiz);
+    reinserir_nos_quadtree(nordeste, raiz);
+    reinserir_nos_quadtree(sudoeste, raiz);
     reinserir_nos_quadtree(sudeste, raiz);
     return info;
 }

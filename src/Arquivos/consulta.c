@@ -784,8 +784,8 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
 void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree hidrantes,
                            QuadTree semaforos, QuadTree radios, const char *linha) {
     char arvore[10];
-    char nome[1024];
-    sscanf(linha, "dmprbt %s %s", arvore, nome);
+    char sufixo[1024];
+    sscanf(linha, "dmprbt %s %s", arvore, sufixo);
 
     QuadTree qt = NULL;
     if (strcmp(arvore, "q") == 0)
@@ -799,11 +799,10 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     else
         return;
 
-    // TODO Corrigir nome dmprbt
     char *diretorios = extrair_nome_diretorio(caminho_log);
-    char *nome_arquivo = alterar_extensao(nome, 1, ".svg");
+    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", sufixo, ".svg");
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
-    LOG_INFO("Arquivo dmprbt: %s\n", caminho_arquivo);
+    printf("Arquivo dmprbt: %s\n", caminho_arquivo);
 
     Lista lista_dados = quadtree_escrever_svg(qt);
 
@@ -811,9 +810,9 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     svg_escrever(caminho_arquivo, 1, lista_dados);
 
     lista_destruir(lista_dados);
-    free(caminho_arquivo);
-    free(nome_arquivo);
     free(diretorios);
+    free(nome_arquivo);
+    free(caminho_arquivo);
 }
 
 void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabelecimentos,

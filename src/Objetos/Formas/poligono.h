@@ -7,7 +7,6 @@ propriedades para alterar sua visualização no arquivo svg, como as cores de bo
 opacidade.
 
 Suas propriedades são:
-    área
     largura
     altura
     x: Coordenada x do círculo no plano.
