@@ -14,9 +14,9 @@
 
 // Verifica se uma curva é no sentido horário.
 double checar_horario(Figura a, Figura b, Figura c) {
-    double area =
-        (figura_obter_x(b) - figura_obter_x(a)) * (figura_obter_y(c) - figura_obter_y(a)) -
-        (figura_obter_y(b) - figura_obter_y(a)) * (figura_obter_x(c) - figura_obter_x(a));
+    double area = produto_vetorial(
+        figura_obter_x(b) - figura_obter_x(a), figura_obter_y(b) - figura_obter_y(a),
+        figura_obter_x(c) - figura_obter_x(a), figura_obter_y(c) - figura_obter_y(a));
     // Area > 0, curva no sentido anti-horário.
     // Area = 0, pontos são colineares.
     // Area < 0, curva no sentido horário.

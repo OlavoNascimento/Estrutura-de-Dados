@@ -874,7 +874,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
                                 QuadTree hidrantes, Tabela id_hidrante, QuadTree radios,
                                 Tabela id_radio, QuadTree semaforos, Tabela id_semaforo,
                                 QuadTree moradores, Tabela dados_pessoa, QuadTree estabelecimentos,
-                                const char *linha, FILE *arquivo_log) {
+                                Tabela cnpj_estabelecimento, const char *linha, FILE *arquivo_log) {
     double x, y, raio;
     sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
 
@@ -886,7 +886,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
     // que estão contidas no círculo.
     QuadTree retangulos[] = {quadras, semaforos, moradores, estabelecimentos};
-    Tabela tabelas_ret[] = {cep_quadra, id_semaforo, dados_pessoa};
+    Tabela tabelas_ret[] = {cep_quadra, id_semaforo, dados_pessoa, cnpj_estabelecimento};
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
         Lista nos = nosDentroCirculoQt(retangulos[i], x, y, raio);
 
@@ -897,8 +897,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
                 fprintf(arquivo_log, "\n");
 
                 removeNoQt(retangulos[i], lista_obter_info(no));
-                if (i < 3)
-                    tabela_remover(tabelas_ret[i], figura_obter_id(ret));
+                tabela_remover(tabelas_ret[i], figura_obter_id(ret));
                 figura_destruir(ret);
             }
         }
@@ -1015,7 +1014,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("catac", comando) == 0) {
             remover_elementos_contidos(formas, quadras, cep_quadra, hidrantes, id_hidrante, radios,
                                        id_radio, semaforos, id_semaforo, moradores, dados_pessoa,
-                                       estabelecimentos, linha, arquivo_log);
+                                       estabelecimentos, cnpj_estabelecimento, linha, arquivo_log);
         }
     }
 
