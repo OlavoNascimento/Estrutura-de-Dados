@@ -77,7 +77,7 @@ static FiguraInterface semaforo_criar_interface_figura() {
 }
 
 // Cria e inicializa um Semaforo com os valores passados.
-Semaforo semaforo_criar(const char id[100], double largura, double altura, double x, double y) {
+Semaforo semaforo_criar(const char id[100], double x, double y) {
     if (id == NULL) {
         LOG_AVISO("Não é possível criar um semáforo com id NULL!\n");
         return NULL;
@@ -88,10 +88,10 @@ Semaforo semaforo_criar(const char id[100], double largura, double altura, doubl
         return NULL;
     }
     strcpy(semaforo->id, id);
-    semaforo->largura = largura;
-    semaforo->altura = altura;
-    semaforo->x = x;
-    semaforo->y = y;
+    semaforo->largura = 12;
+    semaforo->altura = 30;
+    semaforo->x = x - semaforo->largura / 2;
+    semaforo->y = y - semaforo->altura / 2;
     strcpy(semaforo->cor_borda, "red");
     strcpy(semaforo->cor_preenchimento, "green");
     semaforo->arredondamento_borda = 0;
@@ -107,10 +107,8 @@ Semaforo semaforo_ler(const char *linha) {
     char id[100];
     double x;
     double y;
-    double largura = 12;
-    double altura = 30;
     sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
-    return semaforo_criar(id, largura, altura, x - largura / 2, y - altura / 2);
+    return semaforo_criar(id, x, y);
 }
 
 // Retorna o id de um semáforo.

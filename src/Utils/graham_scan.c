@@ -27,8 +27,8 @@ double checar_horario(Figura a, Figura b, Figura c) {
 // envoltória.
 // Para isso encontra o polígono convexo formado pelas figuras que estão nas extremidades e remove
 // todos os outros elementos que estão contidos nesse polígono.
-// Explicação em detalhes pode ser encontrado em: S.G. Akl & Godfried Toussaint, 1977, "A Fast
-// Convex-hull Algorithm".
+// Explicação em detalhes pode ser encontrado em: S.G. Akl & Godfried Toussaint, "A Fast Convex-hull
+// Algorithm" (1977).
 int filtrar_vertices(int tamanho, Figura **figuras) {
     Figura esquerda = (*figuras)[0];
     Figura baixo = (*figuras)[0];

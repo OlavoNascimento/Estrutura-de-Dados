@@ -119,8 +119,8 @@ Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const c
         return NULL;
     }
     strcpy(est->id, cnpj);
-    est->largura = 12;
-    est->altura = 12;
+    est->largura = 20;
+    est->altura = 20;
     est->x = 0;
     est->y = 0;
     strcpy(est->cor_borda, "#3a4a3f");

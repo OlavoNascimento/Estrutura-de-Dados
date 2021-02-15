@@ -73,7 +73,7 @@ static FiguraInterface radio_criar_interface_figura() {
 }
 
 // Cria e inicializa um Radio com os valores passados.
-Radio radio_criar(const char id[100], double raio, double x, double y) {
+Radio radio_criar(const char id[100], double x, double y) {
     if (id == NULL) {
         LOG_AVISO("Não é possível criar um rádio com id NULL!\n");
         return NULL;
@@ -84,7 +84,7 @@ Radio radio_criar(const char id[100], double raio, double x, double y) {
         return NULL;
     }
     strcpy(radio->id, id);
-    radio->raio = raio;
+    radio->raio = 10;
     radio->x = x;
     radio->y = y;
     strcpy(radio->cor_borda, "purple");
@@ -99,11 +99,10 @@ Radio radio_criar(const char id[100], double raio, double x, double y) {
 // Cria um rádio com base em informações de uma linha.
 Radio radio_ler(const char *linha) {
     char id[100];
-    double raio = 10;
     double x;
     double y;
     sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
-    return radio_criar(id, raio, x, y);
+    return radio_criar(id, x, y);
 }
 
 // Retorna o id de um rádio.

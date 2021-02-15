@@ -109,8 +109,8 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
         return NULL;
     }
     strcpy(caso->id, "");
-    caso->largura = 20;
-    caso->altura = 20;
+    caso->largura = 16;
+    caso->altura = 16;
     caso->x = 0;
     caso->y = 0;
     strcpy(caso->cor_borda, "red");

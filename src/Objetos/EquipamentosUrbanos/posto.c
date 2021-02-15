@@ -31,7 +31,7 @@ void posto_escrever_svg(Posto posto, FILE *arquivo) {
     circulo_escrever_svg((Circulo) posto, arquivo);
 
     // Rótulo do posto.
-    Texto texto_posto = texto_criar("", posto->x, posto->y + 4, "none", "white", "PC", true);
+    Texto texto_posto = texto_criar("", posto->x, posto->y + 6, "none", "white", "PC", true);
     texto_escrever_svg(texto_posto, arquivo);
     texto_destruir(texto_posto);
 }

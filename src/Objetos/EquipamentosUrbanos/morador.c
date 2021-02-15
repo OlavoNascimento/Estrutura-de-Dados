@@ -193,8 +193,8 @@ void morador_definir_endereco(Morador morador, const char *cep, const char face,
     morador->endereco.face = face;
     morador->endereco.num = num;
 
-    morador->largura = 12;
-    morador->altura = 12;
+    morador->largura = 20;
+    morador->altura = 20;
     morador->x = 0;
     morador->y = 0;
     quadra_inicializar_coordenada(&morador->x, &morador->y, morador->largura, morador->altura,

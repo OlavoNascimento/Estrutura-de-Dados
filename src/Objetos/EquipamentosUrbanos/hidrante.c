@@ -74,7 +74,7 @@ static FiguraInterface hidrante_criar_interface_figura() {
 }
 
 // Cria e inicializa um Hidrante com os valores passados.
-Hidrante hidrante_criar(const char id[100], double raio, double x, double y) {
+Hidrante hidrante_criar(const char id[100], double x, double y) {
     if (id == NULL) {
         LOG_AVISO("Não é possível criar um hidrante com id NULL!\n");
         return NULL;
@@ -85,7 +85,7 @@ Hidrante hidrante_criar(const char id[100], double raio, double x, double y) {
         return NULL;
     }
     strcpy(hidrante->id, id);
-    hidrante->raio = raio;
+    hidrante->raio = 10;
     hidrante->x = x;
     hidrante->y = y;
     strcpy(hidrante->cor_borda, "red");
@@ -100,11 +100,10 @@ Hidrante hidrante_criar(const char id[100], double raio, double x, double y) {
 // Cria um hidrante com base em informações de uma linha.
 Hidrante hidrante_ler(const char *linha) {
     char id[100];
-    double raio = 10;
     double x;
     double y;
     sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
-    return hidrante_criar(id, raio, x, y);
+    return hidrante_criar(id, x, y);
 }
 
 // Retorna o id de um hidrante.
