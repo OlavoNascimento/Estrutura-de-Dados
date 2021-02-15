@@ -35,7 +35,7 @@ void caso_escrever_svg(Caso caso, FILE *arquivo) {
     retangulo_escrever_svg((Retangulo) caso, arquivo);
 
     double x = figura_obter_x_centro(caso);
-    double y = figura_obter_y_centro(caso) + 4;
+    double y = figura_obter_y_centro(caso) + 5;
     // Converte o número de casos para uma string.
     char conteudo[1024];
     snprintf(conteudo, 500, "%d", caso->numero_de_casos);
@@ -109,8 +109,8 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
         return NULL;
     }
     strcpy(caso->id, "");
-    caso->largura = 12;
-    caso->altura = 12;
+    caso->largura = 20;
+    caso->altura = 20;
     caso->x = 0;
     caso->y = 0;
     strcpy(caso->cor_borda, "red");
