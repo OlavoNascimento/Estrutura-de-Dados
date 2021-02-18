@@ -17,6 +17,7 @@ struct Linha_s {
     double y2;
     char cor_borda[20];
     char cor_preenchimento[20];
+    char espessura_borda[20];
     bool tracejado;
 };
 
@@ -80,6 +81,7 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
     strcpy(linha->cor_borda, cor_borda);
     strcpy(linha->cor_preenchimento, cor_preenchimento);
     linha->tracejado = tracejado;
+    strcpy(linha->espessura_borda, "1px");
 
     linha->vtable = linha_criar_interface_figura();
     return linha;
@@ -94,8 +96,10 @@ void linha_escrever_informacoes(Linha linha, FILE *arquivo) {
 
 // Escreve o código svg que representa uma linha em um arquivo.
 void linha_escrever_svg(Linha linha, FILE *arquivo) {
-    fprintf(arquivo, "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' fill='%s'", linha->x1,
-            linha->y1, linha->x2, linha->y2, linha->cor_borda, linha->cor_preenchimento);
+    fprintf(arquivo,
+            "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' fill='%s' stroke-width='%s'",
+            linha->x1, linha->y1, linha->x2, linha->y2, linha->cor_borda, linha->cor_preenchimento,
+            linha->espessura_borda);
     if (linha->tracejado == true) {
         fprintf(arquivo, " stroke-dasharray=' 10 5'");
     }
@@ -160,6 +164,14 @@ void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento)
         return;
     }
     strcpy(linha->cor_preenchimento, cor_preenchimento);
+}
+
+void linha_definir_espessura(Linha linha, const char *espessura) {
+    if (espessura == NULL) {
+        LOG_AVISO("Não é possível definir NULL como espessura da borda %s!\n",
+                  figura_obter_tipo(linha));
+    }
+    strcpy(linha->espessura_borda, espessura);
 }
 
 // Libera a memória alocada por uma linha.

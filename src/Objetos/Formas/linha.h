@@ -106,6 +106,11 @@ Define a cor de preenchimento de uma linha.
 Nenhum dos parâmetros podem ser nulos.
 */
 void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento);
+/*
+Define a espessura da borda de uma linha.
+Nenhum dos parâmetros podem ser nulos.
+*/
+void linha_definir_espessura(Linha linha, const char *espessura);
 
 /*
 Libera a memória alocada por uma linha.
