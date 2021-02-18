@@ -28,8 +28,8 @@ struct Morador_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    double arredondamento_borda;
     char espessura_borda[20];
+    double arredondamento_borda;
     bool borda_tracejada;
 
     // Informações
@@ -71,7 +71,7 @@ void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
 }
 
 void morador_definir_data(Morador morador) {
-    snprintf(morador->data, sizeof(morador->data), "%02d/%02d/%d", morador->dia, morador->mes,
+    snprintf(morador->data, sizeof(morador->data), "%02d/%02d/%d", morador->dia, morador->mes % 100,
              morador->ano);
 }
 
@@ -285,6 +285,11 @@ void morador_definir_espessura_borda(Morador morador, const char *espessura_bord
 // Define o arredondamento da borda de um morador.
 void morador_definir_arredondamento_borda(Morador morador, double raio_borda) {
     retangulo_definir_arredondamento_borda((Retangulo) morador, raio_borda);
+}
+
+// Define se a borda de um morador é tracejada.
+void morador_definir_borda_tracejada(Morador morador, bool tracejado) {
+    retangulo_definir_borda_tracejada((Retangulo) morador, tracejado);
 }
 
 // Libera a memória utilizada por um morador.

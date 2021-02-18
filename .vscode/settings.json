@@ -27,6 +27,7 @@
     "map",
     "mapeavel",
     "obrigatorios",
+    "ordenacao",
     "parametros",
     "pivo",
     "proporcao",
@@ -36,6 +37,7 @@
     "retangulos",
     "selecao",
     "svg",
+    "tabelahash",
     "toussaint",
     "uniao"
   ],

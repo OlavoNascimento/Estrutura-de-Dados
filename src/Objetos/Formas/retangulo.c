@@ -17,8 +17,8 @@ struct Retangulo_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    double arredondamento_borda;
     char espessura_borda[20];
+    double arredondamento_borda;
     bool borda_tracejada;
 };
 
@@ -253,14 +253,14 @@ void retangulo_definir_espessura_borda(Retangulo retangulo, const char *espessur
     strcpy(retangulo->espessura_borda, espessura_borda);
 }
 
-// Define se a borda do retângulo é tracejada.
-void retangulo_definir_borda_tracejada(Retangulo retangulo, bool tracejado) {
-    retangulo->borda_tracejada = tracejado;
-}
-
 // Define o arredondamento da borda do retângulo.
 void retangulo_definir_arredondamento_borda(Retangulo retangulo, double arredondamento_borda) {
     retangulo->arredondamento_borda = arredondamento_borda;
+}
+
+// Define se a borda de um retângulo é tracejada.
+void retangulo_definir_borda_tracejada(Retangulo retangulo, bool tracejado) {
+    retangulo->borda_tracejada = tracejado;
 }
 
 // Libera a memória alocada por.retângulo.

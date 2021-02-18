@@ -20,8 +20,8 @@ struct Caso_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    double arredondamento_borda;
     char espessura_borda[20];
+    double arredondamento_borda;
     bool borda_tracejada;
     int numero_de_casos;
 };
@@ -189,6 +189,11 @@ void caso_definir_espessura_borda(Caso caso, const char *espessura_borda) {
 // Define o arredondamento da borda de um caso.
 void caso_definir_arredondamento_borda(Caso caso, double raio_borda) {
     retangulo_definir_arredondamento_borda((Retangulo) caso, raio_borda);
+}
+
+// Define se a borda de um caso é tracejada.
+void caso_definir_borda_tracejada(Caso caso, bool tracejado) {
+    retangulo_definir_borda_tracejada((Retangulo) caso, tracejado);
 }
 
 // Libera a memória alocada por um caso.

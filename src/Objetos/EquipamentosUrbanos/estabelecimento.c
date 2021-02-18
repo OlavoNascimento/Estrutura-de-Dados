@@ -20,8 +20,8 @@ struct Estabelecimento_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    double arredondamento_borda;
     char espessura_borda[20];
+    double arredondamento_borda;
     bool borda_tracejada;
     char tipo[100];
     char nome[100];
@@ -219,6 +219,11 @@ void estabelecimento_definir_espessura_borda(Estabelecimento est, const char *es
 // Define o arredondamento da borda de um estabelecimento.
 void estabelecimento_definir_arredondamento_borda(Estabelecimento est, double raio_borda) {
     retangulo_definir_arredondamento_borda((Retangulo) est, raio_borda);
+}
+
+// Define se a borda de um estabelecimento é tracejada.
+void estabelecimento_definir_borda_tracejada(Estabelecimento est, bool tracejado) {
+    retangulo_definir_borda_tracejada((Retangulo) est, tracejado);
 }
 
 // Libera a memória alocada por um estabelecimento.

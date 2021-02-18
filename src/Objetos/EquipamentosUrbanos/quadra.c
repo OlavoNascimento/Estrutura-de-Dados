@@ -20,8 +20,8 @@ struct Quadra_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    double arredondamento_borda;
     char espessura_borda[20];
+    double arredondamento_borda;
     bool borda_tracejada;
     char cor_sombra[20];
 };
@@ -228,14 +228,14 @@ void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda) 
     retangulo_definir_espessura_borda((Retangulo) quadra, espessura_borda);
 }
 
-// Define se a borda da quadra é tracejada.
-void quadra_definir_borda_tracejada(Quadra quadra, bool tracejado) {
-    retangulo_definir_borda_tracejada((Retangulo) quadra, tracejado);
-}
-
 // Define o arredondamento da borda da quadra.
 void quadra_definir_arredondamento_borda(Quadra quadra, double arredondamento_borda) {
     retangulo_definir_arredondamento_borda((Retangulo) quadra, arredondamento_borda);
+}
+
+// Define se a borda da quadra é tracejada.
+void quadra_definir_borda_tracejada(Quadra quadra, bool tracejado) {
+    retangulo_definir_borda_tracejada((Retangulo) quadra, tracejado);
 }
 
 // Libera a memória alocada por uma quadra.

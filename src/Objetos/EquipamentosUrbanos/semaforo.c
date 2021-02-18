@@ -19,8 +19,8 @@ struct Semaforo_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    double arredondamento_borda;
     char espessura_borda[20];
+    double arredondamento_borda;
     bool borda_tracejada;
 };
 
@@ -141,7 +141,7 @@ const char *semaforo_obter_cor_borda(Semaforo semaforo) {
     return retangulo_obter_cor_borda((Retangulo) semaforo);
 }
 
-// Define a cor da borda de um semaforo.
+// Define a cor da borda de um semáforo.
 void semaforo_definir_cor_borda(Semaforo semaforo, const char *cor_borda) {
     retangulo_definir_cor_borda((Retangulo) semaforo, cor_borda);
 }
@@ -151,7 +151,7 @@ const char *semaforo_obter_cor_preenchimento(Semaforo semaforo) {
     return retangulo_obter_cor_preenchimento((Retangulo) semaforo);
 }
 
-// Define a cor de preenchimento de um semaforo.
+// Define a cor de preenchimento de um semáforo.
 void semaforo_definir_cor_preenchimento(Semaforo semaforo, const char *cor_preenchimento) {
     retangulo_definir_cor_preenchimento((Retangulo) semaforo, cor_preenchimento);
 }
@@ -161,14 +161,14 @@ void semaforo_definir_espessura_borda(Semaforo semaforo, const char *espessura_b
     retangulo_definir_espessura_borda((Retangulo) semaforo, espessura_borda);
 }
 
-// Define se a borda do semaforo é tracejada.
-void semaforo_definir_borda_tracejada(Semaforo semaforo, bool tracejado) {
-    retangulo_definir_borda_tracejada((Retangulo) semaforo, tracejado);
-}
-
 // Define o arredondamento da borda do semaforo.
 void semaforo_definir_arredondamento_borda(Semaforo semaforo, double arredondamento_borda) {
     retangulo_definir_arredondamento_borda((Retangulo) semaforo, arredondamento_borda);
+}
+
+// Define se a borda de um semáforo é tracejada.
+void semaforo_definir_borda_tracejada(Semaforo semaforo, bool tracejado) {
+    retangulo_definir_borda_tracejada((Retangulo) semaforo, tracejado);
 }
 
 // Libera a memória alocada por um semáforo.
