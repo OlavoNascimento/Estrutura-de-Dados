@@ -774,15 +774,18 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
 
     Linha linha_enderecos = linha_criar(centro_x_atual, centro_y_atual, centro_x_novo,
                                         centro_y_novo, "red", "red", false);
+    linha_definir_espessura(linha_enderecos, "5px");
     lista_inserir_final(formas, linha_enderecos);
+    
+
 
     // cria circulo no endereço atual
     Circulo circulo_atual = circulo_criar("", 10, centro_x_atual, centro_y_atual, "white", "red");
-    circulo_definir_espessura_borda(circulo_atual, "10");
+    circulo_definir_espessura_borda(circulo_atual, "5px");
 
     // cria circulo no endereço novo
     Circulo circulo_novo = circulo_criar("", 10, centro_x_novo, centro_y_novo, "white", "blue");
-    circulo_definir_espessura_borda(circulo_novo, "10");
+    circulo_definir_espessura_borda(circulo_novo, "5px");
 
     // alterar endereço
     morador_definir_endereco(morador, cep, face, num, complemento, figura_nova);
