@@ -729,6 +729,65 @@ void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dad
     fprintf(arquivo_log, "\n");
 }
 
+void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa, const char *linha,
+                            FILE *arquivo_log) {
+    char cpf[100];
+    char cep[100];
+    char complemento[100];
+    char face;
+    int num;
+    sscanf(linha, "mud %s %s %c %d %s", cpf, cep, &face, &num, complemento);
+
+    Morador morador = tabela_buscar(dados_pessoa, cpf);
+    if (morador == NULL)
+        return;
+
+    figura_escrever_informacoes(morador, arquivo_log);
+    fprintf(arquivo_log, "Endereço antigo: ");
+    fprintf(arquivo_log, "Cep:%s face:%c número:%d complemento:%s ",
+            morador_obter_endereco_cep(morador), morador_obter_endereco_face(morador),
+            morador_obter_endereco_num(morador), morador_obter_endereco_complemento(morador));
+    fprintf(arquivo_log, "\nNovo endereço:");
+    fprintf(arquivo_log, "Cep:%s face:%c número:%d complemento:%s ", cep, face, num, complemento);
+
+    // endereço atual
+    QtNo no_atual = tabela_buscar(cep_quadra, cep);
+    if (no_atual == NULL) {
+        printf("Quadra buscada pelo comando mud não encontrada!\n");
+        return;
+    }
+
+    Figura figura_atual = getInfoQt(NULL, no_atual);
+    double centro_x_atual = figura_obter_x_centro(figura_atual);
+    double centro_y_atual = figura_obter_y_centro(figura_atual);
+
+    // endereço novo
+    QtNo no_novo = tabela_buscar(cep_quadra, cep);
+    if (no_novo == NULL) {
+        printf("Quadra buscada pelo comando mud não encontrada!\n");
+        return;
+    }
+
+    Figura figura_nova = getInfoQt(NULL, no_novo);
+    double centro_x_novo = figura_obter_x_centro(figura_nova);
+    double centro_y_novo = figura_obter_y_centro(figura_nova);
+
+    Linha linha_enderecos = linha_criar(centro_x_atual, centro_y_atual, centro_x_novo,
+                                        centro_y_novo, "red", "red", false);
+    lista_inserir_final(formas, linha_enderecos);
+
+    // cria circulo no endereço atual
+    Circulo circulo_atual = circulo_criar("", 10, centro_x_atual, centro_y_atual, "white", "red");
+    circulo_definir_espessura_borda(circulo_atual, "10");
+
+    // cria circulo no endereço novo
+    Circulo circulo_novo = circulo_criar("", 10, centro_x_novo, centro_y_novo, "white", "blue");
+    circulo_definir_espessura_borda(circulo_novo, "10");
+
+    // alterar endereço
+    morador_definir_endereco(morador, cep, face, num, complemento, figura_nova);
+}
+
 // Cria um arquivo svg com o nome especificado, o qual contem as figuras da quadtree selecionada,
 // assim como os ids e coordenadas de cada figura.
 void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree hidrantes,
@@ -901,6 +960,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("de?", comando) == 0) {
             mostrar_informacoes_estabelecimento(cnpj_estabelecimento, dados_pessoa, linha,
                                                 arquivo_log);
+        } else if (strcmp("mud", comando) == 0) {
+            mudar_endereco_morador(formas, cep_quadra, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
         } else if (strcmp("catac", comando) == 0) {
