@@ -397,6 +397,9 @@ void informacoes_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, Tabela 
             figura_obter_x(equipamento), figura_obter_y(equipamento));
 }
 
+//
+//
+//
 // Encontra o total das áreas das quadras contidas dentro de um retângulo
 void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *linha,
                                   FILE *arquivo_log) {
@@ -776,16 +779,14 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
                                         centro_y_novo, "red", "red", false);
     linha_definir_espessura(linha_enderecos, "5px");
     lista_inserir_final(formas, linha_enderecos);
-    
-
 
     // cria circulo no endereço atual
     Circulo circulo_atual = circulo_criar("", 10, centro_x_atual, centro_y_atual, "white", "red");
-    circulo_definir_espessura_borda(circulo_atual, "5px");
+    circulo_definir_espessura_borda(circulo_atual, "10");
 
     // cria circulo no endereço novo
     Circulo circulo_novo = circulo_criar("", 10, centro_x_novo, centro_y_novo, "white", "blue");
-    circulo_definir_espessura_borda(circulo_novo, "5px");
+    circulo_definir_espessura_borda(circulo_novo, "10");
 
     // alterar endereço
     morador_definir_endereco(morador, cep, face, num, complemento, figura_nova);
@@ -825,6 +826,61 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     free(caminho_arquivo);
     free(nome_arquivo);
     free(diretorios);
+}
+
+void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabelecimentos,
+                                        const char *linha, FILE *arquivo_log) {
+    char tipo[3];
+    float x, y, largura, altura;
+    bool tipo_tp = false;
+    sscanf(linha, "eplg? %s %f %f %f %f", tipo, &x, &y, &largura, &altura);
+
+    if (strcmp(tipo, "tp") == 0) {
+        tipo_tp = true;
+    }
+
+    Lista nos_contidos = nosDentroRetanguloQt(estabelecimentos, x, y, x + largura, y + altura);
+    if (lista_obter_tamanho(nos_contidos) == 0) {
+        lista_destruir(nos_contidos);
+        return;
+    }
+
+    Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
+
+    ListaNo atual = lista_obter_primeiro(nos_contidos);
+    while (atual != NULL) {
+        Estabelecimento est = getInfoQt(NULL, lista_obter_info(atual));
+
+        if (tipo_tp && strcmp(estabelecimento_obter_tipo(est), "tp") == 0) {
+            if (retangulo_checar_ponto_interno(contorno, estabelecimento_obter_x(est),
+                                               estabelecimento_obter_y(est))) {
+                figura_escrever_informacoes(est, arquivo_log);
+
+                Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
+                fprintf(arquivo_log, "Nome do proprietário: %s\n", morador_obter_nome(morador));
+
+                // destaca o estabelecimento selecionado
+                estabelecimento_definir_borda_tracejada(est, true);
+                estabelecimento_definir_cor_borda(est, "#039932");
+            }
+        } else if (!tipo_tp) {
+            if (retangulo_checar_ponto_interno(contorno, estabelecimento_obter_x(est),
+                                               estabelecimento_obter_y(est))) {
+                figura_escrever_informacoes(est, arquivo_log);
+
+                Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
+                fprintf(arquivo_log, "Nome do proprietário: %s\n", morador_obter_nome(morador));
+
+                // destaca o estabelecimento selecionado
+                estabelecimento_definir_borda_tracejada(est, true);
+                estabelecimento_definir_cor_borda(est, "#039932");
+            }
+        }
+        atual = lista_obter_proximo(atual);
+    }
+
+    retangulo_destruir(contorno);
+    lista_destruir(nos_contidos);
 }
 
 void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadra,
@@ -967,6 +1023,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             mudar_endereco_morador(formas, cep_quadra, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {
             escrever_quadtree_svg(caminho_log, quadras, hidrantes, semaforos, radios, linha);
+        } else if (strcmp("eplg?", comando) == 0) {
+            destacar_estabelecimentos_contidos(dados_pessoa, estabelecimentos, linha, arquivo_log);
         } else if (strcmp("catac", comando) == 0) {
             remover_elementos_contidos(formas, quadras, cep_quadra, hidrantes, id_hidrante, radios,
                                        id_radio, semaforos, id_semaforo, moradores, dados_pessoa,
