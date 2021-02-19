@@ -1,10 +1,15 @@
 #ifndef FILA_H
 #define FILA_H
 
-// TODO Melhorar comentário módulo.
 /*
-Este módulo define uma Fila, responsável por armazenar os diferentes tipos de informações que
-existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a fila.
+Implementa uma Fila. Uma fila vazia é criada pela operação fila_criar(), podendo receber uma função
+para destruir as informações armazenadas ao liberar a fila.
+Após a criação, informações podem ser inseridas ao final da fila por meio da operação
+fila_inserir().
+Para obter a informação no início da fila é possível utilizar a função fila_obter_inicio para
+acessá-la ou a função fila_remover para acessá-la ao mesmo tempo que a remove da fila.
+Ademais é possível verificar o tamanho da fila através da função fila_obter_tamanho e verificar se a
+mesma está vazia utilizando a função fila_esta_vazia.
 */
 
 #include <stdbool.h>
@@ -56,7 +61,7 @@ Retorna a informação no início da fila sem remove-la.
 O parâmetro fila não pode ser nulo.
 A informação no início da fila é retornada.
 */
-FilaInfo fila_obter_info(Fila fila);
+FilaInfo fila_obter_inicio(Fila fila);
 
 /*
 Libera a memória alocada por uma fila.

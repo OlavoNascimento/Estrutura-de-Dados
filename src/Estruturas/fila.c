@@ -69,7 +69,7 @@ int fila_obter_tamanho(Fila fila) {
     return fila->tamanho;
 }
 
-FilaInfo fila_obter_info(Fila fila) {
+FilaInfo fila_obter_inicio(Fila fila) {
     if (fila_esta_vazia(fila))
         return NULL;
     return fila->primeiro->info;

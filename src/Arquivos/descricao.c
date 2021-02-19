@@ -308,7 +308,6 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
     int radios_criadas = 0;
     PropriedadesFiguras propriedades = criar_propriedades();
 
-    // TODO Balancear quadtrees.
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_descricao) != NULL) {
         char comando[TAMANHO_COMANDO];

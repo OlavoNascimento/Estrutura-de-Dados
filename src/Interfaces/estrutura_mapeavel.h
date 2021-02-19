@@ -22,6 +22,7 @@ typedef void EstruturaAplicarInfo(void *info, void *extra);
 
 /*
 Função que itera por todos os elementos de uma estrutura e aplica uma função f.
+As estruturas que desejam utilizar essa interface devem possuir uma função desse tipo.
 */
 typedef void FuncEstruturaMap(void *estrutura, EstruturaAplicarInfo f, void *extra);
 

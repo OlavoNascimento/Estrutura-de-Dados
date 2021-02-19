@@ -197,11 +197,11 @@ int lista_obter_tamanho(Lista lista) {
     return lista->tamanho;
 }
 
-ListaNo lista_obter_primeiro(Lista lista) {
+ListaNo lista_obter_inicio(Lista lista) {
     return lista->primeiro;
 }
 
-ListaNo lista_obter_ultimo(Lista lista) {
+ListaNo lista_obter_fim(Lista lista) {
     return lista->ultimo;
 }
 

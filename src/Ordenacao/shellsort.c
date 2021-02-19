@@ -19,7 +19,7 @@ double calcular_distancia(ListaNo no1, double x, double y) {
 }
 
 void insertion_sort(Lista lista_postos, double x, double y) {
-    ListaNo no1 = lista_obter_primeiro(lista_postos);
+    ListaNo no1 = lista_obter_inicio(lista_postos);
     ListaNo no2 = lista_obter_proximo(no1);
     double distance2;
     double distance1;
@@ -64,7 +64,7 @@ void shellsort(Lista lista_postos, int H, double x, double y) {
     if (H == 1) {
         insertion_sort(lista_postos, x, y);
     } else {
-        ListaNo noI = lista_obter_primeiro(lista_postos);
+        ListaNo noI = lista_obter_inicio(lista_postos);
         if (noI == NULL)
             return;
         ListaNo noH = noI;

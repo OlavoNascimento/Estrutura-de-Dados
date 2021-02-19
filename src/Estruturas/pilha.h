@@ -1,10 +1,15 @@
 #ifndef PILHA_H
 #define PILHA_H
 
-// TODO Melhorar comentário módulo.
 /*
-Este módulo define uma Pilha, responsável por armazenar os diferentes tipos de figuras que existem
-no projeto. Disponibiliza funções para modificar criar, modificar e destruir a pilha.
+Implementa uma Pilha. Uma pilha vazia é criada pela operação pilha_criar(), podendo receber uma
+função para destruir as informações armazenadas ao liberar a pilha.
+Após a criação, informações podem ser inseridas ao topo da pilha por meio da operação
+pilha_inserir().
+Para obter a informação no topo da pilha é possível utilizar a função pilha_obter_topo para
+acessá-la ou a função pilha_remover para acessá-la ao mesmo tempo que a remove da pilha.
+Ademais é possível verificar o tamanho da pilha através da função pilha_obter_tamanho e verificar se
+a mesma está vazia utilizando a função pilha_esta_vazia.
 */
 
 #include <stdbool.h>
@@ -17,8 +22,8 @@ typedef void PilhaDestruirInfo(PilhaInfo info);
 
 /*
 Cria uma pilha.
-É possível especificar uma função que libere a memória alocada pelas informações da fila, para que
-ao liberar a memória da fila suas informações também sejam liberadas.
+É possível especificar uma função que libere a memória alocada pelas informações da pilha, para que
+ao liberar a memória da pilha suas informações também sejam liberadas.
 Retorna o endereço para uma pilha vazia.
 */
 Pilha pilha_criar(PilhaDestruirInfo destruir_info);

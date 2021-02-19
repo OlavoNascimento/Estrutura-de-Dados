@@ -88,7 +88,7 @@ void rehash(Tabela tabela) {
         if (atual == NULL)
             continue;
 
-        ListaNo no_atual = lista_obter_primeiro(atual);
+        ListaNo no_atual = lista_obter_inicio(atual);
         while (no_atual != NULL) {
             ListaNo no_proximo = lista_obter_proximo(no_atual);
 
@@ -195,7 +195,7 @@ void tabela_destruir(Tabela tabela) {
             continue;
 
         // Libera as chaves e informações armazenadas na lista.
-        ListaNo no_atual = lista_obter_primeiro(atual);
+        ListaNo no_atual = lista_obter_inicio(atual);
         while (no_atual != NULL) {
             ListaNo no_proximo = lista_obter_proximo(no_atual);
 

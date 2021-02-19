@@ -1,10 +1,20 @@
 #ifndef LISTA_H
 #define LISTA_H
 
-// TODO Melhorar comentário módulo.
 /*
-Este módulo define uma Lista, responsável por armazenar os diferentes tipos de informações que
-existem no projeto. Disponibiliza funções para modificar criar, modificar e destruir a lista.
+Implementa uma Lista. Uma lista vazia é criada pela operação lista_criar(), podendo receber uma
+função para buscar informações e outra para destruí-las ao liberar a lista.
+Após a criação, informações podem ser inseridas através de três diferentes funções:
+lista_inserir_(final|antes|depois)(), permitindo um maior controle da posição onde a informação será
+inserida.
+Para obter a informação no início ou fim da lista é possível utilizar as funções
+lista_obter_(inicio|fim) para acessar os dados nas respectivas posições.
+Para acessar os nós vizinhos a outro nó as funções lista_obter_(proximo|anterior) são usadas.
+Como a maior parte das funções retornam um ListaNo é preciso utilizar lista_obter_info para acessar
+o conteúdo de um nó.
+Ademais é possível verificar o tamanho da lista através da função lista_obter_tamanho.
+Caso uma função de busca tenha sido fornecida ao construtor torna-se possível realizar buscas na
+lista utilizando a função lista_buscar.
 */
 
 typedef struct Lista_s *Lista;
@@ -22,7 +32,7 @@ Será criado um ListaNo com o nome especificado. A variável lista deve ser do t
 Não é possível remover um nó durante a iteração!
 */
 #define for_each_lista(nome, lista) \
-    for (ListaNo nome = lista_obter_primeiro(lista); nome != NULL; nome = lista_obter_proximo(nome))
+    for (ListaNo nome = lista_obter_inicio(lista); nome != NULL; nome = lista_obter_proximo(nome))
 
 /*
 Cria o ponteiro inicial de lista dinamica duplamente encadeada.
@@ -64,7 +74,7 @@ ListaInfo lista_remover(Lista lista, ListaNo no);
 
 /*
 Acessa um nó da lista.
-O id passado deve ser válido.
+O id passado deve ser válido. A lista deve ter uma função de busca registrada!.
 Retorna o endereço do nó.
 */
 ListaNo lista_buscar(Lista lista, const char *id);
@@ -95,14 +105,14 @@ Acessa o primeiro elemento da lista
 O parâmetro lista não pode ser nulo, deve ser uma lista existe e a lista não pode estar vazia.
 Retorna o endereço do primeiro nó.
 */
-ListaNo lista_obter_primeiro(Lista lista);
+ListaNo lista_obter_inicio(Lista lista);
 
 /*
 Acessa o último elemento da lista.
 O parâmetro lista não pode ser nulo, deve ser uma lista existe e a lista não pode estar vazia.
 Retorna o endereço do último nó.
 */
-ListaNo lista_obter_ultimo(Lista lista);
+ListaNo lista_obter_fim(Lista lista);
 
 /*
 Acessa as informações de um nó.

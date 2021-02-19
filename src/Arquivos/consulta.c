@@ -206,7 +206,7 @@ void remover_elementos(Lista formas, Tabela id_forma, const char *linha, FILE *a
     sscanf(linha, "delf* %s %s", id_inicial, id_final);
 
     bool inicio_encontrado = false;
-    ListaNo atual = lista_obter_primeiro(formas);
+    ListaNo atual = lista_obter_inicio(formas);
     while (atual != NULL) {
         Figura fig = lista_obter_info(atual);
         const char *id_atual = figura_obter_id(fig);
@@ -479,7 +479,7 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, cons
     shellsort(lista_postos, lista_obter_tamanho(lista_postos) / 2, figura_obter_x(caso),
               figura_obter_y(caso));
 
-    ListaNo i = lista_obter_primeiro(lista_postos);
+    ListaNo i = lista_obter_inicio(lista_postos);
     for (int j = 0; j < k; j++) {
         if (j == 0)
             fprintf(arquivo_log, "Coordenada dos postos: \n");
@@ -514,7 +514,7 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
     bool cabecalho_escrito = false;
     // Filtra a lista de casos, mantendo apenas aqueles que estão totalmente contidos dentro do
     // círculo.
-    ListaNo atual = lista_obter_primeiro(nos_contidos);
+    ListaNo atual = lista_obter_inicio(nos_contidos);
     while (atual != NULL) {
         Caso caso = getInfoQt(NULL, lista_obter_info(atual));
         ListaNo proximo = lista_obter_proximo(atual);
@@ -805,8 +805,6 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     printf("Arquivo dmprbt: %s\n", caminho_arquivo);
 
     Lista lista_dados = quadtree_escrever_svg(qt);
-
-    // Escreve o svg da lista.
     svg_escrever(caminho_arquivo, 1, lista_dados);
 
     lista_destruir(lista_dados);
