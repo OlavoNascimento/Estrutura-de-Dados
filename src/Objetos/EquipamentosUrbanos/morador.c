@@ -147,8 +147,8 @@ Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, 
     struct Endereco endereco = {.cep = "não registrado", .complemento = "-", .num = 0, .face = '-'};
     morador->endereco = endereco;
 
-    morador->largura = 0;
-    morador->altura = 0;
+    morador->largura = 20;
+    morador->altura = 20;
     morador->x = 0;
     morador->y = 0;
     strcpy(morador->cor_borda, "#3a464a");
@@ -192,11 +192,6 @@ void morador_definir_endereco(Morador morador, const char *cep, const char face,
     strcpy(morador->endereco.complemento, complemento);
     morador->endereco.face = face;
     morador->endereco.num = num;
-
-    morador->largura = 20;
-    morador->altura = 20;
-    morador->x = 0;
-    morador->y = 0;
     quadra_inicializar_coordenada(&morador->x, &morador->y, morador->largura, morador->altura,
                                   quadra, face, num);
 }

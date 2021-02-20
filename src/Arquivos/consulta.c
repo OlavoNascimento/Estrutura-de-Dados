@@ -385,9 +385,6 @@ void informacoes_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, Tabela 
             figura_obter_x(equipamento), figura_obter_y(equipamento));
 }
 
-//
-//
-//
 // Encontra o total das áreas das quadras contidas dentro de um retângulo
 void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *linha,
                                   FILE *arquivo_log) {
@@ -732,51 +729,43 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
     if (morador == NULL)
         return;
 
+    QtNo no_novo = tabela_buscar(cep_quadra, cep);
+    if (no_novo == NULL)
+        return;
+    Quadra quadra_nova = getInfoQt(NULL, no_novo);
+
     figura_escrever_informacoes(morador, arquivo_log);
-    fprintf(arquivo_log, "Endereço antigo: ");
-    fprintf(arquivo_log, "Cep:%s face:%c número:%d complemento:%s ",
+    fprintf(arquivo_log, "Endereço antigo: cep: %s, face: %c, número: %d, complemento: %s\n",
             morador_obter_endereco_cep(morador), morador_obter_endereco_face(morador),
             morador_obter_endereco_num(morador), morador_obter_endereco_complemento(morador));
-    fprintf(arquivo_log, "\nNovo endereço:");
-    fprintf(arquivo_log, "Cep:%s face:%c número:%d complemento:%s ", cep, face, num, complemento);
+    fprintf(arquivo_log, "Novo endereço: cep: %s, face: %c, número: %d, complemento: %s\n\n", cep,
+            face, num, complemento);
 
-    // endereço atual
-    QtNo no_atual = tabela_buscar(cep_quadra, cep);
-    if (no_atual == NULL) {
-        printf("Quadra buscada pelo comando mud não encontrada!\n");
-        return;
-    }
+    // Endereço atual
+    double centro_x_atual = figura_obter_x_centro(morador);
+    double centro_y_atual = figura_obter_y_centro(morador);
 
-    Figura figura_atual = getInfoQt(NULL, no_atual);
-    double centro_x_atual = figura_obter_x_centro(figura_atual);
-    double centro_y_atual = figura_obter_y_centro(figura_atual);
+    // Alterar endereço
+    morador_definir_endereco(morador, cep, face, num, complemento, quadra_nova);
 
-    // endereço novo
-    QtNo no_novo = tabela_buscar(cep_quadra, cep);
-    if (no_novo == NULL) {
-        printf("Quadra buscada pelo comando mud não encontrada!\n");
-        return;
-    }
-
-    Figura figura_nova = getInfoQt(NULL, no_novo);
-    double centro_x_novo = figura_obter_x_centro(figura_nova);
-    double centro_y_novo = figura_obter_y_centro(figura_nova);
+    // Endereço novo
+    double centro_x_novo = figura_obter_x_centro(morador);
+    double centro_y_novo = figura_obter_y_centro(morador);
 
     Linha linha_enderecos = linha_criar(centro_x_atual, centro_y_atual, centro_x_novo,
                                         centro_y_novo, "red", "red", false);
     linha_definir_espessura(linha_enderecos, "5px");
     lista_inserir_final(formas, linha_enderecos);
 
-    // cria circulo no endereço atual
-    Circulo circulo_atual = circulo_criar("", 5, centro_x_atual, centro_y_atual, "white", "red");
-    circulo_definir_espessura_borda(circulo_atual, "10px");
+    // Cria círculo no endereço atual
+    Circulo circulo_atual = circulo_criar("", 4, centro_x_atual, centro_y_atual, "white", "red");
+    circulo_definir_espessura_borda(circulo_atual, "3px");
+    lista_inserir_final(formas, circulo_atual);
 
-    // cria circulo no endereço novo
-    Circulo circulo_novo = circulo_criar("", 5, centro_x_novo, centro_y_novo, "white", "blue");
-    circulo_definir_espessura_borda(circulo_novo, "10px");
-
-    // alterar endereço
-    morador_definir_endereco(morador, cep, face, num, complemento, figura_nova);
+    // Cria círculo no endereço novo
+    Circulo circulo_novo = circulo_criar("", 4, centro_x_novo, centro_y_novo, "white", "blue");
+    circulo_definir_espessura_borda(circulo_novo, "3px");
+    lista_inserir_final(formas, circulo_novo);
 }
 
 // Cria um arquivo svg com o nome especificado, o qual contem as figuras da quadtree selecionada,
@@ -832,7 +821,7 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
 
     Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
 
-    ListaNo atual = lista_obter_primeiro(nos_contidos);
+    ListaNo atual = lista_obter_inicio(nos_contidos);
     while (atual != NULL) {
         Estabelecimento est = getInfoQt(NULL, lista_obter_info(atual));
 
