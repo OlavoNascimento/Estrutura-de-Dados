@@ -662,6 +662,7 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
     for_each_lista(i, nos) {
         Figura fig = getInfoQt(moradores, lista_obter_info(i));
         figura_escrever_informacoes(fig, arquivo_log);
+        fprintf(arquivo_log, "\n");
     }
     lista_destruir(nos);
 }
@@ -697,6 +698,7 @@ void mostrar_informacoes_morador(Lista formas, Tabela dados_pessoa, const char *
     lista_inserir_final(formas, area_linha);
 }
 
+// Escreve no arquivo de log todos os dados do estabelecimento comercial identificado por um cnpj.
 void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dados_pessoa,
                                          const char *linha, FILE *arquivo_log) {
     char cnpj[100];
@@ -716,6 +718,7 @@ void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dad
     fprintf(arquivo_log, "\n");
 }
 
+// Altera o endereço de um morador e escreve no arquivo de log.
 void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa, const char *linha,
                             FILE *arquivo_log) {
     char cpf[100];
@@ -768,8 +771,8 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
     lista_inserir_final(formas, circulo_novo);
 }
 
-// Cria um arquivo svg com o nome especificado, o qual contem as figuras da quadtree selecionada,
-// assim como os ids e coordenadas de cada figura.
+// Cria um arquivo svg com o nome especificado, o qual contem a representação da quadtree
+// selecionada com os ids e coordenadas de cada figura.
 void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree hidrantes,
                            QuadTree semaforos, QuadTree radios, const char *linha) {
     char arvore[10];
@@ -802,61 +805,44 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     free(caminho_arquivo);
 }
 
+// Destaca os estabelecimentos do tipo especificado e escreve suas informações no arquivo de log.
 void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabelecimentos,
                                         const char *linha, FILE *arquivo_log) {
-    char tipo[3];
+    char tipo[100];
     float x, y, largura, altura;
-    bool tipo_tp = false;
+    bool todos_os_tipos = false;
     sscanf(linha, "eplg? %s %f %f %f %f", tipo, &x, &y, &largura, &altura);
 
-    if (strcmp(tipo, "tp") == 0) {
-        tipo_tp = true;
-    }
+    if (strcmp(tipo, "*") == 0)
+        todos_os_tipos = true;
+
+    Retangulo contorno = retangulo_criar("", largura, altura, x, y, "none", "none");
 
     Lista nos_contidos = nosDentroRetanguloQt(estabelecimentos, x, y, x + largura, y + altura);
-    if (lista_obter_tamanho(nos_contidos) == 0) {
-        lista_destruir(nos_contidos);
-        return;
-    }
+    for_each_lista(no, nos_contidos) {
+        Estabelecimento est = getInfoQt(NULL, lista_obter_info(no));
+        if (!todos_os_tipos && strcmp(estabelecimento_obter_tipo(est), tipo) != 0)
+            continue;
 
-    Retangulo contorno = retangulo_criar("", largura, altura, x, y, "black", "none");
+        if (retangulo_contem_retangulo(contorno, (Retangulo) est)) {
+            figura_escrever_informacoes(est, arquivo_log);
+            Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
+            if (morador != NULL)
+                fprintf(arquivo_log, "Nome do proprietário: %s %s\n", morador_obter_nome(morador),
+                        morador_obter_sobrenome(morador));
+            fprintf(arquivo_log, "\n");
 
-    ListaNo atual = lista_obter_inicio(nos_contidos);
-    while (atual != NULL) {
-        Estabelecimento est = getInfoQt(NULL, lista_obter_info(atual));
-
-        if (tipo_tp && strcmp(estabelecimento_obter_tipo(est), "tp") == 0) {
-            if (retangulo_checar_ponto_interno(contorno, estabelecimento_obter_x(est),
-                                               estabelecimento_obter_y(est))) {
-                figura_escrever_informacoes(est, arquivo_log);
-
-                Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
-                fprintf(arquivo_log, "Nome do proprietário: %s\n", morador_obter_nome(morador));
-
-                // destaca o estabelecimento selecionado
-                estabelecimento_definir_borda_tracejada(est, true);
-                estabelecimento_definir_cor_borda(est, "#039932");
-            }
-        } else if (!tipo_tp) {
-            if (retangulo_checar_ponto_interno(contorno, estabelecimento_obter_x(est),
-                                               estabelecimento_obter_y(est))) {
-                figura_escrever_informacoes(est, arquivo_log);
-
-                Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
-                fprintf(arquivo_log, "Nome do proprietário: %s\n", morador_obter_nome(morador));
-
-                // destaca o estabelecimento selecionado
-                estabelecimento_definir_borda_tracejada(est, true);
-                estabelecimento_definir_cor_borda(est, "#039932");
-            }
+            // Destaca o estabelecimento selecionado
+            estabelecimento_definir_cor_preenchimento(est, "#00c56f");
+            estabelecimento_definir_borda_tracejada(est, true);
         }
-        atual = lista_obter_proximo(atual);
     }
-
     retangulo_destruir(contorno);
     lista_destruir(nos_contidos);
 }
 
+// Remove as quadras, elementos urbanos, moradores e estabelecimentos que estejam inteiramente
+// contidos na circunferência especificada.
 void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadra,
                                 QuadTree hidrantes, Tabela id_hidrante, QuadTree radios,
                                 Tabela id_radio, QuadTree semaforos, Tabela id_semaforo,
@@ -870,8 +856,8 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     circulo_definir_opacidade(raio_selecao, 0.5);
     lista_inserir_final(formas, raio_selecao);
 
-    // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
-    // que estão contidas no círculo.
+    // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as
+    // figuras que estão contidas no círculo.
     QuadTree retangulos[] = {quadras, semaforos, moradores, estabelecimentos};
     Tabela tabelas_ret[] = {cep_quadra, id_semaforo, dados_pessoa, cnpj_estabelecimento};
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
@@ -879,14 +865,15 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
 
         for_each_lista(no, nos) {
             Retangulo ret = getInfoQt(NULL, lista_obter_info(no));
-            if (circulo_contem_retangulo(raio_selecao, ret)) {
-                figura_escrever_informacoes(ret, arquivo_log);
-                fprintf(arquivo_log, "\n");
+            if (!circulo_contem_retangulo(raio_selecao, ret))
+                continue;
 
-                removeNoQt(retangulos[i], lista_obter_info(no));
-                tabela_remover(tabelas_ret[i], figura_obter_id(ret));
-                figura_destruir(ret);
-            }
+            figura_escrever_informacoes(ret, arquivo_log);
+            fprintf(arquivo_log, "\n");
+
+            removeNoQt(retangulos[i], lista_obter_info(no));
+            tabela_remover(tabelas_ret[i], figura_obter_id(ret));
+            figura_destruir(ret);
         }
         lista_destruir(nos);
     }
@@ -900,14 +887,15 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
 
         for_each_lista(no, nos) {
             Circulo circ = getInfoQt(NULL, lista_obter_info(no));
-            if (circulo_contem_circulo(raio_selecao, circ)) {
-                figura_escrever_informacoes(circ, arquivo_log);
-                fprintf(arquivo_log, "\n");
+            if (!circulo_contem_circulo(raio_selecao, circ))
+                continue;
 
-                removeNoQt(circulos[i], lista_obter_info(no));
-                tabela_remover(tabelas_circ[i], figura_obter_id(circ));
-                figura_destruir(circ);
-            }
+            figura_escrever_informacoes(circ, arquivo_log);
+            fprintf(arquivo_log, "\n");
+
+            removeNoQt(circulos[i], lista_obter_info(no));
+            tabela_remover(tabelas_circ[i], figura_obter_id(circ));
+            figura_destruir(circ);
         }
         lista_destruir(nos);
     }
