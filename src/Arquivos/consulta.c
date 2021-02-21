@@ -661,7 +661,7 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
     Lista nos = nosDentroRetanguloQt(moradores, x_inicio, y_inicio, x_fim, y_fim);
     for_each_lista(i, nos) {
         Figura fig = getInfoQt(moradores, lista_obter_info(i));
-        figura_escrever_informacoes(fig, arquivo_log);
+        morador_escrever_informacoes(fig, arquivo_log);
         fprintf(arquivo_log, "\n");
     }
     lista_destruir(nos);
@@ -677,7 +677,7 @@ void mostrar_informacoes_morador(Lista formas, Tabela dados_pessoa, const char *
     Morador morador = tabela_buscar(dados_pessoa, cpf);
     if (morador == NULL)
         return;
-    figura_escrever_informacoes(morador, arquivo_log);
+    morador_escrever_informacoes(morador, arquivo_log);
     fprintf(arquivo_log, "\n");
 
     Linha linha_vertical =
@@ -712,9 +712,9 @@ void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dad
     if (morador == NULL)
         return;
 
-    figura_escrever_informacoes(estabelecimento, arquivo_log);
+    estabelecimento_escrever_informacoes(estabelecimento, arquivo_log);
     fprintf(arquivo_log, "Dados do proprietário: ");
-    figura_escrever_informacoes(morador, arquivo_log);
+    morador_escrever_informacoes(morador, arquivo_log);
     fprintf(arquivo_log, "\n");
 }
 
@@ -737,7 +737,7 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
         return;
     Quadra quadra_nova = getInfoQt(NULL, no_novo);
 
-    figura_escrever_informacoes(morador, arquivo_log);
+    morador_escrever_informacoes(morador, arquivo_log);
     fprintf(arquivo_log, "Endereço antigo: cep: %s, face: %c, número: %d, complemento: %s\n",
             morador_obter_endereco_cep(morador), morador_obter_endereco_face(morador),
             morador_obter_endereco_num(morador), morador_obter_endereco_complemento(morador));
@@ -825,7 +825,7 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
             continue;
 
         if (retangulo_contem_retangulo(contorno, (Retangulo) est)) {
-            figura_escrever_informacoes(est, arquivo_log);
+            estabelecimento_escrever_informacoes(est, arquivo_log);
             Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
             if (morador != NULL)
                 fprintf(arquivo_log, "Nome do proprietário: %s %s\n", morador_obter_nome(morador),
@@ -856,8 +856,8 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     circulo_definir_opacidade(raio_selecao, 0.5);
     lista_inserir_final(formas, raio_selecao);
 
-    // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as
-    // figuras que estão contidas no círculo.
+    // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
+    // que estão contidas no círculo.
     QuadTree retangulos[] = {quadras, semaforos, moradores, estabelecimentos};
     Tabela tabelas_ret[] = {cep_quadra, id_semaforo, dados_pessoa, cnpj_estabelecimento};
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
@@ -878,8 +878,8 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
         lista_destruir(nos);
     }
 
-    // Itera por todas as figuras baseadas em círculos, escrevendo os dados e removendo as
-    // figuras que estão contidas no círculo.
+    // Itera por todas as figuras baseadas em círculos, escrevendo os dados e removendo as figuras
+    // que estão contidas no círculo.
     QuadTree circulos[] = {hidrantes, radios};
     Tabela tabelas_circ[] = {id_hidrante, id_radio};
     for (int i = 0; i < (int) (sizeof(circulos) / sizeof(circulos[0])); i++) {
