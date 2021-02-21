@@ -40,7 +40,8 @@ void caso_escrever_svg(Caso caso, FILE *arquivo) {
     char conteudo[1024];
     snprintf(conteudo, 500, "%d", caso->numero_de_casos);
     // Rótulo do caso.
-    Texto texto_quadra = texto_criar("", x, y, "none", "white", conteudo, true);
+    Texto texto_quadra = texto_criar("", x, y, "none", "white", conteudo);
+    texto_definir_alinhamento(texto_quadra, TEXTO_CENTRO);
     texto_escrever_svg(texto_quadra, arquivo);
     texto_destruir(texto_quadra);
 }

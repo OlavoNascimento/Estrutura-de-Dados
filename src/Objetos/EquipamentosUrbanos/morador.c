@@ -54,7 +54,8 @@ void morador_escrever_svg(Morador morador, FILE *arquivo) {
     double x = figura_obter_x_centro(morador);
     double y = figura_obter_y_centro(morador) + 6;
     // Rótulo do morador.
-    Texto texto_morador = texto_criar("", x, y, "none", "white", "M", true);
+    Texto texto_morador = texto_criar("", x, y, "none", "white", "M");
+    texto_definir_alinhamento(texto_morador, TEXTO_CENTRO);
     texto_escrever_svg(texto_morador, arquivo);
     texto_destruir(texto_morador);
 }

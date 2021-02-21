@@ -382,7 +382,8 @@ Retangulo escrever_quadrante(Lista saida, char *nome_quadrante, double x, double
 
     Texto texto_id =
         texto_criar("", figura_obter_x_centro(ret_id), figura_obter_y_centro(ret_id) + 6, "none",
-                    "black", nome_quadrante, true);
+                    "black", nome_quadrante);
+    texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
     lista_inserir_final(saida, texto_id);
 
     return ret_id;
@@ -405,7 +406,8 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
              (int) ponto_obter_y(qt->no->coordenada));
     Texto coordenadas =
         texto_criar("", figura_obter_x_centro(ret_coord), figura_obter_y_centro(ret_coord) + 6,
-                    "none", "black", texto_cords, true);
+                    "none", "black", texto_cords);
+    texto_definir_alinhamento(coordenadas, TEXTO_CENTRO);
     lista_inserir_final(saida, coordenadas);
 
     // Retangulo com o id da figura.
@@ -415,7 +417,8 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
 
     Texto texto_id =
         texto_criar("", figura_obter_x_centro(ret_id), figura_obter_y_centro(ret_id) + 6, "none",
-                    "black", figura_obter_id(qt->no->info), true);
+                    "black", figura_obter_id(qt->no->info));
+    texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
     lista_inserir_final(saida, texto_id);
 
     // Conecta o nó atual a sua posição (noroeste/nordeste/sudoeste/sudeste) no pai.

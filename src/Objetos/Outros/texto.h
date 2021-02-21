@@ -27,15 +27,15 @@ de getters/setters.
 */
 typedef struct Texto_s *Texto;
 
+enum TextoAlinhamento { TEXTO_ESQUERDA, TEXTO_CENTRO };
+
 /*
 Cria e inicializa um Texto com os valores passados.
 A largura e altura devem ser maiores que 0. O id e as cores não podem ser nulos.
-Caso o parâmetro centralizar seja verdadeiro a cordenada x,y passa a representar o centro do
-conteúdo. Se for falso, a coordenada x,y indica onde o conteúdo deve iniciar.
 O usuário é responsável por liberar a memória alocada!
 */
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20], const char conteudo[1024], bool centralizar);
+                  const char cor_preenchimento[20], const char conteudo[1024]);
 
 /*
 Cria e inicializa um Texto a partir de um texto obtido no arquivo .geo.
@@ -137,6 +137,12 @@ Define a cor de preenchimento de um texto.
 Nenhum dos parâmetros podem ser nulos.
 */
 void texto_definir_cor_preenchimento(Texto texto, const char *cor_preenchimento);
+
+/*
+Define o alinhamento de um texto.
+O parâmetro texto não pode ser nulo.
+*/
+void texto_definir_alinhamento(Texto texto, enum TextoAlinhamento alinhamento);
 
 /*
 Libera a memória alocada por um texto.

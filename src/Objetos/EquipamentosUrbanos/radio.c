@@ -31,7 +31,8 @@ void radio_escrever_svg(Radio radio, FILE *arquivo) {
     circulo_escrever_svg((Circulo) radio, arquivo);
 
     // Rótulo do rádio.
-    Texto texto_radio_base = texto_criar("", radio->x, radio->y + 5, "none", "white", "R", true);
+    Texto texto_radio_base = texto_criar("", radio->x, radio->y + 5, "none", "white", "R");
+    texto_definir_alinhamento(texto_radio_base, TEXTO_CENTRO);
     texto_escrever_svg(texto_radio_base, arquivo);
     texto_destruir(texto_radio_base);
 }

@@ -31,8 +31,8 @@ void hidrante_escrever_svg(Hidrante hidrante, FILE *arquivo) {
     circulo_escrever_svg((Circulo) hidrante, arquivo);
 
     // Rótulo do hidrante.
-    Texto texto_hidrante =
-        texto_criar("", hidrante->x, hidrante->y + 5, "none", "white", "H", true);
+    Texto texto_hidrante = texto_criar("", hidrante->x, hidrante->y + 5, "none", "white", "H");
+    texto_definir_alinhamento(texto_hidrante, TEXTO_CENTRO);
     texto_escrever_svg(texto_hidrante, arquivo);
     texto_destruir(texto_hidrante);
 }

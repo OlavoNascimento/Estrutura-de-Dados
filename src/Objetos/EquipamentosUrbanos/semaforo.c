@@ -35,7 +35,8 @@ void semaforo_escrever_svg(Semaforo semaforo, FILE *arquivo) {
     double x = figura_obter_x_centro(semaforo);
     double y = figura_obter_y_centro(semaforo) + 4;
     // Rótulo do semáforo.
-    Texto texto_semaforo = texto_criar("", x, y, "none", "white", "S", true);
+    Texto texto_semaforo = texto_criar("", x, y, "none", "white", "S");
+    texto_definir_alinhamento(texto_semaforo, TEXTO_CENTRO);
     texto_escrever_svg(texto_semaforo, arquivo);
     texto_destruir(texto_semaforo);
 }

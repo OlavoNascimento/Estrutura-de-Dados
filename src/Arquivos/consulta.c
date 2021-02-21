@@ -86,9 +86,9 @@ void checar_interseccao(Lista formas, Tabela id_forma, const char *linha, FILE *
     Retangulo contorno = criar_delimitacao_figuras(fig1, fig2);
     if (intersectam) {
         // Adiciona uma mensagem de sobreposição caso as figuras se intersectem.
-        Texto aviso =
-            texto_criar("", figura_obter_x_centro(contorno), figura_obter_y_centro(contorno) + 4,
-                        "None", "Black", "sobrepoe", true);
+        Texto aviso = texto_criar("", figura_obter_x_centro(contorno),
+                                  figura_obter_y_centro(contorno) + 4, "None", "Black", "sobrepoe");
+        texto_definir_alinhamento(aviso, TEXTO_CENTRO);
         lista_inserir_final(formas, aviso);
     } else {
         // Adiciona traços a borda do retângulo de contorno caso as figuras não se intersectem.
@@ -333,7 +333,7 @@ void remove_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, QuadTree hid
     Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black", "black", false);
     lista_inserir_final(formas, linha_vertical);
 
-    Texto rotulo = texto_criar("", centro_x + 1, 0, "none", "black", id, false);
+    Texto rotulo = texto_criar("", centro_x + 1, 0, "none", "black", id);
     lista_inserir_final(formas, rotulo);
 
     removeNoQt(qt, no);
@@ -414,7 +414,8 @@ void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *li
 
             Texto texto_area_quadra =
                 texto_criar("", figura_obter_x_centro(quadra), figura_obter_y_centro(quadra) + 4,
-                            "none", "black", string_area, true);
+                            "none", "black", string_area);
+            texto_definir_alinhamento(texto_area_quadra, TEXTO_CENTRO);
             lista_inserir_final(formas, texto_area_quadra);
 
             fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(quadra), area_quadra);
@@ -429,7 +430,7 @@ void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *li
     // Converte o valor total da área para string
     snprintf(texto_area_total, 100, "%lf", area_total);
 
-    Texto area_linha = texto_criar("", x + 1, 0, "none", "black", texto_area_total, false);
+    Texto area_linha = texto_criar("", x + 1, 0, "none", "black", texto_area_total);
     lista_inserir_final(formas, area_linha);
 
     fprintf(arquivo_log, "Área total: %lf\n\n", area_total);
@@ -694,7 +695,7 @@ void mostrar_informacoes_morador(Lista formas, Tabela dados_pessoa, const char *
              morador_obter_endereco_complemento(morador));
 
     Texto area_linha = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
-                                   texto_pessoa_endereco, false);
+                                   texto_pessoa_endereco);
     lista_inserir_final(formas, area_linha);
 }
 

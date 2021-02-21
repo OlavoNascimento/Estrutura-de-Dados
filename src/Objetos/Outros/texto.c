@@ -19,7 +19,7 @@ struct Texto_s {
     char cor_borda[20];
     char cor_preenchimento[20];
     char conteudo[1024];
-    bool centralizar;
+    enum TextoAlinhamento alinhamento;
 };
 
 const char *texto_obter_tipo() {
@@ -63,7 +63,7 @@ static FiguraInterface texto_criar_interface_figura() {
 
 // Cria e inicializa um struct Texto com os valores passados.
 Texto texto_criar(const char id[100], double x, double y, const char cor_borda[20],
-                  const char cor_preenchimento[20], const char conteudo[1024], bool centralizar) {
+                  const char cor_preenchimento[20], const char conteudo[1024]) {
     Texto texto = malloc(sizeof *texto);
     if (texto == NULL) {
         LOG_ERRO("Falha ao alocar memória\n");
@@ -75,7 +75,7 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
     strcpy(texto->cor_borda, cor_borda);
     strcpy(texto->cor_preenchimento, cor_preenchimento);
     strcpy(texto->conteudo, conteudo);
-    texto->centralizar = centralizar;
+    texto->alinhamento = TEXTO_ESQUERDA;
 
     texto->vtable = texto_criar_interface_figura();
     return texto;
@@ -91,7 +91,7 @@ Texto texto_ler(const char *linha) {
     char conteudo[1024];
     sscanf(linha, "%*s %s %lf %lf %s %s %[^\n*]s", id, &x, &y, cor_borda, cor_preenchimento,
            conteudo);
-    return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo, false);
+    return texto_criar(id, x, y, cor_borda, cor_preenchimento, conteudo);
 }
 
 // Escreve todos os dados de um texto em um arquivo.
@@ -108,9 +108,18 @@ void texto_escrever_svg(Texto texto, FILE *arquivo) {
     fprintf(arquivo, "\t<text");
     if (strlen(texto->id) > 0)
         fprintf(arquivo, " id='%s'", texto->id);
-    if (texto->centralizar)
-        fprintf(arquivo, " text-anchor='middle'");
-    fprintf(arquivo, " x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n", texto->x, texto->y,
+    fprintf(arquivo, " text-anchor='");
+    switch (texto->alinhamento) {
+        case TEXTO_ESQUERDA:
+            fprintf(arquivo, "start");
+            break;
+        case TEXTO_CENTRO:
+            fprintf(arquivo, "middle");
+            break;
+        default:
+            break;
+    }
+    fprintf(arquivo, "', x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n", texto->x, texto->y,
             texto->cor_borda, texto->cor_preenchimento, texto->conteudo);
 }
 
@@ -180,6 +189,11 @@ void texto_definir_cor_preenchimento(Texto texto, const char *cor_preenchimento)
         return;
     }
     strcpy(texto->cor_preenchimento, cor_preenchimento);
+}
+
+// Define o alinhamento de um texto.
+void texto_definir_alinhamento(Texto texto, enum TextoAlinhamento alinhamento) {
+    texto->alinhamento = alinhamento;
 }
 
 // Libera a memória alocada por um texto.

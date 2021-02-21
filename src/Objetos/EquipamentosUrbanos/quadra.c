@@ -51,7 +51,8 @@ void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
     double x = figura_obter_x_centro(quadra);
     double y = figura_obter_y_centro(quadra) + 4;
     // Rótulo da quadra.
-    Texto texto_quadra = texto_criar("", x, y, "none", "white", figura_obter_id(quadra), true);
+    Texto texto_quadra = texto_criar("", x, y, "none", "white", figura_obter_id(quadra));
+    texto_definir_alinhamento(texto_quadra, TEXTO_CENTRO);
     texto_escrever_svg(texto_quadra, arquivo);
     texto_destruir(texto_quadra);
 }
