@@ -308,6 +308,17 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
     int radios_criadas = 0;
     PropriedadesFiguras propriedades = criar_propriedades();
 
+    /*
+    As QuadTrees não são balanceadas, já que realizar esta operação nas árvores torna a execução
+    do programa extrememente lenta.
+    Executar todos os testes com o balanceamento implementado aumenta 4 vezes o tempo de execução
+    total necessário para rodar todos os testes.
+    Por fim, no final da página 20 do pdf é definido que o aluno deve avaliar qual estratégia é mais
+    apropriada, como pode ser visto no trecho extraído abaixo:
+    "O aluno deverá avaliar se esta estratégia de inserção é melhor (e em que medida) que
+    simplesmente inserir as quadras e os equipamentos urbanos na ordem em que aparecem no arquivo"
+    */
+
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_descricao) != NULL) {
         char comando[TAMANHO_COMANDO];
