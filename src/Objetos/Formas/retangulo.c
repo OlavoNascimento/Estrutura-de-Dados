@@ -151,16 +151,16 @@ bool retangulo_checar_interseccao(Retangulo retangulo1, Retangulo retangulo2) {
 
 // Retorna verdadeiro se o retangulo1 contem o retangulo2.
 bool retangulo_contem_retangulo(Retangulo retangulo1, Retangulo retangulo2) {
-    return retangulo2->x >= retangulo1->x && retangulo2->y >= retangulo1->y &&
-           retangulo2->x + retangulo2->largura <= retangulo1->x + retangulo1->largura &&
-           retangulo2->y + retangulo2->altura <= retangulo1->y + retangulo1->altura;
+    return retangulo2->x > retangulo1->x && retangulo2->y > retangulo1->y &&
+           retangulo2->x + retangulo2->largura < retangulo1->x + retangulo1->largura &&
+           retangulo2->y + retangulo2->altura < retangulo1->y + retangulo1->altura;
 }
 
 // Retorna verdadeiro se um ponto se encontra dentro de um retângulo.
 bool retangulo_checar_ponto_interno(Retangulo retangulo, double ponto_x, double ponto_y) {
-    if (ponto_x <= retangulo->x || ponto_x >= retangulo->x + retangulo->largura)
+    if (ponto_x < retangulo->x || ponto_x > retangulo->x + retangulo->largura)
         return false;
-    if (ponto_y <= retangulo->y || ponto_y >= retangulo->y + retangulo->altura)
+    if (ponto_y < retangulo->y || ponto_y > retangulo->y + retangulo->altura)
         return false;
     return true;
 }

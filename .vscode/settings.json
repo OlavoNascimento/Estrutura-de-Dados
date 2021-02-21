@@ -17,6 +17,7 @@
     "descricao",
     "dmprbt",
     "eplg",
+    "espaco",
     "estrutura",
     "exibicao",
     "figuras",
@@ -53,6 +54,8 @@
     "logging.h": "c",
     "caminhos.h": "c",
     "fila.h": "c",
-    "estrutura_mapeavel.h": "c"
+    "estrutura_mapeavel.h": "c",
+    "hidrante.h": "c",
+    "stdio.h": "c"
   }
 }

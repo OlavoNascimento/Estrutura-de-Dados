@@ -388,7 +388,8 @@ Retangulo escrever_quadrante(Lista saida, char *nome_quadrante, double x, double
     return ret_id;
 }
 
-void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, int profundidade) {
+void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, int profundidade,
+                     double distancia) {
     if (qt == NULL || qt->no == NULL)
         return;
     const double largura = 44;
@@ -434,19 +435,33 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
     Retangulo ret_sudeste = escrever_quadrante(saida, "SE", x + largura * 3 + 6, y + altura + 2,
                                                largura, altura, "#b7e6d8");
 
-    escrever_svg_no(saida, qt->noroeste, ret_noroeste, x - 12 * largura + margem_x * profundidade,
-                    y + altura + margem_y, profundidade + 1);
-    escrever_svg_no(saida, qt->nordeste, ret_nordeste, x - largura + margem_x * profundidade,
-                    y + altura + margem_y, profundidade + 1);
-    escrever_svg_no(saida, qt->sudoeste, ret_sudoeste, x + 12 * largura + margem_x * profundidade,
-                    y + altura + margem_y, profundidade + 1);
-    escrever_svg_no(saida, qt->sudeste, ret_sudeste, x + 26 * largura + margem_x * profundidade,
-                    y + altura + margem_y, profundidade + 1);
+    const double novo_x = (largura + margem_x) * (distancia - profundidade);
+    const double novo_y = y + altura + margem_y;
+
+    escrever_svg_no(saida, qt->noroeste, ret_noroeste, x - 30 * novo_x, novo_y, profundidade + 1,
+                    distancia);
+    escrever_svg_no(saida, qt->nordeste, ret_nordeste, x - 20 * novo_x, novo_y, profundidade + 1,
+                    distancia);
+    escrever_svg_no(saida, qt->sudoeste, ret_sudoeste, x - novo_x, novo_y, profundidade + 1,
+                    distancia);
+    escrever_svg_no(saida, qt->sudeste, ret_sudeste, x + 30 * novo_x, novo_y, profundidade + 1,
+                    distancia);
+}
+
+int calcular_profundidade(QuadTree qt) {
+    if (qt == NULL)
+        return 0;
+
+    int profundidade = 1 + calcular_profundidade(qt->noroeste);
+    profundidade = max(profundidade, 1 + calcular_profundidade(qt->nordeste));
+    profundidade = max(profundidade, 1 + calcular_profundidade(qt->sudoeste));
+    return max(profundidade, 1 + calcular_profundidade(qt->sudeste));
 }
 
 Lista quadtree_escrever_svg(QuadTree qt) {
     Lista saida = lista_criar(NULL, figura_destruir);
-    escrever_svg_no(saida, qt, NULL, 0, 0, 0);
+    int profundidade_max = calcular_profundidade(qt);
+    escrever_svg_no(saida, qt, NULL, 0, 0, 0, profundidade_max);
     return saida;
 }
 

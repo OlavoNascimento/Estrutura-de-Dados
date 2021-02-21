@@ -105,23 +105,6 @@ Circulo circulo_ler(const char *linha) {
     return circulo_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 
-// Retorna verdadeiro se dois círculos se intersectam.
-bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
-    return pow(circulo1->x - circulo2->x, 2) + pow(circulo1->y - circulo2->y, 2) <=
-           pow(circulo1->raio + circulo2->raio, 2);
-}
-
-// Retorna verdadeiro se o circulo1 contem o círculo2.
-bool circulo_contem_circulo(Circulo circulo1, Circulo circulo2) {
-    return circulo1->raio >=
-           circulo2->raio + hypot(circulo2->x - circulo1->x, circulo2->y - circulo1->y);
-}
-
-// Retorna verdadeiro se um ponto se encontra dentro de um círculo.
-bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
-    return pow(ponto_x - circulo->x, 2) + pow(ponto_y - circulo->y, 2) <= pow(circulo->raio, 2);
-}
-
 // Escreve todos os dados de um círculo em um arquivo.
 void circulo_escrever_informacoes(Circulo circulo, FILE *arquivo) {
     fprintf(arquivo, "tipo: %s,", figura_obter_tipo(circulo));
@@ -143,6 +126,23 @@ void circulo_escrever_svg(Circulo circulo, FILE *arquivo) {
             "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s' stroke-width='%s' opacity='%lf'/>\n",
             circulo->raio, circulo->x, circulo->y, circulo->cor_borda, circulo->cor_preenchimento,
             circulo->espessura_borda, circulo->opacidade);
+}
+
+// Retorna verdadeiro se dois círculos se intersectam.
+bool circulo_checar_interseccao(Circulo circulo1, Circulo circulo2) {
+    return pow(circulo1->x - circulo2->x, 2) + pow(circulo1->y - circulo2->y, 2) <=
+           pow(circulo1->raio + circulo2->raio, 2);
+}
+
+// Retorna verdadeiro se o circulo1 contem o círculo2.
+bool circulo_contem_circulo(Circulo circulo1, Circulo circulo2) {
+    return circulo1->raio >
+           circulo2->raio + hypot(circulo2->x - circulo1->x, circulo2->y - circulo1->y);
+}
+
+// Retorna verdadeiro se um ponto se encontra dentro de um círculo.
+bool circulo_checar_ponto_interno(Circulo circulo, double ponto_x, double ponto_y) {
+    return pow(ponto_x - circulo->x, 2) + pow(ponto_y - circulo->y, 2) < pow(circulo->raio, 2);
 }
 
 // Retorna o id de um círculo.

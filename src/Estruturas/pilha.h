@@ -14,6 +14,13 @@ a mesma está vazia utilizando a função pilha_esta_vazia.
 
 #include <stdbool.h>
 
+/*
+Foi usado 'typedef struct *' em vez de 'typedef void *' para permitir ao compilador diferenciar os
+tipos, não afetando o encapsulamento de dados!
+O struct *não é definido neste header* e sim em seu arquivo .c correspondente, o ponteiro deste tipo
+não pode ser criado sem seu construtor, assim como suas propriedades não podem ser acessadas sem uso
+de getters/setters.
+*/
 typedef struct Pilha_s *Pilha;
 
 typedef void *PilhaInfo;
