@@ -54,6 +54,12 @@ O usuário é responsável por liberar a memória alocada!
 Estabelecimento estabelecimento_ler(const char *linha, Quadra quadra);
 
 /*
+Escreve todas as informações presentes em um estabelecimento em um arquivo.
+Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
+*/
+void estabelecimento_escrever_informacoes(Estabelecimento estabelecimento, FILE *arquivo);
+
+/*
 Obtém o id de um determinado estabelecimento.
 O parâmetro estalecimento não pode ser nulo e deve ser um estalecimento existente.
 Retorna o id do estalecimento.

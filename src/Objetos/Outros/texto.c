@@ -119,7 +119,7 @@ void texto_escrever_svg(Texto texto, FILE *arquivo) {
         default:
             break;
     }
-    fprintf(arquivo, "', x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n", texto->x, texto->y,
+    fprintf(arquivo, "' x='%lf' y='%lf' stroke='%s' fill='%s'>%s</text>\n", texto->x, texto->y,
             texto->cor_borda, texto->cor_preenchimento, texto->conteudo);
 }
 

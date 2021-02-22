@@ -375,29 +375,9 @@ QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
     return pNo->info;
 }
 
-Retangulo escrever_quadrante(Lista saida, char *nome_quadrante, double x, double y, double largura,
-                             double altura, char *cor) {
-    Retangulo ret_id = retangulo_criar("", largura, altura, x, y, "black", cor);
-    lista_inserir_final(saida, ret_id);
-
-    Texto texto_id =
-        texto_criar("", figura_obter_x_centro(ret_id), figura_obter_y_centro(ret_id) + 6, "none",
-                    "black", nome_quadrante);
-    texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
-    lista_inserir_final(saida, texto_id);
-
-    return ret_id;
-}
-
-void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, int profundidade,
-                     double distancia) {
-    if (qt == NULL || qt->no == NULL)
-        return;
-    const double largura = 44;
-    const double altura = 20;
-    const double margem_x = 20;
-    const double margem_y = 200;
-
+Retangulo escrever_retangulo_principal(Lista saida, QuadTree qt, double x, double y, double largura,
+                                       double altura) {
+    // Retângulo com as coordenadas da figura.
     Retangulo ret_coord = retangulo_criar("", largura * 2 + 2, altura, x, y, "black", "#f1ffe8");
     lista_inserir_final(saida, ret_coord);
 
@@ -410,7 +390,7 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
     texto_definir_alinhamento(coordenadas, TEXTO_CENTRO);
     lista_inserir_final(saida, coordenadas);
 
-    // Retangulo com o id da figura.
+    // Retângulo com o id da figura.
     Retangulo ret_id =
         retangulo_criar("", largura * 2 + 2, altura, x + largura * 2 + 4, y, "black", "#f1ffe8");
     lista_inserir_final(saida, ret_id);
@@ -421,50 +401,67 @@ void escrever_svg_no(Lista saida, QuadTree qt, Figura pai, double x, double y, i
     texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
     lista_inserir_final(saida, texto_id);
 
-    // Conecta o nó atual a sua posição (noroeste/nordeste/sudoeste/sudeste) no pai.
-    if (pai != NULL) {
-        Linha ligacao = linha_criar(figura_obter_x_centro(pai), figura_obter_y_fim(pai),
-                                    figura_obter_x_inicio(ret_id), figura_obter_y_inicio(ret_id),
+    return ret_id;
+}
+
+void escrever_quadrante(Lista saida, char *nome_quadrante, double x, double y, double largura,
+                        double altura, char *cor, Retangulo filho) {
+    Retangulo ret_id = retangulo_criar("", largura, altura, x, y, "black", cor);
+    lista_inserir_final(saida, ret_id);
+
+    Texto texto_id =
+        texto_criar("", figura_obter_x_centro(ret_id), figura_obter_y_centro(ret_id) + 6, "none",
+                    "black", nome_quadrante);
+    texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
+    lista_inserir_final(saida, texto_id);
+
+    if (filho != NULL) {
+        // Conecta a posição atual (noroeste/nordeste/sudoeste/sudeste) ao filho.
+        Linha ligacao = linha_criar(figura_obter_x_centro(ret_id), figura_obter_y_fim(ret_id),
+                                    figura_obter_x_inicio(filho) - 1, figura_obter_y_inicio(filho),
                                     "black", "black", false);
         lista_inserir_final(saida, ligacao);
     }
-
-    Retangulo ret_noroeste =
-        escrever_quadrante(saida, "NO", x, y + altura + 2, largura, altura, "#c9cab3");
-    Retangulo ret_nordeste = escrever_quadrante(saida, "NE", x + largura + 2, y + altura + 2,
-                                                largura, altura, "#f1daaa");
-    Retangulo ret_sudoeste = escrever_quadrante(saida, "SO", x + largura * 2 + 4, y + altura + 2,
-                                                largura, altura, "#cde790");
-    Retangulo ret_sudeste = escrever_quadrante(saida, "SE", x + largura * 3 + 6, y + altura + 2,
-                                               largura, altura, "#b7e6d8");
-
-    const double novo_x = (largura + margem_x) * (distancia - profundidade);
-    const double novo_y = y + altura + margem_y;
-
-    escrever_svg_no(saida, qt->noroeste, ret_noroeste, x - 30 * novo_x, novo_y, profundidade + 1,
-                    distancia);
-    escrever_svg_no(saida, qt->nordeste, ret_nordeste, x - 20 * novo_x, novo_y, profundidade + 1,
-                    distancia);
-    escrever_svg_no(saida, qt->sudoeste, ret_sudoeste, x - novo_x, novo_y, profundidade + 1,
-                    distancia);
-    escrever_svg_no(saida, qt->sudeste, ret_sudeste, x + 30 * novo_x, novo_y, profundidade + 1,
-                    distancia);
 }
 
-int calcular_profundidade(QuadTree qt) {
-    if (qt == NULL)
-        return 0;
+Retangulo escrever_svg_no(Lista saida, QuadTree qt, double *x, double y) {
+    if (qt == NULL || qt->no == NULL)
+        return NULL;
 
-    int profundidade = 1 + calcular_profundidade(qt->noroeste);
-    profundidade = max(profundidade, 1 + calcular_profundidade(qt->nordeste));
-    profundidade = max(profundidade, 1 + calcular_profundidade(qt->sudoeste));
-    return max(profundidade, 1 + calcular_profundidade(qt->sudeste));
+    const double largura = 44;
+    const double altura = 20;
+    const double margem_y = 200;
+
+    Retangulo noroeste = escrever_svg_no(saida, qt->noroeste, x, y + margem_y);
+    *x += largura;
+    Retangulo nordeste = escrever_svg_no(saida, qt->nordeste, x, y + margem_y);
+    *x += largura;
+
+    double x_atual = *x;
+    Retangulo ret_id = escrever_retangulo_principal(saida, qt, *x, y, largura, altura);
+    *x += largura;
+
+    Retangulo sudoeste = escrever_svg_no(saida, qt->sudoeste, x, y + margem_y);
+    *x += largura;
+    Retangulo sudeste = escrever_svg_no(saida, qt->sudeste, x, y + margem_y);
+    *x += largura;
+
+    escrever_quadrante(saida, "NO", x_atual, y + altura + 2, largura, altura, "#c9cab3", noroeste);
+    escrever_quadrante(saida, "NE", x_atual + largura + 2, y + altura + 2, largura, altura,
+                       "#f1daaa", nordeste);
+    escrever_quadrante(saida, "SO", x_atual + largura * 2 + 4, y + altura + 2, largura, altura,
+                       "#cde790", sudoeste);
+    escrever_quadrante(saida, "SE", x_atual + largura * 3 + 6, y + altura + 2, largura, altura,
+                       "#b7e6d8", sudeste);
+    return ret_id;
 }
 
 Lista quadtree_escrever_svg(QuadTree qt) {
     Lista saida = lista_criar(NULL, figura_destruir);
-    int profundidade_max = calcular_profundidade(qt);
-    escrever_svg_no(saida, qt, NULL, 0, 0, 0, profundidade_max);
+    double *x = malloc(sizeof *x);
+    *x = 0;
+    escrever_svg_no(saida, qt, x, 0);
+    free(x);
     return saida;
 }
 

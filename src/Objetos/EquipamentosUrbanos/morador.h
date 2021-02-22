@@ -73,6 +73,12 @@ void morador_definir_endereco(Morador morador, const char *cep, const char face,
                               const char *complemento, Quadra quadra);
 
 /*
+Escreve todas as informações presentes em um morador em um arquivo.
+Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
+*/
+void morador_escrever_informacoes(Morador morador, FILE *arquivo);
+
+/*
 Obtém o id(cpf) de um morador.
 O parâmetro morador não pode ser nulo.
 Retorna o cpf de um morador.
@@ -135,7 +141,6 @@ Retorna o número do endereço de um morador.
 */
 int morador_obter_endereco_num(Morador morador);
 
-// /////////////////////////
 /*
 Obtém a coordenada x de um morador.
 O parâmetro morador não pode ser nulo.
