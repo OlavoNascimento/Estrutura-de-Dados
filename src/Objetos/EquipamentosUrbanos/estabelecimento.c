@@ -20,7 +20,7 @@ struct Estabelecimento_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double arredondamento_borda;
     bool borda_tracejada;
     char tipo[100];
@@ -128,7 +128,7 @@ Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const c
     strcpy(est->cor_preenchimento, "seagreen");
     est->arredondamento_borda = 0;
     est->borda_tracejada = false;
-    strcpy(est->espessura_borda, "1px");
+    est->espessura_borda = 1;
     strcpy(est->tipo, tipo);
     strcpy(est->nome, nome);
     strcpy(est->cpf, cpf);
@@ -213,13 +213,14 @@ void estabelecimento_definir_cor_preenchimento(Estabelecimento est, const char *
 }
 
 // Define a espessura da borda de um estabelecimento.
-void estabelecimento_definir_espessura_borda(Estabelecimento est, const char *espessura_borda) {
+void estabelecimento_definir_espessura_borda(Estabelecimento est, double espessura_borda) {
     retangulo_definir_espessura_borda((Retangulo) est, espessura_borda);
 }
 
 // Define o arredondamento da borda de um estabelecimento.
-void estabelecimento_definir_arredondamento_borda(Estabelecimento est, double raio_borda) {
-    retangulo_definir_arredondamento_borda((Retangulo) est, raio_borda);
+void estabelecimento_definir_arredondamento_borda(Estabelecimento est,
+                                                  double arredondamento_borda) {
+    retangulo_definir_arredondamento_borda((Retangulo) est, arredondamento_borda);
 }
 
 // Define se a borda de um estabelecimento é tracejada.

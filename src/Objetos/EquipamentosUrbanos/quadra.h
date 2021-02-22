@@ -118,7 +118,7 @@ void quadra_definir_cor_borda(Quadra quadra, const char *cor_borda);
 Define a espessura da borda de uma quadra.
 Nenhum dos parâmetros podem ser nulos.
 */
-void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda);
+void quadra_definir_espessura_borda(Quadra quadra, double espessura_borda);
 
 /*
 Define se a quadra tem borda tracejada.
@@ -130,7 +130,7 @@ void quadra_definir_borda_tracejada(Quadra quadra, bool tracejado);
 Define o arredondamento da borda de uma quadra.
 O parâmetro quadra não pode ser nulo.
 */
-void quadra_definir_arredondamento_borda(Quadra quadra, double raio_borda);
+void quadra_definir_arredondamento_borda(Quadra quadra, double arredondamento_borda);
 
 /*
 Define a cor da sombra de uma quadra. A cor deve estar definida anteriormente no arquivo svg.

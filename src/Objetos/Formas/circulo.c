@@ -17,7 +17,7 @@ struct Circulo_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double opacidade;
 };
 
@@ -86,7 +86,7 @@ Circulo circulo_criar(const char id[100], double raio, double x, double y, const
     circulo->y = y;
     strcpy(circulo->cor_borda, cor_borda);
     strcpy(circulo->cor_preenchimento, cor_preenchimento);
-    strcpy(circulo->espessura_borda, "1px");
+    circulo->espessura_borda = 1;
     circulo->opacidade = 1;
 
     circulo->vtable = circulo_criar_interface_figura();
@@ -123,7 +123,7 @@ void circulo_escrever_svg(Circulo circulo, FILE *arquivo) {
     if (strlen(circulo->id) > 0)
         fprintf(arquivo, "id='%s' ", circulo->id);
     fprintf(arquivo,
-            "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s' stroke-width='%s' opacity='%lf'/>\n",
+            "r='%lf' cx='%lf' cy='%lf' stroke='%s' fill='%s' stroke-width='%fpx' opacity='%f'/>\n",
             circulo->raio, circulo->x, circulo->y, circulo->cor_borda, circulo->cor_preenchimento,
             circulo->espessura_borda, circulo->opacidade);
 }
@@ -216,14 +216,13 @@ void circulo_definir_cor_preenchimento(Circulo circulo, const char *cor_preenchi
 }
 
 // Define a espessura da borda de um círculo.
-void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_borda) {
-    if (espessura_borda == NULL) {
-        LOG_AVISO("Não é possível definir NULL como tamanho da espessura da borda de um %s!\n",
+void circulo_definir_espessura_borda(Circulo circulo, double espessura_borda) {
+    if (espessura_borda < 0) {
+        LOG_AVISO("Não é possível definir uma espessura de borda menor que 0 para um %s!\n",
                   figura_obter_tipo(circulo));
         return;
     }
-
-    strcpy(circulo->espessura_borda, espessura_borda);
+    circulo->espessura_borda = espessura_borda;
 }
 
 // Define a opacidade de um círculo.

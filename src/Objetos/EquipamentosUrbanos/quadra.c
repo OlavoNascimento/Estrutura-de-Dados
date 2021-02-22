@@ -20,7 +20,7 @@ struct Quadra_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double arredondamento_borda;
     bool borda_tracejada;
     char cor_sombra[20];
@@ -37,8 +37,8 @@ void quadra_escrever_svg(Quadra quadra, FILE *arquivo) {
         fprintf(arquivo, " id='%s'", quadra->id);
 
     fprintf(arquivo,
-            " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf' "
-            "stroke-width='%s'",
+            " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%f' "
+            "stroke-width='%fpx'",
             quadra->largura, quadra->altura, quadra->x, quadra->y, quadra->cor_borda,
             quadra->cor_preenchimento, quadra->arredondamento_borda, quadra->espessura_borda);
 
@@ -123,7 +123,7 @@ Quadra quadra_criar(const char id[100], double largura, double altura, double x,
     strcpy(quadra->cor_preenchimento, "coral");
     quadra->arredondamento_borda = 0;
     quadra->borda_tracejada = false;
-    strcpy(quadra->espessura_borda, "1px");
+    quadra->espessura_borda = 1;
     strcpy(quadra->cor_sombra, "");
 
     quadra->vtable = quadra_criar_interface_figura();
@@ -225,7 +225,7 @@ void quadra_definir_cor_preenchimento(Quadra quadra, const char *cor_preenchimen
 }
 
 // Define a espessura da borda de uma quadra.
-void quadra_definir_espessura_borda(Quadra quadra, const char *espessura_borda) {
+void quadra_definir_espessura_borda(Quadra quadra, double espessura_borda) {
     retangulo_definir_espessura_borda((Retangulo) quadra, espessura_borda);
 }
 

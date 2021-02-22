@@ -98,7 +98,7 @@ void hidrante_definir_cor_borda(Hidrante hidrante, const char *cor_borda);
 Define a espessura da borda de um rádio-base.
 Nenhum dos parâmetros podem ser nulos.
 */
-void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda);
+void hidrante_definir_espessura_borda(Hidrante hidrante, double espessura_borda);
 
 /*
 Define a opacidade de um hidrante.

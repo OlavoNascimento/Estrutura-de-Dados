@@ -176,7 +176,7 @@ const char *retangulo_obter_espessura_borda(Retangulo retangulo);
 Define a espessura da borda de um retângulo.
 Nenhum dos parâmetros podem ser nulos.
 */
-void retangulo_definir_espessura_borda(Retangulo retangulo, const char *espessura_borda);
+void retangulo_definir_espessura_borda(Retangulo retangulo, double espessura_borda);
 
 /*
 Define se o retangulo tem borda tracejada.
@@ -188,7 +188,7 @@ void retangulo_definir_borda_tracejada(Retangulo retangulo, bool tracejado);
 Define o arredondamento da borda de um retângulo.
 O parâmetro retangulo não pode ser nulo.
 */
-void retangulo_definir_arredondamento_borda(Retangulo retangulo, double raio_borda);
+void retangulo_definir_arredondamento_borda(Retangulo retangulo, double arredondamento_borda);
 
 /*
 Libera a memória alocada por um retângulo.

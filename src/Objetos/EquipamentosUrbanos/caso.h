@@ -116,7 +116,7 @@ void caso_definir_cor_borda(Caso caso, const char *cor_borda);
 Define a espessura da borda de um caso.
 Nenhum dos parâmetros podem ser nulos.
 */
-void caso_definir_espessura_borda(Caso caso, const char *espessura_borda);
+void caso_definir_espessura_borda(Caso caso, double espessura_borda);
 
 /*
 Define se o caso tem borda tracejada.
@@ -128,7 +128,7 @@ void caso_definir_borda_tracejada(Caso caso, bool tracejado);
 Define o arredondamento da borda de um caso.
 O parâmetro caso não pode ser nulo.
 */
-void caso_definir_arredondamento_borda(Caso caso, double raio_borda);
+void caso_definir_arredondamento_borda(Caso caso, double arredondamento_borda);
 
 /*
 Libera a memória alocada por um caso.

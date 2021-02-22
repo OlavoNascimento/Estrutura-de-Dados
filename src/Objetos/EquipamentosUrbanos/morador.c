@@ -28,7 +28,7 @@ struct Morador_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double arredondamento_borda;
     bool borda_tracejada;
 
@@ -156,7 +156,7 @@ Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, 
     strcpy(morador->cor_preenchimento, "#2d3b40");
     morador->arredondamento_borda = 0;
     morador->borda_tracejada = false;
-    strcpy(morador->espessura_borda, "1px");
+    morador->espessura_borda = 1;
 
     morador->vtable = morador_criar_interface_figura();
     return morador;
@@ -274,13 +274,13 @@ void morador_definir_cor_preenchimento(Morador morador, const char *cor_preenchi
 }
 
 // Define a espessura da borda de um morador.
-void morador_definir_espessura_borda(Morador morador, const char *espessura_borda) {
+void morador_definir_espessura_borda(Morador morador, double espessura_borda) {
     retangulo_definir_espessura_borda((Retangulo) morador, espessura_borda);
 }
 
 // Define o arredondamento da borda de um morador.
-void morador_definir_arredondamento_borda(Morador morador, double raio_borda) {
-    retangulo_definir_arredondamento_borda((Retangulo) morador, raio_borda);
+void morador_definir_arredondamento_borda(Morador morador, double arredondamento_borda) {
+    retangulo_definir_arredondamento_borda((Retangulo) morador, arredondamento_borda);
 }
 
 // Define se a borda de um morador é tracejada.

@@ -90,7 +90,7 @@ void posto_definir_cor_borda(Posto posto, const char *cor_borda);
 Define a espessura da borda de um posto.
 Nenhum dos parâmetros podem ser nulos.
 */
-void posto_definir_espessura_borda(Posto posto, const char *espessura_borda);
+void posto_definir_espessura_borda(Posto posto, double espessura_borda);
 
 /*
 Define a opacidade de um posto.

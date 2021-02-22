@@ -98,7 +98,7 @@ void radio_definir_cor_borda(Radio radio, const char *cor_borda);
 Define a espessura da borda de um rádio.
 Nenhum dos parâmetros podem ser nulos.
 */
-void radio_definir_espessura_borda(Radio radio, const char *espessura_borda);
+void radio_definir_espessura_borda(Radio radio, double espessura_borda);
 
 /*
 Define a opacidade de um radio.

@@ -18,7 +18,7 @@ struct Hidrante_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double opacidade;
 };
 
@@ -90,7 +90,7 @@ Hidrante hidrante_criar(const char id[100], double x, double y) {
     hidrante->y = y;
     strcpy(hidrante->cor_borda, "red");
     strcpy(hidrante->cor_preenchimento, "red");
-    strcpy(hidrante->espessura_borda, "1px");
+    hidrante->espessura_borda = 1;
     hidrante->opacidade = 1;
 
     hidrante->vtable = hidrante_criar_interface_figura();
@@ -148,7 +148,7 @@ void hidrante_definir_cor_preenchimento(Hidrante hidrante, const char *cor_preen
 }
 
 // Define a espessura da borda de um hidrante.
-void hidrante_definir_espessura_borda(Hidrante hidrante, const char *espessura_borda) {
+void hidrante_definir_espessura_borda(Hidrante hidrante, double espessura_borda) {
     circulo_definir_espessura_borda((Circulo) hidrante, espessura_borda);
 }
 

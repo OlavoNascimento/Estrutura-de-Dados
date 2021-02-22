@@ -1,7 +1,6 @@
 
 #include "graham_scan.h"
 
-#include <float.h>
 #include <stdbool.h>
 #include <stdlib.h>
 

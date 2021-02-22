@@ -18,7 +18,7 @@ struct Radio_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double opacidade;
 };
 
@@ -90,7 +90,7 @@ Radio radio_criar(const char id[100], double x, double y) {
     radio->y = y;
     strcpy(radio->cor_borda, "purple");
     strcpy(radio->cor_preenchimento, "purple");
-    strcpy(radio->espessura_borda, "1px");
+    radio->espessura_borda = 1;
     radio->opacidade = 1;
 
     radio->vtable = radio_criar_interface_figura();
@@ -148,7 +148,7 @@ void radio_definir_cor_preenchimento(Radio radio, const char *cor_preenchimento)
 }
 
 // Define a espessura da borda de um rádio.
-void radio_definir_espessura_borda(Radio radio, const char *espessura_borda) {
+void radio_definir_espessura_borda(Radio radio, double espessura_borda) {
     circulo_definir_espessura_borda((Circulo) radio, espessura_borda);
 }
 

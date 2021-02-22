@@ -19,7 +19,7 @@ struct Semaforo_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double arredondamento_borda;
     bool borda_tracejada;
 };
@@ -97,7 +97,7 @@ Semaforo semaforo_criar(const char id[100], double x, double y) {
     strcpy(semaforo->cor_preenchimento, "green");
     semaforo->arredondamento_borda = 0;
     semaforo->borda_tracejada = false;
-    strcpy(semaforo->espessura_borda, "1px");
+    semaforo->espessura_borda = 1;
 
     semaforo->vtable = semaforo_criar_interface_figura();
     return semaforo;
@@ -158,7 +158,7 @@ void semaforo_definir_cor_preenchimento(Semaforo semaforo, const char *cor_preen
 }
 
 // Define o arredondamento da borda de um semáforo.
-void semaforo_definir_espessura_borda(Semaforo semaforo, const char *espessura_borda) {
+void semaforo_definir_espessura_borda(Semaforo semaforo, double espessura_borda) {
     retangulo_definir_espessura_borda((Retangulo) semaforo, espessura_borda);
 }
 

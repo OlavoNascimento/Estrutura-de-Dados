@@ -20,7 +20,7 @@ struct Caso_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double arredondamento_borda;
     bool borda_tracejada;
     int numero_de_casos;
@@ -118,7 +118,7 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
     strcpy(caso->cor_preenchimento, "orange");
     caso->arredondamento_borda = 0;
     caso->borda_tracejada = false;
-    strcpy(caso->espessura_borda, "1px");
+    caso->espessura_borda = 1;
     caso->numero_de_casos = casos;
 
     quadra_inicializar_coordenada(&caso->x, &caso->y, caso->largura, caso->altura, quadra, face,
@@ -183,13 +183,13 @@ void caso_definir_cor_preenchimento(Caso caso, const char *cor_preenchimento) {
 }
 
 // Define a espessura da borda de um caso.
-void caso_definir_espessura_borda(Caso caso, const char *espessura_borda) {
+void caso_definir_espessura_borda(Caso caso, double espessura_borda) {
     retangulo_definir_espessura_borda((Retangulo) caso, espessura_borda);
 }
 
 // Define o arredondamento da borda de um caso.
-void caso_definir_arredondamento_borda(Caso caso, double raio_borda) {
-    retangulo_definir_arredondamento_borda((Retangulo) caso, raio_borda);
+void caso_definir_arredondamento_borda(Caso caso, double arredondamento_borda) {
+    retangulo_definir_arredondamento_borda((Retangulo) caso, arredondamento_borda);
 }
 
 // Define se a borda de um caso é tracejada.

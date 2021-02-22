@@ -168,7 +168,7 @@ const char *circulo_obter_espessura_borda(Circulo circulo);
 Define a espessura da borda de um círculo.
 Nenhum dos parâmetros podem ser nulos.
 */
-void circulo_definir_espessura_borda(Circulo circulo, const char *espessura_borda);
+void circulo_definir_espessura_borda(Circulo circulo, double espessura_borda);
 
 /*
 Define a opacidade de um círculo.

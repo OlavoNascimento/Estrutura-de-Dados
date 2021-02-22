@@ -26,38 +26,38 @@
 
 typedef struct {
     bool definido;
-    char espessura_borda[20];
+    double espessura_borda;
 } PropriedadesCirculos;
 
 typedef struct {
     bool definido;
-    char espessura_borda[20];
+    double espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesHidrantes;
 
 typedef struct {
     bool definido;
-    char espessura_borda[20];
+    double espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesQuadras;
 
 typedef struct {
     bool definido;
-    char espessura_borda[20];
+    double espessura_borda;
 } PropriedadesRetangulos;
 
 typedef struct {
     bool definido;
-    char espessura_borda[20];
+    double espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesSemaforos;
 
 typedef struct {
     bool definido;
-    char espessura_borda[20];
+    double espessura_borda;
     char cor_borda[20];
     char cor_preenchimento[20];
 } PropriedadesRadios;
@@ -79,7 +79,7 @@ typedef struct {
     int radios;
 } NumerosMaximos;
 
-// Inicializa os valores máximo de cada tipo de figura inicialmente como 1000.
+// Inicializa o valor máximo de cada tipo de figura como 1000.
 NumerosMaximos criar_maximos() {
     NumerosMaximos propMax = {
         .radios = 1000, .formas = 1000, .hidrantes = 1000, .quadras = 1000, .semaforos = 1000};
@@ -101,7 +101,7 @@ PropriedadesFiguras criar_propriedades() {
 
 // Define o máximo de figuras que devem ser criadas para cada tipo de figura.
 void definir_max_figuras(NumerosMaximos *propMax, const char *linha) {
-    sscanf(linha, "%*s %d %d %d %d %d", &propMax->formas, &propMax->quadras, &propMax->hidrantes,
+    sscanf(linha, "nx %d %d %d %d %d", &propMax->formas, &propMax->quadras, &propMax->hidrantes,
            &propMax->semaforos, &propMax->radios);
 }
 
@@ -119,7 +119,7 @@ void adicionar_circulo(Lista formas, Tabela id_forma, PropriedadesCirculos prop,
 
 // Define as propriedades que devem ser aplicadas a todos os círculos.
 void definir_propriedades_circulos(PropriedadesCirculos *prop, const char *linha) {
-    sscanf(linha, "%*s %s %*s", prop->espessura_borda);
+    sscanf(linha, "sw %lf", &prop->espessura_borda);
     prop->definido = true;
 }
 
@@ -145,7 +145,8 @@ void adicionar_hidrante(QuadTree hidrantes, Tabela id_hidrante, PropriedadesHidr
 
 // Define as propriedades que devem ser aplicadas a todos os hidrantes.
 void definir_propriedades_hidrantes(PropriedadesHidrantes *prop, const char *linha) {
-    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "ch %lfpx %s %s", &prop->espessura_borda, prop->cor_preenchimento,
+           prop->cor_borda);
     prop->definido = true;
 }
 
@@ -171,7 +172,8 @@ void adicionar_quadra(QuadTree quadras, Tabela cep_quadra, PropriedadesQuadras p
 
 // Define as propriedades que devem ser aplicadas a todas as quadras.
 void definir_propriedades_quadras(PropriedadesQuadras *prop, const char *linha) {
-    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "cq %lfpx %s %s", &prop->espessura_borda, prop->cor_preenchimento,
+           prop->cor_borda);
     prop->definido = true;
 }
 
@@ -189,7 +191,7 @@ void adicionar_retangulo(Lista formas, Tabela id_forma, PropriedadesRetangulos p
 
 // Define as propriedades que devem ser aplicadas a todos os retângulos.
 void definir_propriedades_retangulos(PropriedadesRetangulos *prop, const char *linha) {
-    sscanf(linha, "%*s %*s %s", prop->espessura_borda);
+    sscanf(linha, "sw %*f %lf", &prop->espessura_borda);
     prop->definido = true;
 }
 
@@ -208,7 +210,8 @@ void adicionar_radio(QuadTree radios, Tabela id_radio, PropriedadesRadios prop, 
 
 // Define as propriedades que devem ser aplicadas a todos os rádios.
 void definir_propriedades_radios(PropriedadesRadios *prop, const char *linha) {
-    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "cr %lfpx %s %s", &prop->espessura_borda, prop->cor_preenchimento,
+           prop->cor_borda);
     prop->definido = true;
 }
 
@@ -228,7 +231,8 @@ void adicionar_semaforo(QuadTree semaforos, Tabela id_semaforo, PropriedadesSema
 
 // Define as propriedades que devem ser aplicadas a todos os semáforos.
 void definir_propriedades_semaforos(PropriedadesSemaforos *prop, const char *linha) {
-    sscanf(linha, "%*s %s %s %s", prop->espessura_borda, prop->cor_preenchimento, prop->cor_borda);
+    sscanf(linha, "cs %lfpx %s %s", &prop->espessura_borda, prop->cor_preenchimento,
+           prop->cor_borda);
     prop->definido = true;
 }
 
@@ -300,13 +304,13 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
     Tabela id_radio = tabela_buscar(relacoes, "id_radio");
     Tabela id_forma = tabela_buscar(relacoes, "id_forma");
 
-    NumerosMaximos maximo = criar_maximos();
+    PropriedadesFiguras propriedades = criar_propriedades();
+    NumerosMaximos maximos = criar_maximos();
     int formas_criadas = 0;
     int quadras_criadas = 0;
     int semaforos_criados = 0;
     int hidrantes_criados = 0;
     int radios_criadas = 0;
-    PropriedadesFiguras propriedades = criar_propriedades();
 
     /*
     As QuadTrees não são balanceadas, já que realizar esta operação nas árvores torna a execução
@@ -324,29 +328,29 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
         char comando[TAMANHO_COMANDO];
         sscanf(linha, "%s", comando);
 
-        if (strcmp("c", comando) == 0 && formas_criadas <= maximo.formas) {
+        if (strcmp("c", comando) == 0 && formas_criadas <= maximos.formas) {
             adicionar_circulo(formas, id_forma, propriedades.circulos, linha);
             formas_criadas++;
         } else if (strcmp("dd", comando) == 0) {
             adicionar_densidade(densidades, linha);
-        } else if (strcmp("r", comando) == 0 && formas_criadas <= maximo.formas) {
+        } else if (strcmp("r", comando) == 0 && formas_criadas <= maximos.formas) {
             adicionar_retangulo(formas, id_forma, propriedades.retangulos, linha);
             formas_criadas++;
-        } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximo.quadras) {
+        } else if (strcmp("q", comando) == 0 && quadras_criadas <= maximos.quadras) {
             adicionar_quadra(quadras, cep_quadra, propriedades.quadras, linha);
             quadras_criadas++;
-        } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximo.hidrantes) {
+        } else if (strcmp("h", comando) == 0 && hidrantes_criados <= maximos.hidrantes) {
             adicionar_hidrante(hidrantes, id_hidrante, propriedades.hidrantes, linha);
             hidrantes_criados++;
         } else if (strcmp("ps", comando) == 0) {
             adicionar_posto(postos, linha);
-        } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximo.semaforos) {
+        } else if (strcmp("s", comando) == 0 && semaforos_criados <= maximos.semaforos) {
             adicionar_semaforo(semaforos, id_semaforo, propriedades.semaforos, linha);
             semaforos_criados++;
-        } else if (strcmp("rb", comando) == 0 && radios_criadas <= maximo.radios) {
+        } else if (strcmp("rb", comando) == 0 && radios_criadas <= maximos.radios) {
             adicionar_radio(radios, id_radio, propriedades.radios, linha);
             radios_criadas++;
-        } else if (strcmp("t", comando) == 0 && formas_criadas <= maximo.formas) {
+        } else if (strcmp("t", comando) == 0 && formas_criadas <= maximos.formas) {
             adicionar_texto(formas, id_forma, linha);
             formas_criadas++;
         } else if (strcmp("cq", comando) == 0) {
@@ -361,12 +365,12 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
             definir_propriedades_circulos(&propriedades.circulos, linha);
             definir_propriedades_retangulos(&propriedades.retangulos, linha);
         } else if (strcmp("nx", comando) == 0) {
-            definir_max_figuras(&maximo, linha);
-            LOG_INFO("Novo valor máximo de formas: %d\n", maximo.formas);
-            LOG_INFO("Novo valor máximo de quadras: %d\n", maximo.quadras);
-            LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximo.hidrantes);
-            LOG_INFO("Novo valor máximo de semaforos: %d\n", maximo.semaforos);
-            LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximo.radios);
+            definir_max_figuras(&maximos, linha);
+            LOG_INFO("Novo valor máximo de formas: %d\n", maximos.formas);
+            LOG_INFO("Novo valor máximo de quadras: %d\n", maximos.quadras);
+            LOG_INFO("Novo valor máximo de hidrantes: %d\n", maximos.hidrantes);
+            LOG_INFO("Novo valor máximo de semaforos: %d\n", maximos.semaforos);
+            LOG_INFO("Novo valor máximo de radio-bases: %d\n", maximos.radios);
         }
     }
 

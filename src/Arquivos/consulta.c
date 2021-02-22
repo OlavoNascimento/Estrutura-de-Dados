@@ -1,6 +1,5 @@
 #include "consulta.h"
 
-#include <float.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -281,16 +280,16 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
     lista_destruir(nos_dentro_circulo);
 
     // Desenhar o raio
-    circulo_definir_espessura_borda(circulo_de_selecao, "2px");
+    circulo_definir_espessura_borda(circulo_de_selecao, 2);
     lista_inserir_final(formas, circulo_de_selecao);
 
     // Desenhar anel de duas cores
     Circulo primeiro_anel = circulo_criar("", 17, cir_x, cir_y, "blue", "none");
-    circulo_definir_espessura_borda(primeiro_anel, "5px");
+    circulo_definir_espessura_borda(primeiro_anel, 5);
     lista_inserir_final(formas, primeiro_anel);
 
     Circulo segundo_anel = circulo_criar("", 12, cir_x, cir_y, "yellow", "none");
-    circulo_definir_espessura_borda(segundo_anel, "5px");
+    circulo_definir_espessura_borda(segundo_anel, 5);
     lista_inserir_final(formas, segundo_anel);
 }
 
@@ -504,7 +503,7 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
 
     // Adiciona o círculo a lista de formas.
     Circulo raio_de_selecao = circulo_criar("", raio, x, y, "green", "none");
-    circulo_definir_espessura_borda(raio_de_selecao, "4px");
+    circulo_definir_espessura_borda(raio_de_selecao, 4);
     lista_inserir_final(formas, raio_de_selecao);
 
     Lista nos_contidos = nosDentroCirculoQt(casos, x, y, raio);
@@ -758,17 +757,17 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
 
     Linha linha_enderecos =
         linha_criar(centro_x_atual, centro_y_atual, centro_x_novo, centro_y_novo, "red");
-    linha_definir_espessura(linha_enderecos, "5px");
+    linha_definir_espessura(linha_enderecos, 5);
     lista_inserir_final(formas, linha_enderecos);
 
     // Cria círculo no endereço atual
     Circulo circulo_atual = circulo_criar("", 4, centro_x_atual, centro_y_atual, "white", "red");
-    circulo_definir_espessura_borda(circulo_atual, "3px");
+    circulo_definir_espessura_borda(circulo_atual, 3);
     lista_inserir_final(formas, circulo_atual);
 
     // Cria círculo no endereço novo
     Circulo circulo_novo = circulo_criar("", 4, centro_x_novo, centro_y_novo, "white", "blue");
-    circulo_definir_espessura_borda(circulo_novo, "3px");
+    circulo_definir_espessura_borda(circulo_novo, 3);
     lista_inserir_final(formas, circulo_novo);
 }
 
@@ -810,9 +809,9 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
 void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabelecimentos,
                                         const char *linha, FILE *arquivo_log) {
     char tipo[100];
-    float x, y, largura, altura;
+    double x, y, largura, altura;
     bool todos_os_tipos = false;
-    sscanf(linha, "eplg? %s %f %f %f %f", tipo, &x, &y, &largura, &altura);
+    sscanf(linha, "eplg? %s %lf %lf %lf %lf", tipo, &x, &y, &largura, &altura);
 
     if (strcmp(tipo, "*") == 0)
         todos_os_tipos = true;

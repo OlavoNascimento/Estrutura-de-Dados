@@ -106,7 +106,7 @@ void linha_definir_cor(Linha linha, const char *cor);
 Define a espessura da borda de uma linha.
 Nenhum dos parâmetros podem ser nulos.
 */
-void linha_definir_espessura(Linha linha, const char *espessura);
+void linha_definir_espessura(Linha linha, int espessura);
 
 /*
 Define se uma linha deve ser tracejada.

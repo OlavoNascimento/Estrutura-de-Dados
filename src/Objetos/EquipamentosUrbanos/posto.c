@@ -18,7 +18,7 @@ struct Posto_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double opacidade;
 };
 
@@ -86,7 +86,7 @@ Posto posto_criar(double x, double y) {
     posto->y = y;
     strcpy(posto->cor_borda, "steelblue");
     strcpy(posto->cor_preenchimento, "green");
-    strcpy(posto->espessura_borda, "1px");
+    posto->espessura_borda = 1;
     posto->opacidade = 1;
 
     posto->vtable = posto_criar_interface_figura();
@@ -138,7 +138,7 @@ void posto_definir_cor_borda(Posto posto, const char *cor_borda) {
 }
 
 // Define a espessura da borda de um posto.
-void posto_definir_espessura_borda(Posto posto, const char *espessura_borda) {
+void posto_definir_espessura_borda(Posto posto, double espessura_borda) {
     circulo_definir_espessura_borda((Circulo) posto, espessura_borda);
 }
 

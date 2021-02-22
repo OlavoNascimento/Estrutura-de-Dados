@@ -109,7 +109,7 @@ Define a espessura de um determinado semáforo.
 O parâmetro semaforo não pode ser nulo, deve ser um semáforo existente e espessura_borda não pode
 ser nulo.
 */
-void semaforo_definir_espessura_borda(Semaforo semaforo, const char *espessura_borda);
+void semaforo_definir_espessura_borda(Semaforo semaforo, double espessura_borda);
 
 /*
 Define se o semaforo tem borda tracejada.
@@ -121,7 +121,7 @@ void semaforo_definir_borda_tracejada(Semaforo semaforo, bool tracejado);
 Define o arredondamento da borda de um semaforo.
 O parâmetro semaforo não pode ser nulo.
 */
-void semaforo_definir_arredondamento_borda(Semaforo semaforo, double raio_borda);
+void semaforo_definir_arredondamento_borda(Semaforo semaforo, double arredondamento_borda);
 
 /*
 Libera a memória alocada por um semaforo.

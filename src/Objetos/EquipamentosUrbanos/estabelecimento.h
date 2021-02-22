@@ -147,7 +147,7 @@ Define a espessura da borda de um estabelecimento.
 Nenhum dos parâmetros podem ser nulos.
 */
 void estabelecimento_definir_espessura_borda(Estabelecimento estabelecimento,
-                                             const char *espessura_borda);
+                                             double espessura_borda);
 
 /*
 Define se o estabelecimento tem borda tracejada.
@@ -160,7 +160,7 @@ Define o arredondamento da borda de um estabelecimento.
 O parâmetro estabelecimento não pode ser nulo.
 */
 void estabelecimento_definir_arredondamento_borda(Estabelecimento estabelecimento,
-                                                  double raio_borda);
+                                                  double arredondamento_borda);
 
 /*
 Libera a memória alocada por um estabelecimento.

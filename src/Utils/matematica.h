@@ -19,7 +19,7 @@ Retorna o menor valor de dois parâmetros.
 double min(double a, double b);
 
 /*
-Calcula o produto vetorial de dois vetores.
+Calcula o produto de dois vetores.
 */
 double produto_vetorial(double a_x, double a_y, double b_x, double b_y);
 

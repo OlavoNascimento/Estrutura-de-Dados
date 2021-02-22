@@ -16,7 +16,7 @@ struct Linha_s {
     double x2;
     double y2;
     char cor[20];
-    char espessura_borda[20];
+    int espessura;
     bool tracejado;
 };
 
@@ -77,7 +77,7 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor[20]
     linha->y2 = y2;
     strcpy(linha->cor, cor);
     linha->tracejado = false;
-    strcpy(linha->espessura_borda, "1px");
+    linha->espessura = 1;
 
     linha->vtable = linha_criar_interface_figura();
     return linha;
@@ -91,11 +91,10 @@ void linha_escrever_informacoes(Linha linha, FILE *arquivo) {
 
 // Escreve o código svg que representa uma linha em um arquivo.
 void linha_escrever_svg(Linha linha, FILE *arquivo) {
-    fprintf(arquivo, "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' stroke-width='%s'",
-            linha->x1, linha->y1, linha->x2, linha->y2, linha->cor, linha->espessura_borda);
-    if (linha->tracejado == true) {
+    fprintf(arquivo, "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' stroke-width='%dpx'",
+            linha->x1, linha->y1, linha->x2, linha->y2, linha->cor, linha->espessura);
+    if (linha->tracejado)
         fprintf(arquivo, " stroke-dasharray=' 10 5'");
-    }
     fprintf(arquivo, " />\n");
 }
 
@@ -143,12 +142,14 @@ void linha_definir_cor(Linha linha, const char *cor) {
     strcpy(linha->cor, cor);
 }
 
-void linha_definir_espessura(Linha linha, const char *espessura) {
-    if (espessura == NULL) {
-        LOG_AVISO("Não é possível definir NULL como espessura da borda %s!\n",
+// Define a espessura da borda de uma linha.
+void linha_definir_espessura(Linha linha, int espessura) {
+    if (espessura < 0) {
+        LOG_AVISO("Não é possível definir uma espessura menor que 0 para uma %s!\n",
                   figura_obter_tipo(linha));
+        return;
     }
-    strcpy(linha->espessura_borda, espessura);
+    linha->espessura = espessura;
 }
 
 void linha_definir_tracejado(Linha linha, bool tracejado) {

@@ -17,7 +17,7 @@ struct Retangulo_s {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    char espessura_borda[20];
+    double espessura_borda;
     double arredondamento_borda;
     bool borda_tracejada;
 };
@@ -90,7 +90,7 @@ Retangulo retangulo_criar(const char id[100], double largura, double altura, dou
     strcpy(retangulo->cor_preenchimento, cor_preenchimento);
     retangulo->arredondamento_borda = 0;
     retangulo->borda_tracejada = false;
-    strcpy(retangulo->espessura_borda, "1px");
+    retangulo->espessura_borda = 1;
 
     retangulo->vtable = retangulo_criar_interface_figura();
     return retangulo;
@@ -128,7 +128,7 @@ void retangulo_escrever_svg(Retangulo retangulo, FILE *arquivo) {
 
     fprintf(arquivo,
             " width='%lf' height='%lf' x='%lf' y='%lf' stroke='%s' fill='%s' rx='%lf' "
-            "stroke-width='%s'",
+            "stroke-width='%lfpx'",
             retangulo->largura, retangulo->altura, retangulo->x, retangulo->y, retangulo->cor_borda,
             retangulo->cor_preenchimento, retangulo->arredondamento_borda,
             retangulo->espessura_borda);
@@ -243,14 +243,13 @@ void retangulo_definir_cor_preenchimento(Retangulo retangulo, const char *cor_pr
 }
 
 // Define a espessura da borda de um retângulo.
-void retangulo_definir_espessura_borda(Retangulo retangulo, const char *espessura_borda) {
-    if (espessura_borda == NULL) {
-        LOG_AVISO("Não é possível definir NULL como tamanho da espessura da borda de um %s!\n",
+void retangulo_definir_espessura_borda(Retangulo retangulo, double espessura_borda) {
+    if (espessura_borda < 0) {
+        LOG_AVISO("Não é possível definir uma espessura de borda menor que 0 para um %s!\n",
                   figura_obter_tipo(retangulo));
         return;
     }
-
-    strcpy(retangulo->espessura_borda, espessura_borda);
+    retangulo->espessura_borda = espessura_borda;
 }
 
 // Define o arredondamento da borda do retângulo.

@@ -199,7 +199,7 @@ void morador_definir_cor_borda(Morador morador, const char *cor_borda);
 Define a espessura da borda de um morador.
 Nenhum dos parâmetros podem ser nulos.
 */
-void morador_definir_espessura_borda(Morador morador, const char *espessura_borda);
+void morador_definir_espessura_borda(Morador morador, double espessura_borda);
 
 /*
 Define se o morador tem borda tracejada.
@@ -211,7 +211,7 @@ void morador_definir_borda_tracejada(Morador morador, bool tracejado);
 Define o arredondamento da borda de um morador.
 O parâmetro morador não pode ser nulo.
 */
-void morador_definir_arredondamento_borda(Morador morador, double raio_borda);
+void morador_definir_arredondamento_borda(Morador morador, double arredondamento_borda);
 
 /*
 Libera a memória alocada por um morador.
