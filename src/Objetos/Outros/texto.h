@@ -139,7 +139,7 @@ Nenhum dos parâmetros podem ser nulos.
 void texto_definir_cor_preenchimento(Texto texto, const char *cor_preenchimento);
 
 /*
-Define o alinhamento de um texto.
+Define o alinhamento de um texto, definindo qual posição do texto as coordenas x e y representam.
 O parâmetro texto não pode ser nulo.
 */
 void texto_definir_alinhamento(Texto texto, enum TextoAlinhamento alinhamento);

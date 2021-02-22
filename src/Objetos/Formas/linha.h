@@ -34,7 +34,7 @@ O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
 Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
-                  const char cor_preenchimento[20], bool tracejado);
+                  const char cor_preenchimento[20]);
 
 /*
 Escreve todas as informações presentes em uma linha em um arquivo.
@@ -96,6 +96,7 @@ O parâmetro linha não pode ser nulo.
 Retorna a cor da borda de uma linha.
 */
 const char *linha_obter_cor_borda(Linha linha);
+
 /*
 Define a cor da borda de uma linha.
 Nenhum dos parâmetros podem ser nulos.
@@ -108,16 +109,24 @@ O parâmetro linha não pode ser nulo.
 Retorna a cor de preenchimento de uma linha.
 */
 const char *linha_obter_cor_preenchimento(Linha linha);
+
 /*
 Define a cor de preenchimento de uma linha.
 Nenhum dos parâmetros podem ser nulos.
 */
 void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento);
+
 /*
 Define a espessura da borda de uma linha.
 Nenhum dos parâmetros podem ser nulos.
 */
 void linha_definir_espessura(Linha linha, const char *espessura);
+
+/*
+Define se uma linha deve ser tracejada.
+Nenhum dos parâmetros podem ser nulos.
+*/
+void linha_definir_tracejado(Linha linha, bool tracejado);
 
 /*
 Libera a memória alocada por uma linha.

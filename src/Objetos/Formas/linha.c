@@ -68,7 +68,7 @@ static FiguraInterface linha_criar_interface_figura() {
 
 // Cria e inicializa um struct Linha com os valores passados.
 Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
-                  const char cor_preenchimento[20], bool tracejado) {
+                  const char cor_preenchimento[20]) {
     Linha linha = malloc(sizeof *linha);
     if (linha == NULL) {
         LOG_ERRO("Falha ao alocar memória\n");
@@ -80,7 +80,7 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
     linha->y2 = y2;
     strcpy(linha->cor_borda, cor_borda);
     strcpy(linha->cor_preenchimento, cor_preenchimento);
-    linha->tracejado = tracejado;
+    linha->tracejado = false;
     strcpy(linha->espessura_borda, "1px");
 
     linha->vtable = linha_criar_interface_figura();
@@ -172,6 +172,10 @@ void linha_definir_espessura(Linha linha, const char *espessura) {
                   figura_obter_tipo(linha));
     }
     strcpy(linha->espessura_borda, espessura);
+}
+
+void linha_definir_tracejado(Linha linha, bool tracejado) {
+    linha->tracejado = tracejado;
 }
 
 // Libera a memória alocada por uma linha.
