@@ -33,8 +33,7 @@ Cria e inicializa uma Linha com os valores passados.
 O id e as cores não podem ser nulos.
 Retorna um ponteiro para o struct. O usuário é responsável por liberar a memória alocada!
 */
-Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
-                  const char cor_preenchimento[20]);
+Linha linha_criar(double x1, double y1, double x2, double y2, const char cor[20]);
 
 /*
 Escreve todas as informações presentes em uma linha em um arquivo.
@@ -91,30 +90,17 @@ Retorna a coordenada y onde o centro de uma linha se encontra.
 double linha_obter_y_centro(Linha linha);
 
 /*
-Obtém a cor da borda de uma linha.
+Obtém a cor de uma linha.
 O parâmetro linha não pode ser nulo.
-Retorna a cor da borda de uma linha.
+Retorna a cor de uma linha.
 */
-const char *linha_obter_cor_borda(Linha linha);
+const char *linha_obter_cor(Linha linha);
 
 /*
-Define a cor da borda de uma linha.
+Define a cor de uma linha.
 Nenhum dos parâmetros podem ser nulos.
 */
-void linha_definir_cor_borda(Linha linha, const char *cor_borda);
-
-/*
-Obtém a cor de preenchimento de uma linha.
-O parâmetro linha não pode ser nulo.
-Retorna a cor de preenchimento de uma linha.
-*/
-const char *linha_obter_cor_preenchimento(Linha linha);
-
-/*
-Define a cor de preenchimento de uma linha.
-Nenhum dos parâmetros podem ser nulos.
-*/
-void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento);
+void linha_definir_cor(Linha linha, const char *cor);
 
 /*
 Define a espessura da borda de uma linha.

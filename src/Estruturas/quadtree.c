@@ -417,9 +417,9 @@ void escrever_quadrante(Lista saida, char *nome_quadrante, double x, double y, d
 
     if (filho != NULL) {
         // Conecta a posição atual (noroeste/nordeste/sudoeste/sudeste) ao filho.
-        Linha ligacao = linha_criar(figura_obter_x_centro(ret_id), figura_obter_y_fim(ret_id),
-                                    figura_obter_x_inicio(filho) - 1, figura_obter_y_inicio(filho),
-                                    "black", "black");
+        Linha ligacao =
+            linha_criar(figura_obter_x_centro(ret_id), figura_obter_y_fim(ret_id),
+                        figura_obter_x_inicio(filho) - 1, figura_obter_y_inicio(filho), "black");
         lista_inserir_final(saida, ligacao);
     }
 }

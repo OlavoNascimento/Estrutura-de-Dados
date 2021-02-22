@@ -15,8 +15,7 @@ struct Linha_s {
     double y1;
     double x2;
     double y2;
-    char cor_borda[20];
-    char cor_preenchimento[20];
+    char cor[20];
     char espessura_borda[20];
     bool tracejado;
 };
@@ -54,21 +53,19 @@ static FiguraInterface linha_criar_interface_figura() {
     figura_registrar_obter_x_centro(interface, (ObterXCentro *) linha_obter_x_centro);
     figura_registrar_obter_y_centro(interface, (ObterYCentro *) linha_obter_y_centro);
 
-    figura_registrar_obter_cor_borda(interface, (ObterCorBorda *) linha_obter_cor_borda);
-    figura_registrar_definir_cor_borda(interface, (DefinirCorBorda *) linha_definir_cor_borda);
+    figura_registrar_obter_cor_borda(interface, (ObterCorBorda *) linha_obter_cor);
+    figura_registrar_definir_cor_borda(interface, (DefinirCorBorda *) linha_definir_cor);
 
-    figura_registrar_obter_cor_preenchimento(
-        interface, (ObterCorPreenchimento *) linha_obter_cor_preenchimento);
-    figura_registrar_definir_cor_preenchimento(
-        interface, (DefinirCorPreenchimento *) linha_definir_cor_preenchimento);
+    figura_registrar_obter_cor_preenchimento(interface, (ObterCorPreenchimento *) linha_obter_cor);
+    figura_registrar_definir_cor_preenchimento(interface,
+                                               (DefinirCorPreenchimento *) linha_definir_cor);
 
     figura_registrar_destruir(interface, (Destruir *) linha_destruir);
     return interface;
 }
 
 // Cria e inicializa um struct Linha com os valores passados.
-Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_borda[20],
-                  const char cor_preenchimento[20]) {
+Linha linha_criar(double x1, double y1, double x2, double y2, const char cor[20]) {
     Linha linha = malloc(sizeof *linha);
     if (linha == NULL) {
         LOG_ERRO("Falha ao alocar memória\n");
@@ -78,8 +75,7 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
     linha->y1 = y1;
     linha->x2 = x2;
     linha->y2 = y2;
-    strcpy(linha->cor_borda, cor_borda);
-    strcpy(linha->cor_preenchimento, cor_preenchimento);
+    strcpy(linha->cor, cor);
     linha->tracejado = false;
     strcpy(linha->espessura_borda, "1px");
 
@@ -89,17 +85,14 @@ Linha linha_criar(double x1, double y1, double x2, double y2, const char cor_bor
 
 // Escreve todos os dados de uma linha em um arquivo.
 void linha_escrever_informacoes(Linha linha, FILE *arquivo) {
-    fprintf(arquivo, "tipo: %s, x1: %lf, y1: %lf, x2: %lf, y2: %lf, corb: %s, corp: %s\n",
-            figura_obter_tipo(linha), linha->x1, linha->y1, linha->x2, linha->y2, linha->cor_borda,
-            linha->cor_preenchimento);
+    fprintf(arquivo, "tipo: %s, x1: %lf, y1: %lf, x2: %lf, y2: %lf, cor: %s\n",
+            figura_obter_tipo(linha), linha->x1, linha->y1, linha->x2, linha->y2, linha->cor);
 }
 
 // Escreve o código svg que representa uma linha em um arquivo.
 void linha_escrever_svg(Linha linha, FILE *arquivo) {
-    fprintf(arquivo,
-            "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' fill='%s' stroke-width='%s'",
-            linha->x1, linha->y1, linha->x2, linha->y2, linha->cor_borda, linha->cor_preenchimento,
-            linha->espessura_borda);
+    fprintf(arquivo, "\t<line x1='%lf' y1='%lf' x2='%lf' y2='%lf' stroke='%s' stroke-width='%s'",
+            linha->x1, linha->y1, linha->x2, linha->y2, linha->cor, linha->espessura_borda);
     if (linha->tracejado == true) {
         fprintf(arquivo, " stroke-dasharray=' 10 5'");
     }
@@ -136,34 +129,18 @@ double linha_obter_y_centro(Linha linha) {
     return (linha->y1 + linha->y2) / 2;
 }
 
-// Retorna a cor da borda de uma linha.
-const char *linha_obter_cor_borda(Linha linha) {
-    return linha->cor_borda;
+// Retorna a cor de uma linha.
+const char *linha_obter_cor(Linha linha) {
+    return linha->cor;
 }
 
-// Define a cor da borda de uma linha.
-void linha_definir_cor_borda(Linha linha, const char *cor_borda) {
-    if (cor_borda == NULL) {
-        LOG_AVISO("Não é possível definir NULL como cor da borda de %s!\n",
-                  figura_obter_tipo(linha));
+// Define a cor de uma linha.
+void linha_definir_cor(Linha linha, const char *cor) {
+    if (cor == NULL) {
+        LOG_AVISO("Não é possível definir NULL como cor de %s!\n", figura_obter_tipo(linha));
         return;
     }
-    strcpy(linha->cor_borda, cor_borda);
-}
-
-// Retorna a cor de preenchimento de uma linha..
-const char *linha_obter_cor_preenchimento(Linha linha) {
-    return linha->cor_preenchimento;
-}
-
-// Define a cor de preenchimento de uma linha.
-void linha_definir_cor_preenchimento(Linha linha, const char *cor_preenchimento) {
-    if (cor_preenchimento == NULL) {
-        LOG_AVISO("Não é possível definir NULL como cor de preenchimento de %s!\n",
-                  figura_obter_tipo(linha));
-        return;
-    }
-    strcpy(linha->cor_preenchimento, cor_preenchimento);
+    strcpy(linha->cor, cor);
 }
 
 void linha_definir_espessura(Linha linha, const char *espessura) {

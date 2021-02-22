@@ -127,10 +127,9 @@ void checar_ponto_interno(Lista formas, Tabela id_forma, const char *linha, FILE
                                   interno ? "blue" : "magenta");
     lista_inserir_final(formas, ponto);
 
-    Linha ligacao =
-        linha_criar(figura_obter_x_centro(ponto), figura_obter_y_centro(ponto),
-                    figura_obter_x_centro(figura), figura_obter_y_centro(figura),
-                    figura_obter_cor_borda(ponto), figura_obter_cor_preenchimento(ponto));
+    Linha ligacao = linha_criar(figura_obter_x_centro(ponto), figura_obter_y_centro(ponto),
+                                figura_obter_x_centro(figura), figura_obter_y_centro(figura),
+                                figura_obter_cor_preenchimento(ponto));
     lista_inserir_final(formas, ligacao);
 
     fprintf(arquivo_log, "i? %s %lf %lf\n", id, ponto_x, ponto_y);
@@ -330,7 +329,7 @@ void remove_equipamento_urbano(QuadTree quadras, Tabela cep_quadra, QuadTree hid
     figura_escrever_informacoes(figura, arquivo_log);
     fprintf(arquivo_log, "\n");
 
-    Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black", "black");
+    Linha linha_vertical = linha_criar(centro_x, centro_y, centro_x, 0, "black");
     lista_inserir_final(formas, linha_vertical);
 
     Texto rotulo = texto_criar("", centro_x + 1, 0, "none", "black", id);
@@ -423,7 +422,7 @@ void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *li
     }
     lista_destruir(nos_contidos);
 
-    Linha linha_vertical = linha_criar(x, y, x, 0, "black", "black");
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black");
     lista_inserir_final(formas, linha_vertical);
 
     char texto_area_total[100];
@@ -482,9 +481,9 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, cons
         if (j == 0)
             fprintf(arquivo_log, "Coordenada dos postos: \n");
         Figura posto = lista_obter_info(i);
-        Linha linha_posto = linha_criar(figura_obter_x_centro(caso), figura_obter_y_centro(caso),
-                                        figura_obter_x_centro(posto), figura_obter_y_centro(posto),
-                                        "black", "black");
+        Linha linha_posto =
+            linha_criar(figura_obter_x_centro(caso), figura_obter_y_centro(caso),
+                        figura_obter_x_centro(posto), figura_obter_y_centro(posto), "black");
         linha_definir_tracejado(linha_posto, true);
         lista_inserir_final(formas, linha_posto);
 
@@ -684,7 +683,7 @@ void mostrar_informacoes_morador(Lista formas, Tabela dados_pessoa, const char *
 
     Linha linha_vertical =
         linha_criar(figura_obter_x_centro(morador), figura_obter_y_centro(morador),
-                    figura_obter_x_centro(morador), 0, "black", "black");
+                    figura_obter_x_centro(morador), 0, "black");
     lista_inserir_final(formas, linha_vertical);
 
     char texto_pessoa_endereco[1024];
@@ -758,7 +757,7 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
     double centro_y_novo = figura_obter_y_centro(morador);
 
     Linha linha_enderecos =
-        linha_criar(centro_x_atual, centro_y_atual, centro_x_novo, centro_y_novo, "red", "red");
+        linha_criar(centro_x_atual, centro_y_atual, centro_x_novo, centro_y_novo, "red");
     linha_definir_espessura(linha_enderecos, "5px");
     lista_inserir_final(formas, linha_enderecos);
 
