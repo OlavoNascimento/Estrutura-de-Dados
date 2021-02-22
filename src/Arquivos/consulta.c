@@ -841,7 +841,7 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
             fprintf(arquivo_log, "\n");
 
             // Destaca o estabelecimento selecionado
-            estabelecimento_definir_cor_preenchimento(est, "#00c56f");
+            estabelecimento_definir_cor_preenchimento(est, "red");
             estabelecimento_definir_borda_tracejada(est, true);
         }
     }
