@@ -707,14 +707,17 @@ void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dad
     Estabelecimento estabelecimento = tabela_buscar(cnpj_estabelecimento, cnpj);
     if (estabelecimento == NULL)
         return;
+    estabelecimento_escrever_informacoes(estabelecimento, arquivo_log);
 
     Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(estabelecimento));
-    if (morador == NULL)
-        return;
-
-    estabelecimento_escrever_informacoes(estabelecimento, arquivo_log);
-    fprintf(arquivo_log, "Dados do proprietário: ");
-    morador_escrever_informacoes(morador, arquivo_log);
+    if (morador != NULL) {
+        fprintf(arquivo_log, "Dados do proprietário: ");
+        morador_escrever_informacoes(morador, arquivo_log);
+    } else {
+        fprintf(arquivo_log,
+                "O cpf do proprietário do estabelecimento não está relacionado a um "
+                "morador!\n");
+    }
     fprintf(arquivo_log, "\n");
 }
 
@@ -827,9 +830,14 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
         if (retangulo_contem_retangulo(contorno, (Retangulo) est)) {
             estabelecimento_escrever_informacoes(est, arquivo_log);
             Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
-            if (morador != NULL)
+            if (morador != NULL) {
                 fprintf(arquivo_log, "Nome do proprietário: %s %s\n", morador_obter_nome(morador),
                         morador_obter_sobrenome(morador));
+            } else {
+                fprintf(arquivo_log,
+                        "O cpf do proprietário do estabelecimento não está relacionado a um "
+                        "morador!\n");
+            }
             fprintf(arquivo_log, "\n");
 
             // Destaca o estabelecimento selecionado

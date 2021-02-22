@@ -316,7 +316,7 @@ void descricao_ler(const char *caminho_descricao, Tabela quadtrees, Tabela lista
     As QuadTrees não são balanceadas, já que realizar esta operação nas árvores torna a execução
     do programa extrememente lenta.
     Executar todos os testes com o balanceamento implementado aumenta 4 vezes o tempo de execução
-    total necessário para rodar todos os testes.
+    total.
     Por fim, no final da página 20 do pdf é definido que o aluno deve avaliar qual estratégia é mais
     apropriada, como pode ser visto no trecho extraído abaixo:
     "O aluno deverá avaliar se esta estratégia de inserção é melhor (e em que medida) que

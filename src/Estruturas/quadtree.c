@@ -375,8 +375,8 @@ QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
     return pNo->info;
 }
 
-Retangulo escrever_retangulo_principal(Lista saida, QuadTree qt, double x, double y, double largura,
-                                       double altura) {
+Retangulo escrever_retangulos_principais(Lista saida, QuadTree qt, double x, double y,
+                                         double largura, double altura) {
     // Retângulo com as coordenadas da figura.
     Retangulo ret_coord = retangulo_criar("", largura * 2 + 2, altura, x, y, "black", "#f1ffe8");
     lista_inserir_final(saida, ret_coord);
@@ -406,19 +406,19 @@ Retangulo escrever_retangulo_principal(Lista saida, QuadTree qt, double x, doubl
 
 void escrever_quadrante(Lista saida, char *nome_quadrante, double x, double y, double largura,
                         double altura, char *cor, Retangulo filho) {
-    Retangulo ret_id = retangulo_criar("", largura, altura, x, y, "black", cor);
-    lista_inserir_final(saida, ret_id);
+    Retangulo quadrante = retangulo_criar("", largura, altura, x, y, "black", cor);
+    lista_inserir_final(saida, quadrante);
 
     Texto texto_id =
-        texto_criar("", figura_obter_x_centro(ret_id), figura_obter_y_centro(ret_id) + 6, "none",
-                    "black", nome_quadrante);
+        texto_criar("", figura_obter_x_centro(quadrante), figura_obter_y_centro(quadrante) + 6,
+                    "none", "black", nome_quadrante);
     texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
     lista_inserir_final(saida, texto_id);
 
     if (filho != NULL) {
         // Conecta a posição atual (noroeste/nordeste/sudoeste/sudeste) ao filho.
         Linha ligacao =
-            linha_criar(figura_obter_x_centro(ret_id), figura_obter_y_fim(ret_id),
+            linha_criar(figura_obter_x_centro(quadrante), figura_obter_y_fim(quadrante),
                         figura_obter_x_inicio(filho) - 1, figura_obter_y_inicio(filho), "black");
         lista_inserir_final(saida, ligacao);
     }
@@ -428,9 +428,9 @@ Retangulo escrever_svg_no(Lista saida, QuadTree qt, double *x, double y) {
     if (qt == NULL || qt->no == NULL)
         return NULL;
 
-    const double largura = 44;
-    const double altura = 20;
-    const double margem_y = 200;
+    const int largura = 44;
+    const int altura = 20;
+    const int margem_y = 200;
 
     Retangulo noroeste = escrever_svg_no(saida, qt->noroeste, x, y + margem_y);
     *x += largura;
@@ -438,7 +438,7 @@ Retangulo escrever_svg_no(Lista saida, QuadTree qt, double *x, double y) {
     *x += largura;
 
     double x_atual = *x;
-    Retangulo ret_id = escrever_retangulo_principal(saida, qt, *x, y, largura, altura);
+    Retangulo ret_id = escrever_retangulos_principais(saida, qt, *x, y, largura, altura);
     *x += largura;
 
     Retangulo sudoeste = escrever_svg_no(saida, qt->sudoeste, x, y + margem_y);
