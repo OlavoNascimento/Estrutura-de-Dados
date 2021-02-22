@@ -1,7 +1,14 @@
 #ifndef TABELAHASH_H
 #define TABELAHASH_H
 
-// TODO Adicionar apresentação módulo.
+/*
+Implementa uma tabela de espalhamento. A tabela é criada através da função tabela_criar().
+Após a criação, é possível armazenar informações através da função tabela_inserir().
+Informações são associadas a uma chave, essa chave facilita a busca e acesso dentro da tabela.
+Além disso são implementadas funções para buscar e remover informações.
+A tabela armazena listas duplamente encadeadas em cada um de seus baldes e as informações inseridas
+serão armazenadas dentro dessas listas.
+*/
 
 #include "lista.h"
 
