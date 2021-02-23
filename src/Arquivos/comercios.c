@@ -1,6 +1,7 @@
 #include "comercios.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "../Estruturas/quadtree.h"
@@ -15,7 +16,7 @@
 // passado a função.
 void definir_descricao_tipo(Tabela tipo_descricao, const char *linha) {
     char tipo[100];
-    char descricao[100];
+    char *descricao = malloc(sizeof *descricao * 100);
     sscanf(linha, "t %s %s", tipo, descricao);
     tabela_inserir(tipo_descricao, tipo, descricao);
 }

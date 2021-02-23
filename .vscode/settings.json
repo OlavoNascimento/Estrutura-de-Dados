@@ -59,6 +59,7 @@
     "fila.h": "c",
     "estrutura_mapeavel.h": "c",
     "hidrante.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "estabelecimento.h": "c"
   }
 }

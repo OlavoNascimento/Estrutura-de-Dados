@@ -659,8 +659,8 @@ void listar_moradores_quadra(Tabela cep_quadra, QuadTree moradores, const char *
 
     Lista nos = nosDentroRetanguloQt(moradores, x_inicio, y_inicio, x_fim, y_fim);
     for_each_lista(i, nos) {
-        Figura fig = getInfoQt(moradores, lista_obter_info(i));
-        morador_escrever_informacoes(fig, arquivo_log);
+        Morador morador = getInfoQt(moradores, lista_obter_info(i));
+        morador_escrever_informacoes(morador, arquivo_log);
         fprintf(arquivo_log, "\n");
     }
     lista_destruir(nos);
@@ -692,23 +692,30 @@ void mostrar_informacoes_morador(Lista formas, Tabela dados_pessoa, const char *
              morador_obter_endereco_face(morador), morador_obter_endereco_num(morador),
              morador_obter_endereco_complemento(morador));
 
-    Texto area_linha = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
-                                   texto_pessoa_endereco);
-    lista_inserir_final(formas, area_linha);
+    Texto texto_endereco = texto_criar("", figura_obter_x_centro(morador) + 1, 0, "none", "black",
+                                       texto_pessoa_endereco);
+    lista_inserir_final(formas, texto_endereco);
 }
 
 // Escreve no arquivo de log todos os dados do estabelecimento comercial identificado por um cnpj.
 void mostrar_informacoes_estabelecimento(Tabela cnpj_estabelecimento, Tabela dados_pessoa,
-                                         const char *linha, FILE *arquivo_log) {
+                                         Tabela tipo_descricao, const char *linha,
+                                         FILE *arquivo_log) {
     char cnpj[100];
     sscanf(linha, "de? %s", cnpj);
 
-    Estabelecimento estabelecimento = tabela_buscar(cnpj_estabelecimento, cnpj);
-    if (estabelecimento == NULL)
+    Estabelecimento est = tabela_buscar(cnpj_estabelecimento, cnpj);
+    if (est == NULL)
         return;
-    estabelecimento_escrever_informacoes(estabelecimento, arquivo_log);
+    estabelecimento_escrever_informacoes(est, arquivo_log);
 
-    Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(estabelecimento));
+    const char *descricao = tabela_buscar(tipo_descricao, estabelecimento_obter_tipo(est));
+    if (descricao != NULL)
+        fprintf(arquivo_log, "Descrição do tipo: %s\n", descricao);
+    else
+        fprintf(arquivo_log, "O tipo do estabelecimento não está relacionado a uma descrição!\n");
+
+    Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
     if (morador != NULL) {
         fprintf(arquivo_log, "Dados do proprietário: ");
         morador_escrever_informacoes(morador, arquivo_log);
@@ -858,7 +865,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     double x, y, raio;
     sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
 
-    // Adiciona o círculo a Quadtree formas.
+    // Adiciona o círculo a lista de formas.
     Circulo raio_selecao = circulo_criar("", raio, x, y, "#6C6753", "#CCFF00");
     circulo_definir_opacidade(raio_selecao, 0.5);
     lista_inserir_final(formas, raio_selecao);
@@ -937,6 +944,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     Lista densidades = tabela_buscar(listas, "densidades");
 
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
+    Tabela tipo_descricao = tabela_buscar(relacoes, "tipo_descricao");
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
     Tabela cnpj_estabelecimento = tabela_buscar(relacoes, "cnpj_estabelecimento");
     Tabela id_hidrante = tabela_buscar(relacoes, "id_hidrante");
@@ -985,8 +993,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("dm?", comando) == 0) {
             mostrar_informacoes_morador(formas, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("de?", comando) == 0) {
-            mostrar_informacoes_estabelecimento(cnpj_estabelecimento, dados_pessoa, linha,
-                                                arquivo_log);
+            mostrar_informacoes_estabelecimento(cnpj_estabelecimento, dados_pessoa, tipo_descricao,
+                                                linha, arquivo_log);
         } else if (strcmp("mud", comando) == 0) {
             mudar_endereco_morador(formas, cep_quadra, dados_pessoa, linha, arquivo_log);
         } else if (strcmp("dmprbt", comando) == 0) {

@@ -151,7 +151,7 @@ Pilha graham_scan(int tamanho, Figura **figuras) {
         }
 
         pilha_inserir(pontos_envoltoria, ultimo_caso);
-        pilha_inserir(pontos_envoltoria, (*figuras)[i]);
+        pilha_inserir(pontos_envoltoria, proximo_caso);
     }
 
     Figura ultimo_no = pilha_remover(pontos_envoltoria);

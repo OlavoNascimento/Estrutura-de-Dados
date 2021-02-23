@@ -404,16 +404,16 @@ Retangulo escrever_retangulos_principais(Lista saida, QuadTree qt, double x, dou
     return ret_id;
 }
 
-void escrever_quadrante(Lista saida, char *nome_quadrante, double x, double y, double largura,
-                        double altura, char *cor, Retangulo filho) {
+void escrever_quadrante(Lista saida, const char *nome_quadrante, double x, double y, double largura,
+                        double altura, const char *cor, Retangulo filho) {
     Retangulo quadrante = retangulo_criar("", largura, altura, x, y, "black", cor);
     lista_inserir_final(saida, quadrante);
 
-    Texto texto_id =
+    Texto texto_nome =
         texto_criar("", figura_obter_x_centro(quadrante), figura_obter_y_centro(quadrante) + 6,
                     "none", "black", nome_quadrante);
-    texto_definir_alinhamento(texto_id, TEXTO_CENTRO);
-    lista_inserir_final(saida, texto_id);
+    texto_definir_alinhamento(texto_nome, TEXTO_CENTRO);
+    lista_inserir_final(saida, texto_nome);
 
     if (filho != NULL) {
         // Conecta a posição atual (noroeste/nordeste/sudoeste/sudeste) ao filho.
