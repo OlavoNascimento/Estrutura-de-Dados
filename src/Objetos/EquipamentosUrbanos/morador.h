@@ -44,7 +44,7 @@ Argumentos:
     dia: Dia de nascimento do morador.
     mes: Mês de nascimento do morador.
     ano: Ano de nascimento do morador.
-cpf, nome e sobrenome nao podem ser nulos
+Os argumentos cpf, nome e sobrenome nao podem ser nulos
 O usuário é responsável por liberar a memória alocada!
 */
 Morador morador_criar(const char *cpf, const char *nome, const char *sobrenome, const char sexo,
@@ -58,16 +58,15 @@ O usuário é responsável por liberar a memória alocada!
 Morador morador_ler(const char *linha);
 
 /*
-Define o endereço de um morador a partir de um texto obtido no arquivo.pm.
-Nenhum dos parâmetros pode ser nulo.
+Define o endereço de um morador a partir de um texto obtido no arquivo .pm.
+Nenhum dos parâmetros podem ser nulos.
 */
 void morador_ler_endereco(Morador morador, const char *linha, Quadra quadra);
 
 /*
 Define o endereço de um morador com os valores passados.
-O morador é inserido em uma quadtree assim que as suas
-coordenadas são obtidas através do endereço.
-O morador e cep não podem ser nulos.
+O morador, cep e complemento não podem ser nulos. A face deve ser uma das seguintes opções: N, S,
+L, O.
 */
 void morador_definir_endereco(Morador morador, const char *cep, const char face, int num,
                               const char *complemento, Quadra quadra);

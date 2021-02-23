@@ -36,19 +36,22 @@ typedef struct Estabelecimento_s *Estabelecimento;
 /*
 Cria e inicializa um Estabelecimento com os valores passados.
 Argumentos:
-    cep: Cep da quadra onde o Estabelecimento está contido.
-    face: Lado da quadra onde o Estabelecimento está presente.
+    cnpj: Cnpj do estabelecimento.
+    cpf: Cpf do proprietário.
+    tipo: Tipo do estabelecimento.
+    nome: Nome do estabelecimento.
+    quadra: Quadra onde o estabelecimento está contido.
+    face: Lado da quadra onde o Estabelecimento está presente, deve ser uma das seguintes opções: N,
+S, L, O.
     numero: Distância do estabelecimento e extremidade da face.
-    lista_quadras: Lista contendo as quadras existentes. O cep passado deve estar presente.
-Os estabelecimentos devem ser maior que zero, as cores e a lista de quadras não podem ser nulas.
-Uma quadra com o cep especificado deve estar presente na lista de quadras.
+Os argumentos cnpj, cpf, tipo, nome e quadra não podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
 Estabelecimento estabelecimento_criar(const char *cnpj, const char *cpf, const char *tipo,
                                       const char *nome, Quadra quadra, char face, int numero);
 /*
 Cria e inicializa um Estabelecimento a partir de um texto obtido no arquivo .geo.
-O parâmetro linha não pode ser nulo.
+Nenhum dos parâmetros podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
 Estabelecimento estabelecimento_ler(const char *linha, Quadra quadra);

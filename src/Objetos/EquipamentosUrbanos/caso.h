@@ -34,19 +34,17 @@ typedef struct Caso_s *Caso;
 Cria e inicializa um Caso com os valores passados.
 Argumentos:
     casos: Número de infectados na área delimitado pelo caso.
-    cep: Cep da quadra onde o Caso está contido.
+    quadra: Quadra onde o caso está contido.
     face: Lado da quadra onde o Caso ocorreu.
     numero: Distância do caso e extremidade da face.
-    lista_quadras: Lista contendo as quadras existentes. O cep passado deve estar presente.
-Os casos devem ser maior que zero, as cores e a lista de quadras não podem ser nulas.
-Uma quadra com o cep especificado deve estar presente na lista de quadras.
+O argumento quadra não pode ser nulo. A face deve ser uma das seguintes opções: N, S, O, L.
 O usuário é responsável por liberar a memória alocada!
 */
 Caso caso_criar(int casos, Quadra quadra, char face, int numero);
 
 /*
 Cria e inicializa um Caso a partir de um texto obtido no arquivo .geo.
-O parâmetro linha não pode ser nulo.
+Nenhum dos parâmetros podem ser nulos.
 O usuário é responsável por liberar a memória alocada!
 */
 Caso caso_ler(const char *linha, Quadra quadra);
