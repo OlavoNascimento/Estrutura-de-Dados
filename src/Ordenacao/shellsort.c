@@ -7,9 +7,14 @@
 #include "../Estruturas/lista.h"
 #include "../Interfaces/figura.h"
 
+static inline void trocar_figuras(Figura *figuras, int i, int j) {
+    Figura temp = figuras[i];
+    figuras[i] = figuras[j];
+    figuras[j] = temp;
+}
+
 // Retorna a distância entre o morador de coordenada x,y e o posto armazenado em no1.
-double calcular_distancia(ListaNo no1, double x, double y) {
-    Figura figura = lista_obter_info(no1);
+double calcular_distancia(Figura figura, double x, double y) {
     double x_no = figura_obter_x(figura);
     double y_no = figura_obter_y(figura);
 
@@ -18,73 +23,65 @@ double calcular_distancia(ListaNo no1, double x, double y) {
     return hypot(cat1, cat2);
 }
 
-void insertion_sort(Lista lista_postos, double x, double y) {
-    ListaNo no1 = lista_obter_inicio(lista_postos);
-    ListaNo no2 = lista_obter_proximo(no1);
-    double distance2;
-    double distance1;
-    ListaNo aux;
-    ListaNo aux_prev;
-    for (int i = 0; i < lista_obter_tamanho(lista_postos) - 1; i++) {
-        if (no1 == NULL || no2 == NULL)
+void insertion_sort(Figura *postos, int tamanho, double x, double y) {
+    int no1 = 0;
+    int no2 = 1;
+
+    for (int i = 0; i < tamanho - 1; i++) {
+        if (no1 >= tamanho || no2 >= tamanho)
             break;
 
-        distance1 = calcular_distancia(no1, x, y);
-        distance2 = calcular_distancia(no2, x, y);
-        if (distance1 > distance2) {
-            lista_trocar_info(no1, no2);
+        double distancia1 = calcular_distancia(postos[no1], x, y);
+        double distancia2 = calcular_distancia(postos[no2], x, y);
+        if (distancia1 > distancia2) {
+            trocar_figuras(postos, no1, no2);
 
             // Itera na direção contraria da lista comparando os nós anteriores.
-            aux = no1;
-            aux_prev = lista_obter_anterior(no1);
+            int aux = no1;
+            int aux_prev = no1 - 1;
 
-            while (aux != NULL && aux_prev != NULL) {
-                distance1 = calcular_distancia(aux, x, y);
-                distance2 = calcular_distancia(aux_prev, x, y);
+            while (aux_prev >= 0) {
+                distancia1 = calcular_distancia(postos[aux], x, y);
+                distancia2 = calcular_distancia(postos[aux_prev], x, y);
 
                 // Se uma distância maior está antes de uma distância menor, realiza a troca.
-                if (distance1 < distance2) {
-                    lista_trocar_info(aux, aux_prev);
-                }
+                if (distancia1 < distancia2)
+                    trocar_figuras(postos, aux, aux_prev);
 
                 // Atualiza os nós para os anteriores.
-                aux = lista_obter_anterior(aux);
-                aux_prev = lista_obter_anterior(aux_prev);
+                aux--;
+                aux_prev--;
             }
         }
 
         // Atualiza os nós do loop principal.
-        no1 = lista_obter_proximo(no1);
-        no2 = lista_obter_proximo(no1);
+        no1++;
+        no2++;
     }
 }
 
-void shellsort(Lista lista_postos, int H, double x, double y) {
+void shellsort(Figura *postos, int tamanho, int H, double x, double y) {
+    if (tamanho <= 0 || H <= 0)
+        return;
     // Quando o H chega em 1, é realizado um insertionSort.
     if (H == 1) {
-        insertion_sort(lista_postos, x, y);
-    } else {
-        ListaNo noI = lista_obter_inicio(lista_postos);
-        if (noI == NULL)
-            return;
-        ListaNo noH = noI;
-        double distanceI;
-        double distanceH;
-        // Itera até pegar o nó equivalente ao indice i+H.
-        for (int i = 0; i < H; i++) {
-            noH = lista_obter_proximo(noH);
-        }
-        for (int i = 0; i < lista_obter_tamanho(lista_postos) - H; i++) {
-            distanceI = calcular_distancia(noI, x, y);
-            distanceH = calcular_distancia(noH, x, y);
-            // Se a distancia no noI for maior que a distância no noH, realiza a troca entre os dois
-            // nós.
-            if (distanceI > distanceH) {
-                lista_trocar_info(noI, noH);
-            }
-            noI = lista_obter_proximo(noI);
-            noH = lista_obter_proximo(noH);
-        }
-        shellsort(lista_postos, H - 1, x, y);
+        insertion_sort(postos, tamanho, x, y);
+        return;
     }
+
+    int noI = 0;
+    int noH = H;
+
+    for (int i = 0; i < tamanho - H; i++) {
+        double distanciaI = calcular_distancia(postos[noI], x, y);
+        double distanciaH = calcular_distancia(postos[noH], x, y);
+        // Se a distancia no noI for maior que a distância no noH, realiza a troca entre os dois
+        // nós.
+        if (distanciaI > distanciaH)
+            trocar_figuras(postos, noI, noH);
+
+        noI++;
+        noH++;
+    }
+    shellsort(postos, tamanho, H - 1, x, y);
 }

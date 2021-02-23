@@ -70,17 +70,16 @@ void checar_interseccao(Lista formas, Tabela id_forma, const char *linha, FILE *
     const char *tipo_fig1 = figura_obter_tipo(fig1);
     const char *tipo_fig2 = figura_obter_tipo(fig2);
     bool intersectam = false;
-    if (strcmp(tipo_fig1, "círculo") == 0 && strcmp(tipo_fig1, tipo_fig2) == 0) {
+    if (strcmp(tipo_fig1, "círculo") == 0 && strcmp(tipo_fig1, tipo_fig2) == 0)
         intersectam = circulo_checar_interseccao((Circulo) fig1, (Circulo) fig2);
-    } else if (strcmp(tipo_fig1, "retângulo") == 0 && strcmp(tipo_fig1, tipo_fig2) == 0) {
+    else if (strcmp(tipo_fig1, "retângulo") == 0 && strcmp(tipo_fig1, tipo_fig2) == 0)
         intersectam = retangulo_checar_interseccao((Retangulo) fig1, (Retangulo) fig2);
-    } else if (strcmp(tipo_fig1, "círculo") == 0 && strcmp(tipo_fig2, "retângulo") == 0) {
+    else if (strcmp(tipo_fig1, "círculo") == 0 && strcmp(tipo_fig2, "retângulo") == 0)
         intersectam = circulo_intersecta_retangulo((Circulo) fig1, (Retangulo) fig2);
-    } else if (strcmp(tipo_fig1, "retângulo") == 0 && strcmp(tipo_fig2, "círculo") == 0) {
+    else if (strcmp(tipo_fig1, "retângulo") == 0 && strcmp(tipo_fig2, "círculo") == 0)
         intersectam = circulo_intersecta_retangulo((Circulo) fig2, (Retangulo) fig1);
-    } else {
+    else
         return;
-    }
 
     Retangulo contorno = criar_delimitacao_figuras(fig1, fig2);
     if (intersectam) {
@@ -114,13 +113,12 @@ void checar_ponto_interno(Lista formas, Tabela id_forma, const char *linha, FILE
 
     const char *tipo_figura = figura_obter_tipo(figura);
     bool interno = false;
-    if (strcmp(tipo_figura, "círculo") == 0) {
+    if (strcmp(tipo_figura, "círculo") == 0)
         interno = circulo_checar_ponto_interno(figura, ponto_x, ponto_y);
-    } else if (strcmp(tipo_figura, "retângulo") == 0) {
+    else if (strcmp(tipo_figura, "retângulo") == 0)
         interno = retangulo_checar_ponto_interno(figura, ponto_x, ponto_y);
-    } else {
+    else
         return;
-    }
 
     Circulo ponto = circulo_criar("", 1, ponto_x, ponto_y, interno ? "blue" : "magenta",
                                   interno ? "blue" : "magenta");
@@ -257,24 +255,24 @@ void raio_remove_quadras(QuadTree quadras, Tabela cep_quadra, Tabela id_hidrante
     Circulo circulo_de_selecao = circulo_criar("", raio, cir_x, cir_y, "black", "none");
 
     Lista nos_dentro_circulo = nosDentroCirculoQt(quadras, cir_x, cir_y, raio);
-    for_each_lista(atual, nos_dentro_circulo) {
-        Figura quadra = getInfoQt(NULL, lista_obter_info(atual));
+    for_each_lista(no, nos_dentro_circulo) {
+        Figura quadra = getInfoQt(NULL, lista_obter_info(no));
+        if (!circulo_contem_retangulo(circulo_de_selecao, quadra))
+            continue;
 
-        if (circulo_contem_retangulo(circulo_de_selecao, quadra)) {
-            fprintf(arquivo_log, "id %s: %s, equipamento ", figura_obter_tipo(quadra),
-                    figura_obter_id(quadra));
-            figura_escrever_informacoes(figura, arquivo_log);
-            fprintf(arquivo_log, "\n");
+        fprintf(arquivo_log, "id %s: %s, equipamento ", figura_obter_tipo(quadra),
+                figura_obter_id(quadra));
+        figura_escrever_informacoes(figura, arquivo_log);
+        fprintf(arquivo_log, "\n");
 
-            if (remover_quadras) {
-                removeNoQt(quadras, lista_obter_info(atual));
-                tabela_remover(cep_quadra, figura_obter_id(quadra));
-                figura_destruir(quadra);
-            } else {
-                quadra_definir_cor_borda(quadra, "olive");
-                quadra_definir_cor_preenchimento(quadra, "beige");
-                quadra_definir_arredondamento_borda(quadra, 20);
-            }
+        if (remover_quadras) {
+            removeNoQt(quadras, lista_obter_info(no));
+            tabela_remover(cep_quadra, figura_obter_id(quadra));
+            figura_destruir(quadra);
+        } else {
+            quadra_definir_cor_borda(quadra, "olive");
+            quadra_definir_cor_preenchimento(quadra, "beige");
+            quadra_definir_arredondamento_borda(quadra, 20);
         }
     }
     lista_destruir(nos_dentro_circulo);
@@ -349,8 +347,8 @@ void circulo_contem_quadras(QuadTree quadras, const char *linha, FILE *arquivo_l
     Circulo circulo_de_selecao = circulo_criar("", raio, cir_x, cir_y, "", "");
 
     Lista nos_contidos = nosDentroCirculoQt(quadras, cir_x, cir_y, raio);
-    for_each_lista(atual, nos_contidos) {
-        Figura quadra = getInfoQt(quadras, lista_obter_info(atual));
+    for_each_lista(no, nos_contidos) {
+        Figura quadra = getInfoQt(quadras, lista_obter_info(no));
 
         if (circulo_contem_retangulo(circulo_de_selecao, quadra)) {
             figura_definir_cor_borda(quadra, cor_borda);
@@ -393,31 +391,27 @@ void retangulo_area_total_contida(Lista formas, QuadTree quadras, const char *li
     lista_inserir_final(formas, contorno);
 
     Lista nos_contidos = nosDentroRetanguloQt(quadras, x, y, x + largura, y + altura);
-    if (lista_obter_tamanho(nos_contidos) == 0) {
-        lista_destruir(nos_contidos);
-        return;
-    }
 
     double area_total = 0;
-    for_each_lista(atual, nos_contidos) {
-        Quadra quadra = getInfoQt(NULL, lista_obter_info(atual));
+    for_each_lista(no, nos_contidos) {
+        Quadra quadra = getInfoQt(NULL, lista_obter_info(no));
+        if (!retangulo_contem_retangulo(contorno, (Retangulo) quadra))
+            continue;
 
-        if (retangulo_contem_retangulo(contorno, (Retangulo) quadra)) {
-            double area_quadra = quadra_obter_largura(quadra) * quadra_obter_altura(quadra);
-            area_total += area_quadra;
+        double area_quadra = quadra_obter_largura(quadra) * quadra_obter_altura(quadra);
+        area_total += area_quadra;
 
-            char string_area[100];
-            // Converte o valor da área da figura para string
-            snprintf(string_area, 100, "%lf", area_quadra);
+        char string_area[100];
+        // Converte o valor da área da figura para string
+        snprintf(string_area, 100, "%lf", area_quadra);
 
-            Texto texto_area_quadra =
-                texto_criar("", figura_obter_x_centro(quadra), figura_obter_y_centro(quadra) + 4,
-                            "none", "black", string_area);
-            texto_definir_alinhamento(texto_area_quadra, TEXTO_CENTRO);
-            lista_inserir_final(formas, texto_area_quadra);
+        Texto texto_area_quadra =
+            texto_criar("", figura_obter_x_centro(quadra), figura_obter_y_centro(quadra) + 4,
+                        "none", "black", string_area);
+        texto_definir_alinhamento(texto_area_quadra, TEXTO_CENTRO);
+        lista_inserir_final(formas, texto_area_quadra);
 
-            fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(quadra), area_quadra);
-        }
+        fprintf(arquivo_log, "cep: %s, área: %lf\n\n", figura_obter_id(quadra), area_quadra);
     }
     lista_destruir(nos_contidos);
 
@@ -467,19 +461,28 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, cons
 
     Lista lista_postos = lista_criar(NULL, NULL);
     percorreLarguraQt(postos, salvar_info_em_lista, lista_postos);
-    if (lista_obter_tamanho(lista_postos) == 0) {
+
+    const int tamanho = lista_obter_tamanho(lista_postos);
+    Figura *array_postos = malloc(tamanho * sizeof *array_postos);
+    if (array_postos == NULL) {
+        LOG_ERRO("Falha ao alocar memória!\n");
         lista_destruir(lista_postos);
         return;
     }
 
-    shellsort(lista_postos, lista_obter_tamanho(lista_postos) / 2, figura_obter_x(caso),
-              figura_obter_y(caso));
+    int i = 0;
+    for_each_lista(no, lista_postos) {
+        array_postos[i++] = lista_obter_info(no);
+    }
+    lista_destruir(lista_postos);
+    lista_postos = NULL;
 
-    ListaNo i = lista_obter_inicio(lista_postos);
-    for (int j = 0; j < k; j++) {
-        if (j == 0)
-            fprintf(arquivo_log, "Coordenada dos postos: \n");
-        Figura posto = lista_obter_info(i);
+    shellsort(array_postos, tamanho, tamanho / 2, figura_obter_x(caso), figura_obter_y(caso));
+
+    for (int i = 0; i < k && i < tamanho; i++) {
+        if (i == 0)
+            fprintf(arquivo_log, "Coordenada dos postos:\n");
+        Figura posto = array_postos[i];
         Linha linha_posto =
             linha_criar(figura_obter_x_centro(caso), figura_obter_y_centro(caso),
                         figura_obter_x_centro(posto), figura_obter_y_centro(posto), "black");
@@ -487,12 +490,8 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, cons
         lista_inserir_final(formas, linha_posto);
 
         fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(posto), figura_obter_y(posto));
-
-        i = lista_obter_proximo(i);
-        if (i == NULL)
-            break;
     }
-    lista_destruir(lista_postos);
+    free(array_postos);
 }
 
 // Utiliza um círculo para definir os casos que devem ser contidos por uma envoltória convexa.
@@ -826,24 +825,24 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
         Estabelecimento est = getInfoQt(NULL, lista_obter_info(no));
         if (!todos_os_tipos && strcmp(estabelecimento_obter_tipo(est), tipo) != 0)
             continue;
+        if (!retangulo_contem_retangulo(contorno, (Retangulo) est))
+            continue;
 
-        if (retangulo_contem_retangulo(contorno, (Retangulo) est)) {
-            estabelecimento_escrever_informacoes(est, arquivo_log);
-            Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
-            if (morador != NULL) {
-                fprintf(arquivo_log, "Nome do proprietário: %s %s\n", morador_obter_nome(morador),
-                        morador_obter_sobrenome(morador));
-            } else {
-                fprintf(arquivo_log,
-                        "O cpf do proprietário do estabelecimento não está relacionado a um "
-                        "morador!\n");
-            }
-            fprintf(arquivo_log, "\n");
-
-            // Destaca o estabelecimento selecionado
-            estabelecimento_definir_cor_preenchimento(est, "red");
-            estabelecimento_definir_borda_tracejada(est, true);
+        estabelecimento_escrever_informacoes(est, arquivo_log);
+        Morador morador = tabela_buscar(dados_pessoa, estabelecimento_obter_cpf(est));
+        if (morador != NULL) {
+            fprintf(arquivo_log, "Nome do proprietário: %s %s\n", morador_obter_nome(morador),
+                    morador_obter_sobrenome(morador));
+        } else {
+            fprintf(arquivo_log,
+                    "O cpf do proprietário do estabelecimento não está relacionado a um "
+                    "morador!\n");
         }
+        fprintf(arquivo_log, "\n");
+
+        // Destaca o estabelecimento selecionado
+        estabelecimento_definir_cor_preenchimento(est, "red");
+        estabelecimento_definir_borda_tracejada(est, true);
     }
     retangulo_destruir(contorno);
     lista_destruir(nos_contidos);
