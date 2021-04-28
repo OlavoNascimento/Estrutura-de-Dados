@@ -35,13 +35,13 @@ void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra,
     }
 }
 
-// Lê um arquivo de comércios fornecido a função e adiciona as figuras descritas em suas linha
-// como elementos de uma lista.
+// Lê um arquivo de comércios fornecido a função e adiciona as figuras descritas em suas linha como
+// elementos das quadtrees e tabelas.
 void comercios_ler(const char *caminho_comercios, Tabela quadtrees, Tabela relacoes) {
     printf("Lendo estabelecimentos\n");
     FILE *arquivo_comercios = fopen(caminho_comercios, "r");
     if (arquivo_comercios == NULL) {
-        LOG_ERRO("Falha ao ler arquivo de comércios: %s!\n", caminho_comercios);
+        LOG_ERRO("Falha ao ler arquivo de estabelecimentos: %s!\n", caminho_comercios);
         return;
     }
 

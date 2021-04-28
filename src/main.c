@@ -7,6 +7,7 @@
 #include "./Arquivos/descricao.h"
 #include "./Arquivos/pessoas.h"
 #include "./Arquivos/svg.h"
+#include "./Arquivos/vias.h"
 #include "./Estruturas/grafo.h"
 #include "./Estruturas/lista.h"
 #include "./Estruturas/quadtree.h"
@@ -27,6 +28,7 @@ Tabela criar_tabela_quadtrees() {
     tabela_inserir(quadtrees, "casos", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "moradores", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "estabelecimentos", criaQt(figura_obter_id));
+    tabela_inserir(quadtrees, "vias", criaQt(vertice_obter_id));
     return quadtrees;
 }
 
@@ -85,6 +87,9 @@ int main(int argc, const char *argv[]) {
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
 
+    Grafo vias = NULL;
+    Ponto registradores[11];
+
     descricao_ler(caminho_descricao, quadtrees, listas, relacoes);
 
     if (caminho_moradores != NULL)
@@ -92,6 +97,11 @@ int main(int argc, const char *argv[]) {
 
     if (caminho_estabelecimentos != NULL)
         comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
+
+    if (caminho_vias != NULL) {
+        vias = grafo_criar(100000);
+        vias_ler(caminho_vias, quadtrees, vias);
+    }
 
     svg_escrever(caminho_svg_descricao, 9, quadras, hidrantes, semaforos, radios, estabelecimentos,
                  moradores, casos, postos, formas);
@@ -131,6 +141,8 @@ int main(int argc, const char *argv[]) {
     tabela_destruir(listas);
     tabela_destruir(quadtrees);
     tabela_destruir(relacoes);
+    if (caminho_vias != NULL)
+        grafo_destruir(vias);
 
     return 0;
 }

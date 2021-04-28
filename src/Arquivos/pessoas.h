@@ -2,8 +2,8 @@
 #define PESSOAS_H
 
 /*
-Este módulo define a função pessoas_ler, responsável por interpretar um arquivo, que descreve um
-morador, fornecido ao programa e executar os comandos especificados.
+Este módulo define a função pessoas_ler, responsável por interpretar um arquivo que descreve os
+moradores da cidade fornecido ao programa e executar os comandos especificados.
 */
 
 #include "../Estruturas/tabelahash.h"

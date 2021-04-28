@@ -57,15 +57,15 @@ Grafo grafo_criar(int tamanho_maximo) {
     return grafo;
 }
 
-void grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
+Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
     if (grafo->tamanho_atual >= grafo->tamanho_maximo) {
         LOG_ERRO("Tamanho máximo do grafo alcançado!\n");
-        return;
+        return NULL;
     }
     Vertice vertice = malloc(sizeof *vertice);
     if (vertice == NULL) {
         LOG_ERRO("Falha ao alocar memória!\n");
-        return;
+        return NULL;
     }
     strcpy(vertice->id, id);
     vertice->x = x;
@@ -78,13 +78,15 @@ void grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
         lista_destruir(vertice->arestas);
         free(vertice);
         LOG_ERRO("Falha ao alocar memória!\n");
-        return;
+        return NULL;
     }
 
     grafo->vertices[grafo->tamanho_atual] = vertice;
     *indice = grafo->tamanho_atual;
     tabela_inserir(grafo->id_indice, id, indice);
     grafo->tamanho_atual++;
+
+    return vertice;
 }
 
 void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
@@ -97,8 +99,16 @@ void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
     }
 
     const int *indice_origem = tabela_buscar(grafo->id_indice, origem);
+    if (indice_origem == NULL) {
+        LOG_AVISO("Não é possível inserir aresta que não tem origem válida\n");
+        return;
+    }
 
     Aresta aresta = malloc(sizeof *aresta);
+    if (aresta == NULL) {
+        LOG_ERRO("Erro ao alocar memória!\n");
+        return;
+    }
     strcpy(aresta->nome, nome);
     strcpy(aresta->origem, origem);
     strcpy(aresta->destino, destino);

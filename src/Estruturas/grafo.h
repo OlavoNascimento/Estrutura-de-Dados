@@ -39,7 +39,7 @@ Grafo grafo_criar(int tamanho_maximo);
 Insere um vértice no grafo.
 Os parâmetros grafo e id não podem ser nulos.
 */
-void grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y);
+Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y);
 
 /*
 Insere uma aresta no grafo.

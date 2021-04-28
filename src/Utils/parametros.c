@@ -107,7 +107,7 @@ char *concatenar_caminho_entrada(const Parametros params, const char *caminho_or
         // Concatena o diretório ao caminho do arquivo.
         caminho = unir_caminhos(params->nome_dir_entrada, caminho_original);
     } else {
-        caminho = malloc((strlen(caminho_original) + 1) * sizeof caminho);
+        caminho = malloc((strlen(caminho_original) + 1) * sizeof *caminho);
         strcpy(caminho, caminho_original);
     }
     return caminho;
