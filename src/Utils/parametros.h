@@ -8,7 +8,7 @@ Assim como criar os caminhos finais destes arquivos com base nos seus dados.
 
 #include <stdbool.h>
 
-typedef void *Parametros;
+typedef struct Parametros_s *Parametros;
 
 /*
 Recebe a quantidade de argumentos e os argumentos passados ao programa.
@@ -61,13 +61,22 @@ liberar a memória alocada!
 char *parametros_obter_caminho_estabelecimentos(const Parametros params);
 
 /*
-Obtém o caminho do arquivo de moradores (.ec) passado como argumento para o programa. O
-caminho é concatenado ao diretório de entrada caso necessário.
+Obtém o caminho do arquivo de moradores (.ec) passado como argumento para o programa. O caminho é
+concatenado ao diretório de entrada caso necessário.
 O parâmetro params não pode ser nulo.
-Retorna o caminho do arquivo de moradores (.ec) armazenado. O usuário é responsável por
-liberar a memória alocada!
+Retorna o caminho do arquivo de moradores (.ec) armazenado. O usuário é responsável por liberar a
+memória alocada!
 */
 char *parametros_obter_caminho_moradores(const Parametros params);
+
+/*
+Obtém o caminho do arquivo de vias (.via) passado como argumento para o programa. O caminho é
+concatenado ao diretório de entrada caso necessário.
+O parâmetro params não pode ser nulo.
+Retorna o caminho do arquivo de vias (.via) armazenado. O usuário é responsável por liberar a
+memória alocada!
+*/
+char *parametros_obter_caminho_vias(const Parametros params);
 
 /*
 Obtém o caminho do arquivo svg criado como saída do arquivo de descrição (.geo). O caminho é

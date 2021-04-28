@@ -7,6 +7,8 @@
 #include "./Arquivos/descricao.h"
 #include "./Arquivos/pessoas.h"
 #include "./Arquivos/svg.h"
+#include "./Estruturas/grafo.h"
+#include "./Estruturas/lista.h"
 #include "./Estruturas/quadtree.h"
 #include "./Estruturas/tabelahash.h"
 #include "./Interfaces/figura.h"
@@ -63,6 +65,7 @@ int main(int argc, const char *argv[]) {
     char *caminho_consulta = parametros_obter_caminho_consulta(params);
     char *caminho_estabelecimentos = parametros_obter_caminho_estabelecimentos(params);
     char *caminho_moradores = parametros_obter_caminho_moradores(params);
+    char *caminho_vias = parametros_obter_caminho_vias(params);
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
 
     printf("Arquivo descrição: %s\n", caminho_descricao);
@@ -113,6 +116,7 @@ int main(int argc, const char *argv[]) {
     free(caminho_consulta);
     free(caminho_estabelecimentos);
     free(caminho_moradores);
+    free(caminho_vias);
     free(caminho_svg_descricao);
     parametros_destruir(params);
 
