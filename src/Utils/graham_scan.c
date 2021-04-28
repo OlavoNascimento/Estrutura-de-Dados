@@ -86,7 +86,7 @@ int filtrar_vertices(int tamanho, Figura **figuras) {
 
     const int novo_tamanho = lista_obter_tamanho(filtrados);
     // Diminui o tamanho do array.
-    Figura *temp = realloc(*figuras, novo_tamanho * sizeof(Figura));
+    Figura *temp = realloc(*figuras, novo_tamanho * sizeof *temp);
     if (temp == NULL) {
         LOG_ERRO("Falha ao alocar memória!\n");
         lista_destruir(filtrados);
@@ -135,7 +135,7 @@ Pilha graham_scan(int tamanho, Figura **figuras) {
     quicksort((*figuras)[0], (*figuras), 1, tamanho - 1);
 
     Pilha pontos_envoltoria = pilha_criar(NULL);
-    // Primeiro elemento está sempre dentro da envoltória.
+    // Primeiro elemento sempre está dentro da envoltória.
     pilha_inserir(pontos_envoltoria, (*figuras)[0]);
     // Segundo elemento precisa ser verificado.
     pilha_inserir(pontos_envoltoria, (*figuras)[1]);

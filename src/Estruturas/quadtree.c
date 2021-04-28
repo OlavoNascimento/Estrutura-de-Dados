@@ -70,7 +70,6 @@ void *quadtree_extrair_no(QuadTree qt) {
 // informação necessária e adiciona-la na lista.
 void valores_dentro_retangulo(QuadTree qt, double x1, double y1, double x2, double y2,
                               Lista valores, void *extrair_valor(QuadTree qt)) {
-    // O nó não tem filhos.
     if (qt == NULL || qt->no == NULL)
         return;
 
@@ -81,7 +80,6 @@ void valores_dentro_retangulo(QuadTree qt, double x1, double y1, double x2, doub
 
     double coord_x = ponto_obter_x(qt->no->coordenada);
     double coord_y = ponto_obter_y(qt->no->coordenada);
-    // Verifica se é possível avançar em cada uma das direções sem sair dos limites do retângulo.
     if (coord_x >= x1 && coord_y >= y1)
         valores_dentro_retangulo(qt->noroeste, x1, y1, x2, y2, valores, extrair_valor);
     if (coord_x <= x2 && coord_y >= y1)
@@ -133,7 +131,6 @@ Lista nosDentroRetanguloQt(QuadTree qt, double x1, double y1, double x2, double 
 // informação necessária e adiciona-la na lista.
 void valores_dentro_circulo(QuadTree qt, double x, double y, double raio, Lista valores,
                             void *extrair_valor(QuadTree qt)) {
-    // O nó não tem filhos.
     if (qt == NULL || qt->no == NULL)
         return;
 
@@ -144,7 +141,6 @@ void valores_dentro_circulo(QuadTree qt, double x, double y, double raio, Lista 
 
     double coord_x = ponto_obter_x(qt->no->coordenada);
     double coord_y = ponto_obter_y(qt->no->coordenada);
-    // Verifica se é possível avançar em cada uma das direções sem sair dos limites do círculo.
     if (coord_x >= x - raio && coord_y >= y - raio)
         valores_dentro_circulo(qt->noroeste, x, y, raio, valores, extrair_valor);
     if (coord_x <= x + raio && coord_y >= y - raio)
@@ -225,7 +221,6 @@ void percorreLarguraQt(QuadTree qt, visitaNo f, ExtraInfo ei) {
 }
 
 void quadtree_inserir_no(QuadTree qt, QtNo no) {
-    // Nó atual não possui informação e coordenada associadas a ele.
     if (qt->no == NULL) {
         qt->no = no;
         return;
@@ -294,11 +289,9 @@ void reinserir_nos_quadtree(QuadTree qt, QuadTree raiz) {
 // Encontra o nó especificado na Quadtree e o remove da árvore. Caso ele possua nós filhos eles são
 // re-inseridos na raiz da árvore.
 QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
-    // Nó atual não é o nó procurado.
     if (qt == NULL || qt->no == NULL)
         return NULL;
 
-    // Nó atual não é o procurado mas possui filhos, avalia os nós filhos.
     if (qt->no != no) {
         double buscado_x = ponto_obter_x(no->coordenada);
         double buscado_y = ponto_obter_y(no->coordenada);
@@ -314,14 +307,11 @@ QtInfo buscar_e_remover(QuadTree qt, QtNo no, QuadTree raiz) {
         return buscar_e_remover(qt->sudeste, no, raiz);
     }
 
-    // Nó atual é o procurado.
     QtInfo info = qt->no->info;
-    // Libera a memória utilizada pelo nó atual.
     ponto_destruir(qt->no->coordenada);
     free(qt->no);
     qt->no = NULL;
 
-    // Caso o nó que será removido tenha filhos, insere os nós filhos na raiz da árvore.
     QuadTree noroeste = qt->noroeste;
     qt->noroeste = NULL;
 
@@ -381,12 +371,12 @@ Retangulo escrever_retangulos_principais(Lista saida, QuadTree qt, double x, dou
     Retangulo ret_coord = retangulo_criar("", largura * 2 + 2, altura, x, y, "black", "#f1ffe8");
     lista_inserir_final(saida, ret_coord);
 
-    char texto_cords[1024] = {'\0'};
-    snprintf(texto_cords, 500, "(%d,%d)", (int) ponto_obter_x(qt->no->coordenada),
+    char texto_coords[1024] = {'\0'};
+    snprintf(texto_coords, 500, "(%d,%d)", (int) ponto_obter_x(qt->no->coordenada),
              (int) ponto_obter_y(qt->no->coordenada));
     Texto coordenadas =
         texto_criar("", figura_obter_x_centro(ret_coord), figura_obter_y_centro(ret_coord) + 6,
-                    "none", "black", texto_cords);
+                    "none", "black", texto_coords);
     texto_definir_alinhamento(coordenadas, TEXTO_CENTRO);
     lista_inserir_final(saida, coordenadas);
 
@@ -437,8 +427,8 @@ Retangulo escrever_svg_no(Lista saida, QuadTree qt, double *x, double y) {
     Retangulo nordeste = escrever_svg_no(saida, qt->nordeste, x, y + margem_y);
     *x += largura;
 
-    double x_atual = *x;
-    Retangulo ret_id = escrever_retangulos_principais(saida, qt, *x, y, largura, altura);
+    const double x_atual = *x;
+    Retangulo ret_id = escrever_retangulos_principais(saida, qt, x_atual, y, largura, altura);
     *x += largura;
 
     Retangulo sudoeste = escrever_svg_no(saida, qt->sudoeste, x, y + margem_y);

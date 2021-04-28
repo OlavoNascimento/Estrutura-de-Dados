@@ -599,7 +599,7 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
 
     // Aloca uma matriz para armazenar os pontos encontrados.
     const int tamanho_pilha = pilha_obter_tamanho(pilha_pontos_envoltoria);
-    double **pontos = malloc(tamanho_pilha * sizeof(double *));
+    double **pontos = malloc(sizeof *pontos * tamanho_pilha);
     if (pontos == NULL) {
         LOG_ERRO("Falha ao alocar memória!\n");
         free(cor_poligono);
@@ -609,7 +609,7 @@ void determinar_regiao_de_incidencia(Lista formas, QuadTree casos, QuadTree post
     int i = 0;
     // Carrega os pontos encontrados na matriz.
     while (!pilha_esta_vazia(pilha_pontos_envoltoria)) {
-        pontos[i] = malloc(2 * sizeof(*pontos[i]));
+        pontos[i] = malloc(sizeof **pontos * 2);
         if (pontos[i] == NULL) {
             LOG_ERRO("Falha ao alocar memória!\n");
             free(pontos);
@@ -753,14 +753,11 @@ void mudar_endereco_morador(Lista formas, Tabela cep_quadra, Tabela dados_pessoa
     fprintf(arquivo_log, "Novo endereço: cep: %s, face: %c, número: %d, complemento: %s\n\n", cep,
             face, num, complemento);
 
-    // Endereço atual
     double centro_x_atual = figura_obter_x_centro(morador);
     double centro_y_atual = figura_obter_y_centro(morador);
 
-    // Alterar endereço
     morador_definir_endereco(morador, cep, face, num, complemento, quadra_nova);
 
-    // Endereço novo
     double centro_x_novo = figura_obter_x_centro(morador);
     double centro_y_novo = figura_obter_y_centro(morador);
 
@@ -847,7 +844,6 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
         }
         fprintf(arquivo_log, "\n");
 
-        // Destaca o estabelecimento selecionado
         estabelecimento_definir_cor_preenchimento(est, "red");
         estabelecimento_definir_borda_tracejada(est, true);
     }
@@ -865,13 +861,11 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     double x, y, raio;
     sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
 
-    // Adiciona o círculo a lista de formas.
     Circulo raio_selecao = circulo_criar("", raio, x, y, "#6C6753", "#CCFF00");
     circulo_definir_opacidade(raio_selecao, 0.5);
     lista_inserir_final(formas, raio_selecao);
 
-    // Itera por todas as figuras baseadas em retângulos, escrevendo os dados e removendo as figuras
-    // que estão contidas no círculo.
+    // Itera por todas as figuras baseadas em retângulos.
     QuadTree retangulos[] = {quadras, semaforos, moradores, estabelecimentos};
     Tabela tabelas_ret[] = {cep_quadra, id_semaforo, dados_pessoa, cnpj_estabelecimento};
     for (int i = 0; i < (int) (sizeof(retangulos) / sizeof(retangulos[0])); i++) {
@@ -892,8 +886,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
         lista_destruir(nos);
     }
 
-    // Itera por todas as figuras baseadas em círculos, escrevendo os dados e removendo as figuras
-    // que estão contidas no círculo.
+    // Itera por todas as figuras baseadas em círculos.
     QuadTree circulos[] = {hidrantes, radios};
     Tabela tabelas_circ[] = {id_hidrante, id_radio};
     for (int i = 0; i < (int) (sizeof(circulos) / sizeof(circulos[0])); i++) {

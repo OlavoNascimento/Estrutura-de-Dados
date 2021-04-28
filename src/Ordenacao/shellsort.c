@@ -63,7 +63,7 @@ void insertion_sort(Figura *postos, int tamanho, double x, double y) {
 void shellsort(Figura *postos, int tamanho, int H, double x, double y) {
     if (tamanho <= 0 || H <= 0)
         return;
-    // Quando o H chega em 1, é realizado um insertionSort.
+    // Quando o H chega em 1, é realizado um insertion sort.
     if (H == 1) {
         insertion_sort(postos, tamanho, x, y);
         return;

@@ -72,7 +72,7 @@ void morador_escrever_informacoes(Morador morador, FILE *arquivo) {
 }
 
 void morador_definir_data(Morador morador) {
-    snprintf(morador->data, sizeof(morador->data), "%02d/%02d/%d", morador->dia, morador->mes % 100,
+    snprintf(morador->data, sizeof morador->data, "%02d/%02d/%d", morador->dia, morador->mes % 100,
              morador->ano);
 }
 

@@ -34,7 +34,7 @@ Tabela tabela_criar(TabelaDestruirInfo destruir_info) {
     tabela->tamanho = TAMANHO_INICIAL;
     tabela->baldes_ocupados = 0;
 
-    tabela->inf = malloc(TAMANHO_INICIAL * sizeof(Lista *));
+    tabela->inf = malloc(sizeof *tabela->inf * TAMANHO_INICIAL);
     if (tabela->inf == NULL) {
         LOG_ERRO("Falha ao alocar memória para baldes de um Hashmap!\n");
         free(tabela);
@@ -66,17 +66,17 @@ const char *extrair_chave_elemento(ListaInfo elemento) {
 
 // Dobra o número de baldes da tabela para diminuir o número de colisões.
 void rehash(Tabela tabela) {
-    tabela->baldes_ocupados = 0;
-    tabela->tamanho *= 2;
-
-    Lista *baldes_antigos = tabela->inf;
     // Novo array de baldes é o dobro do anterior.
-    Lista *baldes_novos = malloc(tabela->tamanho * sizeof *baldes_novos);
+    Lista *baldes_novos = malloc(sizeof *baldes_novos * 2 * tabela->tamanho);
     if (baldes_novos == NULL) {
         LOG_ERRO("Falha ao alocar espaço para baldes de um Hashmap!\n");
         return;
     }
+
+    Lista *baldes_antigos = tabela->inf;
     tabela->inf = baldes_novos;
+    tabela->baldes_ocupados = 0;
+    tabela->tamanho *= 2;
 
     // Inicia todos os novos baldes como NULL.
     for (int i = 0; i < tabela->tamanho; i++)
