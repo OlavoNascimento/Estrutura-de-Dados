@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../Estruturas/grafo.h"
 #include "../Estruturas/lista.h"
 #include "../Estruturas/pilha.h"
 #include "../Estruturas/quadtree.h"
@@ -857,7 +858,8 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
                                 QuadTree hidrantes, Tabela id_hidrante, QuadTree radios,
                                 Tabela id_radio, QuadTree semaforos, Tabela id_semaforo,
                                 QuadTree moradores, Tabela dados_pessoa, QuadTree estabelecimentos,
-                                Tabela cnpj_estabelecimento, const char *linha, FILE *arquivo_log) {
+                                Tabela cnpj_estabelecimento, QuadTree vias_qt, Grafo vias,
+                                const char *linha, FILE *arquivo_log) {
     double x, y, raio;
     sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
 
@@ -906,12 +908,29 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
         }
         lista_destruir(nos);
     }
+
+    Lista nos = nosDentroCirculoQt(vias_qt, x, y, raio);
+    for_each_lista(no, nos) {
+        Vertice vertice = getInfoQt(NULL, lista_obter_info(no));
+        if (!circulo_checar_ponto_interno(raio_selecao, vertice_obter_x(vertice),
+                                          vertice_obter_y(vertice)))
+            continue;
+
+        fprintf(arquivo_log, "tipo: vértice, id: %s, x: %lf, y: %lf\n", vertice_obter_id(vertice),
+                vertice_obter_x(vertice), vertice_obter_y(vertice));
+        fprintf(arquivo_log, "\n");
+
+        removeNoQt(vias_qt, lista_obter_info(no));
+        grafo_remover_vertice(vias, vertice_obter_id(vertice));
+        vertice_destruir(vertice);
+    }
+    lista_destruir(nos);
 }
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
-                  Tabela listas, Tabela relacoes) {
+                  Tabela listas, Tabela relacoes, Tabela grafos, Ponto *registradores) {
     printf("Lendo consulta\n");
     FILE *arquivo_consulta = fopen(caminho_consulta, "r");
     if (arquivo_consulta == NULL) {
@@ -932,6 +951,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree casos = tabela_buscar(quadtrees, "casos");
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
+    QuadTree vias_qt = tabela_buscar(quadtrees, "vias");
 
     Lista formas = tabela_buscar(listas, "formas");
     Lista densidades = tabela_buscar(listas, "densidades");
@@ -944,6 +964,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     Tabela id_semaforo = tabela_buscar(relacoes, "id_semaforo");
     Tabela id_radio = tabela_buscar(relacoes, "id_radio");
     Tabela id_forma = tabela_buscar(relacoes, "id_forma");
+
+    Grafo vias = tabela_buscar(grafos, "vias");
 
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_consulta) != NULL) {
@@ -997,7 +1019,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("catac", comando) == 0) {
             remover_elementos_contidos(formas, quadras, cep_quadra, hidrantes, id_hidrante, radios,
                                        id_radio, semaforos, id_semaforo, moradores, dados_pessoa,
-                                       estabelecimentos, cnpj_estabelecimento, linha, arquivo_log);
+                                       estabelecimentos, cnpj_estabelecimento, vias_qt, vias, linha,
+                                       arquivo_log);
         }
     }
 

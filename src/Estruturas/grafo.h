@@ -41,6 +41,9 @@ Os parâmetros grafo e id não podem ser nulos.
 */
 Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y);
 
+// TODO
+Vertice grafo_remover_vertice(Grafo grafo, const char *id);
+
 /*
 Retorna um vetor contendo todos os vértices de um grafo.
 */
@@ -53,7 +56,8 @@ int grafo_obter_tamanho(Grafo grafo);
 
 /*
 Insere uma aresta no grafo.
-Os parâmetros grafo, origem, destino, quadra_esquerda, quadra_direita e nome não podem ser nulos.
+Os parâmetros grafo, origem, destino, quadra_esquerda, quadra_direita e nome não podem ser
+nulos.
 */
 void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
                           const char *quadra_esquerda, const char *quadra_direita,
@@ -136,6 +140,9 @@ Retorna a coordenada y de um vértice.
 O parâmetro vértice não pode ser nulo.
 */
 double vertice_obter_y(Vertice vertice);
+
+// TODO
+void vertice_destruir(Vertice vertice);
 
 /*
 Libera a memória alocada por um grafo.

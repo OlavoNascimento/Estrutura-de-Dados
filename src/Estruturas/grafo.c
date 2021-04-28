@@ -89,6 +89,24 @@ Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
     return vertice;
 }
 
+Vertice grafo_remover_vertice(Grafo grafo, const char *id) {
+    if (id == NULL) {
+        LOG_AVISO("Valor nulo passado para grafo_remover_vertice\n");
+        return NULL;
+    }
+
+    int *indice_id = tabela_buscar(grafo->id_indice, id);
+
+    Vertice vertice = grafo->vertices[*indice_id];
+    grafo->vertices[*indice_id] = NULL;
+
+    tabela_remover(grafo->id_indice, id);
+    free(indice_id);
+
+    grafo->tamanho_atual--;
+    return vertice;
+}
+
 void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
                           const char *quadra_esquerda, const char *quadra_direita,
                           double comprimento, double velocidade, const char *nome) {
@@ -214,14 +232,19 @@ Lista vertice_obter_arestas(Vertice vertice) {
     return vertice->arestas;
 }
 
+void vertice_destruir(Vertice vertice) {
+    if (vertice == NULL)
+        return;
+    lista_destruir(vertice->arestas);
+    free(vertice);
+}
+
 void grafo_destruir(Grafo grafo) {
-    for (int i = 0; i < grafo->tamanho_maximo; i++) {
-        if (grafo->vertices[i] != NULL) {
-            lista_destruir(grafo->vertices[i]->arestas);
-            free(grafo->vertices[i]);
-        }
-    }
-    free(grafo->vertices);
+    if (grafo == NULL)
+        return;
+    for (int i = 0; i < grafo->tamanho_maximo; i++)
+        vertice_destruir(grafo->vertices[i]);
     tabela_destruir(grafo->id_indice);
+    free(grafo->vertices);
     free(grafo);
 }

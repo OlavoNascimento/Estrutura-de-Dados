@@ -109,9 +109,6 @@ void tabela_inserir(Tabela tabela, const char id[100], TabelaInfo info) {
     if (id == NULL) {
         LOG_AVISO("Id nulo passado para tabela_inserir!\n");
         return;
-    } else if (info == NULL) {
-        LOG_AVISO("Informação nula passada para tabela_inserir!\n");
-        return;
     }
 
     int pos = chave_string(id, tabela->tamanho);
@@ -189,6 +186,8 @@ TabelaInfo tabela_remover(Tabela tabela, const char id[100]) {
 }
 
 void tabela_destruir(Tabela tabela) {
+    if (tabela == NULL)
+        return;
     for (int i = 0; i < tabela->tamanho; i++) {
         Lista atual = tabela->inf[i];
         if (atual == NULL)

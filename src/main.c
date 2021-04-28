@@ -28,7 +28,7 @@ Tabela criar_tabela_quadtrees() {
     tabela_inserir(quadtrees, "casos", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "moradores", criaQt(figura_obter_id));
     tabela_inserir(quadtrees, "estabelecimentos", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "vias", criaQt(vertice_obter_id));
+    tabela_inserir(quadtrees, "vias", criaQt((funcGetChave *) vertice_obter_id));
     return quadtrees;
 }
 
@@ -55,6 +55,14 @@ Tabela criar_tabela_relacoes() {
     return relacoes;
 }
 
+// Cria uma nova tabela contendo grafos.
+Tabela criar_tabela_grafos() {
+    Tabela grafos = tabela_criar((TabelaDestruirInfo *) grafo_destruir);
+    tabela_inserir(grafos, "vias", NULL);
+    tabela_inserir(grafos, "ciclovias", NULL);
+    return grafos;
+}
+
 int main(int argc, const char *argv[]) {
     const Parametros params = parametros_ler(argc, argv);
     if (!parametros_checar_obrigatorios(params)) {
@@ -76,6 +84,8 @@ int main(int argc, const char *argv[]) {
     Tabela quadtrees = criar_tabela_quadtrees();
     Tabela listas = criar_tabela_listas();
     Tabela relacoes = criar_tabela_relacoes();
+    Tabela grafos = criar_tabela_grafos();
+    Ponto registradores[11];
 
     Lista formas = tabela_buscar(listas, "formas");
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
@@ -87,8 +97,7 @@ int main(int argc, const char *argv[]) {
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
 
-    Grafo vias = NULL;
-    Ponto registradores[11];
+    Grafo vias = tabela_buscar(grafos, "vias");
 
     descricao_ler(caminho_descricao, quadtrees, listas, relacoes);
 
@@ -99,7 +108,9 @@ int main(int argc, const char *argv[]) {
         comercios_ler(caminho_estabelecimentos, quadtrees, relacoes);
 
     if (caminho_vias != NULL) {
-        vias = grafo_criar(100000);
+        tabela_remover(grafos, "vias");
+        tabela_inserir(grafos, "vias", grafo_criar(100000));
+        vias = tabela_buscar(grafos, "vias");
         vias_ler(caminho_vias, quadtrees, vias);
     }
 
@@ -114,7 +125,8 @@ int main(int argc, const char *argv[]) {
         printf("Arquivo log: %s\n", caminho_registro_consulta);
         printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
-        consulta_ler(caminho_consulta, caminho_registro_consulta, quadtrees, listas, relacoes);
+        consulta_ler(caminho_consulta, caminho_registro_consulta, quadtrees, listas, relacoes,
+                     grafos, registradores);
         svg_escrever(caminho_svg_consulta, 9, quadras, hidrantes, semaforos, radios,
                      estabelecimentos, moradores, casos, postos, formas);
 
@@ -141,8 +153,7 @@ int main(int argc, const char *argv[]) {
     tabela_destruir(listas);
     tabela_destruir(quadtrees);
     tabela_destruir(relacoes);
-    if (caminho_vias != NULL)
-        grafo_destruir(vias);
+    tabela_destruir(grafos);
 
     return 0;
 }
