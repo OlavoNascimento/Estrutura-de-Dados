@@ -49,13 +49,12 @@ Tabela tabela_criar(TabelaDestruirInfo destruir_info) {
 
 // Função utilizada para transformar uma string em número.
 int chave_string(const char id[100], int tamanho_tabela) {
-    int soma = 3;
-    int tamanho = strlen(id);
-    for (int i = 0; i < tamanho; i++) {
-        soma = 17 * soma + (int) id[i];
-    }
-    // Retorna o valor absoluto da soma sem ultrapassar o tamanho da tabela.
-    return (soma & 0x7FFFFFFF) % tamanho_tabela;
+    int soma = 0;
+    int pesos[] = {47, 43, 41, 37, 31, 29, 23, 19, 17, 13, 11, 7, 5, 3, 2};
+    int tamanho = strlen(id) > 15 ? 15 : strlen(id);
+    for (int i = 0; i < tamanho; i++)
+        soma += pesos[i] * id[i];
+    return soma % tamanho_tabela;
 }
 
 // Recebe um elemento e extrai sua chave.

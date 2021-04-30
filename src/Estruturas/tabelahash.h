@@ -10,8 +10,6 @@ Além disso são implementadas funções para buscar e remover informações, ta
 tabela_remover() respectivamente.
 */
 
-#include "lista.h"
-
 /*
 Foi usado 'typedef struct *' em vez de 'typedef void *' para permitir ao compilador diferenciar os
 tipos, não afetando o encapsulamento de dados!

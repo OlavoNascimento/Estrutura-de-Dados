@@ -75,14 +75,13 @@ Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
 
     int *indice = malloc(sizeof *indice);
     if (indice == NULL) {
-        lista_destruir(vertice->arestas);
-        free(vertice);
+        vertice_destruir(vertice);
         LOG_ERRO("Falha ao alocar memória!\n");
         return NULL;
     }
 
-    grafo->vertices[grafo->tamanho_atual] = vertice;
     *indice = grafo->tamanho_atual;
+    grafo->vertices[*indice] = vertice;
     tabela_inserir(grafo->id_indice, id, indice);
     grafo->tamanho_atual++;
 
@@ -95,14 +94,12 @@ Vertice grafo_remover_vertice(Grafo grafo, const char *id) {
         return NULL;
     }
 
-    int *indice_id = tabela_buscar(grafo->id_indice, id);
+    int *indice_id = tabela_remover(grafo->id_indice, id);
 
     Vertice vertice = grafo->vertices[*indice_id];
     grafo->vertices[*indice_id] = NULL;
 
-    tabela_remover(grafo->id_indice, id);
     free(indice_id);
-
     grafo->tamanho_atual--;
     return vertice;
 }
@@ -118,7 +115,7 @@ void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
 
     const int *indice_origem = tabela_buscar(grafo->id_indice, origem);
     if (indice_origem == NULL) {
-        LOG_AVISO("Não é possível inserir aresta que não tem origem válida\n");
+        LOG_AVISO("Não é possível inserir uma aresta que não tem origem válida\n");
         return;
     }
 
@@ -145,6 +142,10 @@ void grafo_remover_aresta(Grafo grafo, const char *origem, const char *destino) 
     }
 
     const int *indice_origem = tabela_buscar(grafo->id_indice, origem);
+    if (indice_origem == NULL) {
+        LOG_AVISO("Não é possível remover uma aresta que não tem origem válida\n");
+        return;
+    }
 
     Lista arestas = grafo->vertices[*indice_origem]->arestas;
     ListaNo no = lista_buscar(arestas, destino);
@@ -162,26 +163,38 @@ bool grafo_checar_adjacente(Grafo grafo, const char *id1, const char *id2) {
     }
 
     const int *indice_origem = tabela_buscar(grafo->id_indice, id1);
+    if (indice_origem == NULL) {
+        LOG_AVISO("Não é possível checar a adjacência de um vértice que tem origem inválida\n");
+        return false;
+    }
 
     Lista arestas = grafo->vertices[*indice_origem]->arestas;
     ListaNo no = lista_buscar(arestas, id2);
     return no != NULL;
 }
 
-// Retorna os vértices adjacentes ao vértice id1.
-Lista grafo_obter_adjacentes(Grafo grafo, const char *id1) {
+// Retorna os vértices adjacentes ao vértice id.
+Lista grafo_obter_adjacentes(Grafo grafo, const char *id) {
     Lista adjacentes = lista_criar((ObterIdentificadorLista *) vertice_obter_id, NULL);
-    if (id1 == NULL) {
+    if (id == NULL) {
         LOG_AVISO("Valor nulo passado para grafo_obter_adjacentes\n");
         return adjacentes;
     }
 
-    const int *indice_origem = tabela_buscar(grafo->id_indice, id1);
+    const int *indice_origem = tabela_buscar(grafo->id_indice, id);
+    if (indice_origem == NULL) {
+        LOG_AVISO("Não é possível buscar os vértices adjacentes a uma origem inválida\n");
+        return adjacentes;
+    }
 
     Lista arestas = grafo->vertices[*indice_origem]->arestas;
     for_each_lista(no, arestas) {
         Aresta aresta = lista_obter_info(no);
         const int *indice_adjacente = tabela_buscar(grafo->id_indice, aresta->destino);
+        if (indice_origem == NULL) {
+            LOG_AVISO("Vértice do grafo tem destino inválido!\n");
+            continue;
+        }
         lista_inserir_final(adjacentes, grafo->vertices[*indice_adjacente]);
     }
 
