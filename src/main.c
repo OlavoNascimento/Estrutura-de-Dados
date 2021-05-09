@@ -85,7 +85,9 @@ int main(int argc, const char *argv[]) {
     Tabela listas = criar_tabela_listas();
     Tabela relacoes = criar_tabela_relacoes();
     Tabela grafos = criar_tabela_grafos();
-    Ponto registradores[11];
+    Ponto registradores[11] = {
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    };
 
     Lista formas = tabela_buscar(listas, "formas");
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
@@ -149,6 +151,9 @@ int main(int argc, const char *argv[]) {
     percorreLarguraQt(postos, (void *) figura_destruir, NULL);
     percorreLarguraQt(casos, (void *) figura_destruir, NULL);
     percorreLarguraQt(estabelecimentos, (void *) figura_destruir, NULL);
+
+    for (int i = 0; i < 11; i++)
+        ponto_destruir(registradores[i]);
 
     tabela_destruir(listas);
     tabela_destruir(quadtrees);

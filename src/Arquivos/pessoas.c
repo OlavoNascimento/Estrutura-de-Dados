@@ -27,15 +27,14 @@ void adicionar_morador(QuadTree moradores, Tabela cep_quadra, Tabela dados_pesso
     Morador modificar_morador = tabela_buscar(dados_pessoa, cpf);
     if (modificar_morador == NULL)
         return;
-    tabela_inserir(cpf_cep, cpf, cep);
 
     QtNo no = tabela_buscar(cep_quadra, cep);
     if (no != NULL) {
         Quadra quadra_pai = getInfoQt(moradores, no);
         morador_ler_endereco(modificar_morador, linha, quadra_pai);
 
-        // Insere um morador na quadra apenas quando endereço do morador é especificado.
         insereQt(moradores, ponto_criar_com_figura(modificar_morador), modificar_morador);
+        tabela_inserir(cpf_cep, cpf, cep);
     }
 }
 

@@ -927,6 +927,40 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     lista_destruir(nos);
 }
 
+// Salva o endereço de um morador em um registrador.
+void registrar_endereco_morador(Ponto *registradores, Tabela dados_pessoa, Tabela cep_quadra,
+                                Lista formas, const char *linha) {
+    int indice_registrador = -1;
+    char id_registrador[3], cpf[100];
+    sscanf(linha, "@m? %s %s", id_registrador, cpf);
+    sscanf(id_registrador, "R%d", &indice_registrador);
+    if (indice_registrador > 10)
+        return;
+
+    Morador morador = tabela_buscar(dados_pessoa, cpf);
+    if (morador == NULL)
+        return;
+
+    const char *cep = morador_obter_endereco_cep(morador);
+    QtNo no = tabela_buscar(cep_quadra, cep);
+    if (no == NULL)
+        return;
+    Quadra quadra = getInfoQt(NULL, no);
+
+    double x = 0;
+    double y = 0;
+    quadra_inicializar_coordenada(&x, &y, 0, morador_obter_altura(morador), quadra,
+                                  morador_obter_endereco_face(morador),
+                                  morador_obter_endereco_num(morador));
+    registradores[indice_registrador] = ponto_criar(x, y);
+
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black");
+    lista_inserir_final(formas, linha_vertical);
+
+    Texto identificador = texto_criar("", x + 1, 0, "black", "none", id_registrador);
+    lista_inserir_final(formas, identificador);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
@@ -1021,6 +1055,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
                                        id_radio, semaforos, id_semaforo, moradores, dados_pessoa,
                                        estabelecimentos, cnpj_estabelecimento, vias_qt, vias, linha,
                                        arquivo_log);
+        } else if (strcmp("@m?", comando) == 0) {
+            registrar_endereco_morador(registradores, dados_pessoa, cep_quadra, formas, linha);
         }
     }
 

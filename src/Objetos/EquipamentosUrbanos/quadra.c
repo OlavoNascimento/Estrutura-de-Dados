@@ -143,13 +143,13 @@ Quadra quadra_ler(const char *linha) {
 
 // Encontra e inicializa as coordenadas x e y de um elemento que seja contido por uma quadra.
 // Argumentos:
-//      x: coordenada x do elemento.
-//      y: coordenada y do elemento.
-//      largura: largura do elemento, usado para centralizar-lo.
-//      altura: altura do elemento, usado para centralizar-lo.
-//      quadra: Quadra onde o elemento se encontra.
-//      face: Lado da quadra onde o elemento se encontra.
-//      numero: Distância do elemento e o início da face.
+//    x: coordenada x do elemento.
+//    y: coordenada y do elemento.
+//    largura: largura do elemento, usado para centralizar-lo.
+//    altura: altura do elemento, usado para centralizar-lo.
+//    quadra: Quadra onde o elemento se encontra.
+//    face: Lado da quadra onde o elemento se encontra.
+//    numero: Distância do elemento e o início da face.
 void quadra_inicializar_coordenada(double *x, double *y, double largura, double altura,
                                    Quadra quadra, char face, int numero) {
     if (face == 'N') {
