@@ -137,7 +137,7 @@ Quadra quadra_ler(const char *linha) {
     double altura;
     double x;
     double y;
-    sscanf(linha, "%*s %s %lf %lf %lf %lf", id, &x, &y, &largura, &altura);
+    sscanf(linha, "q %s %lf %lf %lf %lf", id, &x, &y, &largura, &altura);
     return quadra_criar(id, largura, altura, x, y);
 }
 

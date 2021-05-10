@@ -102,7 +102,7 @@ Radio radio_ler(const char *linha) {
     char id[100];
     double x;
     double y;
-    sscanf(linha, "%*s %s %lf %lf", id, &x, &y);
+    sscanf(linha, "rb %s %lf %lf", id, &x, &y);
     return radio_criar(id, x, y);
 }
 

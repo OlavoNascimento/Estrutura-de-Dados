@@ -101,7 +101,7 @@ Circulo circulo_ler(const char *linha) {
     double y;
     char cor_borda[20];
     char cor_preenchimento[20];
-    sscanf(linha, "%*s %s %lf %lf %lf %s %s", id, &raio, &x, &y, cor_borda, cor_preenchimento);
+    sscanf(linha, "c %s %lf %lf %lf %s %s", id, &raio, &x, &y, cor_borda, cor_preenchimento);
     return circulo_criar(id, raio, x, y, cor_borda, cor_preenchimento);
 }
 

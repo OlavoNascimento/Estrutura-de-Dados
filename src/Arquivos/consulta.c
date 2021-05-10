@@ -927,9 +927,9 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     lista_destruir(nos);
 }
 
-// Salva o endereço de um morador em um registrador.
-void registrar_endereco_morador(Ponto *registradores, Tabela dados_pessoa, Tabela cep_quadra,
-                                Lista formas, const char *linha) {
+// Salva a posição geográfica da residência de um morador em um registrador.
+void registrar_posicao_morador(Ponto *registradores, Tabela dados_pessoa, Tabela cep_quadra,
+                               Lista formas, const char *linha) {
     int indice_registrador = -1;
     char id_registrador[3], cpf[100];
     sscanf(linha, "@m? %s %s", id_registrador, cpf);
@@ -952,6 +952,42 @@ void registrar_endereco_morador(Ponto *registradores, Tabela dados_pessoa, Tabel
     quadra_inicializar_coordenada(&x, &y, 0, morador_obter_altura(morador), quadra,
                                   morador_obter_endereco_face(morador),
                                   morador_obter_endereco_num(morador));
+
+    // Remove o item anterior caso exista.
+    if (registradores[indice_registrador] != NULL)
+        free(registradores[indice_registrador]);
+    registradores[indice_registrador] = ponto_criar(x, y);
+
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black");
+    lista_inserir_final(formas, linha_vertical);
+
+    Texto identificador = texto_criar("", x + 1, 0, "black", "none", id_registrador);
+    lista_inserir_final(formas, identificador);
+}
+
+// Salva a posição de um endereço em um registrador.
+void registrar_posicao_endereco(Ponto *registradores, Tabela cep_quadra, Lista formas,
+                                const char *linha) {
+    int indice_registrador = -1;
+    char id_registrador[3], cep[100], face;
+    double num;
+    sscanf(linha, "@e? %s %s %c %lf", id_registrador, cep, &face, &num);
+    sscanf(id_registrador, "R%d", &indice_registrador);
+    if (indice_registrador > 10)
+        return;
+
+    QtNo no = tabela_buscar(cep_quadra, cep);
+    if (no == NULL)
+        return;
+    Quadra quadra = getInfoQt(NULL, no);
+
+    double x = 0;
+    double y = 0;
+    quadra_inicializar_coordenada(&x, &y, 0, 0, quadra, face, num);
+
+    // Remove o item anterior caso exista.
+    if (registradores[indice_registrador] != NULL)
+        free(registradores[indice_registrador]);
     registradores[indice_registrador] = ponto_criar(x, y);
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black");
@@ -1056,7 +1092,9 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
                                        estabelecimentos, cnpj_estabelecimento, vias_qt, vias, linha,
                                        arquivo_log);
         } else if (strcmp("@m?", comando) == 0) {
-            registrar_endereco_morador(registradores, dados_pessoa, cep_quadra, formas, linha);
+            registrar_posicao_morador(registradores, dados_pessoa, cep_quadra, formas, linha);
+        } else if (strcmp("@e?", comando) == 0) {
+            registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
         }
     }
 
