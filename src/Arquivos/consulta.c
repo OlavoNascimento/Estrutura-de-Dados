@@ -997,6 +997,46 @@ void registrar_posicao_endereco(Ponto *registradores, Tabela cep_quadra, Lista f
     lista_inserir_final(formas, identificador);
 }
 
+void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabela id_semaforo,
+                                  Tabela id_radio, Tabela id_forma, Lista formas,
+                                  const char *linha) {
+    int indice_registrador = -1;
+    char id_registrador[3], id_equipamento_urbano[100];
+    double num;
+
+    double x = 0;
+    double y = 0;
+
+    sscanf(linha, "@e? %s %s ", id_registrador, id_equipamento_urbano);
+    sscanf(id_registrador, "R%d", &indice_registrador);
+    if (indice_registrador > 10)
+        return;
+
+    Figura equipamento_urbano;
+
+    equipamento_urbano = tabela_buscar(id_hidrante, id_equipamento_urbano);
+    if (equipamento_urbano == NULL)
+        tabela_buscar(id_semaforo, id_equipamento_urbano);
+    if (equipamento_urbano == NULL)
+        tabela_buscar(id_radio, id_equipamento_urbano);
+    if (equipamento_urbano == NULL)
+        tabela_buscar(id_forma, id_equipamento_urbano);
+    if (equipamento_urbano == NULL)
+        return;
+
+    x = figura_obter_x_centro(equipamento_urbano);
+    y = figura_obter_y_centro(equipamento_urbano);
+    if (registradores[indice_registrador] != NULL)
+        free(registradores[indice_registrador]);
+    registradores[indice_registrador] = ponto_criar(x, y);
+
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black");
+    lista_inserir_final(formas, linha_vertical);
+
+    Texto identificador = texto_criar("", x + 1, 0, "black", "none", id_registrador);
+    lista_inserir_final(formas, identificador);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
@@ -1094,6 +1134,10 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("@m?", comando) == 0) {
             registrar_posicao_morador(registradores, dados_pessoa, cep_quadra, formas, linha);
         } else if (strcmp("@e?", comando) == 0) {
+            registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
+        } else if (strcmp("@g?", comando) == 0) {
+            registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
+        } else if (strcmp("@xy", comando) == 0) {
             registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
         }
     }
