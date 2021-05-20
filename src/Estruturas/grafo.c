@@ -201,6 +201,14 @@ Lista grafo_obter_adjacentes(Grafo grafo, const char *id) {
     return adjacentes;
 }
 
+Vertice grafo_obter_vertice_por_indice(Grafo grafo, int indice) {
+    return grafo->vertices[indice];
+}
+
+Tabela grafo_obter_tabela(Grafo grafo) {
+    return grafo->id_indice;
+}
+
 const char *aresta_obter_nome(Aresta aresta) {
     return aresta->nome;
 }

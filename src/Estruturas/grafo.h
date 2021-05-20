@@ -82,6 +82,24 @@ O usuário é responsável por liberar a memória!
 Lista grafo_obter_adjacentes(Grafo grafo, const char *id1);
 
 /*
+Retorna o vértice referente ao indice "indice".
+O parâmetro grafo não pode ser nulo.
+*/
+Vertice grafo_obter_vertice_por_indice(Grafo grafo, int indice);
+
+/*
+Retorna a tabela de espalhamento do grafo contendo a relação entre "id" e indice.
+O parâmetro grafo não pode ser nulo.
+*/
+Tabela grafo_obter_tabela(Grafo grafo);
+
+/*
+Retorna o tamanho atual do grafo
+O parâmetro grafo não pode ser nulo.
+*/
+int grafo_obter_tamanho_atual(Grafo grafo);
+
+/*
 Retorna o nome de uma aresta.
 O parâmetro aresta não pode ser nulo.
 */
@@ -140,6 +158,12 @@ Retorna a coordenada y de um vértice.
 O parâmetro vértice não pode ser nulo.
 */
 double vertice_obter_y(Vertice vertice);
+
+/*
+Retorna uma lista com as arestas adjacentes ao vértice passado como parâmetro.
+O parâmetro vértice não pode ser nulo.
+*/
+Lista vertice_obter_arestas(Vertice vertice);
 
 // TODO
 void vertice_destruir(Vertice vertice);
