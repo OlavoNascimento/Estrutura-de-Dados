@@ -1037,6 +1037,30 @@ void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabe
     lista_inserir_final(formas, identificador);
 }
 
+void registrar_ponto(Ponto *registradores, Lista formas, const char *linha) {
+    int indice_registrador = -1;
+    char id_registrador[3], id_equipamento_urbano[100];
+    double num;
+
+    double x = 0;
+    double y = 0;
+
+    sscanf(linha, "@xy %s %d %d ", id_registrador, &x, &y);
+    sscanf(id_registrador, "R%d", &indice_registrador);
+    if (indice_registrador > 10)
+        return;
+
+    if (registradores[indice_registrador] != NULL)
+        free(registradores[indice_registrador]);
+    registradores[indice_registrador] = ponto_criar(x, y);
+
+    Linha linha_vertical = linha_criar(x, y, x, 0, "black");
+    lista_inserir_final(formas, linha_vertical);
+
+    Texto identificador = texto_criar("", x + 1, 0, "black", "none", id_registrador);
+    lista_inserir_final(formas, identificador);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
