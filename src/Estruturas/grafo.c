@@ -8,6 +8,8 @@
 #include "./lista.h"
 #include "./tabelahash.h"
 
+#define TAMANHO_INICIAL 16
+
 struct Aresta_s {
     char nome[100];
     char origem[100];
@@ -33,36 +35,56 @@ struct Grafo_s {
 };
 
 // Remover tamanho do construtor e aumentar o tamanho conforme necessário.
-Grafo grafo_criar(int tamanho_maximo) {
-    if (tamanho_maximo <= 0) {
-        LOG_ERRO("Tamanho do grafo deve ser maior que 0!\n");
-        return NULL;
-    }
+Grafo grafo_criar() {
     Grafo grafo = malloc(sizeof *grafo);
     if (grafo == NULL) {
-        LOG_ERRO("Falha ao alocar espaço para um novo grafo!\n");
+        LOG_ERRO("Falha ao alocar espaço para um grafo!\n");
         return NULL;
     }
-    grafo->vertices = malloc(sizeof *grafo->vertices * tamanho_maximo);
+    grafo->tamanho_atual = 0;
+    grafo->tamanho_maximo = TAMANHO_INICIAL;
+
+    grafo->vertices = malloc(sizeof *grafo->vertices * grafo->tamanho_maximo);
     if (grafo->vertices == NULL) {
         free(grafo);
-        LOG_ERRO("Falha ao alocar espaço para um novo grafo!\n");
+        LOG_ERRO("Falha ao alocar espaço para um grafo!\n");
         return NULL;
     }
-
-    grafo->tamanho_atual = 0;
-    grafo->tamanho_maximo = tamanho_maximo;
-    grafo->id_indice = tabela_criar(free);
-    for (int i = 0; i < tamanho_maximo; i++)
+    for (int i = 0; i < grafo->tamanho_maximo; i++)
         grafo->vertices[i] = NULL;
+
+    grafo->id_indice = tabela_criar(free);
+    if (grafo->id_indice == NULL) {
+        free(grafo->vertices);
+        free(grafo);
+        LOG_ERRO("Falha ao alocar espaço para um grafo!\n");
+        return NULL;
+    }
     return grafo;
 }
 
+// Dobra o tamanho do array de vértices de um grafo.
+bool aumentar_tamanho_grafo(Grafo grafo) {
+    Vertice *temp = realloc(grafo->vertices, sizeof *temp * 2 * grafo->tamanho_maximo);
+    if (temp == NULL) {
+        LOG_ERRO("Falha ao alocar memória!\n");
+        return false;
+    }
+
+    grafo->vertices = temp;
+    grafo->tamanho_maximo *= 2;
+    for (int i = grafo->tamanho_atual; i < grafo->tamanho_maximo; i++)
+        grafo->vertices[i] = NULL;
+
+    return true;
+}
+
 Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
-    if (grafo->tamanho_atual >= grafo->tamanho_maximo) {
-        LOG_ERRO("Tamanho máximo do grafo alcançado!\n");
+    if (grafo->tamanho_atual >= grafo->tamanho_maximo && !aumentar_tamanho_grafo(grafo)) {
+        LOG_AVISO("Falha ao adicionar vértice a um grafo!\n");
         return NULL;
     }
+
     Vertice vertice = malloc(sizeof *vertice);
     if (vertice == NULL) {
         LOG_ERRO("Falha ao alocar memória!\n");
@@ -71,6 +93,7 @@ Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
     strcpy(vertice->id, id);
     vertice->x = x;
     vertice->y = y;
+
     vertice->arestas =
         lista_criar((ObterIdentificadorLista *) aresta_obter_destino, (ListaDestruirInfo *) free);
     if (vertice->arestas == NULL) {

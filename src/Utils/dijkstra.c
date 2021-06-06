@@ -13,7 +13,7 @@ typedef struct {
     bool aberto;
 } DijkstraInfos;
 
-typedef double ObterValorComparado(Aresta aresta);
+typedef double ObterCusto(Aresta aresta);
 
 DijkstraInfos *inicializa_dijkstra(Grafo grafo, int origem) {
     // Os indices do arranjo DijkstraInfos serão os mesmos indices dos vertices do grafo
@@ -60,7 +60,7 @@ int buscar_menor_custo(Grafo grafo, DijkstraInfos *infos) {
 
 // Relaxa todos os vértices adjacentes, definindo o custo para cada vértice adjacente.
 void relaxar_adjacentes(Grafo grafo, DijkstraInfos *infos, Vertice vertice,
-                        ObterValorComparado obter_valor) {
+                        ObterCusto obter_custo_aresta) {
     const int *indice_origem = grafo_obter_indice_vertice(grafo, vertice_obter_id(vertice));
     if (indice_origem == NULL) {
         LOG_AVISO("Não é possível relaxar vértices adjacentes a uma origem inválida\n");
@@ -70,7 +70,7 @@ void relaxar_adjacentes(Grafo grafo, DijkstraInfos *infos, Vertice vertice,
     Lista arestas = vertice_obter_arestas(vertice);
     for_each_lista(aresta_no, arestas) {
         const Aresta aresta = lista_obter_info(aresta_no);
-        const double custo = obter_valor(aresta);
+        const double custo = obter_custo_aresta(aresta);
 
         const char *id_destino = aresta_obter_destino(aresta);
         const int *indice = grafo_obter_indice_vertice(grafo, id_destino);
@@ -89,7 +89,7 @@ void relaxar_adjacentes(Grafo grafo, DijkstraInfos *infos, Vertice vertice,
 }
 
 // Retorna uma pilha com os indices que definem o caminho da origem até o destino
-Pilha dijkstra(Grafo grafo, int origem, int destino, ObterValorComparado obter_valor_aresta) {
+Pilha dijkstra(Grafo grafo, int origem, int destino, ObterCusto obter_custo_aresta) {
     // Os indices do arranjo DijkstraInfos serão os mesmos indices dos vertices do grafo
     DijkstraInfos *infos = inicializa_dijkstra(grafo, origem);
 
@@ -98,7 +98,7 @@ Pilha dijkstra(Grafo grafo, int origem, int destino, ObterValorComparado obter_v
         infos[origem_atual].aberto = false;
 
         const Vertice vertice = grafo_obter_vertice_por_indice(grafo, origem_atual);
-        relaxar_adjacentes(grafo, infos, vertice, obter_valor_aresta);
+        relaxar_adjacentes(grafo, infos, vertice, obter_custo_aresta);
     }
 
     Pilha pilha_caminho = pilha_criar(NULL);
@@ -107,7 +107,7 @@ Pilha dijkstra(Grafo grafo, int origem, int destino, ObterValorComparado obter_v
         return NULL;
     }
 
-    // Adiciona os indices do menor caminho a pilha.
+    // Adiciona os vértices que formam o menor caminho a pilha.
     for (int i = destino; i != -1; i = infos[i].predecessor)
         pilha_inserir(pilha_caminho, grafo_obter_vertice_por_indice(grafo, i));
 

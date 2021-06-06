@@ -33,7 +33,7 @@ Cria um grafo.
 É necessário especificar o número máximo de vértices do grafo.
 Retorna o endereço para um grafo vazio.
 */
-Grafo grafo_criar(int tamanho_maximo);
+Grafo grafo_criar();
 
 /*
 Insere um vértice no grafo.

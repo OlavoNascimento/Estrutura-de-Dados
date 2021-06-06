@@ -61,7 +61,7 @@ Grafo criar_arvore_geradora_minima(Grafo grafo) {
         grupos[i].rank = 0;
     }
 
-    Grafo arvore = grafo_criar(100000);
+    Grafo arvore = grafo_criar();
 
     int indice_atual = 0;
     int arestas_inseridas = 0;
