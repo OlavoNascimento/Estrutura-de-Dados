@@ -88,13 +88,13 @@ Semaforo semaforo_criar(const char id[100], double x, double y) {
         LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
-    strcpy(semaforo->id, id);
+    strncpy(semaforo->id, id, 100);
     semaforo->largura = 12;
     semaforo->altura = 30;
     semaforo->x = x - semaforo->largura / 2;
     semaforo->y = y - semaforo->altura / 2;
-    strcpy(semaforo->cor_borda, "red");
-    strcpy(semaforo->cor_preenchimento, "green");
+    strncpy(semaforo->cor_borda, "red", 20);
+    strncpy(semaforo->cor_preenchimento, "green", 20);
     semaforo->arredondamento_borda = 0;
     semaforo->borda_tracejada = false;
     semaforo->espessura_borda = 1;

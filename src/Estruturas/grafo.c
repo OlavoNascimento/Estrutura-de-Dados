@@ -32,6 +32,7 @@ struct Grafo_s {
     Tabela id_indice;
 };
 
+// Remover tamanho do construtor e aumentar o tamanho conforme necessário.
 Grafo grafo_criar(int tamanho_maximo) {
     if (tamanho_maximo <= 0) {
         LOG_ERRO("Tamanho do grafo deve ser maior que 0!\n");
@@ -72,6 +73,12 @@ Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
     vertice->y = y;
     vertice->arestas =
         lista_criar((ObterIdentificadorLista *) aresta_obter_destino, (ListaDestruirInfo *) free);
+    if (vertice->arestas == NULL) {
+        free(vertice->id);
+        free(vertice);
+        LOG_ERRO("Falha ao alocar memória!\n");
+        return NULL;
+    }
 
     int *indice = malloc(sizeof *indice);
     if (indice == NULL) {
@@ -94,12 +101,16 @@ Vertice grafo_remover_vertice(Grafo grafo, const char *id) {
         return NULL;
     }
 
-    int *indice_id = tabela_remover(grafo->id_indice, id);
+    int *indice = tabela_remover(grafo->id_indice, id);
+    if (indice == NULL) {
+        LOG_AVISO("Não é possível remover um vértice que não existe no grafo\n");
+        return NULL;
+    }
 
-    Vertice vertice = grafo->vertices[*indice_id];
-    grafo->vertices[*indice_id] = NULL;
+    Vertice vertice = grafo->vertices[*indice];
+    grafo->vertices[*indice] = NULL;
 
-    free(indice_id);
+    free(indice);
     grafo->tamanho_atual--;
     return vertice;
 }
@@ -201,12 +212,73 @@ Lista grafo_obter_adjacentes(Grafo grafo, const char *id) {
     return adjacentes;
 }
 
+// Retorna o número de vértices de um grafo.
+int grafo_obter_tamanho(Grafo grafo) {
+    return grafo->tamanho_atual;
+}
+
+// Retorna o vértice de id especificado.
+Vertice grafo_obter_vertice_por_id(Grafo grafo, const char *id) {
+    if (id == NULL) {
+        LOG_AVISO("Id nulo passado para grafo_obter_vertice_por_id\n");
+        return NULL;
+    }
+
+    const int *indice_origem = tabela_buscar(grafo->id_indice, id);
+    if (indice_origem == NULL)
+        return NULL;
+    return grafo->vertices[*indice_origem];
+}
+
+// Retorna o vértice de id indice.
 Vertice grafo_obter_vertice_por_indice(Grafo grafo, int indice) {
+    if (indice >= grafo->tamanho_maximo) {
+        LOG_AVISO("Tentando acessar indice inválido do grafo!\n");
+        return NULL;
+    }
     return grafo->vertices[indice];
 }
 
-Tabela grafo_obter_tabela(Grafo grafo) {
-    return grafo->id_indice;
+// Retorna um array contendo todas as arestas do grafo.
+Aresta *grafo_obter_arestas(Grafo grafo, int *tamanho_vetor) {
+    Aresta *arestas_grafo = NULL;
+    int indice_atual = 0;
+    int num_arestas_grafo = 0;
+
+    for (int i = 0; i < grafo->tamanho_atual; i++) {
+        Lista arestas = grafo->vertices[i]->arestas;
+        if (lista_obter_tamanho(arestas) == 0)
+            continue;
+
+        // Aumenta o tamanho do vetor
+        num_arestas_grafo += lista_obter_tamanho(arestas);
+        Aresta *temp = realloc(arestas_grafo, sizeof *temp * num_arestas_grafo);
+        if (temp == NULL) {
+            LOG_ERRO("Erro ao alocar memória!\n");
+            free(arestas_grafo);
+            return NULL;
+        }
+        arestas_grafo = temp;
+
+        for_each_lista(no, arestas) {
+            arestas_grafo[indice_atual] = lista_obter_info(no);
+            indice_atual++;
+        }
+    }
+    *tamanho_vetor = num_arestas_grafo;
+    return arestas_grafo;
+}
+
+// Retorna o indice de um vértice de id especificado.
+const int *grafo_obter_indice_vertice(Grafo grafo, const char *id) {
+    if (id == NULL) {
+        LOG_AVISO("Id nulo passado para grafo_obter_indice_vertice\n");
+        return NULL;
+    }
+    const int *indice_origem = tabela_buscar(grafo->id_indice, id);
+    if (indice_origem == NULL)
+        return NULL;
+    return indice_origem;
 }
 
 const char *aresta_obter_nome(Aresta aresta) {

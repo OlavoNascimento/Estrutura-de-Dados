@@ -69,12 +69,12 @@ Texto texto_criar(const char id[100], double x, double y, const char cor_borda[2
         LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
-    strcpy(texto->id, id);
+    strncpy(texto->id, id, 100);
     texto->x = x;
     texto->y = y;
-    strcpy(texto->cor_borda, cor_borda);
-    strcpy(texto->cor_preenchimento, cor_preenchimento);
-    strcpy(texto->conteudo, conteudo);
+    strncpy(texto->cor_borda, cor_borda, 20);
+    strncpy(texto->cor_preenchimento, cor_preenchimento, 20);
+    strncpy(texto->conteudo, conteudo, 1024);
     texto->alinhamento = TEXTO_ESQUERDA;
 
     texto->vtable = texto_criar_interface_figura();

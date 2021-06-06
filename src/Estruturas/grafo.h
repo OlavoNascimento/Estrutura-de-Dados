@@ -41,16 +41,14 @@ Os parâmetros grafo e id não podem ser nulos.
 */
 Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y);
 
-// TODO
+/*
+Remove um vértice no grafo.
+Os parâmetros grafo e id não podem ser nulos.
+*/
 Vertice grafo_remover_vertice(Grafo grafo, const char *id);
 
 /*
-Retorna um vetor contendo todos os vértices de um grafo.
-*/
-Vertice *grafo_obter_vertices(Grafo grafo);
-
-/*
-Retorna o tamanho máximo de um grafo.
+Retorna o tamanho atual de um grafo.
 */
 int grafo_obter_tamanho(Grafo grafo);
 
@@ -82,22 +80,28 @@ O usuário é responsável por liberar a memória!
 Lista grafo_obter_adjacentes(Grafo grafo, const char *id1);
 
 /*
+Retorna o vértice referente ao id especificado.
+O parâmetro grafo não pode ser nulo.
+*/
+Vertice grafo_obter_vertice_por_id(Grafo grafo, const char *id);
+
+/*
 Retorna o vértice referente ao indice "indice".
 O parâmetro grafo não pode ser nulo.
 */
 Vertice grafo_obter_vertice_por_indice(Grafo grafo, int indice);
 
 /*
-Retorna a tabela de espalhamento do grafo contendo a relação entre "id" e indice.
+Retorna um vetor contendo todas as arestas do grafo.
 O parâmetro grafo não pode ser nulo.
 */
-Tabela grafo_obter_tabela(Grafo grafo);
+Aresta *grafo_obter_arestas(Grafo grafo, int *tamanho_vetor);
 
 /*
-Retorna o tamanho atual do grafo
-O parâmetro grafo não pode ser nulo.
+Retorna o indice de um vértice de id especificado.
+Nenhum dos parâmetros podem ser nulos.
 */
-int grafo_obter_tamanho_atual(Grafo grafo);
+const int *grafo_obter_indice_vertice(Grafo grafo, const char *id);
 
 /*
 Retorna o nome de uma aresta.
@@ -165,12 +169,13 @@ O parâmetro vértice não pode ser nulo.
 */
 Lista vertice_obter_arestas(Vertice vertice);
 
-// TODO
+/*
+Libera a memória alocada por um vértice.
+*/
 void vertice_destruir(Vertice vertice);
 
 /*
 Libera a memória alocada por um grafo.
-O parâmetro grafo não pode ser nulo.
 */
 void grafo_destruir(Grafo grafo);
 
