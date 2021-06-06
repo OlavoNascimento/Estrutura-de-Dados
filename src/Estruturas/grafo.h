@@ -104,6 +104,12 @@ Nenhum dos parâmetros podem ser nulos.
 const int *grafo_obter_indice_vertice(Grafo grafo, const char *id);
 
 /*
+Cria uma lista com a representações de um grafo. Arestas da arvore geradora mínima são destacadas.
+Nenhum dos parâmetros podem ser nulos.
+*/
+Lista grafo_escrever_svg(Grafo grafo, Grafo mst);
+
+/*
 Retorna o nome de uma aresta.
 O parâmetro aresta não pode ser nulo.
 */

@@ -46,6 +46,11 @@ int comp(const void *a, const void *b) {
 
 // Cria uma árvore geradora mínima de um grafo.
 Grafo criar_arvore_geradora_minima(Grafo grafo) {
+    if (grafo == NULL) {
+        LOG_AVISO("Não é possível criar uma árvore geradora mínima para um grafo nulo!\n");
+        return NULL;
+    }
+
     int num_arestas = 0;
     Aresta *arestas = grafo_obter_arestas(grafo, &num_arestas);
     if (arestas == NULL) {

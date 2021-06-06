@@ -5,6 +5,10 @@
 #include <string.h>
 
 #include "../Utils/logging.h"
+#include "./Interfaces/figura.h"
+#include "./Objetos/Formas/circulo.h"
+#include "./Objetos/Formas/linha.h"
+#include "./Objetos/Outros/texto.h"
 #include "./lista.h"
 #include "./tabelahash.h"
 
@@ -302,6 +306,68 @@ const int *grafo_obter_indice_vertice(Grafo grafo, const char *id) {
     if (indice_origem == NULL)
         return NULL;
     return indice_origem;
+}
+
+// Cria uma representação de um grafo.
+Lista grafo_escrever_svg(Grafo grafo, Grafo mst) {
+    Lista saida = lista_criar(NULL, figura_destruir);
+    if (saida == NULL)
+        return NULL;
+    Lista vertices_formas = lista_criar(NULL, NULL);
+    Lista arestas_mst = lista_criar(NULL, NULL);
+
+    for (int i = 0; i < grafo->tamanho_atual; i++) {
+        Vertice origem = grafo->vertices[i];
+        const char *id_origem = vertice_obter_id(origem);
+        if (origem == NULL)
+            continue;
+
+        Lista arestas = vertice_obter_arestas(origem);
+        for_each_lista(no, arestas) {
+            Aresta aresta = lista_obter_info(no);
+
+            const char *id_destino = aresta_obter_destino(aresta);
+            Vertice destino = grafo_obter_vertice_por_id(grafo, id_destino);
+            if (destino == NULL)
+                continue;
+
+            char cor_linha[6] = "black";
+
+            // Se o vértice de origem e destino estão conectados na árvore geradora mínima a aresta
+            // atual também faz parte da árvore.
+            const bool adjacente = grafo_checar_adjacente(mst, id_origem, id_destino);
+            if (adjacente)
+                strncpy(cor_linha, "red", 6);
+
+            Linha linha =
+                linha_criar(vertice_obter_x(origem), vertice_obter_y(origem),
+                            vertice_obter_x(destino), vertice_obter_y(destino), cor_linha);
+
+            // Garante que as arestas da mst fiquem por cima das arestas normais.
+            if (adjacente) {
+                linha_definir_espessura(linha, 2);
+                lista_inserir_final(arestas_mst, linha);
+            } else {
+                lista_inserir_final(saida, linha);
+            }
+        }
+
+        Circulo circ = circulo_criar("", 10, vertice_obter_x(origem), vertice_obter_y(origem),
+                                     "black", "green");
+        lista_inserir_final(vertices_formas, circ);
+    }
+
+    for_each_lista(no, arestas_mst) {
+        lista_inserir_final(saida, lista_obter_info(no));
+    }
+    lista_destruir(arestas_mst);
+
+    for_each_lista(no, vertices_formas) {
+        lista_inserir_final(saida, lista_obter_info(no));
+    }
+    lista_destruir(vertices_formas);
+
+    return saida;
 }
 
 const char *aresta_obter_nome(Aresta aresta) {

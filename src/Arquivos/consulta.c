@@ -26,6 +26,7 @@
 #include "../Ordenacao/shellsort.h"
 #include "../Utils/caminhos.h"
 #include "../Utils/graham_scan.h"
+#include "../Utils/kruskal.h"
 #include "../Utils/logging.h"
 #include "../Utils/matematica.h"
 #include "./svg.h"
@@ -803,10 +804,10 @@ void escrever_quadtree_svg(const char *caminho_log, QuadTree quadras, QuadTree h
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
     printf("Arquivo dmprbt: %s\n", caminho_arquivo);
 
-    Lista lista_dados = quadtree_escrever_svg(qt);
-    svg_escrever(caminho_arquivo, 1, lista_dados);
+    Lista lista_formas = quadtree_escrever_svg(qt);
+    svg_escrever(caminho_arquivo, 1, lista_formas);
 
-    lista_destruir(lista_dados);
+    lista_destruir(lista_formas);
     free(diretorios);
     free(nome_arquivo);
     free(caminho_arquivo);
@@ -910,6 +911,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
     }
 
     Lista nos = nosDentroCirculoQt(vias_qt, x, y, raio);
+    // Itera por todos os vértices.
     for_each_lista(no, nos) {
         Vertice vertice = getInfoQt(NULL, lista_obter_info(no));
         if (!circulo_checar_ponto_interno(raio_selecao, vertice_obter_x(vertice),
@@ -1055,6 +1057,43 @@ void registrar_ponto(Ponto *registradores, Lista formas, const char *linha) {
     lista_inserir_final(formas, identificador);
 }
 
+// Cria um arquivo svg com o nome especificado, o qual contem a representação do grafo. As arestas
+// da árvore geradora mínima são destacadas.
+void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linha) {
+    char sufixo[1024];
+    sscanf(linha, "ccv %s", sufixo);
+
+    Grafo vias = tabela_buscar(grafos, "vias");
+    if (vias == NULL) {
+        LOG_AVISO("Grafo de vias não foi criado!\n");
+        return;
+    }
+
+    Grafo ciclovias = tabela_buscar(grafos, "ciclovias");
+    // Cria a árvore geradora mínima caso ainda não exista.
+    if (ciclovias == NULL) {
+        ciclovias = criar_arvore_geradora_minima(vias);
+        if (ciclovias == NULL)
+            return;
+        // Salva a árvore geradora mínima para uso posterior.
+        tabela_remover(grafos, "ciclovias");
+        tabela_inserir(grafos, "ciclovias", ciclovias);
+    }
+
+    char *diretorios = extrair_nome_diretorio(caminho_log);
+    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", sufixo, ".svg");
+    char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
+    printf("Arquivo ccv: %s\n", caminho_arquivo);
+
+    Lista lista_formas = grafo_escrever_svg(vias, ciclovias);
+    svg_escrever(caminho_arquivo, 1, lista_formas);
+
+    lista_destruir(lista_formas);
+    free(diretorios);
+    free(nome_arquivo);
+    free(caminho_arquivo);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
@@ -1158,6 +1197,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
                                          id_forma, formas, linha);
         } else if (strcmp("@xy", comando) == 0) {
             registrar_ponto(registradores, formas, linha);
+        } else if (strcmp("ccv", comando) == 0) {
+            escrever_grafo_svg(caminho_log, grafos, linha);
         }
     }
 

@@ -78,7 +78,6 @@ int main(int argc, const char *argv[]) {
     char *caminho_vias = parametros_obter_caminho_vias(params);
     char *caminho_svg_descricao = parametros_obter_caminho_svg_descricao(params);
 
-    printf("Arquivo descrição: %s\n", caminho_descricao);
     printf("Arquivo svg descrição: %s\n", caminho_svg_descricao);
 
     Tabela quadtrees = criar_tabela_quadtrees();
@@ -123,7 +122,6 @@ int main(int argc, const char *argv[]) {
         char *caminho_registro_consulta = parametros_obter_caminho_registro_consulta(params);
         char *caminho_svg_consulta = parametros_obter_caminho_svg_consulta(params);
 
-        printf("Arquivo consulta: %s\n", caminho_consulta);
         printf("Arquivo log: %s\n", caminho_registro_consulta);
         printf("Arquivo svg consulta: %s\n", caminho_svg_consulta);
 
