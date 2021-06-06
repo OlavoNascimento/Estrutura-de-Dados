@@ -1002,30 +1002,25 @@ void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabe
                                   const char *linha) {
     int indice_registrador = -1;
     char id_registrador[3], id_equipamento_urbano[100];
-    double num;
 
-    double x = 0;
-    double y = 0;
-
-    sscanf(linha, "@e? %s %s ", id_registrador, id_equipamento_urbano);
+    sscanf(linha, "@g? %s %s", id_registrador, id_equipamento_urbano);
     sscanf(id_registrador, "R%d", &indice_registrador);
     if (indice_registrador > 10)
         return;
 
-    Figura equipamento_urbano;
-
-    equipamento_urbano = tabela_buscar(id_hidrante, id_equipamento_urbano);
-    if (equipamento_urbano == NULL)
-        tabela_buscar(id_semaforo, id_equipamento_urbano);
-    if (equipamento_urbano == NULL)
-        tabela_buscar(id_radio, id_equipamento_urbano);
-    if (equipamento_urbano == NULL)
-        tabela_buscar(id_forma, id_equipamento_urbano);
-    if (equipamento_urbano == NULL)
+    QtInfo no = tabela_buscar(id_hidrante, id_equipamento_urbano);
+    if (no == NULL)
+        no = tabela_buscar(id_semaforo, id_equipamento_urbano);
+    if (no == NULL)
+        no = tabela_buscar(id_radio, id_equipamento_urbano);
+    if (no == NULL)
+        no = tabela_buscar(id_forma, id_equipamento_urbano);
+    if (no == NULL)
         return;
+    Figura equipamento_urbano = getInfoQt(NULL, no);
 
-    x = figura_obter_x_centro(equipamento_urbano);
-    y = figura_obter_y_centro(equipamento_urbano);
+    double x = figura_obter_x_centro(equipamento_urbano);
+    double y = figura_obter_y_centro(equipamento_urbano);
     if (registradores[indice_registrador] != NULL)
         free(registradores[indice_registrador]);
     registradores[indice_registrador] = ponto_criar(x, y);
@@ -1039,13 +1034,12 @@ void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabe
 
 void registrar_ponto(Ponto *registradores, Lista formas, const char *linha) {
     int indice_registrador = -1;
-    char id_registrador[3], id_equipamento_urbano[100];
-    double num;
+    char id_registrador[3];
 
     double x = 0;
     double y = 0;
 
-    sscanf(linha, "@xy %s %d %d ", id_registrador, &x, &y);
+    sscanf(linha, "@xy %s %lf %lf", id_registrador, &x, &y);
     sscanf(id_registrador, "R%d", &indice_registrador);
     if (indice_registrador > 10)
         return;
@@ -1160,9 +1154,10 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("@e?", comando) == 0) {
             registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
         } else if (strcmp("@g?", comando) == 0) {
-            registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
+            registrar_equipamento_urbano(registradores, id_hidrante, id_semaforo, id_radio,
+                                         id_forma, formas, linha);
         } else if (strcmp("@xy", comando) == 0) {
-            registrar_posicao_endereco(registradores, cep_quadra, formas, linha);
+            registrar_ponto(registradores, formas, linha);
         }
     }
 
