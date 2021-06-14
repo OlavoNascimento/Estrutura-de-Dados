@@ -108,7 +108,9 @@ void svg_escrever(const char *caminho_svg, int num_estruturas, ...) {
     // Calcula as proporções da imagem svg.
     ProporcoesSVG *proporcoes = svg_criar_proporcao(num_estruturas, estruturas);
 
-    fprintf(arquivo_svg, "<svg viewBox='%lf %lf %lf %lf' xmlns='http://www.w3.org/2000/svg'>\n",
+    fprintf(arquivo_svg,
+            "<svg viewBox='%lf %lf %lf %lf' xmlns='http://www.w3.org/2000/svg' "
+            "xmlns:xlink='http://www.w3.org/1999/xlink'>\n",
             proporcoes->origem_x, proporcoes->origem_y, proporcoes->largura, proporcoes->altura);
 
     escrever_definicoes_sombras(arquivo_svg);

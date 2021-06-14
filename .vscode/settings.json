@@ -3,6 +3,7 @@
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
   "cSpell.words": [
+    "animacao",
     "atualizar",
     "caminho",
     "catac",
@@ -22,10 +23,12 @@
     "espaco",
     "estrutura",
     "exibicao",
+    "figura",
     "figuras",
     "funcao",
     "h",
     "incidencia",
+    "interface",
     "interseccao",
     "kruskal",
     "lfpx",
@@ -68,6 +71,10 @@
     "estabelecimento.h": "c",
     "quadtree.h": "c",
     "cstring": "cpp",
-    "kruskal.h": "c"
+    "kruskal.h": "c",
+    "cmath": "c",
+    "random": "c",
+    "*.tcc": "c",
+    "ponto.h": "c"
   }
 }
