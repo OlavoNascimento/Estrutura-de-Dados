@@ -17,10 +17,7 @@ static inline void trocar_figuras(Figura *figuras, int i, int j) {
 double calcular_distancia(Figura figura, double x, double y) {
     double x_no = figura_obter_x(figura);
     double y_no = figura_obter_y(figura);
-
-    double cat1 = fabs(x - x_no);
-    double cat2 = fabs(y - y_no);
-    return hypot(cat1, cat2);
+    return pow(x - x_no, 2) + pow(y - y_no, 2);
 }
 
 void insertion_sort(Figura *postos, int tamanho, double x, double y) {

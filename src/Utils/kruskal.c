@@ -101,7 +101,12 @@ Grafo criar_arvore_geradora_minima(Grafo grafo) {
                                   vertice_obter_y(destino));
         }
 
+        // As ruas da ciclovia são de mão dupla.
         grafo_inserir_aresta(arvore, aresta_obter_origem(aresta), aresta_obter_destino(aresta),
+                             aresta_obter_quadra_esquerda(aresta),
+                             aresta_obter_quadra_direita(aresta), aresta_obter_comprimento(aresta),
+                             aresta_obter_velocidade(aresta), aresta_obter_nome(aresta));
+        grafo_inserir_aresta(arvore, aresta_obter_destino(aresta), aresta_obter_origem(aresta),
                              aresta_obter_quadra_esquerda(aresta),
                              aresta_obter_quadra_direita(aresta), aresta_obter_comprimento(aresta),
                              aresta_obter_velocidade(aresta), aresta_obter_nome(aresta));
