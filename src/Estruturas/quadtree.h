@@ -113,6 +113,12 @@ Retorna NULL, caso não exista tal nó.
 QtNo getNoQt(QuadTree qt, double x, double y);
 
 /*
+Retorna a informação mais próxima de um ponto.
+Retorna NULL, caso não exista.
+*/
+QtInfo quadtree_obter_mais_proximo(QuadTree qt, double x, double y);
+
+/*
 Retorna a informação armazenada na árvore no nó referenciado por pNo.
 "pNo" deve referenciar um nó válido dentro da árvore.
 */

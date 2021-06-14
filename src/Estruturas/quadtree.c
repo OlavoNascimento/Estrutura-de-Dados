@@ -1,5 +1,7 @@
 #include "quadtree.h"
 
+#include <float.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -355,6 +357,23 @@ QtNo getNoQt(QuadTree qt, double x, double y) {
     if (x <= coord_x && y >= coord_y)
         return getNoQt(qt->sudoeste, x, y);
     return getNoQt(qt->sudeste, x, y);
+}
+
+QtInfo quadtree_obter_mais_proximo(QuadTree qt, double x, double y) {
+    Lista nos = nosDentroCirculoQt(qt, x, y, 200);
+    QtInfo info = NULL;
+    double min_dist = DBL_MAX;
+    for_each_lista(no, nos) {
+        QtNo atual = lista_obter_info(no);
+        const double dist = pow(x - ponto_obter_x(atual->coordenada), 2) +
+                            pow(y - ponto_obter_y(atual->coordenada), 2);
+        if (dist < min_dist) {
+            info = getInfoQt(NULL, atual);
+            min_dist = dist;
+        }
+    }
+    lista_destruir(nos);
+    return info;
 }
 
 QtInfo getInfoQt(QuadTree qt, QtNo pNo) {
