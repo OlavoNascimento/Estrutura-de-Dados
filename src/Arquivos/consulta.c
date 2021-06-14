@@ -20,11 +20,13 @@
 #include "../Objetos/Formas/linha.h"
 #include "../Objetos/Formas/poligono.h"
 #include "../Objetos/Formas/retangulo.h"
+#include "../Objetos/Outros/animacao.h"
 #include "../Objetos/Outros/densidade.h"
 #include "../Objetos/Outros/texto.h"
 #include "../Ordenacao/quicksort.h"
 #include "../Ordenacao/shellsort.h"
 #include "../Utils/caminhos.h"
+#include "../Utils/dijkstra.h"
 #include "../Utils/graham_scan.h"
 #include "../Utils/kruskal.h"
 #include "../Utils/logging.h"
@@ -855,14 +857,27 @@ void destacar_estabelecimentos_contidos(Tabela dados_pessoa, QuadTree estabeleci
 
 // Remove as quadras, elementos urbanos, moradores e estabelecimentos que estejam inteiramente
 // contidos na circunferência especificada.
-void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadra,
-                                QuadTree hidrantes, Tabela id_hidrante, QuadTree radios,
-                                Tabela id_radio, QuadTree semaforos, Tabela id_semaforo,
-                                QuadTree moradores, Tabela dados_pessoa, QuadTree estabelecimentos,
-                                Tabela cnpj_estabelecimento, QuadTree vias_qt, Grafo vias,
+void remover_elementos_contidos(Lista formas, Tabela quadtrees, Tabela relacoes, Tabela grafos,
                                 const char *linha, FILE *arquivo_log) {
     double x, y, raio;
     sscanf(linha, "catac %lf %lf %lf", &x, &y, &raio);
+
+    QuadTree quadras = tabela_buscar(quadtrees, "quadras");
+    QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
+    QuadTree radios = tabela_buscar(quadtrees, "radios");
+    QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
+    QuadTree moradores = tabela_buscar(quadtrees, "moradores");
+    QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
+    QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
+
+    Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
+    Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
+    Tabela cnpj_estabelecimento = tabela_buscar(relacoes, "cnpj_estabelecimento");
+    Tabela id_hidrante = tabela_buscar(relacoes, "id_hidrante");
+    Tabela id_semaforo = tabela_buscar(relacoes, "id_semaforo");
+    Tabela id_radio = tabela_buscar(relacoes, "id_radio");
+
+    Grafo vias = tabela_buscar(grafos, "vias");
 
     Circulo raio_selecao = circulo_criar("", raio, x, y, "#6C6753", "#CCFF00");
     circulo_definir_opacidade(raio_selecao, 0.5);
@@ -910,7 +925,7 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
         lista_destruir(nos);
     }
 
-    Lista nos = nosDentroCirculoQt(vias_qt, x, y, raio);
+    Lista nos = nosDentroCirculoQt(qt_vias, x, y, raio);
     // Itera por todos os vértices.
     for_each_lista(no, nos) {
         Vertice vertice = getInfoQt(NULL, lista_obter_info(no));
@@ -922,21 +937,28 @@ void remover_elementos_contidos(Lista formas, QuadTree quadras, Tabela cep_quadr
                 vertice_obter_x(vertice), vertice_obter_y(vertice));
         fprintf(arquivo_log, "\n");
 
-        removeNoQt(vias_qt, lista_obter_info(no));
+        removeNoQt(qt_vias, lista_obter_info(no));
         grafo_remover_vertice(vias, vertice_obter_id(vertice));
         vertice_destruir(vertice);
     }
     lista_destruir(nos);
+
+    // Remove o grafo de ciclovia atual já que está desatualizado.
+    tabela_remover(grafos, "ciclovias");
+}
+
+bool checar_registrador_valido(int indice) {
+    return indice > 0 && indice <= 10;
 }
 
 // Salva a posição geográfica da residência de um morador em um registrador.
 void registrar_posicao_morador(Ponto *registradores, Tabela dados_pessoa, Tabela cep_quadra,
                                Lista formas, const char *linha) {
-    int indice_registrador = -1;
+    int registrador = -1;
     char id_registrador[3], cpf[100];
     sscanf(linha, "@m? %s %s", id_registrador, cpf);
-    sscanf(id_registrador, "R%d", &indice_registrador);
-    if (indice_registrador > 10)
+    sscanf(id_registrador, "R%d", &registrador);
+    if (!checar_registrador_valido(registrador))
         return;
 
     Morador morador = tabela_buscar(dados_pessoa, cpf);
@@ -956,9 +978,9 @@ void registrar_posicao_morador(Ponto *registradores, Tabela dados_pessoa, Tabela
                                   morador_obter_endereco_num(morador));
 
     // Remove o item anterior caso exista.
-    if (registradores[indice_registrador] != NULL)
-        free(registradores[indice_registrador]);
-    registradores[indice_registrador] = ponto_criar(x, y);
+    if (registradores[registrador] != NULL)
+        free(registradores[registrador]);
+    registradores[registrador] = ponto_criar(x, y);
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black");
     lista_inserir_final(formas, linha_vertical);
@@ -970,12 +992,12 @@ void registrar_posicao_morador(Ponto *registradores, Tabela dados_pessoa, Tabela
 // Salva a posição de um endereço em um registrador.
 void registrar_posicao_endereco(Ponto *registradores, Tabela cep_quadra, Lista formas,
                                 const char *linha) {
-    int indice_registrador = -1;
+    int registrador = -1;
     char id_registrador[3], cep[100], face;
     double num;
     sscanf(linha, "@e? %s %s %c %lf", id_registrador, cep, &face, &num);
-    sscanf(id_registrador, "R%d", &indice_registrador);
-    if (indice_registrador > 10)
+    sscanf(id_registrador, "R%d", &registrador);
+    if (!checar_registrador_valido(registrador))
         return;
 
     QtNo no = tabela_buscar(cep_quadra, cep);
@@ -988,9 +1010,9 @@ void registrar_posicao_endereco(Ponto *registradores, Tabela cep_quadra, Lista f
     quadra_inicializar_coordenada(&x, &y, 0, 0, quadra, face, num);
 
     // Remove o item anterior caso exista.
-    if (registradores[indice_registrador] != NULL)
-        free(registradores[indice_registrador]);
-    registradores[indice_registrador] = ponto_criar(x, y);
+    if (registradores[registrador] != NULL)
+        free(registradores[registrador]);
+    registradores[registrador] = ponto_criar(x, y);
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black");
     lista_inserir_final(formas, linha_vertical);
@@ -1002,12 +1024,12 @@ void registrar_posicao_endereco(Ponto *registradores, Tabela cep_quadra, Lista f
 void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabela id_semaforo,
                                   Tabela id_radio, Tabela id_forma, Lista formas,
                                   const char *linha) {
-    int indice_registrador = -1;
+    int registrador = -1;
     char id_registrador[3], id_equipamento_urbano[100];
 
     sscanf(linha, "@g? %s %s", id_registrador, id_equipamento_urbano);
-    sscanf(id_registrador, "R%d", &indice_registrador);
-    if (indice_registrador > 10)
+    sscanf(id_registrador, "R%d", &registrador);
+    if (!checar_registrador_valido(registrador))
         return;
 
     QtInfo no = tabela_buscar(id_hidrante, id_equipamento_urbano);
@@ -1023,9 +1045,9 @@ void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabe
 
     double x = figura_obter_x_centro(equipamento_urbano);
     double y = figura_obter_y_centro(equipamento_urbano);
-    if (registradores[indice_registrador] != NULL)
-        free(registradores[indice_registrador]);
-    registradores[indice_registrador] = ponto_criar(x, y);
+    if (registradores[registrador] != NULL)
+        free(registradores[registrador]);
+    registradores[registrador] = ponto_criar(x, y);
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black");
     lista_inserir_final(formas, linha_vertical);
@@ -1035,20 +1057,18 @@ void registrar_equipamento_urbano(Ponto *registradores, Tabela id_hidrante, Tabe
 }
 
 void registrar_ponto(Ponto *registradores, Lista formas, const char *linha) {
-    int indice_registrador = -1;
+    int registrador = -1;
     char id_registrador[3];
-
     double x = 0;
     double y = 0;
 
-    sscanf(linha, "@xy %s %lf %lf", id_registrador, &x, &y);
-    sscanf(id_registrador, "R%d", &indice_registrador);
-    if (indice_registrador > 10)
+    sscanf(linha, "@xy R%d %lf %lf", &registrador, &x, &y);
+    if (!checar_registrador_valido(registrador))
         return;
 
-    if (registradores[indice_registrador] != NULL)
-        free(registradores[indice_registrador]);
-    registradores[indice_registrador] = ponto_criar(x, y);
+    if (registradores[registrador] != NULL)
+        free(registradores[registrador]);
+    registradores[registrador] = ponto_criar(x, y);
 
     Linha linha_vertical = linha_criar(x, y, x, 0, "black");
     lista_inserir_final(formas, linha_vertical);
@@ -1094,6 +1114,148 @@ void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linh
     free(caminho_arquivo);
 }
 
+void calcular_caminho_ciclo_via(const char *caminho_log, Tabela quadtrees, Tabela listas,
+                                Tabela grafos, Ponto *registradores, char *sufixo_pb,
+                                const char *linha, FILE *arquivo_log) {
+    char novo_sufixo[1024];
+    char cor[20];
+    char id_registrador1[3], id_registrador2[3];
+
+    int registrador1 = -1;
+    int registrador2 = -1;
+
+    sscanf(linha, "pb? %s %s %s %s", novo_sufixo, id_registrador1, id_registrador2, cor);
+    sscanf(id_registrador1, "R%d", &registrador1);
+    sscanf(id_registrador2, "R%d", &registrador2);
+    if (!checar_registrador_valido(registrador1) || !checar_registrador_valido(registrador2) ||
+        registradores[registrador1] == NULL || registradores[registrador2] == NULL) {
+        LOG_AVISO("Registrador inválido!\n");
+        return;
+    }
+    if (strcmp(novo_sufixo, "-") == 0) {
+        if (sufixo_pb == NULL)
+            return;
+        strcpy(novo_sufixo, sufixo_pb);
+    } else {
+        strcpy(sufixo_pb, novo_sufixo);
+    }
+
+    QuadTree quadras = tabela_buscar(quadtrees, "quadras");
+    QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
+    QuadTree radios = tabela_buscar(quadtrees, "radios");
+    QuadTree semaforos = tabela_buscar(quadtrees, "semaforos");
+    QuadTree postos = tabela_buscar(quadtrees, "postos");
+    QuadTree casos = tabela_buscar(quadtrees, "casos");
+    QuadTree moradores = tabela_buscar(quadtrees, "moradores");
+    QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
+    QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
+
+    Lista formas = tabela_buscar(listas, "formas");
+
+    Grafo ciclovias = tabela_buscar(grafos, "ciclovias");
+    // Cria a árvore geradora mínima caso ainda não exista.
+    if (ciclovias == NULL) {
+        Grafo vias = tabela_buscar(grafos, "vias");
+        if (vias == NULL) {
+            LOG_AVISO("Grafo de vias não foi criado!\n");
+            return;
+        }
+        LOG_AVISO("Criando árvore geradora mínima!\n");
+        ciclovias = criar_arvore_geradora_minima(vias);
+        if (ciclovias == NULL)
+            return;
+        // Salva a árvore geradora mínima para uso posterior.
+        tabela_remover(grafos, "ciclovias");
+        tabela_inserir(grafos, "ciclovias", ciclovias);
+    }
+
+    char *diretorios = extrair_nome_diretorio(caminho_log);
+    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", novo_sufixo, ".svg");
+    char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
+    printf("Arquivo pb?: %s\n", caminho_arquivo);
+
+    const Ponto ponto_origem = registradores[registrador1];
+    const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
+                                                               ponto_obter_y(ponto_origem));
+    if (vertice_origem == NULL) {
+        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
+                  ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+        return;
+    }
+
+    const Ponto ponto_destino = registradores[registrador2];
+    const Vertice vertice_destino = quadtree_obter_mais_proximo(
+        qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+    if (vertice_destino == NULL) {
+        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
+                  ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+        return;
+    }
+
+    Pilha caminho = dijkstra_distancia(ciclovias, vertice_obter_id(vertice_origem),
+                                       vertice_obter_id(vertice_destino));
+
+    const int num_pontos = pilha_obter_tamanho(caminho);
+    Ponto *pontos = malloc(sizeof *pontos * num_pontos);
+
+    fprintf(arquivo_log, "Ciclovia - caminho de %s a %s:\n", id_registrador1, id_registrador2);
+    int i = 0;
+    Vertice atual = pilha_remover(caminho);
+    pontos[i++] = ponto_criar(ponto_obter_x(registradores[registrador1]),
+                              ponto_obter_y(registradores[registrador1]));
+
+    Vertice anterior = atual;
+    while (i < num_pontos - 1) {
+        atual = pilha_remover(caminho);
+        fprintf(arquivo_log, "Vértice %s para vértice %s\n", vertice_obter_id(anterior),
+                vertice_obter_id(atual));
+        pontos[i++] = ponto_criar(vertice_obter_x(atual), vertice_obter_y(atual));
+        anterior = atual;
+    }
+
+    atual = pilha_remover(caminho);
+    fprintf(arquivo_log, "Vértice %s para vértice %s\n", vertice_obter_id(anterior),
+            vertice_obter_id(atual));
+
+    pontos[i++] = ponto_criar(ponto_obter_x(registradores[registrador2]),
+                              ponto_obter_y(registradores[registrador2]));
+
+    pilha_destruir(caminho);
+
+    char id[100];
+    id[0] = '\0';
+    sprintf(id, "pb?-%s-%s", id_registrador1, id_registrador2);
+    printf("Id é: %s\n", id);
+
+    Lista lista_caminhos = lista_criar(NULL, figura_destruir);
+    Animacao animacao = animacao_criar(id, "blue", "blue", cor, num_pontos, pontos);
+    lista_inserir_final(lista_caminhos, animacao);
+
+    Circulo circ_origem = circulo_criar("", 14, ponto_obter_x(ponto_origem),
+                                        ponto_obter_y(ponto_origem), "black", "yellow");
+    lista_inserir_final(lista_caminhos, circ_origem);
+    Texto texto_origem = texto_criar("", ponto_obter_x(ponto_origem),
+                                     ponto_obter_y(ponto_origem) + 5, "black", "black", "I");
+    texto_definir_alinhamento(texto_origem, TEXTO_CENTRO);
+    lista_inserir_final(lista_caminhos, texto_origem);
+
+    Circulo circ_destino = circulo_criar("", 14, ponto_obter_x(ponto_destino),
+                                         ponto_obter_y(ponto_destino), "black", "red");
+    lista_inserir_final(lista_caminhos, circ_destino);
+    Texto texto_destino = texto_criar("", ponto_obter_x(ponto_destino),
+                                      ponto_obter_y(ponto_destino) + 5, "black", "black", "F");
+    texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
+    lista_inserir_final(lista_caminhos, texto_destino);
+
+    svg_escrever(caminho_arquivo, 10, quadras, hidrantes, semaforos, radios, estabelecimentos,
+                 moradores, casos, postos, formas, lista_caminhos);
+    lista_destruir(lista_caminhos);
+
+    free(diretorios);
+    free(nome_arquivo);
+    free(caminho_arquivo);
+}
+
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
 // linhas, executando funções correspondentes aos comandos.
 void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela quadtrees,
@@ -1118,7 +1280,6 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree casos = tabela_buscar(quadtrees, "casos");
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
-    QuadTree vias_qt = tabela_buscar(quadtrees, "vias");
 
     Lista formas = tabela_buscar(listas, "formas");
     Lista densidades = tabela_buscar(listas, "densidades");
@@ -1132,7 +1293,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     Tabela id_radio = tabela_buscar(relacoes, "id_radio");
     Tabela id_forma = tabela_buscar(relacoes, "id_forma");
 
-    Grafo vias = tabela_buscar(grafos, "vias");
+    char *sufixo_pb = malloc(sizeof *sufixo_pb * 1024);
+    sufixo_pb[0] = '\0';
 
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_consulta) != NULL) {
@@ -1184,10 +1346,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("eplg?", comando) == 0) {
             destacar_estabelecimentos_contidos(dados_pessoa, estabelecimentos, linha, arquivo_log);
         } else if (strcmp("catac", comando) == 0) {
-            remover_elementos_contidos(formas, quadras, cep_quadra, hidrantes, id_hidrante, radios,
-                                       id_radio, semaforos, id_semaforo, moradores, dados_pessoa,
-                                       estabelecimentos, cnpj_estabelecimento, vias_qt, vias, linha,
-                                       arquivo_log);
+            remover_elementos_contidos(formas, quadtrees, relacoes, grafos, linha, arquivo_log);
         } else if (strcmp("@m?", comando) == 0) {
             registrar_posicao_morador(registradores, dados_pessoa, cep_quadra, formas, linha);
         } else if (strcmp("@e?", comando) == 0) {
@@ -1199,8 +1358,13 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             registrar_ponto(registradores, formas, linha);
         } else if (strcmp("ccv", comando) == 0) {
             escrever_grafo_svg(caminho_log, grafos, linha);
+        } else if (strcmp("pb?", comando) == 0) {
+            calcular_caminho_ciclo_via(caminho_log, quadtrees, listas, grafos, registradores,
+                                       sufixo_pb, linha, arquivo_log);
         }
     }
+
+    free(sufixo_pb);
 
     fclose(arquivo_log);
     fclose(arquivo_consulta);
