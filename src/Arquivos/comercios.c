@@ -28,9 +28,9 @@ void adicionar_estabelecimento(QuadTree estabelecimentos, Tabela cep_quadra,
     sscanf(linha, "e %*s %*s %*s %s %*c %*d %*s", cep);
     QtNo no = tabela_buscar(cep_quadra, cep);
     if (no != NULL) {
-        Quadra quadra_pai = getInfoQt(estabelecimentos, no);
+        Quadra quadra_pai = quadtree_obter_info(no);
         Estabelecimento est = estabelecimento_ler(linha, quadra_pai);
-        insereQt(estabelecimentos, ponto_criar_com_figura(est), est);
+        quadtree_inserir(estabelecimentos, ponto_criar_com_figura(est), est);
         tabela_inserir(cnpj_estabelecimento, figura_obter_id(est), est);
     }
 }

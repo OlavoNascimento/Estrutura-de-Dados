@@ -139,7 +139,8 @@ void adicionar_hidrante(QuadTree hidrantes, Tabela id_hidrante, PropriedadesHidr
         hidrante_definir_espessura_borda(novo_hidrante, prop.espessura_borda);
     }
 
-    QtNo novo_no = insereQt(hidrantes, ponto_criar_com_figura(novo_hidrante), novo_hidrante);
+    QtNo novo_no =
+        quadtree_inserir(hidrantes, ponto_criar_com_figura(novo_hidrante), novo_hidrante);
     tabela_inserir(id_hidrante, figura_obter_id(novo_hidrante), novo_no);
 }
 
@@ -153,7 +154,7 @@ void definir_propriedades_hidrantes(PropriedadesHidrantes *prop, const char *lin
 // Cria um posto e adiciona na estrutura.
 void adicionar_posto(QuadTree postos, const char *linha) {
     Posto novo_posto = posto_ler(linha);
-    insereQt(postos, ponto_criar_com_figura(novo_posto), novo_posto);
+    quadtree_inserir(postos, ponto_criar_com_figura(novo_posto), novo_posto);
 }
 
 // Cria uma quadra, aplica as propriedades definidas e adiciona nas estruturas.
@@ -166,7 +167,7 @@ void adicionar_quadra(QuadTree quadras, Tabela cep_quadra, PropriedadesQuadras p
         quadra_definir_espessura_borda(nova_quadra, prop.espessura_borda);
     }
 
-    QtNo novo_no = insereQt(quadras, ponto_criar_com_figura(nova_quadra), nova_quadra);
+    QtNo novo_no = quadtree_inserir(quadras, ponto_criar_com_figura(nova_quadra), nova_quadra);
     tabela_inserir(cep_quadra, figura_obter_id(nova_quadra), novo_no);
 }
 
@@ -204,7 +205,7 @@ void adicionar_radio(QuadTree radios, Tabela id_radio, PropriedadesRadios prop, 
         radio_definir_espessura_borda(novo_radio, prop.espessura_borda);
     }
 
-    QtNo novo_no = insereQt(radios, ponto_criar_com_figura(novo_radio), novo_radio);
+    QtNo novo_no = quadtree_inserir(radios, ponto_criar_com_figura(novo_radio), novo_radio);
     tabela_inserir(id_radio, figura_obter_id(novo_radio), novo_no);
 }
 
@@ -225,7 +226,8 @@ void adicionar_semaforo(QuadTree semaforos, Tabela id_semaforo, PropriedadesSema
         semaforo_definir_espessura_borda(novo_semaforo, prop.espessura_borda);
     }
 
-    QtNo novo_no = insereQt(semaforos, ponto_criar_com_figura(novo_semaforo), novo_semaforo);
+    QtNo novo_no =
+        quadtree_inserir(semaforos, ponto_criar_com_figura(novo_semaforo), novo_semaforo);
     tabela_inserir(id_semaforo, figura_obter_id(novo_semaforo), novo_no);
 }
 
@@ -268,10 +270,11 @@ void atualizar_sombras_quadras(QuadTree quadras, Lista densidades) {
         double y_inicio = figura_obter_y_inicio(densidade);
         double x_fim = figura_obter_x_fim(densidade);
         double y_fim = figura_obter_y_fim(densidade);
-        Lista quadras_contidas = nosDentroRetanguloQt(quadras, x_inicio, y_inicio, x_fim, y_fim);
+        Lista quadras_contidas =
+            quadtree_nos_dentro_retangulo(quadras, x_inicio, y_inicio, x_fim, y_fim);
 
         for_each_lista(j, quadras_contidas) {
-            Quadra quad = getInfoQt(quadras, lista_obter_info(j));
+            Quadra quad = quadtree_obter_info(lista_obter_info(j));
             quadra_definir_cor_sombra(quad, cor);
         }
         lista_destruir(quadras_contidas);

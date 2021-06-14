@@ -19,16 +19,16 @@
 
 // Cria uma nova tabela contendo quadtrees que armazenam figuras que precisam de buscas espaciais.
 Tabela criar_tabela_quadtrees() {
-    Tabela quadtrees = tabela_criar((TabelaDestruirInfo *) desalocaQt);
-    tabela_inserir(quadtrees, "quadras", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "hidrantes", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "radios", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "semaforos", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "postos", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "casos", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "moradores", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "estabelecimentos", criaQt(figura_obter_id));
-    tabela_inserir(quadtrees, "vias", criaQt((funcGetChave *) vertice_obter_id));
+    Tabela quadtrees = tabela_criar((TabelaDestruirInfo *) quadtree_destruir);
+    tabela_inserir(quadtrees, "quadras", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "hidrantes", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "radios", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "semaforos", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "postos", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "casos", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "moradores", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "estabelecimentos", quadtree_criar(figura_obter_id));
+    tabela_inserir(quadtrees, "vias", quadtree_criar((funcGetChave *) vertice_obter_id));
     return quadtrees;
 }
 
@@ -142,13 +142,13 @@ int main(int argc, const char *argv[]) {
     free(caminho_svg_descricao);
     parametros_destruir(params);
 
-    percorreLarguraQt(quadras, (void *) figura_destruir, NULL);
-    percorreLarguraQt(hidrantes, (void *) figura_destruir, NULL);
-    percorreLarguraQt(radios, (void *) figura_destruir, NULL);
-    percorreLarguraQt(semaforos, (void *) figura_destruir, NULL);
-    percorreLarguraQt(postos, (void *) figura_destruir, NULL);
-    percorreLarguraQt(casos, (void *) figura_destruir, NULL);
-    percorreLarguraQt(estabelecimentos, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(quadras, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(hidrantes, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(radios, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(semaforos, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(postos, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(casos, (void *) figura_destruir, NULL);
+    quadtree_percorrer_largura(estabelecimentos, (void *) figura_destruir, NULL);
 
     for (int i = 0; i < 11; i++)
         ponto_destruir(registradores[i]);

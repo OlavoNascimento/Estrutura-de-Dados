@@ -30,10 +30,10 @@ void adicionar_morador(QuadTree moradores, Tabela cep_quadra, Tabela dados_pesso
 
     QtNo no = tabela_buscar(cep_quadra, cep);
     if (no != NULL) {
-        Quadra quadra_pai = getInfoQt(moradores, no);
+        Quadra quadra_pai = quadtree_obter_info(no);
         morador_ler_endereco(modificar_morador, linha, quadra_pai);
 
-        insereQt(moradores, ponto_criar_com_figura(modificar_morador), modificar_morador);
+        quadtree_inserir(moradores, ponto_criar_com_figura(modificar_morador), modificar_morador);
         tabela_inserir(cpf_cep, cpf, cep);
     }
 }

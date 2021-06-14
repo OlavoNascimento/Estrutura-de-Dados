@@ -16,7 +16,7 @@ void adicionar_vertice(Grafo vias, QuadTree qt_vias, const char *linha) {
     double x, y;
     sscanf(linha, "v %s %lf %lf", id, &x, &y);
     Vertice vertice = grafo_inserir_vertice(vias, id, x, y);
-    insereQt(qt_vias, ponto_criar(x, y), vertice);
+    quadtree_inserir(qt_vias, ponto_criar(x, y), vertice);
 }
 
 // Adiciona uma aresta ao grafo.
