@@ -32,14 +32,6 @@ DijkstraInfos *inicializa_dijkstra(Grafo grafo, int origem) {
     return infos;
 }
 
-bool existe_aberto(Grafo grafo, DijkstraInfos *infos) {
-    for (int i = 0; i < grafo_obter_tamanho(grafo); i++) {
-        if (infos[i].aberto)
-            return true;
-    }
-    return false;
-}
-
 int buscar_menor_custo(Grafo grafo, DijkstraInfos *infos) {
     int i = 0;
     for (i = 0; i < grafo_obter_tamanho(grafo); i++) {
@@ -97,12 +89,11 @@ Pilha dijkstra(Grafo grafo, const char *id_origem, const char *id_destino,
     // Os indices do arranjo DijkstraInfos serão os mesmos indices dos vertices do grafo
     DijkstraInfos *infos = inicializa_dijkstra(grafo, *origem);
 
-    // TODO Uma busca apenas
-    while (existe_aberto(grafo, infos)) {
-        const int origem_atual = buscar_menor_custo(grafo, infos);
+    int origem_atual = buscar_menor_custo(grafo, infos);
+    while (origem_atual != -1) {
         infos[origem_atual].aberto = false;
-
         relaxar_adjacentes(grafo, infos, origem_atual, obter_custo_aresta);
+        origem_atual = buscar_menor_custo(grafo, infos);
     }
 
     Pilha pilha_caminho = pilha_criar(NULL);
