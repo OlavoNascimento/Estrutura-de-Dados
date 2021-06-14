@@ -18,7 +18,7 @@ Retorna uma pilha com os vértices referentes ao menor caminho entre os vértice
 O menor caminho é obtido com base no comprimentos das arestas do grafo.
 O parâmetro grafo não pode ser nulo e os índices "origem" e "destino" devem ser válidos.
 */
-Pilha dijkstra_distancia(Grafo grafo, int origem, int destino);
+Pilha dijkstra_distancia(Grafo grafo, const char *id_origem, const char *id_destino);
 
 /*
 Retorna uma pilha com os vértices referentes ao menor caminho entre os vértices de indice "origem" e
@@ -26,6 +26,6 @@ Retorna uma pilha com os vértices referentes ao menor caminho entre os vértice
 O menor caminho é obtido com base na velocidade das arestas do grafo.
 O parâmetro grafo não pode ser nulo e os índices "origem" e "destino" devem ser válidos.
 */
-Pilha dijkstra_velocidade(Grafo grafo, int origem, int destino);
+Pilha dijkstra_velocidade(Grafo grafo, const char *id_origem, const char *id_destino);
 
 #endif
