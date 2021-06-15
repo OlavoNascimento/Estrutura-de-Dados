@@ -22,6 +22,8 @@ struct Animacao_s {
     char cor_caminho[20];
     Ponto *pontos;
     int num_pontos;
+    double margem_x;
+    double margem_y;
 };
 
 const char *animacao_obter_tipo() {
@@ -75,8 +77,8 @@ Animacao animacao_criar(const char id[100], const char cor_borda[20],
         LOG_AVISO("Não é possível criar uma animação com cor de caminho NULL!\n");
         return NULL;
     }
-    if (num_pontos < 1 || pontos == NULL) {
-        LOG_AVISO("Não é possível criar uma animação com menos que um ponto!\n");
+    if (num_pontos < 2 || pontos == NULL) {
+        LOG_AVISO("Não é possível criar uma animação com menos que dois pontos!\n");
         return NULL;
     }
     Animacao animacao = malloc(sizeof *animacao);
@@ -95,6 +97,8 @@ Animacao animacao_criar(const char id[100], const char cor_borda[20],
     animacao->opacidade = 1;
     animacao->num_pontos = num_pontos;
     animacao->pontos = pontos;
+    animacao->margem_x = 0;
+    animacao->margem_y = 0;
 
     animacao->vtable = animacao_criar_interface_figura();
     return animacao;
@@ -104,8 +108,8 @@ Animacao animacao_criar(const char id[100], const char cor_borda[20],
 void animacao_escrever_svg(Animacao animacao, FILE *arquivo) {
     fprintf(arquivo, "\t<path d='M");
     for (int i = 0; i < animacao->num_pontos; i++) {
-        fprintf(arquivo, "%lf,%lf", ponto_obter_x(animacao->pontos[i]),
-                ponto_obter_y(animacao->pontos[i]));
+        fprintf(arquivo, "%lf,%lf", ponto_obter_x(animacao->pontos[i]) + animacao->margem_x,
+                ponto_obter_y(animacao->pontos[i]) + animacao->margem_y);
         if (i < animacao->num_pontos - 1)
             fprintf(arquivo, " ");
     }
@@ -123,6 +127,14 @@ void animacao_escrever_svg(Animacao animacao, FILE *arquivo) {
     fprintf(arquivo, "\t\t</animateMotion>\n");
 
     fprintf(arquivo, "\t</circle>\n");
+}
+
+void animacao_definir_margem_x(Animacao animacao, double margem_x) {
+    animacao->margem_x = margem_x;
+}
+
+void animacao_definir_margem_y(Animacao animacao, double margem_y) {
+    animacao->margem_y = margem_y;
 }
 
 // Libera a memória alocada por uma animação.

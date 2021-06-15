@@ -48,6 +48,7 @@ void escrever_svg_caminho(Tabela quadtrees, Tabela listas, Lista svg_atual, cons
     svg_escrever(caminho_arquivo, 10, quadras, hidrantes, semaforos, radios, estabelecimentos,
                  moradores, casos, postos, formas, svg_atual);
     lista_destruir(svg_atual);
+    svg_atual = NULL;
 
     free(diretorios);
     free(nome_arquivo);

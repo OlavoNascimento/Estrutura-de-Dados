@@ -2,18 +2,17 @@
 #define ANIMACAO_H
 
 /*
-TODO
-Este módulo define um Animacao, o qual possui propriedades inerentes ao seu tipo como raio e suas
-coordenadas espaciais, assim como propriedades para alterar sua visualização no arquivo svg, como as
-cores de borda e preenchimento e a espessura de sua borda.
+Este módulo define um Animacão, representando um círculo que possui movimentação em um svg. Possui
+propriedades similares a um círculo como coordenadas espaciais, cor de borda e preenchimento,
+assim como propriedades específicas como cor do caminho criado.
 
 Suas propriedades são:
-    id: Identificador do círculo.
-    raio
-    x: Coordenada x do círculo no plano.
-    y: Coordenada y do círculo no plano.
+    id: Identificador da animação.
     cor da borda
     cor de preenchimento
+    cor do caminho
+    num_ponto: Tamanho do vetor de pontos.
+    pontos: Vetor de pontos que compõem o caminho percorrido pela animação.
 */
 
 #include <stdbool.h>
@@ -22,7 +21,6 @@ Suas propriedades são:
 #include "../Formas/ponto.h"
 
 /*
-TODO
 Foi usado 'typedef struct *' em vez de 'typedef void *' para permitir ao compilador diferenciar os
 tipos, não afetando o encapsulamento de dados!
 O struct *não é definido neste header* e sim em seu arquivo .c correspondente, o ponteiro deste tipo
@@ -32,9 +30,9 @@ de getters/setters.
 typedef struct Animacao_s *Animacao;
 
 /*
-TODO
 Cria e inicializa um Animacao com os valores passados.
-O raio deve ser maior que 0. O id e as cores não podem ser nulos.
+O id e as cores não podem ser nulos.
+O vetor de pontos deve possuir pelo menos dois pontos para criar um caminho.
 O usuário é responsável por liberar a memória alocada!
 */
 Animacao animacao_criar(const char id[100], const char cor_borda[20],
@@ -42,15 +40,27 @@ Animacao animacao_criar(const char id[100], const char cor_borda[20],
                         int num_pontos, Ponto *pontos);
 
 /*
-TODO
-Escreve o código svg necessário para representar um círculo em um arquivo.
+Escreve o código svg necessário para representar uma animação em um arquivo.
 Nenhum dos parâmetros podem ser nulos. O arquivo deve estar aberto para escrita!
 */
 void animacao_escrever_svg(Animacao animacao, FILE *arquivo);
 
 /*
-TODO
-Libera a memória alocada por um círculo.
+Define a margem x que deve ser adicionada ao caminho de uma animação. Necessário para que duas
+animações não se sobreponham.
+O parâmetro animacao não pode ser nulo.
+*/
+void animacao_definir_margem_x(Animacao animacao, double margem_x);
+
+/*
+Define a margem x que deve ser adicionada ao caminho de uma animação. Necessário para que duas
+animações não se sobreponham.
+O parâmetro animacao não pode ser nulo.
+*/
+void animacao_definir_margem_y(Animacao animacao, double margem_y);
+
+/*
+Libera a memória alocada por uma animação.
 O parâmetro animacao não pode ser nulo e deve apontar para um espaço de memória reservada.
 Libera a memória alocada. O ponteiro não poderá ser utilizado após isso!
 */

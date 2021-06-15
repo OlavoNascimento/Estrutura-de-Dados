@@ -75,6 +75,13 @@
     "cmath": "c",
     "random": "c",
     "*.tcc": "c",
-    "ponto.h": "c"
+    "ponto.h": "c",
+    "consulta.h": "c",
+    "quadra.h": "c",
+    "stdbool.h": "c",
+    "grafo.h": "c",
+    "svg.h": "c",
+    "matematica.h": "c",
+    "caso.h": "c"
   }
 }
