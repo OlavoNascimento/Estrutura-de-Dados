@@ -55,7 +55,7 @@ Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
 /*
 Insere um elemento no final da lista.
 Ambos os parâmetros não podem ser nulos, o parâmetro lista deve ser uma lista existente.
-Retrna o endereço para o elemento adicionado.
+Retorna o endereço para o elemento adicionado.
 */
 ListaNo lista_inserir_final(Lista lista, ListaInfo info);
 

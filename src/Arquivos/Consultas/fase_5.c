@@ -24,6 +24,93 @@ bool checar_registrador_valido(int indice) {
     return indice > 0 && indice <= 10;
 }
 
+// Retorna o grafo de ciclovias, caso não exista é criado e armazenado em uma tabela para uso
+// posterior.
+Grafo obter_ciclovia(Tabela grafos) {
+    Grafo ciclovias = tabela_buscar(grafos, "ciclovias");
+    // Cria a árvore geradora mínima caso ainda não exista.
+    if (ciclovias == NULL) {
+        Grafo vias = tabela_buscar(grafos, "vias");
+        if (vias == NULL) {
+            LOG_AVISO("Grafo de vias não foi criado!\n");
+            return NULL;
+        }
+        ciclovias = criar_arvore_geradora_minima(vias);
+        if (ciclovias == NULL) {
+            return NULL;
+        }
+        // Salva a árvore geradora mínima para uso posterior.
+        tabela_remover(grafos, "ciclovias");
+        tabela_inserir(grafos, "ciclovias", ciclovias);
+    }
+    return ciclovias;
+}
+
+// Cria um ponto animado que percorre um caminho.
+// A função retorna a animação criada caso ela precise ser editada.
+Animacao criar_animacao_caminho(Pilha caminho, Lista svg_atual, const char *cor,
+                                const Ponto *registradores, const int registrador1,
+                                const int registrador2, FILE *arquivo_log) {
+    const Ponto ponto_origem = registradores[registrador1];
+    const Ponto ponto_destino = registradores[registrador2];
+    const int num_pontos = pilha_obter_tamanho(caminho);
+    Ponto *pontos = malloc(sizeof *pontos * num_pontos);
+
+    fprintf(arquivo_log, "Caminho de R%d a R%d:\n", registrador1, registrador2);
+    int i = 0;
+    // Utiliza o ponto de origem como primeiro ponto, não o vértice inicial.
+    fprintf(arquivo_log, "Inicie no ponto (%lf, %lf)\n", ponto_obter_x(ponto_origem),
+            ponto_obter_y(ponto_origem));
+    pontos[i++] = ponto_criar(ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+
+    Vertice anterior = pilha_remover(caminho);
+    while (i < num_pontos - 1) {
+        Vertice atual = pilha_remover(caminho);
+        fprintf(arquivo_log, "Avance do vértice %s para o vértice %s\n", vertice_obter_id(anterior),
+                vertice_obter_id(atual));
+        pontos[i++] = ponto_criar(vertice_obter_x(atual), vertice_obter_y(atual));
+        anterior = atual;
+    }
+
+    // Utiliza o ponto de destino como último ponto, não o vértice final.
+    fprintf(arquivo_log, "Avance de %s para o ponto de destino (%lf, %lf)\n",
+            vertice_obter_id(anterior), ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+
+    pontos[i++] = ponto_criar(ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+    pilha_destruir(caminho);
+    caminho = NULL;
+
+    char id[100];
+    id[0] = '\0';
+    snprintf(id, 100, "R%d-(%.2lf,%.2lf)-R%d-(%.2lf,%.2lf)-%d", registrador1,
+             ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem), registrador2,
+             ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino), num_pontos);
+
+    // Caminho a ser percorrido.
+    Animacao animacao = animacao_criar(id, "blue", "blue", cor, num_pontos, pontos);
+    lista_inserir_final(svg_atual, animacao);
+
+    // Circulo indicando a origem.
+    Circulo circ_origem = circulo_criar("", 14, ponto_obter_x(ponto_origem),
+                                        ponto_obter_y(ponto_origem), "black", "yellow");
+    lista_inserir_final(svg_atual, circ_origem);
+    Texto texto_origem = texto_criar("", ponto_obter_x(ponto_origem),
+                                     ponto_obter_y(ponto_origem) + 5, "black", "black", "I");
+    texto_definir_alinhamento(texto_origem, TEXTO_CENTRO);
+    lista_inserir_final(svg_atual, texto_origem);
+
+    // Circulo indicando o destino.
+    Circulo circ_destino = circulo_criar("", 14, ponto_obter_x(ponto_destino),
+                                         ponto_obter_y(ponto_destino), "black", "red");
+    lista_inserir_final(svg_atual, circ_destino);
+    Texto texto_destino = texto_criar("", ponto_obter_x(ponto_destino),
+                                      ponto_obter_y(ponto_destino) + 5, "black", "black", "F");
+    texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
+    lista_inserir_final(svg_atual, texto_destino);
+
+    return animacao;
+}
+
 // Salva a posição geográfica da residência de um morador em um registrador.
 void registrar_posicao_morador(Ponto *registradores, Tabela dados_pessoa, Tabela cep_quadra,
                                Lista formas, const char *linha) {
@@ -162,17 +249,9 @@ void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linh
         LOG_AVISO("Grafo de vias não foi criado!\n");
         return;
     }
-
-    Grafo ciclovias = tabela_buscar(grafos, "ciclovias");
-    // Cria a árvore geradora mínima caso ainda não exista.
-    if (ciclovias == NULL) {
-        ciclovias = criar_arvore_geradora_minima(vias);
-        if (ciclovias == NULL)
-            return;
-        // Salva a árvore geradora mínima para uso posterior.
-        tabela_remover(grafos, "ciclovias");
-        tabela_inserir(grafos, "ciclovias", ciclovias);
-    }
+    Grafo ciclovias = obter_ciclovia(grafos);
+    if (ciclovias == NULL)
+        return;
 
     char *diretorios = extrair_nome_diretorio(caminho_log);
     char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", sufixo, ".svg");
@@ -190,43 +269,20 @@ void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linh
 
 char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registradores,
                                  Lista svg_atual, const char *linha, FILE *arquivo_log) {
-    char *sufixo = malloc(sizeof *sufixo * 1024);
+    char sufixo[1024];
     char cor[20];
-    char id_registrador1[3], id_registrador2[3];
-
     int registrador1 = -1;
     int registrador2 = -1;
 
-    sscanf(linha, "pb? %s %s %s %s", sufixo, id_registrador1, id_registrador2, cor);
-    sscanf(id_registrador1, "R%d", &registrador1);
-    sscanf(id_registrador2, "R%d", &registrador2);
+    sscanf(linha, "pb? %s R%d R%d %s", sufixo, &registrador1, &registrador2, cor);
     if (!checar_registrador_valido(registrador1) || !checar_registrador_valido(registrador2) ||
-        registradores[registrador1] == NULL || registradores[registrador2] == NULL) {
-        free(sufixo);
+        registradores[registrador1] == NULL || registradores[registrador2] == NULL)
         return NULL;
-    }
 
     QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
-
-    Grafo ciclovias = tabela_buscar(grafos, "ciclovias");
-    // Cria a árvore geradora mínima caso ainda não exista.
-    if (ciclovias == NULL) {
-        Grafo vias = tabela_buscar(grafos, "vias");
-        if (vias == NULL) {
-            LOG_AVISO("Grafo de vias não foi criado!\n");
-            free(sufixo);
-            return NULL;
-        }
-        LOG_AVISO("Criando árvore geradora mínima!\n");
-        ciclovias = criar_arvore_geradora_minima(vias);
-        if (ciclovias == NULL) {
-            free(sufixo);
-            return NULL;
-        }
-        // Salva a árvore geradora mínima para uso posterior.
-        tabela_remover(grafos, "ciclovias");
-        tabela_inserir(grafos, "ciclovias", ciclovias);
-    }
+    Grafo ciclovias = obter_ciclovia(grafos);
+    if (ciclovias == NULL)
+        return NULL;
 
     const Ponto ponto_origem = registradores[registrador1];
     const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
@@ -234,7 +290,6 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     if (vertice_origem == NULL) {
         LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
                   ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
-        free(sufixo);
         return NULL;
     }
 
@@ -244,62 +299,21 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     if (vertice_destino == NULL) {
         LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
                   ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
-        free(sufixo);
         return NULL;
     }
 
     Pilha caminho = dijkstra_distancia(ciclovias, vertice_obter_id(vertice_origem),
                                        vertice_obter_id(vertice_destino));
+    criar_animacao_caminho(caminho, svg_atual, cor, registradores, registrador1, registrador2,
+                           arquivo_log);
 
-    const int num_pontos = pilha_obter_tamanho(caminho);
-    Ponto *pontos = malloc(sizeof *pontos * num_pontos);
+    // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
+    if (strcmp(sufixo, "-") == 0)
+        return NULL;
 
-    fprintf(arquivo_log, "Ciclovia - caminho de %s a %s:\n", id_registrador1, id_registrador2);
-    int i = 0;
-    Vertice atual = pilha_remover(caminho);
-    pontos[i++] = ponto_criar(ponto_obter_x(registradores[registrador1]),
-                              ponto_obter_y(registradores[registrador1]));
-
-    Vertice anterior = atual;
-    while (i < num_pontos - 1) {
-        atual = pilha_remover(caminho);
-        fprintf(arquivo_log, "Vértice %s para vértice %s\n", vertice_obter_id(anterior),
-                vertice_obter_id(atual));
-        pontos[i++] = ponto_criar(vertice_obter_x(atual), vertice_obter_y(atual));
-        anterior = atual;
-    }
-
-    atual = pilha_remover(caminho);
-    fprintf(arquivo_log, "Vértice %s para vértice %s\n", vertice_obter_id(anterior),
-            vertice_obter_id(atual));
-
-    pontos[i++] = ponto_criar(ponto_obter_x(registradores[registrador2]),
-                              ponto_obter_y(registradores[registrador2]));
-
-    pilha_destruir(caminho);
-
-    char id[100];
-    id[0] = '\0';
-    sprintf(id, "pb?-%s-%s", id_registrador1, id_registrador2);
-
-    Animacao animacao = animacao_criar(id, "blue", "blue", cor, num_pontos, pontos);
-    lista_inserir_final(svg_atual, animacao);
-
-    Circulo circ_origem = circulo_criar("", 14, ponto_obter_x(ponto_origem),
-                                        ponto_obter_y(ponto_origem), "black", "yellow");
-    lista_inserir_final(svg_atual, circ_origem);
-    Texto texto_origem = texto_criar("", ponto_obter_x(ponto_origem),
-                                     ponto_obter_y(ponto_origem) + 5, "black", "black", "I");
-    texto_definir_alinhamento(texto_origem, TEXTO_CENTRO);
-    lista_inserir_final(svg_atual, texto_origem);
-
-    Circulo circ_destino = circulo_criar("", 14, ponto_obter_x(ponto_destino),
-                                         ponto_obter_y(ponto_destino), "black", "red");
-    lista_inserir_final(svg_atual, circ_destino);
-    Texto texto_destino = texto_criar("", ponto_obter_x(ponto_destino),
-                                      ponto_obter_y(ponto_destino) + 5, "black", "black", "F");
-    texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
-    lista_inserir_final(svg_atual, texto_destino);
-
-    return strcmp(sufixo, "-") != 0 ? sufixo : NULL;
+    // Retorna o novo sufixo.
+    char *novo_sufixo = malloc(sizeof *sufixo * 1024);
+    novo_sufixo[0] = '\0';
+    strcpy(novo_sufixo, sufixo);
+    return novo_sufixo;
 }
