@@ -5,6 +5,9 @@
 #include "../Estruturas/grafo.h"
 #include "../Estruturas/lista.h"
 #include "../Estruturas/pilha.h"
+#include "../Objetos/Formas/circulo.h"
+#include "../Objetos/Outros/animacao.h"
+#include "../Objetos/Outros/texto.h"
 #include "../Utils/logging.h"
 
 typedef struct {
@@ -117,4 +120,66 @@ Pilha dijkstra_distancia(Grafo grafo, const char *id_origem, const char *id_dest
 
 Pilha dijkstra_velocidade(Grafo grafo, const char *id_origem, const char *id_destino) {
     return dijkstra(grafo, id_origem, id_destino, aresta_obter_velocidade);
+}
+
+// Cria um ponto animado que percorre um caminho.
+// A função retorna a animação criada caso ela precise ser modificada.
+Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *cor_caminho,
+                                      const Ponto ponto_origem, const Ponto ponto_destino,
+                                      FILE *arquivo_log) {
+    const int num_pontos = pilha_obter_tamanho(caminho);
+    Ponto *pontos = malloc(sizeof *pontos * num_pontos);
+
+    int i = 0;
+    // Utiliza o ponto de origem como primeiro ponto, não o vértice inicial.
+    fprintf(arquivo_log, "Inicie no ponto (%lf, %lf)\n", ponto_obter_x(ponto_origem),
+            ponto_obter_y(ponto_origem));
+    pontos[i++] = ponto_criar(ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+
+    Vertice anterior = pilha_remover(caminho);
+    while (i < num_pontos - 1) {
+        Vertice atual = pilha_remover(caminho);
+        fprintf(arquivo_log, "Avance do vértice %s para o vértice %s\n", vertice_obter_id(anterior),
+                vertice_obter_id(atual));
+        pontos[i++] = ponto_criar(vertice_obter_x(atual), vertice_obter_y(atual));
+        anterior = atual;
+    }
+
+    // Utiliza o ponto de destino como último ponto, não o vértice final.
+    fprintf(arquivo_log, "Avance do vértice %s para o ponto de destino (%lf, %lf)\n",
+            vertice_obter_id(anterior), ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+
+    pontos[i++] = ponto_criar(ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+    pilha_destruir(caminho);
+    caminho = NULL;
+
+    char id[100];
+    id[0] = '\0';
+    snprintf(id, 100, "(%.2lf,%.2lf)-(%.2lf,%.2lf)-%d", ponto_obter_x(ponto_origem),
+             ponto_obter_y(ponto_origem), ponto_obter_x(ponto_destino),
+             ponto_obter_y(ponto_destino), num_pontos);
+
+    // Caminho a ser percorrido.
+    Animacao animacao = animacao_criar(id, "blue", "blue", cor_caminho, num_pontos, pontos);
+    lista_inserir_final(saida, animacao);
+
+    // Circulo indicando a origem.
+    Circulo circ_origem = circulo_criar("", 14, ponto_obter_x(ponto_origem),
+                                        ponto_obter_y(ponto_origem), "black", "yellow");
+    lista_inserir_final(saida, circ_origem);
+    Texto texto_origem = texto_criar("", ponto_obter_x(ponto_origem),
+                                     ponto_obter_y(ponto_origem) + 5, "black", "black", "I");
+    texto_definir_alinhamento(texto_origem, TEXTO_CENTRO);
+    lista_inserir_final(saida, texto_origem);
+
+    // Circulo indicando o destino.
+    Circulo circ_destino = circulo_criar("", 14, ponto_obter_x(ponto_destino),
+                                         ponto_obter_y(ponto_destino), "black", "red");
+    lista_inserir_final(saida, circ_destino);
+    Texto texto_destino = texto_criar("", ponto_obter_x(ponto_destino),
+                                      ponto_obter_y(ponto_destino) + 5, "black", "black", "F");
+    texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
+    lista_inserir_final(saida, texto_destino);
+
+    return animacao;
 }
