@@ -53,4 +53,11 @@ registradores utilizando a ciclovia como base.
 char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registradores,
                                  Lista svg_atual, const char *linha, FILE *arquivo_log);
 
+/*
+Executa o comando p? especificado no arquivo de consulta, calcula o menor caminho e o caminho mais
+rápido entre dois registradores utilizando as vias como base.
+*/
+calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
+                      const char *linha, FILE *arquivo_log)
+
 #endif

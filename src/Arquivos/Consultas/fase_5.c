@@ -46,6 +46,18 @@ Grafo obter_ciclovia(Tabela grafos) {
     return ciclovias;
 }
 
+// Retorna o grafo de vias,
+Grafo obter_vias(Tabela grafos) {
+    Grafo vias = tabela_buscar(grafos, "vias");
+    // Cria a árvore geradora mínima caso ainda não exista.
+    if (vias == NULL) {
+        LOG_AVISO("Grafo de vias não foi criado!\n");
+        return NULL;
+    }
+
+    return vias;
+}
+
 // Salva a posição geográfica da residência de um morador em um registrador.
 void registrar_posicao_morador(Ponto *registradores, Tabela dados_pessoa, Tabela cep_quadra,
                                Lista formas, const char *linha) {
@@ -254,4 +266,142 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     novo_sufixo[0] = '\0';
     strcpy(novo_sufixo, sufixo);
     return novo_sufixo;
+}
+
+char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
+                            const char *linha, FILE *arquivo_log) {
+    char sufixo[1024];
+    char cor_curto[20];
+    char cor_rapido[20];
+    int registrador1 = -1;
+    int registrador2 = -1;
+
+    sscanf(linha, "p? %s R%d R%d %s %s", sufixo, &registrador1, &registrador2, cor_curto,
+           cor_rapido);
+    if (!checar_registrador_valido(registrador1) || !checar_registrador_valido(registrador2) ||
+        registradores[registrador1] == NULL || registradores[registrador2] == NULL)
+        return NULL;
+
+    QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
+    Grafo vias = obter_vias(grafos);
+
+    if (vias == NULL)
+        return NULL;
+
+    const Ponto ponto_origem = registradores[registrador1];
+    const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
+                                                               ponto_obter_y(ponto_origem));
+    if (vertice_origem == NULL) {
+        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
+                  ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+        return NULL;
+    }
+
+    const Ponto ponto_destino = registradores[registrador2];
+    const Vertice vertice_destino = quadtree_obter_mais_proximo(
+        qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+    if (vertice_destino == NULL) {
+        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
+                  ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+        return NULL;
+    }
+
+    Pilha caminho_curto = dijkstra_distancia(vias, vertice_obter_id(vertice_origem),
+                                             vertice_obter_id(vertice_destino));
+    if (caminho_curto == NULL)
+        return NULL;
+    Pilha caminho_rapido = dijkstra_velocidade(vias, vertice_obter_id(vertice_origem),
+                                               vertice_obter_id(vertice_destino));
+    if (caminho_rapido == NULL)
+        return NULL;
+
+    fprintf(arquivo_log, "Caminho mais curto de R%d a R%d:\n", registrador1, registrador2);
+
+    Animacao animacao_curto = dijkstra_criar_representacao(
+        caminho_curto, svg_atual, cor_curto, ponto_origem, ponto_destino, arquivo_log);
+
+    Animacao animacao_rapido = dijkstra_criar_representacao(
+        caminho_rapido, svg_atual, cor_rapido, ponto_origem, ponto_destino, arquivo_log);
+
+    // animação do caminho mais curto
+    animacao_definir_margem_x(animacao_curto, 10);
+    animacao_definir_margem_y(animacao_curto, 10);
+    // descrição textual do caminho mais curto
+    descricao_textual(caminho_curto, arquivo_log);
+
+    // animação do caminho mais rápdio
+    animacao_definir_margem_x(animacao_rapido, 0);
+    animacao_definir_margem_y(animacao_rapido, 0);
+    // descrição textual do caminho mais rapido
+    descricao_textual(caminho_rapido, arquivo_log);
+
+    // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
+    if (strcmp(sufixo, "-") == 0)
+        return NULL;
+
+    // Retorna o novo sufixo.
+    char *novo_sufixo = malloc(sizeof *sufixo * 1024);
+    novo_sufixo[0] = '\0';
+    strcpy(novo_sufixo, sufixo);
+    return novo_sufixo;
+}
+
+void descricao_textual(Pilha caminho, FILE *arquivo_log) {
+    const int num_pontos = pilha_obter_tamanho(caminho);
+    char *direcao = malloc(sizeof *direcao * 6);
+    char *direcao_aux = malloc(sizeof *direcao * 6);
+    char *nome_rua = malloc(sizeof *nome_rua * 100);
+
+    Vertice anterior = pilha_remover(caminho);
+    Vertice atual = pilha_remover(caminho);
+    descricao_obter_nome_rua(anterior, atual, nome_rua);
+    descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
+                                 vertice_obter_x(atual), vertice_obter_y(atual), direcao);
+    strcpy(direcao_aux, direcao);
+    fprintf(arquivo_log, "Iniciando representação textual do caminho mais curto:\n");
+    fprintf(arquivo_log, "Siga na direção %s na rua %s ", direcao, nome_rua);
+    for (int i = 0; i < num_pontos - 2; i++) {
+        anterior = atual;
+        atual = pilha_remover(caminho);
+        descricao_obter_nome_rua(anterior, atual, nome_rua);
+        descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
+                                     vertice_obter_x(atual), vertice_obter_y(atual), direcao);
+
+        // se mudou a direção, quer dizer que mudará a rua;
+        if (strcmp(direcao, direcao_aux) != 0) {
+            fprintf(arquivo_log, "até o cruzamento com a rua %s.", nome_rua);
+            fprintf(arquivo_log, " Siga na direção %s na rua %s ", direcao, nome_rua);
+            stpcpy(direcao_aux, direcao);
+        }
+    }
+    fprintf(arquivo_log, "Chegou ao destino.\n");
+}
+
+void descricao_obter_nome_rua(Vertice anterior, Vertice atual, char **nome_rua) {
+    Lista arestas = vertice_obter_arestas(anterior);
+    for_each_lista(no, arestas) {
+        if (strcmp(aresta_obter_destino(no), vertice_obter_id(atual)) == 0) {
+            strcpy(*nome_rua, aresta_obter_nome(no));
+        }
+    }
+}
+
+void descricao_determinar_direcao(double x_anterior, double y_anterior, double x_atual,
+                                  double y_atual, char **direcao) {
+    if (x_anterior == x_atual) {
+        if (y_anterior < y_atual) {
+            strcpy(*direcao, "sul");
+        }
+        if (y_anterior > y_atual) {
+            strcpy(*direcao, "norte");
+        }
+    }
+    if (y_anterior == y_atual) {
+        if (x_anterior < x_atual) {
+            strcpy(*direcao, "leste");
+        }
+        if (x_anterior > x_atual) {
+            strcpy(*direcao, "oeste");
+        }
+    }
 }
