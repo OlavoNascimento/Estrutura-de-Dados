@@ -19,6 +19,7 @@
 #include "../../Objetos/Outros/texto.h"
 #include "../../Ordenacao/quicksort.h"
 #include "../../Ordenacao/shellsort.h"
+#include "../../Utils/dijkstra.h"
 #include "../../Utils/graham_scan.h"
 #include "../../Utils/logging.h"
 #include "../../Utils/matematica.h"
@@ -38,8 +39,8 @@ void salvar_info_em_lista(QtInfo info, ExtraInfo lista) {
     lista_inserir_final(lista, info);
 }
 
-void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, const char *linha,
-                          FILE *arquivo_log) {
+void postos_mais_proximos(QuadTree postos, QuadTree qt_vias, Grafo vias, Tabela cep_quadra,
+                          Lista formas, const char *linha, FILE *arquivo_log) {
     int k;
     int numero;
     char face;
@@ -74,18 +75,49 @@ void postos_mais_proximos(QuadTree postos, Tabela cep_quadra, Lista formas, cons
 
     shellsort(array_postos, tamanho, tamanho / 2, figura_obter_x(caso), figura_obter_y(caso));
 
+    Ponto ponto_origem = NULL;
+    Vertice vertice_origem = NULL;
+    if (vias != NULL) {
+        ponto_origem = ponto_criar(figura_obter_x_centro(caso), figura_obter_y_centro(caso));
+        vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
+                                                     ponto_obter_y(ponto_origem));
+    } else {
+        printf(
+            "Um grafo de vias não foi fornecido, portanto o comando soc não poderá criar caminhos "
+            "até os postos mais próximos!\n");
+    }
+
     for (int i = 0; i < k && i < tamanho; i++) {
         if (i == 0)
-            fprintf(arquivo_log, "Coordenada dos postos:\n");
+            fprintf(arquivo_log, "Coordenada dos postos:\n\n");
         Figura posto = array_postos[i];
-        Linha linha_posto =
-            linha_criar(figura_obter_x_centro(caso), figura_obter_y_centro(caso),
-                        figura_obter_x_centro(posto), figura_obter_y_centro(posto), "black");
-        linha_definir_tracejado(linha_posto, true);
-        lista_inserir_final(formas, linha_posto);
+        fprintf(arquivo_log, "x: %lf, y: %lf\n", figura_obter_x(posto), figura_obter_y(posto));
 
-        fprintf(arquivo_log, "x: %lf, y: %lf\n\n", figura_obter_x(posto), figura_obter_y(posto));
+        if (vias == NULL)
+            continue;
+
+        const Ponto ponto_destino =
+            ponto_criar(figura_obter_x_centro(posto), figura_obter_y_centro(posto));
+        const Vertice vertice_destino = quadtree_obter_mais_proximo(
+            qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+        if (vertice_destino == NULL) {
+            free(ponto_destino);
+            continue;
+        }
+
+        Pilha caminho = dijkstra_distancia(vias, vertice_obter_id(vertice_origem),
+                                           vertice_obter_id(vertice_destino));
+        fprintf(arquivo_log, "Caminho do caso (%lf, %lf) ao posto (%lf, %lf):\n",
+                figura_obter_x_centro(caso), figura_obter_x_centro(caso),
+                figura_obter_x_centro(posto), figura_obter_x_centro(posto));
+        dijkstra_criar_representacao(caminho, formas, "green", ponto_origem, ponto_destino,
+                                     arquivo_log);
+        fprintf(arquivo_log, "\n");
+
+        free(ponto_destino);
     }
+
+    free(ponto_origem);
     free(array_postos);
 }
 
