@@ -102,7 +102,9 @@ void registrar_posicao_endereco(Ponto *registradores, Tabela cep_quadra, Lista f
     int registrador = -1;
     char id_registrador[3], cep[100], face;
     double num;
-    sscanf(linha, "@e? %s %s %c %lf", id_registrador, cep, &face, &num);
+    int status = sscanf(linha, "@e? %s %s Face.%c %lf", id_registrador, cep, &face, &num);
+    if (status != 4)
+        sscanf(linha, "@e? %s %s %c %lf", id_registrador, cep, &face, &num);
     sscanf(id_registrador, "R%d", &registrador);
     if (!checar_registrador_valido(registrador))
         return;
@@ -232,20 +234,26 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
         return NULL;
 
     const Ponto ponto_origem = registradores[registrador1];
+    Circulo circ_origem = circulo_criar("", 20, ponto_obter_x(ponto_origem),
+                                        ponto_obter_y(ponto_origem), "black", "purple");
+    lista_inserir_final(svg_atual, circ_origem);
     const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
                                                                ponto_obter_y(ponto_origem));
     if (vertice_origem == NULL) {
-        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
-                  ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+        LOG_INFO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
+                 ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
         return NULL;
     }
 
     const Ponto ponto_destino = registradores[registrador2];
+    Circulo circ_destino = circulo_criar("", 20, ponto_obter_x(ponto_destino),
+                                         ponto_obter_y(ponto_destino), "black", "purple");
+    lista_inserir_final(svg_atual, circ_destino);
     const Vertice vertice_destino = quadtree_obter_mais_proximo(
         qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
     if (vertice_destino == NULL) {
-        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
-                  ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+        LOG_INFO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
+                 ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
         return NULL;
     }
 
@@ -264,7 +272,7 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     // Retorna o novo sufixo.
     char *novo_sufixo = malloc(sizeof *sufixo * 1024);
     novo_sufixo[0] = '\0';
-    strcpy(novo_sufixo, sufixo);
+    strncpy(novo_sufixo, sufixo, 1024);
     return novo_sufixo;
 }
 

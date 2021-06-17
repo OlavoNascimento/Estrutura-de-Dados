@@ -165,7 +165,7 @@ void quadra_inicializar_coordenada(double *x, double *y, double largura, double 
         *y = figura_obter_y(quadra) - altura / 2 + numero;
         *x = figura_obter_x_fim(quadra) - largura;
     } else {
-        LOG_AVISO("Face inválida passada para quadra_inicializar_coordenada!\n");
+        LOG_AVISO("Face inválida %c passada para quadra_inicializar_coordenada!\n", face);
     }
 }
 

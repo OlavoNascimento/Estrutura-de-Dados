@@ -107,8 +107,13 @@ Pilha dijkstra(Grafo grafo, const char *id_origem, const char *id_destino,
     }
 
     // Adiciona os vértices que formam o menor caminho a pilha.
-    for (int i = *destino; i != -1; i = infos[i].predecessor)
+    for (int i = *destino; i != -1 && i < grafo_obter_tamanho(grafo); i = infos[i].predecessor)
         pilha_inserir(pilha_caminho, grafo_obter_vertice_por_indice(grafo, i));
+
+    // Remove elementos até o vértice de origem estar no topo da pilha ou a pilha ficar vazia.
+    while (!pilha_esta_vazia(pilha_caminho) &&
+           pilha_obter_topo(pilha_caminho) != grafo_obter_vertice_por_id(grafo, id_origem))
+        pilha_remover(pilha_caminho);
 
     free(infos);
     return pilha_caminho;
@@ -127,16 +132,39 @@ Pilha dijkstra_velocidade(Grafo grafo, const char *id_origem, const char *id_des
 Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *cor_caminho,
                                       const Ponto ponto_origem, const Ponto ponto_destino,
                                       FILE *arquivo_log) {
-    const int num_pontos = pilha_obter_tamanho(caminho);
-    Ponto *pontos = malloc(sizeof *pontos * num_pontos);
+    // Circulo indicando a origem.
+    const Circulo circ_origem = circulo_criar("", 14, ponto_obter_x(ponto_origem),
+                                              ponto_obter_y(ponto_origem), "black", "yellow");
+    const ListaNo no_origem = lista_inserir_final(saida, circ_origem);
+    const Texto texto_origem = texto_criar("", ponto_obter_x(ponto_origem),
+                                           ponto_obter_y(ponto_origem) + 5, "black", "black", "I");
+    texto_definir_alinhamento(texto_origem, TEXTO_CENTRO);
+    lista_inserir_final(saida, texto_origem);
 
+    // Circulo indicando o destino.
+    const Circulo circ_destino = circulo_criar("", 14, ponto_obter_x(ponto_destino),
+                                               ponto_obter_y(ponto_destino), "black", "red");
+    lista_inserir_final(saida, circ_destino);
+    const Texto texto_destino = texto_criar(
+        "", ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino) + 5, "black", "black", "F");
+    texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
+    lista_inserir_final(saida, texto_destino);
+
+    if (pilha_obter_tamanho(caminho) == 0) {
+        fprintf(arquivo_log, "Não há caminho disponível\n");
+        return NULL;
+    }
+
+    const int num_pontos = pilha_obter_tamanho(caminho) + 2;
+    Ponto *pontos = malloc(sizeof *pontos * num_pontos);
     int i = 0;
     // Utiliza o ponto de origem como primeiro ponto, não o vértice inicial.
-    fprintf(arquivo_log, "Inicie no ponto (%lf, %lf)\n", ponto_obter_x(ponto_origem),
-            ponto_obter_y(ponto_origem));
-    pontos[i++] = ponto_criar(ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
-
     Vertice anterior = pilha_remover(caminho);
+    pontos[i++] = ponto_criar(ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+    pontos[i++] = ponto_criar(vertice_obter_x(anterior), vertice_obter_y(anterior));
+    fprintf(arquivo_log, "Avance do ponto de origem (%lf, %lf) para o vértice %s\n",
+            ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem), vertice_obter_id(anterior));
+
     while (i < num_pontos - 1) {
         Vertice atual = pilha_remover(caminho);
         fprintf(arquivo_log, "Avance do vértice %s para o vértice %s\n", vertice_obter_id(anterior),
@@ -145,11 +173,10 @@ Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *co
         anterior = atual;
     }
 
-    // Utiliza o ponto de destino como último ponto, não o vértice final.
+    pontos[i++] = ponto_criar(ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
     fprintf(arquivo_log, "Avance do vértice %s para o ponto de destino (%lf, %lf)\n",
             vertice_obter_id(anterior), ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
 
-    pontos[i++] = ponto_criar(ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
     pilha_destruir(caminho);
     caminho = NULL;
 
@@ -160,26 +187,8 @@ Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *co
              ponto_obter_y(ponto_destino), num_pontos);
 
     // Caminho a ser percorrido.
-    Animacao animacao = animacao_criar(id, "blue", "blue", cor_caminho, num_pontos, pontos);
-    lista_inserir_final(saida, animacao);
-
-    // Circulo indicando a origem.
-    Circulo circ_origem = circulo_criar("", 14, ponto_obter_x(ponto_origem),
-                                        ponto_obter_y(ponto_origem), "black", "yellow");
-    lista_inserir_final(saida, circ_origem);
-    Texto texto_origem = texto_criar("", ponto_obter_x(ponto_origem),
-                                     ponto_obter_y(ponto_origem) + 5, "black", "black", "I");
-    texto_definir_alinhamento(texto_origem, TEXTO_CENTRO);
-    lista_inserir_final(saida, texto_origem);
-
-    // Circulo indicando o destino.
-    Circulo circ_destino = circulo_criar("", 14, ponto_obter_x(ponto_destino),
-                                         ponto_obter_y(ponto_destino), "black", "red");
-    lista_inserir_final(saida, circ_destino);
-    Texto texto_destino = texto_criar("", ponto_obter_x(ponto_destino),
-                                      ponto_obter_y(ponto_destino) + 5, "black", "black", "F");
-    texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
-    lista_inserir_final(saida, texto_destino);
+    Animacao animacao = animacao_criar(id, "black", "purple", cor_caminho, num_pontos, pontos);
+    lista_inserir_antes(saida, animacao, no_origem);
 
     return animacao;
 }

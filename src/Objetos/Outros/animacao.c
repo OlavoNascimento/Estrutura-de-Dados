@@ -6,6 +6,7 @@
 
 #include "../../Interfaces/figura.h"
 #include "../../Utils/logging.h"
+#include "../../Utils/matematica.h"
 #include "../Formas/circulo.h"
 #include "../Formas/ponto.h"
 
@@ -122,7 +123,8 @@ void animacao_escrever_svg(Animacao animacao, FILE *arquivo) {
             animacao->raio, animacao->cor_borda, animacao->cor_preenchimento,
             animacao->espessura_borda, animacao->opacidade);
 
-    fprintf(arquivo, "\t\t<animateMotion dur='6s' repeatCount='indefinite'>\n");
+    fprintf(arquivo, "\t\t<animateMotion dur='%ds' repeatCount='indefinite'>\n",
+            (int) max(5, min(20, 0.1 * animacao->num_pontos)));
     fprintf(arquivo, "\t\t\t<mpath xlink:href='#%s'/>\n", animacao->id);
     fprintf(arquivo, "\t\t</animateMotion>\n");
 

@@ -8,7 +8,7 @@ Este módulo define macros auxiliares para logging da execução do programa.
 #include <stdio.h>
 
 #ifdef DEBUG_SIGUEL
-    #define LOG_INFO(fmt, ...) printf(fmt, ##__VA_ARGS__)
+    #define LOG_INFO(fmt, ...) printf("INFO: " fmt, ##__VA_ARGS__)
     #define LOG_AVISO(fmt, ...) printf("AVISO: " fmt, ##__VA_ARGS__)
 #else
     #define LOG_INFO(fmt, ...)

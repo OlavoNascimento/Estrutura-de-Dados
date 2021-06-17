@@ -18,6 +18,7 @@
     "descricao",
     "destino",
     "diferenca",
+    "dijkstra",
     "dmprbt",
     "eplg",
     "espaco",
@@ -45,6 +46,7 @@
     "proximos",
     "raizes",
     "regiao",
+    "representacao",
     "retangulo",
     "retangulos",
     "selecao",
@@ -82,6 +84,12 @@
     "grafo.h": "c",
     "svg.h": "c",
     "matematica.h": "c",
-    "caso.h": "c"
+    "caso.h": "c",
+    "bit": "c",
+    "functional": "c",
+    "string_view": "c",
+    "istream": "c",
+    "limits": "c",
+    "numeric": "c"
   }
 }

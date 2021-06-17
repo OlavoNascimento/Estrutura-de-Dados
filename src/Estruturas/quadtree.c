@@ -363,7 +363,7 @@ QtNo quadtree_obter_no(QuadTree qt, double x, double y) {
 }
 
 QtInfo quadtree_obter_mais_proximo(QuadTree qt, double x, double y) {
-    Lista nos = quadtree_nos_dentro_circulo(qt, x, y, 200);
+    Lista nos = quadtree_nos_dentro_circulo(qt, x, y, 100);
     QtInfo info = NULL;
     double min_dist = DBL_MAX;
     for_each_lista(no, nos) {
