@@ -314,7 +314,9 @@ void remover_elementos_contidos(Lista formas, Tabela quadtrees, Tabela relacoes,
     }
 
     // Remove o grafo de ciclovia já que está desatualizado.
-    if (lista_obter_tamanho(nos) > 0)
-        tabela_remover(grafos, "ciclovias");
+    if (lista_obter_tamanho(nos) > 0) {
+        Grafo ciclovias = tabela_remover(grafos, "ciclovias");
+        grafo_destruir(ciclovias);
+    }
     lista_destruir(nos);
 }

@@ -76,10 +76,14 @@ Grafo criar_arvore_geradora_minima(Grafo grafo) {
 
         const char *id_origem = aresta_obter_origem(aresta);
         const int *indice_origem = grafo_obter_indice_vertice(grafo, id_origem);
+        if (indice_origem == NULL)
+            continue;
         const int raiz_origem = encontrar_raiz(grupos, *indice_origem);
 
         const char *id_destino = aresta_obter_destino(aresta);
         const int *indice_destino = grafo_obter_indice_vertice(grafo, id_destino);
+        if (indice_destino == NULL)
+            continue;
         const int raiz_destino = encontrar_raiz(grupos, *indice_destino);
 
         // Caso a origem e destino tenham a mesma raiz adicionar a aresta atual vai causar um ciclo

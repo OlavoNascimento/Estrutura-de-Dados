@@ -128,18 +128,32 @@ Vertice grafo_remover_vertice(Grafo grafo, const char *id) {
         return NULL;
     }
 
-    int *indice = tabela_remover(grafo->id_indice, id);
-    if (indice == NULL) {
+    int *indice_atual = tabela_remover(grafo->id_indice, id);
+    if (indice_atual == NULL) {
         LOG_AVISO("Não é possível remover um vértice que não existe no grafo\n");
         return NULL;
     }
+    const Vertice vertice_removido = grafo->vertices[*indice_atual];
 
-    Vertice vertice = grafo->vertices[*indice];
-    grafo->vertices[*indice] = NULL;
+    int ultimo_indice = grafo->tamanho_atual - 1;
+    if (ultimo_indice == *indice_atual)
+        ultimo_indice--;
 
-    free(indice);
+    if (ultimo_indice > 0) {
+        // Move o último vértice para a posição atual.
+        const Vertice ultimo_vertice = grafo->vertices[ultimo_indice];
+        int *indice_removido = tabela_remover(grafo->id_indice, vertice_obter_id(ultimo_vertice));
+        grafo->vertices[*indice_removido] = NULL;
+        free(indice_removido);
+
+        grafo->vertices[*indice_atual] = ultimo_vertice;
+        tabela_inserir(grafo->id_indice, vertice_obter_id(ultimo_vertice), indice_atual);
+    } else {
+        free(indice_atual);
+    }
     grafo->tamanho_atual--;
-    return vertice;
+
+    return vertice_removido;
 }
 
 void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
