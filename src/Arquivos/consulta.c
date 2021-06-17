@@ -19,16 +19,22 @@
 // Tamanho maxímo de um comando do arquivo de consulta.
 #define TAMANHO_COMANDO 300
 
-// Sufixo adicionado ao final dos arquivos criados por alguns comandos.
-struct SufixosComandos {
-    char p[1024];
-    char sp[1024];
-    char pb[1024];
+struct EstadoComando {
+    char nome_comando[10];
+    char sufixo_atual[1024];
+    Lista svg_atual;
 };
 
-// Cria um svg que possui um caminho entre dois registradores utilizando um sufixo para o nome do
-// arquivo.
-void escrever_svg_caminho(Tabela quadtrees, Tabela listas, Lista svg_atual, const char *sufixo,
+// Mantem um sufixo e lista para cada comando que deve manter o estado entre execuções.
+struct EstadoComandos {
+    struct EstadoComando p;
+    struct EstadoComando sp;
+    struct EstadoComando pb;
+};
+
+// Cria um svg que possui um caminho entre dois registradores, o nome do arquivo utiliza o sufixo
+// especificado.
+void escrever_svg_caminho(struct EstadoComando estado_atual, Tabela quadtrees, Tabela listas,
                           const char *caminho_log) {
     QuadTree quadras = tabela_buscar(quadtrees, "quadras");
     QuadTree hidrantes = tabela_buscar(quadtrees, "hidrantes");
@@ -41,14 +47,12 @@ void escrever_svg_caminho(Tabela quadtrees, Tabela listas, Lista svg_atual, cons
     Lista formas = tabela_buscar(listas, "formas");
 
     char *diretorios = extrair_nome_diretorio(caminho_log);
-    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", sufixo, ".svg");
+    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", estado_atual.sufixo_atual, ".svg");
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
-    printf("Arquivo pb?: %s\n", caminho_arquivo);
+    printf("Arquivo %s: %s\n", estado_atual.nome_comando, caminho_arquivo);
 
     svg_escrever(caminho_arquivo, 10, quadras, hidrantes, semaforos, radios, estabelecimentos,
-                 moradores, casos, postos, formas, svg_atual);
-    lista_destruir(svg_atual);
-    svg_atual = NULL;
+                 moradores, casos, postos, formas, estado_atual.svg_atual);
 
     free(diretorios);
     free(nome_arquivo);
@@ -57,16 +61,18 @@ void escrever_svg_caminho(Tabela quadtrees, Tabela listas, Lista svg_atual, cons
 
 // Verifica se o sufixo precisa ser atualizado, caso um novo sufixo exista o arquivo svg do sufixo
 // antigo é criado.
-void atualizar_sufixo(char *sufixo, char *novo_sufixo, const char *caminho_log, Tabela quadtrees,
-                      Tabela listas, Lista svg_atual) {
-    if (strlen(sufixo) == 0 && novo_sufixo != NULL) {
-        strcpy(sufixo, novo_sufixo);
-    } else if (novo_sufixo != NULL && strcmp(novo_sufixo, sufixo) != 0) {
-        escrever_svg_caminho(quadtrees, listas, svg_atual, sufixo, caminho_log);
-        svg_atual = lista_criar(NULL, NULL);
-        strcpy(sufixo, novo_sufixo);
-        free(novo_sufixo);
+void atualizar_sufixo(struct EstadoComando estado_atual, char *novo_sufixo, Tabela quadtrees,
+                      Tabela listas, const char *caminho_log) {
+    if (novo_sufixo == NULL)
+        return;
+    if (strlen(estado_atual.sufixo_atual) > 0) {
+        escrever_svg_caminho(estado_atual, quadtrees, listas, caminho_log);
+        lista_destruir(estado_atual.svg_atual);
+        estado_atual.svg_atual = lista_criar(NULL, NULL);
     }
+    strcpy(estado_atual.sufixo_atual, novo_sufixo);
+    free(novo_sufixo);
+    novo_sufixo = NULL;
 }
 
 // Ler o arquivo de consulta localizado no caminho fornecido a função e itera por todas as suas
@@ -93,9 +99,12 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     QuadTree casos = tabela_buscar(quadtrees, "casos");
     QuadTree moradores = tabela_buscar(quadtrees, "moradores");
     QuadTree estabelecimentos = tabela_buscar(quadtrees, "estabelecimentos");
+    QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
 
     Lista formas = tabela_buscar(listas, "formas");
     Lista densidades = tabela_buscar(listas, "densidades");
+
+    Grafo vias = tabela_buscar(grafos, "vias");
 
     Tabela dados_pessoa = tabela_buscar(relacoes, "dados_pessoa");
     Tabela tipo_descricao = tabela_buscar(relacoes, "tipo_descricao");
@@ -106,8 +115,17 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
     Tabela id_radio = tabela_buscar(relacoes, "id_radio");
     Tabela id_forma = tabela_buscar(relacoes, "id_forma");
 
-    struct SufixosComandos sufixos = {.p = "", .pb = "", .sp = ""};
-    Lista svg_pb = lista_criar(NULL, figura_destruir);
+    // Mantem variáveis que devem ser preservadas entre várias execuções dos comandos p?, sp? e pb?.
+    struct EstadoComandos estadoComandos = {
+        .p = {.nome_comando = "p?",
+              .sufixo_atual = "",
+              .svg_atual = lista_criar(figura_obter_id, figura_destruir)},
+        .sp = {.nome_comando = "sp?",
+               .sufixo_atual = "",
+               .svg_atual = lista_criar(figura_obter_id, figura_destruir)},
+        .pb = {.nome_comando = "pb?",
+               .sufixo_atual = "",
+               .svg_atual = lista_criar(figura_obter_id, figura_destruir)}};
 
     char linha[TAMANHO_COMANDO];
     while (fgets(linha, TAMANHO_COMANDO, arquivo_consulta) != NULL) {
@@ -142,7 +160,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("cv", comando) == 0) {
             adicionar_caso(casos, cep_quadra, linha);
         } else if (strcmp("soc", comando) == 0) {
-            postos_mais_proximos(postos, cep_quadra, formas, linha, arquivo_log);
+            postos_mais_proximos(postos, qt_vias, vias, cep_quadra, formas, linha, arquivo_log);
         } else if (strcmp("ci", comando) == 0) {
             determinar_regiao_de_incidencia(formas, casos, postos, densidades, linha, arquivo_log);
         } else if (strcmp("m?", comando) == 0) {
@@ -172,14 +190,18 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("ccv", comando) == 0) {
             escrever_grafo_svg(caminho_log, grafos, linha);
         } else if (strcmp("pb?", comando) == 0) {
-            char *novo_sufixo = calcular_caminho_ciclo_via(quadtrees, grafos, registradores, svg_pb,
-                                                           linha, arquivo_log);
-            atualizar_sufixo(sufixos.pb, novo_sufixo, caminho_log, quadtrees, listas, svg_pb);
+            char *novo_sufixo = calcular_caminho_ciclo_via(
+                quadtrees, grafos, registradores, estadoComandos.pb.svg_atual, linha, arquivo_log);
+            atualizar_sufixo(estadoComandos.pb, novo_sufixo, quadtrees, listas, caminho_log);
         }
     }
 
-    if (strlen(sufixos.pb) != 0)
-        escrever_svg_caminho(quadtrees, listas, svg_pb, sufixos.pb, caminho_log);
+    if (strlen(estadoComandos.pb.sufixo_atual) != 0)
+        escrever_svg_caminho(estadoComandos.pb, quadtrees, listas, caminho_log);
+
+    lista_destruir(estadoComandos.p.svg_atual);
+    lista_destruir(estadoComandos.sp.svg_atual);
+    lista_destruir(estadoComandos.pb.svg_atual);
 
     fclose(arquivo_log);
     fclose(arquivo_consulta);
