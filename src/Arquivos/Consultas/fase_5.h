@@ -57,7 +57,15 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
 Executa o comando p? especificado no arquivo de consulta, calcula o menor caminho e o caminho mais
 rápido entre dois registradores utilizando as vias como base.
 */
-calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
-                      const char *linha, FILE *arquivo_log)
+char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
+                            const char *linha, FILE *arquivo_log);
 
+/*
+Executa o comando sp? especificado no arquivo de consulta, calcula o menor caminho e o caminho
+mais rápido entre dois registradores utilizando as vias como base e evitando a envoltória convexa
+dos casos de covid.
+*/
+char *analisar_vertices_contidos_envoltoria(Grafo vias, QuadTree casos, Lista formas,
+                                            FILE *arquivo_log, Ponto *registradores,
+                                            Lista svg_atual, const char *linha);
 #endif
