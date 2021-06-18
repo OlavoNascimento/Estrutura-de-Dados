@@ -7,8 +7,10 @@
 
 #include "../../Arquivos/svg.h"
 #include "../../Estruturas/grafo.h"
+#include "../../Estruturas/lista.h"
 #include "../../Estruturas/pilha.h"
 #include "../../Estruturas/quadtree.h"
+#include "../../Objetos/EquipamentosUrbanos/caso.h"
 #include "../../Objetos/EquipamentosUrbanos/morador.h"
 #include "../../Objetos/EquipamentosUrbanos/quadra.h"
 #include "../../Objetos/Formas/circulo.h"
@@ -20,6 +22,13 @@
 #include "../../Utils/dijkstra.h"
 #include "../../Utils/kruskal.h"
 #include "../../Utils/logging.h"
+
+// Guarda as informações da face de uma quadra.
+struct InfoFace {
+    char cep[100];
+    char face;
+    int num_casos;
+};
 
 bool checar_registrador_valido(int indice) {
     return indice > 0 && indice <= 10;
@@ -37,26 +46,13 @@ Grafo obter_ciclovia(Tabela grafos) {
             return NULL;
         }
         ciclovias = criar_arvore_geradora_minima(vias);
-        if (ciclovias == NULL) {
+        if (ciclovias == NULL)
             return NULL;
-        }
         // Salva a árvore geradora mínima para uso posterior.
         tabela_remover(grafos, "ciclovias");
         tabela_inserir(grafos, "ciclovias", ciclovias);
     }
     return ciclovias;
-}
-
-// Retorna o grafo de vias,
-Grafo obter_vias(Tabela grafos) {
-    Grafo vias = tabela_buscar(grafos, "vias");
-    // Cria a árvore geradora mínima caso ainda não exista.
-    if (vias == NULL) {
-        LOG_AVISO("Grafo de vias não foi criado!\n");
-        return NULL;
-    }
-
-    return vias;
 }
 
 // Salva a posição geográfica da residência de um morador em um registrador.
@@ -217,6 +213,280 @@ void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linh
     free(caminho_arquivo);
 }
 
+void descricao_obter_nome_rua(Vertice anterior, Vertice atual, char *nome_rua) {
+    Lista arestas = vertice_obter_arestas(anterior);
+    for_each_lista(no, arestas) {
+        Aresta aresta = lista_obter_info(no);
+        if (strcmp(aresta_obter_destino(aresta), vertice_obter_id(atual)) == 0) {
+            strcpy(nome_rua, aresta_obter_nome(aresta));
+        }
+    }
+}
+
+void descricao_determinar_direcao(double x_anterior, double y_anterior, double x_atual,
+                                  double y_atual, char *direcao) {
+    if (x_anterior == x_atual) {
+        if (y_anterior < y_atual) {
+            strcpy(direcao, "sul");
+        }
+        if (y_anterior > y_atual) {
+            strcpy(direcao, "norte");
+        }
+    }
+    if (y_anterior == y_atual) {
+        if (x_anterior < x_atual) {
+            strcpy(direcao, "leste");
+        }
+        if (x_anterior > x_atual) {
+            strcpy(direcao, "oeste");
+        }
+    }
+}
+
+void descricao_textual(Pilha caminho, FILE *arquivo_log) {
+    const int num_pontos = pilha_obter_tamanho(caminho);
+    char *direcao = malloc(sizeof *direcao * 6);
+    char *direcao_aux = malloc(sizeof *direcao * 6);
+    char *nome_rua = malloc(sizeof *nome_rua * 100);
+
+    Vertice anterior = pilha_remover(caminho);
+    Vertice atual = pilha_remover(caminho);
+    descricao_obter_nome_rua(anterior, atual, nome_rua);
+    descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
+                                 vertice_obter_x(atual), vertice_obter_y(atual), direcao);
+    strcpy(direcao_aux, direcao);
+    fprintf(arquivo_log, "Iniciando representação textual do caminho mais curto:\n");
+    fprintf(arquivo_log, "Siga na direção %s na rua %s ", direcao, nome_rua);
+    for (int i = 0; i < num_pontos - 2; i++) {
+        anterior = atual;
+        atual = pilha_remover(caminho);
+        descricao_obter_nome_rua(anterior, atual, nome_rua);
+        descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
+                                     vertice_obter_x(atual), vertice_obter_y(atual), direcao);
+
+        // se mudou a direção, quer dizer que mudará a rua;
+        if (strcmp(direcao, direcao_aux) != 0) {
+            fprintf(arquivo_log, "até o cruzamento com a rua %s.", nome_rua);
+            fprintf(arquivo_log, " Siga na direção %s na rua %s ", direcao, nome_rua);
+            strcpy(direcao_aux, direcao);
+        }
+    }
+    fprintf(arquivo_log, "Chegou ao destino.\n");
+    free(direcao);
+    free(direcao_aux);
+    free(nome_rua);
+}
+
+char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
+                            const char *linha, FILE *arquivo_log) {
+    char sufixo[1024];
+    char cor_curto[20];
+    char cor_rapido[20];
+    int registrador1 = -1;
+    int registrador2 = -1;
+
+    sscanf(linha, "p? %s R%d R%d %s %s", sufixo, &registrador1, &registrador2, cor_curto,
+           cor_rapido);
+    if (!checar_registrador_valido(registrador1) || !checar_registrador_valido(registrador2) ||
+        registradores[registrador1] == NULL || registradores[registrador2] == NULL)
+        return NULL;
+
+    QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
+    Grafo vias = tabela_buscar(grafos, "vias");
+    if (vias == NULL)
+        return NULL;
+
+    const Ponto ponto_origem = registradores[registrador1];
+    const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
+                                                               ponto_obter_y(ponto_origem));
+    if (vertice_origem == NULL) {
+        LOG_INFO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
+                 ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+        return NULL;
+    }
+
+    const Ponto ponto_destino = registradores[registrador2];
+    const Vertice vertice_destino = quadtree_obter_mais_proximo(
+        qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+    if (vertice_destino == NULL) {
+        LOG_INFO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
+                 ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+        return NULL;
+    }
+
+    Pilha caminho_curto = dijkstra_distancia(vias, vertice_obter_id(vertice_origem),
+                                             vertice_obter_id(vertice_destino));
+    if (caminho_curto == NULL)
+        return NULL;
+    Pilha caminho_rapido = dijkstra_velocidade(vias, vertice_obter_id(vertice_origem),
+                                               vertice_obter_id(vertice_destino));
+    if (caminho_rapido == NULL)
+        return NULL;
+
+    fprintf(arquivo_log, "Caminho mais curto de R%d a R%d:\n", registrador1, registrador2);
+
+    Animacao animacao_curto = dijkstra_criar_representacao(
+        caminho_curto, svg_atual, cor_curto, ponto_origem, ponto_destino, arquivo_log);
+
+    Animacao animacao_rapido = dijkstra_criar_representacao(
+        caminho_rapido, svg_atual, cor_rapido, ponto_origem, ponto_destino, arquivo_log);
+
+    // Animação do caminho mais curto.
+    animacao_definir_margem_x(animacao_curto, 10);
+    animacao_definir_margem_y(animacao_curto, 10);
+    // Descrição textual do caminho mais curto.
+    descricao_textual(caminho_curto, arquivo_log);
+
+    // Animação do caminho mais rápido.
+    animacao_definir_margem_x(animacao_rapido, 0);
+    animacao_definir_margem_y(animacao_rapido, 0);
+    // Descrição textual do caminho mais rapido
+    descricao_textual(caminho_rapido, arquivo_log);
+
+    // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
+    if (strcmp(sufixo, "-") == 0)
+        return NULL;
+
+    // Retorna o novo sufixo.
+    char *novo_sufixo = malloc(sizeof *sufixo * 1024);
+    novo_sufixo[0] = '\0';
+    strcpy(novo_sufixo, sufixo);
+    return novo_sufixo;
+}
+
+// Salva em uma tabela todos os casos que ultrapassam um valor máximo e os valores abaixo do limite
+// em uma lista.
+void salvar_casos(Caso caso, void *infos[3]) {
+    const int *max = infos[0];
+    const Tabela cep_caso_acima = infos[1];
+    const Lista lista_casos_abaixo = infos[2];
+    if (caso_obter_numero_de_casos(caso) > *max)
+        tabela_inserir(cep_caso_acima, caso_obter_cep_quadra(caso), caso);
+    else
+        lista_inserir_final(lista_casos_abaixo, caso);
+}
+
+void interditar_face_quadra(Tabela cep_quadra, Tabela cep_caso, const char *cep, Lista formas,
+                            Tabela faces_com_casos) {
+    const Caso caso = tabela_buscar(cep_caso, cep);
+    const QtNo no = tabela_buscar(cep_quadra, cep);
+    // A face não possui casos acima do limite.
+    if (caso == NULL || no == NULL)
+        return;
+    const Quadra quadra = quadtree_obter_info(no);
+    const char face = caso_obter_face_quadra(caso);
+
+    double x1 = 0;
+    double y1 = 0;
+    double x2 = 0;
+    double y2 = 0;
+    if (face == 'N') {
+        x1 = figura_obter_x_inicio(quadra);
+        y1 = figura_obter_y_fim(quadra) + 2;
+        x2 = figura_obter_x_fim(quadra);
+        y2 = y1;
+    } else if (face == 'S') {
+        x1 = figura_obter_x_inicio(quadra);
+        y1 = figura_obter_y_inicio(quadra) - 2;
+        x2 = figura_obter_x_fim(quadra);
+        y2 = y1;
+    } else if (face == 'L') {
+        x1 = figura_obter_x_inicio(quadra) - 2;
+        y1 = figura_obter_y_inicio(quadra);
+        x2 = x1;
+        y2 = figura_obter_y_fim(quadra);
+    } else if (face == 'O') {
+        x1 = figura_obter_x_fim(quadra) + 2;
+        y1 = figura_obter_y_inicio(quadra);
+        x2 = x1;
+        y2 = figura_obter_y_fim(quadra);
+    }
+
+    Linha barreira = linha_criar(x1, y1, x2, y2, "red");
+    linha_definir_espessura(barreira, 2);
+    lista_inserir_final(formas, barreira);
+
+    // Usa o cep da quadra e a face como chaves para a tabela.
+    char chave[500];
+    chave[0] = '\0';
+    snprintf(chave, 500, "%s%c", cep, face);
+
+    struct InfoFace *info = tabela_buscar(faces_com_casos, chave);
+    if (info == NULL) {
+        struct InfoFace *info = malloc(sizeof *info);
+        strcpy(info->cep, cep);
+        info->face = face;
+        info->num_casos = caso_obter_numero_de_casos(caso);
+        tabela_inserir(faces_com_casos, chave, info);
+    } else {
+        info->num_casos += caso_obter_numero_de_casos(caso);
+    }
+    tabela_remover(cep_caso, cep);
+}
+
+void interditar_ruas(QuadTree casos, Tabela relacoes, Grafo vias, Lista formas, const char *linha,
+                     FILE *arquivo_log) {
+    int *casos_max = malloc(sizeof *casos_max);
+    sscanf(linha, "bf %d", casos_max);
+
+    Tabela cep_casos_acima = tabela_criar(NULL);
+    Lista lista_casos_abaixo = lista_criar(NULL, NULL);
+    Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
+
+    void *infos[3] = {casos_max, cep_casos_acima, lista_casos_abaixo};
+
+    quadtree_percorrer_largura(casos, (visitaNo *) salvar_casos, infos);
+    free(casos_max);
+    casos_max = NULL;
+
+    Tabela faces_com_casos = tabela_criar(free);
+
+    // Verifica se as quadras ao lado da aresta possuem casos de covid que excedem o valor
+    // permitido.
+    int num_arestas = 0;
+    Aresta *arestas = grafo_obter_arestas(vias, &num_arestas);
+    for (int i = 0; i < num_arestas; i++) {
+        const Aresta aresta = arestas[i];
+        const char *cep_esquerda = aresta_obter_quadra_esquerda(aresta);
+        interditar_face_quadra(cep_quadra, cep_casos_acima, cep_esquerda, formas, faces_com_casos);
+        const char *cep_direita = aresta_obter_quadra_direita(aresta);
+        interditar_face_quadra(cep_quadra, cep_casos_acima, cep_direita, formas, faces_com_casos);
+    }
+    free(arestas);
+    arestas = NULL;
+    tabela_destruir(cep_casos_acima);
+    cep_casos_acima = NULL;
+
+    // Soma o valor dos casos que estão abaixo do limite mais estão na mesma face que um caso que
+    // está acima do limite.
+    for_each_lista(no, lista_casos_abaixo) {
+        const Caso caso = lista_obter_info(no);
+        // Usa o cep da quadra e a face como chaves para a tabela.
+        char chave[500];
+        chave[0] = '\0';
+        const char *cep = caso_obter_cep_quadra(caso);
+        snprintf(chave, 500, "%s%c", cep, caso_obter_face_quadra(caso));
+
+        struct InfoFace *info_face = tabela_buscar(faces_com_casos, chave);
+        if (info_face != NULL)
+            info_face->num_casos += caso_obter_numero_de_casos(caso);
+    }
+    lista_destruir(lista_casos_abaixo);
+    lista_casos_abaixo = NULL;
+
+    // Escreve os dados das faces interditadas.
+    Lista ceps_interditados = tabela_obter_chaves(faces_com_casos);
+    for_each_lista(no, ceps_interditados) {
+        const char *chave = lista_obter_info(no);
+        struct InfoFace *info_face = tabela_buscar(faces_com_casos, chave);
+        fprintf(arquivo_log, "Rua de cep %s e face %c foi interditada por ter %d casos\n",
+                info_face->cep, info_face->face, info_face->num_casos);
+    }
+
+    lista_destruir(ceps_interditados);
+    tabela_destruir(faces_com_casos);
+}
+
 char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registradores,
                                  Lista svg_atual, const char *linha, FILE *arquivo_log) {
     char sufixo[1024];
@@ -275,144 +545,6 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     novo_sufixo[0] = '\0';
     strncpy(novo_sufixo, sufixo, 1024);
     return novo_sufixo;
-}
-
-char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
-                            const char *linha, FILE *arquivo_log) {
-    char sufixo[1024];
-    char cor_curto[20];
-    char cor_rapido[20];
-    int registrador1 = -1;
-    int registrador2 = -1;
-
-    sscanf(linha, "p? %s R%d R%d %s %s", sufixo, &registrador1, &registrador2, cor_curto,
-           cor_rapido);
-    if (!checar_registrador_valido(registrador1) || !checar_registrador_valido(registrador2) ||
-        registradores[registrador1] == NULL || registradores[registrador2] == NULL)
-        return NULL;
-
-    QuadTree qt_vias = tabela_buscar(quadtrees, "vias");
-    Grafo vias = obter_vias(grafos);
-
-    if (vias == NULL)
-        return NULL;
-
-    const Ponto ponto_origem = registradores[registrador1];
-    const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
-                                                               ponto_obter_y(ponto_origem));
-    if (vertice_origem == NULL) {
-        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
-                  ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
-        return NULL;
-    }
-
-    const Ponto ponto_destino = registradores[registrador2];
-    const Vertice vertice_destino = quadtree_obter_mais_proximo(
-        qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
-    if (vertice_destino == NULL) {
-        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
-                  ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
-        return NULL;
-    }
-
-    Pilha caminho_curto = dijkstra_distancia(vias, vertice_obter_id(vertice_origem),
-                                             vertice_obter_id(vertice_destino));
-    if (caminho_curto == NULL)
-        return NULL;
-    Pilha caminho_rapido = dijkstra_velocidade(vias, vertice_obter_id(vertice_origem),
-                                               vertice_obter_id(vertice_destino));
-    if (caminho_rapido == NULL)
-        return NULL;
-
-    fprintf(arquivo_log, "Caminho mais curto de R%d a R%d:\n", registrador1, registrador2);
-
-    Animacao animacao_curto = dijkstra_criar_representacao(
-        caminho_curto, svg_atual, cor_curto, ponto_origem, ponto_destino, arquivo_log);
-
-    Animacao animacao_rapido = dijkstra_criar_representacao(
-        caminho_rapido, svg_atual, cor_rapido, ponto_origem, ponto_destino, arquivo_log);
-
-    // animação do caminho mais curto
-    animacao_definir_margem_x(animacao_curto, 10);
-    animacao_definir_margem_y(animacao_curto, 10);
-    // descrição textual do caminho mais curto
-    descricao_textual(caminho_curto, arquivo_log);
-
-    // animação do caminho mais rápdio
-    animacao_definir_margem_x(animacao_rapido, 0);
-    animacao_definir_margem_y(animacao_rapido, 0);
-    // descrição textual do caminho mais rapido
-    descricao_textual(caminho_rapido, arquivo_log);
-
-    // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
-    if (strcmp(sufixo, "-") == 0)
-        return NULL;
-
-    // Retorna o novo sufixo.
-    char *novo_sufixo = malloc(sizeof *sufixo * 1024);
-    novo_sufixo[0] = '\0';
-    strcpy(novo_sufixo, sufixo);
-    return novo_sufixo;
-}
-
-void descricao_textual(Pilha caminho, FILE *arquivo_log) {
-    const int num_pontos = pilha_obter_tamanho(caminho);
-    char *direcao = malloc(sizeof *direcao * 6);
-    char *direcao_aux = malloc(sizeof *direcao * 6);
-    char *nome_rua = malloc(sizeof *nome_rua * 100);
-
-    Vertice anterior = pilha_remover(caminho);
-    Vertice atual = pilha_remover(caminho);
-    descricao_obter_nome_rua(anterior, atual, nome_rua);
-    descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
-                                 vertice_obter_x(atual), vertice_obter_y(atual), direcao);
-    strcpy(direcao_aux, direcao);
-    fprintf(arquivo_log, "Iniciando representação textual do caminho mais curto:\n");
-    fprintf(arquivo_log, "Siga na direção %s na rua %s ", direcao, nome_rua);
-    for (int i = 0; i < num_pontos - 2; i++) {
-        anterior = atual;
-        atual = pilha_remover(caminho);
-        descricao_obter_nome_rua(anterior, atual, nome_rua);
-        descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
-                                     vertice_obter_x(atual), vertice_obter_y(atual), direcao);
-
-        // se mudou a direção, quer dizer que mudará a rua;
-        if (strcmp(direcao, direcao_aux) != 0) {
-            fprintf(arquivo_log, "até o cruzamento com a rua %s.", nome_rua);
-            fprintf(arquivo_log, " Siga na direção %s na rua %s ", direcao, nome_rua);
-            stpcpy(direcao_aux, direcao);
-        }
-    }
-    fprintf(arquivo_log, "Chegou ao destino.\n");
-}
-
-void descricao_obter_nome_rua(Vertice anterior, Vertice atual, char **nome_rua) {
-    Lista arestas = vertice_obter_arestas(anterior);
-    for_each_lista(no, arestas) {
-        if (strcmp(aresta_obter_destino(no), vertice_obter_id(atual)) == 0) {
-            strcpy(*nome_rua, aresta_obter_nome(no));
-        }
-    }
-}
-
-void descricao_determinar_direcao(double x_anterior, double y_anterior, double x_atual,
-                                  double y_atual, char **direcao) {
-    if (x_anterior == x_atual) {
-        if (y_anterior < y_atual) {
-            strcpy(*direcao, "sul");
-        }
-        if (y_anterior > y_atual) {
-            strcpy(*direcao, "norte");
-        }
-    }
-    if (y_anterior == y_atual) {
-        if (x_anterior < x_atual) {
-            strcpy(*direcao, "leste");
-        }
-        if (x_anterior > x_atual) {
-            strcpy(*direcao, "oeste");
-        }
-    }
 }
 
 char *analisar_vertices_contidos_envoltoria(Grafo vias, QuadTree casos, Lista formas,

@@ -10,6 +10,8 @@ Além disso são implementadas funções para buscar e remover informações, ta
 tabela_remover() respectivamente.
 */
 
+#include "lista.h"
+
 /*
 Foi usado 'typedef struct *' em vez de 'typedef void *' para permitir ao compilador diferenciar os
 tipos, não afetando o encapsulamento de dados!
@@ -35,7 +37,7 @@ Tabela tabela_criar(TabelaDestruirInfo destruir_info);
 Insere um elemento na tabela de espalhamento.
 Os parâmetros tabela e id não podem ser nulos!
 */
-void tabela_inserir(Tabela tabela, const char id[100], TabelaInfo info);
+void tabela_inserir(Tabela tabela, const char id[100], const TabelaInfo info);
 
 /*
 Acessa uma lista da tabela e posteriormente um nó dessa lista.
@@ -52,8 +54,14 @@ Retorna a informação removida. Caso o id não exista na tabela retorna NULL.
 TabelaInfo tabela_remover(Tabela tabela, const char id[100]);
 
 /*
+Retorna uma lista contendo todas as chaves de uma tabela.
+O parâmetro tabela não pode ser nulo!
+*/
+Lista tabela_obter_chaves(Tabela tabela);
+
+/*
 Libera a memória alocada em todos os do array e consequentemente todos os elementos das listas.
-O parâmetro tabela não pode ser nulo!.
+O parâmetro tabela não pode ser nulo!
 */
 void tabela_destruir(Tabela tabela);
 

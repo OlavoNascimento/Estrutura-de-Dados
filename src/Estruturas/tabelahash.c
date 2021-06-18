@@ -13,7 +13,7 @@
 
 // Elemento armazenado nas listas da tabela.
 struct Elemento {
-    char chave[100];
+    char chave[500];
     TabelaInfo info;
 };
 
@@ -104,7 +104,7 @@ void rehash(Tabela tabela) {
 }
 
 // Insere uma informação na tabela que pode ser acessada através do id fornecido.
-void tabela_inserir(Tabela tabela, const char id[100], TabelaInfo info) {
+void tabela_inserir(Tabela tabela, const char id[100], const TabelaInfo info) {
     if (id == NULL) {
         LOG_AVISO("Id nulo passado para tabela_inserir!\n");
         return;
@@ -182,6 +182,26 @@ TabelaInfo tabela_remover(Tabela tabela, const char id[100]) {
     }
 
     return info;
+}
+
+Lista tabela_obter_chaves(Tabela tabela) {
+    Lista chaves = lista_criar(NULL, free);
+    for (int i = 0; i < tabela->tamanho; i++) {
+        Lista balde = tabela->inf[i];
+        if (balde == NULL)
+            continue;
+        for_each_lista(no, balde) {
+            struct Elemento *elemento = lista_obter_info(no);
+            char *chave = malloc(sizeof *chave * 100);
+            if (chave == NULL) {
+                LOG_ERRO("Falha ao alocar memória!\n");
+                return NULL;
+            }
+            strcpy(chave, elemento->chave);
+            lista_inserir_final(chaves, chave);
+        }
+    }
+    return chaves;
 }
 
 void tabela_destruir(Tabela tabela) {

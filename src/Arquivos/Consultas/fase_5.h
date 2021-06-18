@@ -7,6 +7,7 @@ Este módulo define as funções de consulta que pertecem a quinta fase do proje
 
 #include <stdio.h>
 
+#include "../../Estruturas/grafo.h"
 #include "../../Estruturas/lista.h"
 #include "../../Estruturas/quadtree.h"
 #include "../../Estruturas/tabelahash.h"
@@ -47,18 +48,18 @@ destacadas.
 void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linha);
 
 /*
-Executa o comando pb? especificado no arquivo de consulta, calcula o menor caminho entre dois
-registradores utilizando a ciclovia como base.
-*/
-char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registradores,
-                                 Lista svg_atual, const char *linha, FILE *arquivo_log);
-
-/*
 Executa o comando p? especificado no arquivo de consulta, calcula o menor caminho e o caminho mais
 rápido entre dois registradores utilizando as vias como base.
 */
 char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
                             const char *linha, FILE *arquivo_log);
+
+/*
+Executa o comando bf especificado no arquivo de consulta, interditando as ruas que possuem mais
+casos do que o permitido.
+*/
+void interditar_ruas(QuadTree casos, Tabela relacoes, Grafo vias, Lista formas, const char *linha,
+                     FILE *arquivo_log);
 
 /*
 Executa o comando sp? especificado no arquivo de consulta, calcula o menor caminho e o caminho
@@ -68,4 +69,12 @@ dos casos de covid.
 char *analisar_vertices_contidos_envoltoria(Grafo vias, QuadTree casos, Lista formas,
                                             FILE *arquivo_log, Ponto *registradores,
                                             Lista svg_atual, const char *linha);
+
+/*
+Executa o comando pb? especificado no arquivo de consulta, calcula o menor caminho entre dois
+registradores utilizando a ciclovia como base.
+*/
+char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registradores,
+                                 Lista svg_atual, const char *linha, FILE *arquivo_log);
+
 #endif

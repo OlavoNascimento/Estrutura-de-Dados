@@ -189,6 +189,14 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             registrar_ponto(registradores, formas, linha);
         } else if (strcmp("ccv", comando) == 0) {
             escrever_grafo_svg(caminho_log, grafos, linha);
+        } else if (strcmp("p?", comando) == 0) {
+            // TODO Descomentar
+            // char *novo_sufixo = calcular_trajeto_vias(
+            //     quadtrees, grafos, registradores, estadoComandos.p.svg_atual, linha,
+            //     arquivo_log);
+            // atualizar_sufixo(estadoComandos.p, novo_sufixo, quadtrees, listas, caminho_log);
+        } else if (strcmp("bf", comando) == 0) {
+            interditar_ruas(casos, relacoes, vias, formas, linha, arquivo_log);
         } else if (strcmp("pb?", comando) == 0) {
             char *novo_sufixo = calcular_caminho_ciclo_via(
                 quadtrees, grafos, registradores, estadoComandos.pb.svg_atual, linha, arquivo_log);
@@ -196,6 +204,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         }
     }
 
+    if (strlen(estadoComandos.p.sufixo_atual) != 0)
+        escrever_svg_caminho(estadoComandos.p, quadtrees, listas, caminho_log);
     if (strlen(estadoComandos.pb.sufixo_atual) != 0)
         escrever_svg_caminho(estadoComandos.pb, quadtrees, listas, caminho_log);
 

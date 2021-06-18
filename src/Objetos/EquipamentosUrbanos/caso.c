@@ -24,6 +24,8 @@ struct Caso_s {
     double arredondamento_borda;
     bool borda_tracejada;
     int numero_de_casos;
+    char cep_quadra[100];
+    char face;
 };
 
 const char *caso_obter_tipo() {
@@ -120,6 +122,8 @@ Caso caso_criar(int casos, Quadra quadra, char face, int numero) {
     caso->borda_tracejada = false;
     caso->espessura_borda = 1;
     caso->numero_de_casos = casos;
+    strcpy(caso->cep_quadra, quadra_obter_id(quadra));
+    caso->face = face;
 
     quadra_inicializar_coordenada(&caso->x, &caso->y, caso->largura, caso->altura, quadra, face,
                                   numero);
@@ -140,6 +144,16 @@ Caso caso_ler(const char *linha, Quadra quadra) {
 // Retorna o número de casos armazenado em um caso.
 int caso_obter_numero_de_casos(Caso caso) {
     return caso->numero_de_casos;
+}
+
+// Retorna o cep da quadra onde o caso está contido.
+const char *caso_obter_cep_quadra(Caso caso) {
+    return caso->cep_quadra;
+}
+
+// Retorna a face da quadra onde o caso está contido.
+char caso_obter_face_quadra(Caso caso) {
+    return caso->face;
 }
 
 // Retorna a coordenada x de um caso.

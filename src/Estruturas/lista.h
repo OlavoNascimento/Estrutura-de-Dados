@@ -57,7 +57,7 @@ Insere um elemento no final da lista.
 Ambos os parâmetros não podem ser nulos, o parâmetro lista deve ser uma lista existente.
 Retorna o endereço para o elemento adicionado.
 */
-ListaNo lista_inserir_final(Lista lista, ListaInfo info);
+ListaNo lista_inserir_final(Lista lista, const ListaInfo info);
 
 /*
 Insere um elemento posterior a um determinado nó "p".

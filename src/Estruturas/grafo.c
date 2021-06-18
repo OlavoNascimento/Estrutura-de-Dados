@@ -84,6 +84,10 @@ bool aumentar_tamanho_grafo(Grafo grafo) {
 }
 
 Vertice grafo_inserir_vertice(Grafo grafo, const char *id, double x, double y) {
+    if (id == NULL) {
+        LOG_AVISO("Não é possível criar um vértice com id NULL!\n");
+        return NULL;
+    }
     if (grafo->tamanho_atual >= grafo->tamanho_maximo && !aumentar_tamanho_grafo(grafo)) {
         LOG_AVISO("Falha ao adicionar vértice a um grafo!\n");
         return NULL;
@@ -136,19 +140,22 @@ Vertice grafo_remover_vertice(Grafo grafo, const char *id) {
     const Vertice vertice_removido = grafo->vertices[*indice_atual];
 
     int ultimo_indice = grafo->tamanho_atual - 1;
-    if (ultimo_indice == *indice_atual)
+    while (ultimo_indice == *indice_atual)
         ultimo_indice--;
 
-    if (ultimo_indice > 0) {
+    if (ultimo_indice > *indice_atual) {
         // Move o último vértice para a posição atual.
         const Vertice ultimo_vertice = grafo->vertices[ultimo_indice];
         int *indice_removido = tabela_remover(grafo->id_indice, vertice_obter_id(ultimo_vertice));
         grafo->vertices[*indice_removido] = NULL;
+
         free(indice_removido);
+        indice_removido = NULL;
 
         grafo->vertices[*indice_atual] = ultimo_vertice;
         tabela_inserir(grafo->id_indice, vertice_obter_id(ultimo_vertice), indice_atual);
     } else {
+        grafo->vertices[*indice_atual] = NULL;
         free(indice_atual);
     }
     grafo->tamanho_atual--;

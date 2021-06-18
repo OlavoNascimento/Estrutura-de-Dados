@@ -57,6 +57,20 @@ Retorna o número de casos.
 int caso_obter_numero_de_casos(Caso caso);
 
 /*
+Retorna o cep da quadra onde o caso está contido.
+O parâmetro caso não pode ser nulo.
+Retorna o cep da quadra.
+*/
+const char *caso_obter_cep_quadra(Caso caso);
+
+/*
+Retorna a face da quadra onde o caso está contido.
+O parâmetro caso não pode ser nulo.
+Retorna a face da quadra.
+*/
+char caso_obter_face_quadra(Caso caso);
+
+/*
 Obtém a coordenada x de um caso.
 O parâmetro caso não pode ser nulo.
 Retorna a coordenada x de um caso.

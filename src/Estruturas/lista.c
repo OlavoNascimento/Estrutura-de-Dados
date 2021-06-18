@@ -38,7 +38,7 @@ Lista lista_criar(ObterIdentificadorLista obter_identificador_info,
     return lista;
 }
 
-ListaNo lista_inserir_final(Lista lista, ListaInfo info) {
+ListaNo lista_inserir_final(Lista lista, const ListaInfo info) {
     if (info == NULL) {
         LOG_AVISO("Informação nula passada para lista_inserir_final!\n");
         return NULL;
