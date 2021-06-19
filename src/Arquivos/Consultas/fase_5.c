@@ -213,70 +213,6 @@ void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linh
     free(caminho_arquivo);
 }
 
-void descricao_obter_nome_rua(Vertice anterior, Vertice atual, char *nome_rua) {
-    Lista arestas = vertice_obter_arestas(anterior);
-    for_each_lista(no, arestas) {
-        Aresta aresta = lista_obter_info(no);
-        if (strcmp(aresta_obter_destino(aresta), vertice_obter_id(atual)) == 0) {
-            strcpy(nome_rua, aresta_obter_nome(aresta));
-        }
-    }
-}
-
-void descricao_determinar_direcao(double x_anterior, double y_anterior, double x_atual,
-                                  double y_atual, char *direcao) {
-    if (x_anterior == x_atual) {
-        if (y_anterior < y_atual) {
-            strcpy(direcao, "sul");
-        }
-        if (y_anterior > y_atual) {
-            strcpy(direcao, "norte");
-        }
-    }
-    if (y_anterior == y_atual) {
-        if (x_anterior < x_atual) {
-            strcpy(direcao, "leste");
-        }
-        if (x_anterior > x_atual) {
-            strcpy(direcao, "oeste");
-        }
-    }
-}
-
-void descricao_textual(Pilha caminho, FILE *arquivo_log) {
-    const int num_pontos = pilha_obter_tamanho(caminho);
-    char *direcao = malloc(sizeof *direcao * 6);
-    char *direcao_aux = malloc(sizeof *direcao * 6);
-    char *nome_rua = malloc(sizeof *nome_rua * 100);
-
-    Vertice anterior = pilha_remover(caminho);
-    Vertice atual = pilha_remover(caminho);
-    descricao_obter_nome_rua(anterior, atual, nome_rua);
-    descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
-                                 vertice_obter_x(atual), vertice_obter_y(atual), direcao);
-    strcpy(direcao_aux, direcao);
-    fprintf(arquivo_log, "Iniciando representação textual do caminho mais curto:\n");
-    fprintf(arquivo_log, "Siga na direção %s na rua %s ", direcao, nome_rua);
-    for (int i = 0; i < num_pontos - 2; i++) {
-        anterior = atual;
-        atual = pilha_remover(caminho);
-        descricao_obter_nome_rua(anterior, atual, nome_rua);
-        descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
-                                     vertice_obter_x(atual), vertice_obter_y(atual), direcao);
-
-        // se mudou a direção, quer dizer que mudará a rua;
-        if (strcmp(direcao, direcao_aux) != 0) {
-            fprintf(arquivo_log, "até o cruzamento com a rua %s.", nome_rua);
-            fprintf(arquivo_log, " Siga na direção %s na rua %s ", direcao, nome_rua);
-            strcpy(direcao_aux, direcao);
-        }
-    }
-    fprintf(arquivo_log, "Chegou ao destino.\n");
-    free(direcao);
-    free(direcao_aux);
-    free(nome_rua);
-}
-
 char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradores, Lista svg_atual,
                             const char *linha, FILE *arquivo_log) {
     char sufixo[1024];
@@ -324,24 +260,16 @@ char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradore
         return NULL;
 
     fprintf(arquivo_log, "Caminho mais curto de R%d a R%d:\n", registrador1, registrador2);
-
     Animacao animacao_curto = dijkstra_criar_representacao(
         caminho_curto, svg_atual, cor_curto, ponto_origem, ponto_destino, arquivo_log);
+    animacao_definir_margem_x(animacao_curto, 2);
+    animacao_definir_margem_y(animacao_curto, 2);
 
+    fprintf(arquivo_log, "\nCaminho mais rápido de R%d a R%d:\n", registrador1, registrador2);
     Animacao animacao_rapido = dijkstra_criar_representacao(
         caminho_rapido, svg_atual, cor_rapido, ponto_origem, ponto_destino, arquivo_log);
-
-    // Animação do caminho mais curto.
-    animacao_definir_margem_x(animacao_curto, 10);
-    animacao_definir_margem_y(animacao_curto, 10);
-    // Descrição textual do caminho mais curto.
-    descricao_textual(caminho_curto, arquivo_log);
-
-    // Animação do caminho mais rápido.
-    animacao_definir_margem_x(animacao_rapido, 0);
-    animacao_definir_margem_y(animacao_rapido, 0);
-    // Descrição textual do caminho mais rapido
-    descricao_textual(caminho_rapido, arquivo_log);
+    animacao_definir_margem_x(animacao_rapido, -4);
+    animacao_definir_margem_y(animacao_rapido, -4);
 
     // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
     if (strcmp(sufixo, "-") == 0)
@@ -366,6 +294,8 @@ void salvar_casos(Caso caso, void *infos[3]) {
         lista_inserir_final(lista_casos_abaixo, caso);
 }
 
+// Caso uma quadra tenha um caso acima da média uma linha é criada na face apropriada e o número de
+// casos presentes é salvo para ser escrito posteriormente no arquivo de log.
 void interditar_face_quadra(Tabela cep_quadra, Tabela cep_caso, const char *cep, Lista formas,
                             Tabela faces_com_casos) {
     const Caso caso = tabela_buscar(cep_caso, cep);
@@ -413,12 +343,15 @@ void interditar_face_quadra(Tabela cep_quadra, Tabela cep_caso, const char *cep,
 
     struct InfoFace *info = tabela_buscar(faces_com_casos, chave);
     if (info == NULL) {
+        // Caso seja o primeiro caso acima do limite máximo na face da quadra, salva seu número de
+        // casos na tabela.
         struct InfoFace *info = malloc(sizeof *info);
         strcpy(info->cep, cep);
         info->face = face;
         info->num_casos = caso_obter_numero_de_casos(caso);
         tabela_inserir(faces_com_casos, chave, info);
     } else {
+        // Caso já exista um caso na face o número de casos é somado ao valor atual.
         info->num_casos += caso_obter_numero_de_casos(caso);
     }
     tabela_remover(cep_caso, cep);
@@ -448,8 +381,10 @@ void interditar_ruas(QuadTree casos, Tabela relacoes, Grafo vias, Lista formas, 
     for (int i = 0; i < num_arestas; i++) {
         const Aresta aresta = arestas[i];
         const char *cep_esquerda = aresta_obter_quadra_esquerda(aresta);
+        // TODO Remover aresta do grafo
         interditar_face_quadra(cep_quadra, cep_casos_acima, cep_esquerda, formas, faces_com_casos);
         const char *cep_direita = aresta_obter_quadra_direita(aresta);
+        // TODO Remover aresta do grafo
         interditar_face_quadra(cep_quadra, cep_casos_acima, cep_direita, formas, faces_com_casos);
     }
     free(arestas);
@@ -482,6 +417,7 @@ void interditar_ruas(QuadTree casos, Tabela relacoes, Grafo vias, Lista formas, 
         fprintf(arquivo_log, "Rua de cep %s e face %c foi interditada por ter %d casos\n",
                 info_face->cep, info_face->face, info_face->num_casos);
     }
+    fprintf(arquivo_log, "\n");
 
     lista_destruir(ceps_interditados);
     tabela_destruir(faces_com_casos);

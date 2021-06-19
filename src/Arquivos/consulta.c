@@ -61,16 +61,16 @@ void escrever_svg_caminho(struct EstadoComando estado_atual, Tabela quadtrees, T
 
 // Verifica se o sufixo precisa ser atualizado, caso um novo sufixo exista o arquivo svg do sufixo
 // antigo é criado.
-void atualizar_sufixo(struct EstadoComando estado_atual, char *novo_sufixo, Tabela quadtrees,
+void atualizar_sufixo(struct EstadoComando *estado_atual, char *novo_sufixo, Tabela quadtrees,
                       Tabela listas, const char *caminho_log) {
     if (novo_sufixo == NULL)
         return;
-    if (strlen(estado_atual.sufixo_atual) > 0) {
-        escrever_svg_caminho(estado_atual, quadtrees, listas, caminho_log);
-        lista_destruir(estado_atual.svg_atual);
-        estado_atual.svg_atual = lista_criar(NULL, NULL);
+    if (strlen(estado_atual->sufixo_atual) > 0) {
+        escrever_svg_caminho(*estado_atual, quadtrees, listas, caminho_log);
+        lista_destruir(estado_atual->svg_atual);
+        estado_atual->svg_atual = lista_criar(NULL, NULL);
     }
-    strcpy(estado_atual.sufixo_atual, novo_sufixo);
+    strcpy(estado_atual->sufixo_atual, novo_sufixo);
     free(novo_sufixo);
     novo_sufixo = NULL;
 }
@@ -190,23 +190,21 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
         } else if (strcmp("ccv", comando) == 0) {
             escrever_grafo_svg(caminho_log, grafos, linha);
         } else if (strcmp("p?", comando) == 0) {
-            // TODO Descomentar
-            // char *novo_sufixo = calcular_trajeto_vias(
-            //     quadtrees, grafos, registradores, estadoComandos.p.svg_atual, linha,
-            //     arquivo_log);
-            // atualizar_sufixo(estadoComandos.p, novo_sufixo, quadtrees, listas, caminho_log);
+            char *novo_sufixo = calcular_trajeto_vias(
+                quadtrees, grafos, registradores, estadoComandos.p.svg_atual, linha, arquivo_log);
+            atualizar_sufixo(&estadoComandos.p, novo_sufixo, quadtrees, listas, caminho_log);
         } else if (strcmp("bf", comando) == 0) {
             interditar_ruas(casos, relacoes, vias, formas, linha, arquivo_log);
         } else if (strcmp("pb?", comando) == 0) {
             char *novo_sufixo = calcular_caminho_ciclo_via(
                 quadtrees, grafos, registradores, estadoComandos.pb.svg_atual, linha, arquivo_log);
-            atualizar_sufixo(estadoComandos.pb, novo_sufixo, quadtrees, listas, caminho_log);
+            atualizar_sufixo(&estadoComandos.pb, novo_sufixo, quadtrees, listas, caminho_log);
         }
     }
 
-    if (strlen(estadoComandos.p.sufixo_atual) != 0)
+    if (strlen(estadoComandos.p.sufixo_atual) > 0)
         escrever_svg_caminho(estadoComandos.p, quadtrees, listas, caminho_log);
-    if (strlen(estadoComandos.pb.sufixo_atual) != 0)
+    if (strlen(estadoComandos.pb.sufixo_atual) > 0)
         escrever_svg_caminho(estadoComandos.pb, quadtrees, listas, caminho_log);
 
     lista_destruir(estadoComandos.p.svg_atual);

@@ -1,6 +1,7 @@
 #include <float.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../Estruturas/grafo.h"
 #include "../Estruturas/lista.h"
@@ -127,6 +128,36 @@ Pilha dijkstra_velocidade(Grafo grafo, const char *id_origem, const char *id_des
     return dijkstra(grafo, id_origem, id_destino, aresta_obter_velocidade);
 }
 
+const char *descricao_determinar_direcao(double x_anterior, double y_anterior, double x_atual,
+                                         double y_atual) {
+    if (x_anterior == x_atual) {
+        if (y_atual < y_anterior)
+            return "sul";
+        if (y_atual > y_anterior)
+            return "norte";
+    } else if (y_anterior == y_atual) {
+        if (x_atual < x_anterior)
+            return "leste";
+        if (x_atual > x_anterior)
+            return "oeste";
+    }
+    if (x_atual > x_anterior && y_atual > y_anterior)
+        return "noroeste";
+    if (x_atual < x_anterior && y_atual > y_anterior)
+        return "nordeste";
+    if (x_atual > x_anterior && y_atual < y_anterior)
+        return "sudoeste";
+    if (x_atual < x_anterior && y_atual < y_anterior)
+        return "sudeste";
+    return "";
+}
+
+const char *obter_nome_rua(Vertice anterior, Vertice atual) {
+    const Lista arestas = vertice_obter_arestas(anterior);
+    const Aresta rua = lista_obter_info(lista_buscar(arestas, vertice_obter_id(atual)));
+    return aresta_obter_nome(rua);
+}
+
 // Cria um ponto animado que percorre um caminho.
 // A função retorna a animação criada caso ela precise ser modificada.
 Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *cor_caminho,
@@ -159,23 +190,33 @@ Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *co
     Ponto *pontos = malloc(sizeof *pontos * num_pontos);
     int i = 0;
     // Utiliza o ponto de origem como primeiro ponto, não o vértice inicial.
-    Vertice anterior = pilha_remover(caminho);
     pontos[i++] = ponto_criar(ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+
+    Vertice anterior = pilha_remover(caminho);
     pontos[i++] = ponto_criar(vertice_obter_x(anterior), vertice_obter_y(anterior));
-    fprintf(arquivo_log, "Avance do ponto de origem (%lf, %lf) para o vértice %s\n",
-            ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem), vertice_obter_id(anterior));
+
+    char direcao_anterior[1024];
+    direcao_anterior[0] = '\0';
 
     while (i < num_pontos - 1) {
         Vertice atual = pilha_remover(caminho);
-        fprintf(arquivo_log, "Avance do vértice %s para o vértice %s\n", vertice_obter_id(anterior),
-                vertice_obter_id(atual));
+        const char *direcao =
+            descricao_determinar_direcao(vertice_obter_x(anterior), vertice_obter_y(anterior),
+                                         vertice_obter_x(atual), vertice_obter_y(atual));
+        const char *nome_rua = obter_nome_rua(anterior, atual);
+
+        if (strcmp(direcao, direcao_anterior) != 0) {
+            if (strlen(direcao_anterior) != 0)
+                fprintf(arquivo_log, " até o cruzamento com a rua %s.\n", nome_rua);
+            fprintf(arquivo_log, "Siga na direção %s na rua %s", direcao, nome_rua);
+            strcpy(direcao_anterior, direcao);
+        }
         pontos[i++] = ponto_criar(vertice_obter_x(atual), vertice_obter_y(atual));
         anterior = atual;
     }
 
+    fprintf(arquivo_log, ".\nChegou ao destino.\n");
     pontos[i++] = ponto_criar(ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
-    fprintf(arquivo_log, "Avance do vértice %s para o ponto de destino (%lf, %lf)\n",
-            vertice_obter_id(anterior), ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
 
     pilha_destruir(caminho);
     caminho = NULL;
