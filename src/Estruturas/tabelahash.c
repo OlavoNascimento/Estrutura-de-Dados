@@ -13,7 +13,7 @@
 
 // Elemento armazenado nas listas da tabela.
 struct Elemento {
-    char chave[500];
+    char chave[200];
     TabelaInfo info;
 };
 
@@ -48,7 +48,7 @@ Tabela tabela_criar(TabelaDestruirInfo destruir_info) {
 }
 
 // Função utilizada para transformar uma string em número.
-int chave_string(const char id[100], int tamanho_tabela) {
+int chave_string(const char id[200], int tamanho_tabela) {
     int soma = 0;
     int pesos[] = {47, 43, 41, 37, 31, 29, 23, 19, 17, 13, 11, 7, 5, 3, 2};
     int tamanho = strlen(id) > 15 ? 15 : strlen(id);
@@ -104,7 +104,7 @@ void rehash(Tabela tabela) {
 }
 
 // Insere uma informação na tabela que pode ser acessada através do id fornecido.
-void tabela_inserir(Tabela tabela, const char id[100], const TabelaInfo info) {
+void tabela_inserir(Tabela tabela, const char id[200], const TabelaInfo info) {
     if (id == NULL) {
         LOG_AVISO("Id nulo passado para tabela_inserir!\n");
         return;
@@ -132,7 +132,7 @@ void tabela_inserir(Tabela tabela, const char id[100], const TabelaInfo info) {
         rehash(tabela);
 }
 
-TabelaInfo tabela_buscar(Tabela tabela, const char id[100]) {
+TabelaInfo tabela_buscar(Tabela tabela, const char id[200]) {
     if (tabela == NULL) {
         LOG_AVISO("Tabela de espalhamento nula passada para tabela_buscar!\n");
         return NULL;
@@ -155,7 +155,7 @@ TabelaInfo tabela_buscar(Tabela tabela, const char id[100]) {
     return elemento->info;
 }
 
-TabelaInfo tabela_remover(Tabela tabela, const char id[100]) {
+TabelaInfo tabela_remover(Tabela tabela, const char id[200]) {
     if (id == NULL) {
         LOG_AVISO("Id nulo passado para tabela_remover!\n");
         return NULL;

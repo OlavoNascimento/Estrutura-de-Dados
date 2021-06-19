@@ -195,7 +195,7 @@ void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
 }
 
 void grafo_remover_aresta(Grafo grafo, const char *origem, const char *destino) {
-    if (origem == NULL) {
+    if (origem == NULL || destino == NULL) {
         LOG_AVISO("Valor nulo passado para grafo_remover_aresta\n");
         return;
     }
@@ -209,7 +209,7 @@ void grafo_remover_aresta(Grafo grafo, const char *origem, const char *destino) 
     Lista arestas = grafo->vertices[*indice_origem]->arestas;
     ListaNo no = lista_buscar(arestas, destino);
     if (no != NULL) {
-        ListaInfo aresta = lista_remover(arestas, no);
+        Aresta aresta = lista_remover(arestas, no);
         free(aresta);
     }
 }
@@ -299,8 +299,8 @@ Aresta *grafo_obter_arestas(Grafo grafo, int *tamanho_vetor) {
             continue;
 
         // Aumenta o tamanho do vetor
-        num_arestas_grafo += lista_obter_tamanho(arestas);
-        Aresta *temp = realloc(arestas_grafo, sizeof *temp * num_arestas_grafo);
+        Aresta *temp = realloc(arestas_grafo,
+                               sizeof *temp * (num_arestas_grafo + lista_obter_tamanho(arestas)));
         if (temp == NULL) {
             LOG_ERRO("Erro ao alocar memória!\n");
             free(arestas_grafo);
@@ -308,6 +308,7 @@ Aresta *grafo_obter_arestas(Grafo grafo, int *tamanho_vetor) {
         }
         arestas_grafo = temp;
 
+        num_arestas_grafo += lista_obter_tamanho(arestas);
         for_each_lista(no, arestas) {
             arestas_grafo[indice_atual] = lista_obter_info(no);
             indice_atual++;

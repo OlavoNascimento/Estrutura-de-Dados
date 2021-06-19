@@ -47,7 +47,7 @@ void escrever_svg_caminho(struct EstadoComando estado_atual, Tabela quadtrees, T
     Lista formas = tabela_buscar(listas, "formas");
 
     char *diretorios = extrair_nome_diretorio(caminho_log);
-    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", estado_atual.sufixo_atual, ".svg");
+    char *nome_arquivo = alterar_extensao(caminho_log, 2, estado_atual.sufixo_atual, ".svg");
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
     printf("Arquivo %s: %s\n", estado_atual.nome_comando, caminho_arquivo);
 
@@ -194,7 +194,7 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
                 quadtrees, grafos, registradores, estadoComandos.p.svg_atual, linha, arquivo_log);
             atualizar_sufixo(&estadoComandos.p, novo_sufixo, quadtrees, listas, caminho_log);
         } else if (strcmp("bf", comando) == 0) {
-            interditar_ruas(casos, relacoes, vias, formas, linha, arquivo_log);
+            interditar_ruas(casos, relacoes, grafos, formas, linha, arquivo_log);
         } else if (strcmp("pb?", comando) == 0) {
             char *novo_sufixo = calcular_caminho_ciclo_via(
                 quadtrees, grafos, registradores, estadoComandos.pb.svg_atual, linha, arquivo_log);

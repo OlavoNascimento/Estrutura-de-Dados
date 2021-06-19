@@ -37,21 +37,21 @@ Tabela tabela_criar(TabelaDestruirInfo destruir_info);
 Insere um elemento na tabela de espalhamento.
 Os parâmetros tabela e id não podem ser nulos!
 */
-void tabela_inserir(Tabela tabela, const char id[100], const TabelaInfo info);
+void tabela_inserir(Tabela tabela, const char id[200], const TabelaInfo info);
 
 /*
 Acessa uma lista da tabela e posteriormente um nó dessa lista.
 Nenhum parâmetro pode ser nulo!
 Retorna a informação buscada. Caso o id não exista na tabela retorna NULL.
 */
-TabelaInfo tabela_buscar(Tabela tabela, const char id[100]);
+TabelaInfo tabela_buscar(Tabela tabela, const char id[200]);
 
 /*
 Remove o elemento de id especificado da tabela.
 Nenhum parâmetro pode ser nulo!
 Retorna a informação removida. Caso o id não exista na tabela retorna NULL.
 */
-TabelaInfo tabela_remover(Tabela tabela, const char id[100]);
+TabelaInfo tabela_remover(Tabela tabela, const char id[200]);
 
 /*
 Retorna uma lista contendo todas as chaves de uma tabela.

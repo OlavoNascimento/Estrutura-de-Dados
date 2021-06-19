@@ -200,7 +200,7 @@ void escrever_grafo_svg(const char *caminho_log, Tabela grafos, const char *linh
         return;
 
     char *diretorios = extrair_nome_diretorio(caminho_log);
-    char *nome_arquivo = alterar_extensao(caminho_log, 3, "-", sufixo, ".svg");
+    char *nome_arquivo = alterar_extensao(caminho_log, 2, sufixo, ".svg");
     char *caminho_arquivo = unir_caminhos(diretorios, nome_arquivo);
     printf("Arquivo ccv: %s\n", caminho_arquivo);
 
@@ -296,14 +296,8 @@ void salvar_casos(Caso caso, void *infos[3]) {
 
 // Caso uma quadra tenha um caso acima da média uma linha é criada na face apropriada e o número de
 // casos presentes é salvo para ser escrito posteriormente no arquivo de log.
-void interditar_face_quadra(Tabela cep_quadra, Tabela cep_caso, const char *cep, Lista formas,
+void interditar_face_quadra(Caso caso, Quadra quadra, const char *cep, Lista formas,
                             Tabela faces_com_casos) {
-    const Caso caso = tabela_buscar(cep_caso, cep);
-    const QtNo no = tabela_buscar(cep_quadra, cep);
-    // A face não possui casos acima do limite.
-    if (caso == NULL || no == NULL)
-        return;
-    const Quadra quadra = quadtree_obter_info(no);
     const char face = caso_obter_face_quadra(caso);
 
     double x1 = 0;
@@ -346,6 +340,10 @@ void interditar_face_quadra(Tabela cep_quadra, Tabela cep_caso, const char *cep,
         // Caso seja o primeiro caso acima do limite máximo na face da quadra, salva seu número de
         // casos na tabela.
         struct InfoFace *info = malloc(sizeof *info);
+        if (info == NULL) {
+            LOG_ERRO("Falha ao alocar memória!\n");
+            return;
+        }
         strcpy(info->cep, cep);
         info->face = face;
         info->num_casos = caso_obter_numero_de_casos(caso);
@@ -354,43 +352,88 @@ void interditar_face_quadra(Tabela cep_quadra, Tabela cep_caso, const char *cep,
         // Caso já exista um caso na face o número de casos é somado ao valor atual.
         info->num_casos += caso_obter_numero_de_casos(caso);
     }
-    tabela_remover(cep_caso, cep);
 }
 
-void interditar_ruas(QuadTree casos, Tabela relacoes, Grafo vias, Lista formas, const char *linha,
-                     FILE *arquivo_log) {
+// Verifica se uma quadra ultrapassa o limite permitido de casos, interditando a rua caso
+// necessário.
+bool checar_casos_quadra(const char *cep, Tabela cep_casos, Tabela cep_quadra, Lista formas,
+                         Tabela faces_com_casos) {
+    const Caso caso = tabela_buscar(cep_casos, cep);
+    const QtNo no = tabela_buscar(cep_quadra, cep);
+    // A face não possui casos acima do limite.
+    if (caso == NULL || no == NULL)
+        return false;
+
+    const Quadra quadra = quadtree_obter_info(no);
+    interditar_face_quadra(caso, quadra, cep, formas, faces_com_casos);
+    tabela_remover(cep_casos, cep);
+    return true;
+}
+
+void interditar_ruas(QuadTree casos, Tabela relacoes, Tabela grafos, Lista formas,
+                     const char *linha, FILE *arquivo_log) {
     int *casos_max = malloc(sizeof *casos_max);
     sscanf(linha, "bf %d", casos_max);
 
-    Tabela cep_casos_acima = tabela_criar(NULL);
-    Lista lista_casos_abaixo = lista_criar(NULL, NULL);
+    Grafo vias = tabela_buscar(grafos, "vias");
     Tabela cep_quadra = tabela_buscar(relacoes, "cep_quadra");
 
-    void *infos[3] = {casos_max, cep_casos_acima, lista_casos_abaixo};
+    Tabela cep_casos_acima = tabela_criar(NULL);
+    Lista lista_casos_abaixo = lista_criar(NULL, NULL);
 
+    void *infos[3] = {casos_max, cep_casos_acima, lista_casos_abaixo};
     quadtree_percorrer_largura(casos, (visitaNo *) salvar_casos, infos);
     free(casos_max);
     casos_max = NULL;
 
     Tabela faces_com_casos = tabela_criar(free);
+    Tabela quadras_nao_permitidas = tabela_criar(NULL);
 
     // Verifica se as quadras ao lado da aresta possuem casos de covid que excedem o valor
     // permitido.
     int num_arestas = 0;
+    bool ciclovia_invalido = false;
     Aresta *arestas = grafo_obter_arestas(vias, &num_arestas);
     for (int i = 0; i < num_arestas; i++) {
         const Aresta aresta = arestas[i];
         const char *cep_esquerda = aresta_obter_quadra_esquerda(aresta);
-        // TODO Remover aresta do grafo
-        interditar_face_quadra(cep_quadra, cep_casos_acima, cep_esquerda, formas, faces_com_casos);
         const char *cep_direita = aresta_obter_quadra_direita(aresta);
-        // TODO Remover aresta do grafo
-        interditar_face_quadra(cep_quadra, cep_casos_acima, cep_direita, formas, faces_com_casos);
+
+        // Checa se a quadra atual já não foi marcada como contaminada.
+        bool quadra_proibida = tabela_buscar(quadras_nao_permitidas, cep_esquerda) != NULL ||
+                               tabela_buscar(quadras_nao_permitidas, cep_direita) != NULL;
+
+        // Verifica se a quadra a esquerda precisa ser interditada.
+        if (checar_casos_quadra(cep_esquerda, cep_casos_acima, cep_quadra, formas,
+                                faces_com_casos)) {
+            tabela_inserir(quadras_nao_permitidas, cep_esquerda, vias);
+            quadra_proibida = true;
+        }
+
+        // Verifica se a quadra a direita precisa ser interditada.
+        if (checar_casos_quadra(cep_direita, cep_casos_acima, cep_quadra, formas,
+                                faces_com_casos)) {
+            tabela_inserir(quadras_nao_permitidas, cep_direita, vias);
+            quadra_proibida = true;
+        }
+
+        if (quadra_proibida) {
+            grafo_remover_aresta(vias, aresta_obter_origem(aresta), aresta_obter_destino(aresta));
+            ciclovia_invalido = true;
+        }
     }
     free(arestas);
     arestas = NULL;
     tabela_destruir(cep_casos_acima);
     cep_casos_acima = NULL;
+    tabela_destruir(quadras_nao_permitidas);
+    quadras_nao_permitidas = NULL;
+
+    // Caso uma aresta tenha sido removida a ciclovia atual não é mais válida e deve ser recriada.
+    if (ciclovia_invalido) {
+        Grafo ciclovias = tabela_remover(grafos, "ciclovias");
+        grafo_destruir(ciclovias);
+    }
 
     // Soma o valor dos casos que estão abaixo do limite mais estão na mesma face que um caso que
     // está acima do limite.
@@ -441,9 +484,6 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
         return NULL;
 
     const Ponto ponto_origem = registradores[registrador1];
-    Circulo circ_origem = circulo_criar("", 20, ponto_obter_x(ponto_origem),
-                                        ponto_obter_y(ponto_origem), "black", "purple");
-    lista_inserir_final(svg_atual, circ_origem);
     const Vertice vertice_origem = quadtree_obter_mais_proximo(qt_vias, ponto_obter_x(ponto_origem),
                                                                ponto_obter_y(ponto_origem));
     if (vertice_origem == NULL) {
@@ -453,9 +493,6 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     }
 
     const Ponto ponto_destino = registradores[registrador2];
-    Circulo circ_destino = circulo_criar("", 20, ponto_obter_x(ponto_destino),
-                                         ponto_obter_y(ponto_destino), "black", "purple");
-    lista_inserir_final(svg_atual, circ_destino);
     const Vertice vertice_destino = quadtree_obter_mais_proximo(
         qt_vias, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
     if (vertice_destino == NULL) {

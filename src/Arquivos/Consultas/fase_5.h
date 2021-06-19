@@ -58,8 +58,8 @@ char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradore
 Executa o comando bf especificado no arquivo de consulta, interditando as ruas que possuem mais
 casos do que o permitido.
 */
-void interditar_ruas(QuadTree casos, Tabela relacoes, Grafo vias, Lista formas, const char *linha,
-                     FILE *arquivo_log);
+void interditar_ruas(QuadTree casos, Tabela relacoes, Tabela grafos, Lista formas,
+                     const char *linha, FILE *arquivo_log);
 
 /*
 Executa o comando sp? especificado no arquivo de consulta, calcula o menor caminho e o caminho

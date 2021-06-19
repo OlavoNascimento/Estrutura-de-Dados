@@ -131,8 +131,7 @@ void animacao_escrever_svg(Animacao animacao, FILE *arquivo) {
             animacao->espessura_borda, animacao->opacidade);
 
     fprintf(arquivo, "\t\t<animateMotion dur='%ds' repeatCount='indefinite'>\n",
-            (int) max(
-                5, min(20, 0.1 * animacao->num_pontos));
+            (int) max(5, min(20, 0.1 * animacao->num_pontos)));
     fprintf(arquivo, "\t\t\t<mpath xlink:href='#%s'/>\n", animacao->id);
     fprintf(arquivo, "\t\t</animateMotion>\n");
 
