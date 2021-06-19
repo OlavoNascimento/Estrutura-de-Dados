@@ -58,14 +58,21 @@ static FiguraInterface animacao_criar_interface_figura() {
     return interface;
 }
 
-// Cria e inicializa um Animacao com os valores passados.
-Animacao animacao_criar(const char id[100], const char cor_borda[20],
-                        const char cor_preenchimento[20], const char cor_caminho[20],
-                        int num_pontos, Ponto *pontos) {
-    if (id == NULL) {
-        LOG_AVISO("Não é possível criar um círculo com id NULL!\n");
-        return NULL;
+void inicializar_id(char id[100]) {
+    const int tamanho = 30;
+    char caracteres[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    int i = 0;
+    while (i < tamanho - 1) {
+        int indice = rand() / (RAND_MAX / (sizeof caracteres - 1));
+        id[i] = caracteres[indice];
+        i++;
     }
+    id[i] = '\0';
+}
+
+// Cria e inicializa um Animacao com os valores passados.
+Animacao animacao_criar(const char cor_borda[20], const char cor_preenchimento[20],
+                        const char cor_caminho[20], int num_pontos, Ponto *pontos) {
     if (cor_borda == NULL) {
         LOG_AVISO("Não é possível criar uma animação com cor de borda NULL!\n");
         return NULL;
@@ -87,7 +94,7 @@ Animacao animacao_criar(const char id[100], const char cor_borda[20],
         LOG_ERRO("Falha ao alocar memória\n");
         return NULL;
     }
-    strcpy(animacao->id, id);
+    inicializar_id(animacao->id);
     animacao->raio = 10;
     animacao->x = ponto_obter_x(pontos[0]);
     animacao->y = ponto_obter_y(pontos[0]);
@@ -124,7 +131,8 @@ void animacao_escrever_svg(Animacao animacao, FILE *arquivo) {
             animacao->espessura_borda, animacao->opacidade);
 
     fprintf(arquivo, "\t\t<animateMotion dur='%ds' repeatCount='indefinite'>\n",
-            (int) max(5, min(20, 0.1 * animacao->num_pontos)));
+            (int) max(
+                5, min(20, 0.1 * animacao->num_pontos));
     fprintf(arquivo, "\t\t\t<mpath xlink:href='#%s'/>\n", animacao->id);
     fprintf(arquivo, "\t\t</animateMotion>\n");
 

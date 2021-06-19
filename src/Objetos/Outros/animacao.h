@@ -35,9 +35,8 @@ O id e as cores não podem ser nulos.
 O vetor de pontos deve possuir pelo menos dois pontos para criar um caminho.
 O usuário é responsável por liberar a memória alocada!
 */
-Animacao animacao_criar(const char id[100], const char cor_borda[20],
-                        const char cor_preenchimento[20], const char cor_caminho[20],
-                        int num_pontos, Ponto *pontos);
+Animacao animacao_criar(const char cor_borda[20], const char cor_preenchimento[20],
+                        const char cor_caminho[20], int num_pontos, Ponto *pontos);
 
 /*
 Escreve o código svg necessário para representar uma animação em um arquivo.

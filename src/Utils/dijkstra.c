@@ -221,14 +221,8 @@ Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *co
     pilha_destruir(caminho);
     caminho = NULL;
 
-    char id[100];
-    id[0] = '\0';
-    snprintf(id, 100, "(%.2lf,%.2lf)-(%.2lf,%.2lf)-%d", ponto_obter_x(ponto_origem),
-             ponto_obter_y(ponto_origem), ponto_obter_x(ponto_destino),
-             ponto_obter_y(ponto_destino), num_pontos);
-
     // Caminho a ser percorrido.
-    Animacao animacao = animacao_criar(id, "black", "purple", cor_caminho, num_pontos, pontos);
+    Animacao animacao = animacao_criar("black", "purple", cor_caminho, num_pontos, pontos);
     lista_inserir_antes(saida, animacao, no_origem);
 
     return animacao;
