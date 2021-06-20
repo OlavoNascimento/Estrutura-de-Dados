@@ -174,7 +174,7 @@ void grafo_inserir_aresta(Grafo grafo, const char *origem, const char *destino,
 
     const int *indice_origem = tabela_buscar(grafo->id_indice, origem);
     if (indice_origem == NULL) {
-        LOG_AVISO("Não é possível inserir uma aresta que não tem origem válida\n");
+        LOG_AVISO("Não é possível inserir uma aresta que tem origem inválida\n");
         return;
     }
 
@@ -357,7 +357,8 @@ Lista grafo_escrever_svg(Grafo grafo, Grafo mst) {
 
             // Se o vértice de origem e destino estão conectados na árvore geradora mínima a aresta
             // atual também faz parte da árvore.
-            const bool adjacente = grafo_checar_adjacente(mst, id_origem, id_destino);
+            const bool adjacente =
+                mst != NULL && grafo_checar_adjacente(mst, id_origem, id_destino);
             if (adjacente)
                 strncpy(cor_linha, "red", 6);
 

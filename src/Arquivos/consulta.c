@@ -195,6 +195,11 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
             atualizar_sufixo(&estadoComandos.p, novo_sufixo, quadtrees, listas, caminho_log);
         } else if (strcmp("bf", comando) == 0) {
             interditar_ruas(casos, relacoes, grafos, formas, linha, arquivo_log);
+        } else if (strcmp("sp?", comando) == 0) {
+            char *novo_sufixo = analisar_vertices_contidos_envoltoria(
+                vias, casos, formas, arquivo_log, registradores, estadoComandos.sp.svg_atual,
+                linha);
+            atualizar_sufixo(&estadoComandos.sp, novo_sufixo, quadtrees, listas, caminho_log);
         } else if (strcmp("pb?", comando) == 0) {
             char *novo_sufixo = calcular_caminho_ciclo_via(
                 quadtrees, grafos, registradores, estadoComandos.pb.svg_atual, linha, arquivo_log);
@@ -204,6 +209,8 @@ void consulta_ler(const char *caminho_consulta, const char *caminho_log, Tabela 
 
     if (strlen(estadoComandos.p.sufixo_atual) > 0)
         escrever_svg_caminho(estadoComandos.p, quadtrees, listas, caminho_log);
+    if (strlen(estadoComandos.sp.sufixo_atual) > 0)
+        escrever_svg_caminho(estadoComandos.sp, quadtrees, listas, caminho_log);
     if (strlen(estadoComandos.pb.sufixo_atual) > 0)
         escrever_svg_caminho(estadoComandos.pb, quadtrees, listas, caminho_log);
 

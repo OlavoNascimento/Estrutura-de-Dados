@@ -65,17 +65,15 @@ void relaxar_adjacentes(Grafo grafo, DijkstraInfos *infos, const int indice_orig
         const double custo = obter_custo_aresta(aresta);
 
         const char *id_destino = aresta_obter_destino(aresta);
-        const int *indice = grafo_obter_indice_vertice(grafo, id_destino);
-        if (indice == NULL) {
-            LOG_AVISO("Não é possível relaxar um vértice inválido\n");
-            return;
-        }
+        const int *indice_destino = grafo_obter_indice_vertice(grafo, id_destino);
+        if (indice_destino == NULL)
+            continue;
 
         // Analisa se o custo atualmente setado no indice do DijkstraInfos, que representa o
         // vertice de mesmo indice no grafo, é maior que o custo obtido pelo caminho anterior.
-        if (infos[*indice].custo > infos[indice_origem].custo + custo) {
-            infos[*indice].custo = infos[indice_origem].custo + custo;
-            infos[*indice].predecessor = indice_origem;
+        if (infos[*indice_destino].custo > infos[indice_origem].custo + custo) {
+            infos[*indice_destino].custo = infos[indice_origem].custo + custo;
+            infos[*indice_destino].predecessor = indice_origem;
         }
     }
 }
@@ -83,11 +81,17 @@ void relaxar_adjacentes(Grafo grafo, DijkstraInfos *infos, const int indice_orig
 // Retorna uma pilha com os vértices que definem o caminho da origem até o destino
 Pilha dijkstra(Grafo grafo, const char *id_origem, const char *id_destino,
                ObterCusto obter_custo_aresta) {
+    Pilha pilha_caminho = pilha_criar(NULL);
+    if (pilha_caminho == NULL) {
+        LOG_ERRO("Não foi possível alocar memória para pilha\n");
+        return NULL;
+    }
+
     const int *origem = grafo_obter_indice_vertice(grafo, id_origem);
     const int *destino = grafo_obter_indice_vertice(grafo, id_destino);
     if (origem == NULL || destino == NULL) {
-        LOG_AVISO("Dijkstra recebeu origem ou destino inválido!\n");
-        return NULL;
+        LOG_INFO("Dijkstra recebeu origem ou destino inválido!\n");
+        return pilha_caminho;
     }
 
     // Os indices do arranjo DijkstraInfos serão os mesmos indices dos vertices do grafo
@@ -98,13 +102,6 @@ Pilha dijkstra(Grafo grafo, const char *id_origem, const char *id_destino,
         infos[origem_atual].aberto = false;
         relaxar_adjacentes(grafo, infos, origem_atual, obter_custo_aresta);
         origem_atual = buscar_menor_custo(grafo, infos);
-    }
-
-    Pilha pilha_caminho = pilha_criar(NULL);
-    if (pilha_caminho == NULL) {
-        LOG_ERRO("Não foi possível alocar memória para pilha\n");
-        free(infos);
-        return NULL;
     }
 
     // Adiciona os vértices que formam o menor caminho a pilha.
@@ -181,8 +178,9 @@ Animacao dijkstra_criar_representacao(Pilha caminho, Lista saida, const char *co
     texto_definir_alinhamento(texto_destino, TEXTO_CENTRO);
     lista_inserir_final(saida, texto_destino);
 
-    if (pilha_obter_tamanho(caminho) == 0) {
+    if (caminho == NULL || pilha_obter_tamanho(caminho) == 0) {
         fprintf(arquivo_log, "Não há caminho disponível\n");
+        pilha_destruir(caminho);
         return NULL;
     }
 

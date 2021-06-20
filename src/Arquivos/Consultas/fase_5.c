@@ -20,6 +20,7 @@
 #include "../../Objetos/Outros/texto.h"
 #include "../../Utils/caminhos.h"
 #include "../../Utils/dijkstra.h"
+#include "../../Utils/graham_scan.h"
 #include "../../Utils/kruskal.h"
 #include "../../Utils/logging.h"
 
@@ -252,24 +253,24 @@ char *calcular_trajeto_vias(Tabela quadtrees, Tabela grafos, Ponto *registradore
 
     Pilha caminho_curto = dijkstra_distancia(vias, vertice_obter_id(vertice_origem),
                                              vertice_obter_id(vertice_destino));
-    if (caminho_curto == NULL)
-        return NULL;
     Pilha caminho_rapido = dijkstra_velocidade(vias, vertice_obter_id(vertice_origem),
                                                vertice_obter_id(vertice_destino));
-    if (caminho_rapido == NULL)
-        return NULL;
 
     fprintf(arquivo_log, "Caminho mais curto de R%d a R%d:\n", registrador1, registrador2);
     Animacao animacao_curto = dijkstra_criar_representacao(
         caminho_curto, svg_atual, cor_curto, ponto_origem, ponto_destino, arquivo_log);
-    animacao_definir_margem_x(animacao_curto, 2);
-    animacao_definir_margem_y(animacao_curto, 2);
+    if (animacao_curto != NULL) {
+        animacao_definir_margem_x(animacao_curto, 2);
+        animacao_definir_margem_y(animacao_curto, 2);
+    }
 
     fprintf(arquivo_log, "\nCaminho mais rápido de R%d a R%d:\n", registrador1, registrador2);
     Animacao animacao_rapido = dijkstra_criar_representacao(
         caminho_rapido, svg_atual, cor_rapido, ponto_origem, ponto_destino, arquivo_log);
-    animacao_definir_margem_x(animacao_rapido, -4);
-    animacao_definir_margem_y(animacao_rapido, -4);
+    if (animacao_rapido != NULL) {
+        animacao_definir_margem_x(animacao_rapido, -4);
+        animacao_definir_margem_y(animacao_rapido, -4);
+    }
 
     // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
     if (strcmp(sufixo, "-") == 0)
@@ -457,7 +458,7 @@ void interditar_ruas(QuadTree casos, Tabela relacoes, Tabela grafos, Lista forma
     for_each_lista(no, ceps_interditados) {
         const char *chave = lista_obter_info(no);
         struct InfoFace *info_face = tabela_buscar(faces_com_casos, chave);
-        fprintf(arquivo_log, "Rua de cep %s e face %c foi interditada por ter %d casos\n",
+        fprintf(arquivo_log, "Trecho de cep %s e face %c foi interditado por ter %d casos\n",
                 info_face->cep, info_face->face, info_face->num_casos);
     }
     fprintf(arquivo_log, "\n");
@@ -503,8 +504,6 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
 
     Pilha caminho = dijkstra_distancia(ciclovias, vertice_obter_id(vertice_origem),
                                        vertice_obter_id(vertice_destino));
-    if (caminho == NULL)
-        return NULL;
 
     fprintf(arquivo_log, "Caminho de R%d a R%d:\n", registrador1, registrador2);
     dijkstra_criar_representacao(caminho, svg_atual, cor, ponto_origem, ponto_destino, arquivo_log);
@@ -520,118 +519,27 @@ char *calcular_caminho_ciclo_via(Tabela quadtrees, Tabela grafos, Ponto *registr
     return novo_sufixo;
 }
 
-char *analisar_vertices_contidos_envoltoria(Grafo vias, QuadTree casos, Lista formas,
-                                            FILE *arquivo_log, Ponto *registradores,
-                                            Lista svg_atual, const char *linha) {
-    // obtém todos os casos
-    // 2000 = valor simbolico apenas para a ideia de obter tdos os casos da cidade
-    Lista total_casos = quadtree_chaves_dentro_retangulo(casos, 0, 0, 2000, 2000);
-    int tamanho = lista_obter_tamanho(total_casos);
-
-    // cria uma lista de figuras para utilizar no graham scan
-    Figura *lista_casos = malloc(tamanho * sizeof *lista_casos);
-    if (lista_casos == NULL) {
-        LOG_ERRO("Falha ao alocar memória!\n");
-        return;
-    }
-
-    // armazenando todos os casos como figura na lista
-    int j = 0;
-    for_each_lista(no_contido, total_casos) {
-        lista_casos[j++] = quadtree_obter_info(lista_obter_info(no_contido));
-    }
-
-    // graham scan retorna uma pilha com os vertices da envoltoria convexa
-    Pilha pilha_pontos = graham_scan(tamanho, &lista_casos);
-
-    // pilha utilizada para excluir os vertices do grafo
-    Pilha pilha_vertices = graham_scan(tamanho, &lista_casos);
-    QuadTree qt_vias_copia = quadtree_criar((funcGetChave *) vertice_obter_id);
-    Grafo vias_copia = criar_copia_grafo_vias(vias, qt_vias_copia);
-    excluir_vertices_contidos_envoltoria(vias_copia, pilha_vertices);
-    char *novo_sufixo = calcular_trajeto_vias_seguras(qt_vias_copia, vias_copia, registradores,
-                                                      svg_atual, linha, arquivo_log);
-
-    const int tamanho_pilha = pilha_obter_tamanho(pilha_pontos);
-
-    // Aloca uma matriz para armazenar os pontos encontrados.
-    double **pontos = malloc(sizeof *pontos * tamanho_pilha);
-    if (pontos == NULL) {
-        LOG_ERRO("Falha ao alocar memória!\n");
-        return;
-    }
-
-    int i = 0;
-    // Carrega os pontos encontrados na matriz.
-    while (!pilha_esta_vazia(pilha_pontos)) {
-        pontos[i] = malloc(sizeof **pontos * 2);
-        if (pontos[i] == NULL) {
-            LOG_ERRO("Falha ao alocar memória!\n");
-            free(pontos);
-
-            return;
-        }
-        Figura fig = pilha_remover(pilha_pontos);
-        pontos[i][0] = figura_obter_x_centro(fig);
-        pontos[i][1] = figura_obter_y_centro(fig);
-        i++;
-    }
-    pilha_destruir(pilha_pontos);
-    pilha_pontos = NULL;
-
-    Poligono poligono = poligono_criar(pontos, tamanho_pilha, "red", "yellow", 0.4);
-    lista_inserir_final(formas, poligono);
-    fprintf(arquivo_log, "\nÁrea da envoltória convexa: %lf\n", poligono_calcular_area(poligono));
-
-    quadtree_destruir(qt_vias_copia);
-    grafo_destruir(vias_copia);
-    return novo_sufixo;
-}
-
 Grafo criar_copia_grafo_vias(Grafo grafo, QuadTree qt_vias_copia) {
     Grafo grafo_copia = grafo_criar();
     for (int i = 0; i < grafo_obter_tamanho(grafo); i++) {
         Vertice vertice = grafo_obter_vertice_por_indice(grafo, i);
-        grafo_inserir_vertice(grafo, vertice_obter_id(vertice), vertice_obter_x(vertice),
+
+        grafo_inserir_vertice(grafo_copia, vertice_obter_id(vertice), vertice_obter_x(vertice),
                               vertice_obter_y(vertice));
         quadtree_inserir(qt_vias_copia,
                          ponto_criar(vertice_obter_x(vertice), vertice_obter_y(vertice)), vertice);
+
         Lista lista_arestas = vertice_obter_arestas(vertice);
         for_each_lista(no, lista_arestas) {
-            Aresta aresta_aux = lista_obter_info(no);
-            grafo_inserir_aresta(
-                grafo_copia, aresta_obter_origem(aresta_aux), aresta_obter_destino(aresta_aux),
-                aresta_obter_quadra_esquerda(aresta_aux), aresta_obter_quadra_direita(aresta_aux),
-                aresta_obter_comprimento(aresta_aux), aresta_obter_velocidade(aresta_aux),
-                aresta_obter_nome(aresta_aux));
+            Aresta aresta = lista_obter_info(no);
+            grafo_inserir_aresta(grafo_copia, aresta_obter_origem(aresta),
+                                 aresta_obter_destino(aresta), aresta_obter_quadra_esquerda(aresta),
+                                 aresta_obter_quadra_direita(aresta),
+                                 aresta_obter_comprimento(aresta), aresta_obter_velocidade(aresta),
+                                 aresta_obter_nome(aresta));
         }
     }
     return grafo_copia;
-}
-
-void excluir_vertices_contidos_envoltoria(Grafo grafo, Pilha vertices_envoltoria) {
-    int tamanho = pilha_obter_tamanho(vertices_envoltoria);
-    Ponto *pontos = malloc(sizeof *pontos * tamanho);
-
-    // armazen os pontos em um array
-    for (int i = 0; i < tamanho; i++) {
-        Figura fig = pilha_remover(vertices_envoltoria);
-        pontos[i] = ponto_criar(figura_obter_x_centro(fig), figura_obter_y_centro(fig));
-    }
-
-    for (int i = 0; i < grafo_obter_tamanho(grafo); i++) {
-        Vertice vertice = grafo_obter_vertice_por_indice(grafo, i);
-        if (vertice_contido_envoltoria(vertice, &pontos, tamanho)) {
-            // Se encontrou um vertice dentro da envoltoria, remove todas as arestas do vertice e o
-            // vertice
-            Lista remover_arestas = vertice_obter_arestas(vertice);
-            for_each_lista(no, remover_arestas) {
-                grafo_remover_aresta(grafo, aresta_obter_origem(lista_obter_info(no)),
-                                     aresta_obter_destino(lista_obter_info(no)));
-            }
-            grafo_remover_vertice(grafo, vertice_obter_id(vertice));
-        }
-    }
 }
 
 bool vertice_contido_envoltoria(Vertice vertice, Ponto *pontos, int tamanho_array) {
@@ -688,6 +596,30 @@ bool vertice_contido_envoltoria(Vertice vertice, Ponto *pontos, int tamanho_arra
     return true;
 }
 
+void excluir_vertices_contidos_envoltoria(Grafo grafo, Pilha vertices_envoltoria) {
+    int tamanho = pilha_obter_tamanho(vertices_envoltoria);
+    Ponto *pontos = malloc(sizeof *pontos * tamanho);
+
+    // Armazena os pontos em um array.
+    for (int i = 0; i < tamanho; i++) {
+        Figura fig = pilha_remover(vertices_envoltoria);
+        pontos[i] = ponto_criar(figura_obter_x_centro(fig), figura_obter_y_centro(fig));
+    }
+
+    for (int i = 0; i < grafo_obter_tamanho(grafo); i++) {
+        Vertice vertice = grafo_obter_vertice_por_indice(grafo, i);
+        if (vertice_contido_envoltoria(vertice, pontos, tamanho)) {
+            // Se encontrou um vertice dentro da envoltoria, remove todas as arestas do vertice e o
+            // vertice
+            Vertice removido = grafo_remover_vertice(grafo, vertice_obter_id(vertice));
+            vertice_destruir(removido);
+        }
+    }
+    for (int i = 0; i < tamanho; i++)
+        free(pontos[i]);
+    free(pontos);
+}
+
 char *calcular_trajeto_vias_seguras(QuadTree qt_vias_copia, Grafo vias_copia, Ponto *registradores,
                                     Lista svg_atual, const char *linha, FILE *arquivo_log) {
     char sufixo[1024];
@@ -702,15 +634,15 @@ char *calcular_trajeto_vias_seguras(QuadTree qt_vias_copia, Grafo vias_copia, Po
         registradores[registrador1] == NULL || registradores[registrador2] == NULL)
         return NULL;
 
-    if (vias_copia == NULL)
+    if (qt_vias_copia == NULL || vias_copia == NULL)
         return NULL;
 
     const Ponto ponto_origem = registradores[registrador1];
     const Vertice vertice_origem = quadtree_obter_mais_proximo(
         qt_vias_copia, ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
     if (vertice_origem == NULL) {
-        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
-                  ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
+        LOG_INFO("Não foi possível encontrar um vértice próximo ao ponto de origem (%lf,%lf)!\n",
+                 ponto_obter_x(ponto_origem), ponto_obter_y(ponto_origem));
         return NULL;
     }
 
@@ -718,39 +650,33 @@ char *calcular_trajeto_vias_seguras(QuadTree qt_vias_copia, Grafo vias_copia, Po
     const Vertice vertice_destino = quadtree_obter_mais_proximo(
         qt_vias_copia, ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
     if (vertice_destino == NULL) {
-        LOG_AVISO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
-                  ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
+        LOG_INFO("Não foi possível encontrar um vértice próximo ao ponto de destino (%lf,%lf)!\n",
+                 ponto_obter_x(ponto_destino), ponto_obter_y(ponto_destino));
         return NULL;
     }
 
     Pilha caminho_curto = dijkstra_distancia(vias_copia, vertice_obter_id(vertice_origem),
                                              vertice_obter_id(vertice_destino));
-    if (caminho_curto == NULL)
-        return NULL;
     Pilha caminho_rapido = dijkstra_velocidade(vias_copia, vertice_obter_id(vertice_origem),
                                                vertice_obter_id(vertice_destino));
-    if (caminho_rapido == NULL)
-        return NULL;
 
     fprintf(arquivo_log, "Caminho mais curto de R%d a R%d:\n", registrador1, registrador2);
-
+    // Animação do caminho mais curto
     Animacao animacao_curto = dijkstra_criar_representacao(
         caminho_curto, svg_atual, cor_curto, ponto_origem, ponto_destino, arquivo_log);
+    if (animacao_curto != NULL) {
+        animacao_definir_margem_x(animacao_curto, 2);
+        animacao_definir_margem_y(animacao_curto, 2);
+    }
 
+    fprintf(arquivo_log, "\nCaminho mais rápido de R%d a R%d:\n", registrador1, registrador2);
+    // Animação do caminho mais rápido
     Animacao animacao_rapido = dijkstra_criar_representacao(
         caminho_rapido, svg_atual, cor_rapido, ponto_origem, ponto_destino, arquivo_log);
-
-    // animação do caminho mais curto
-    animacao_definir_margem_x(animacao_curto, 10);
-    animacao_definir_margem_y(animacao_curto, 10);
-    // descrição textual do caminho mais curto
-    descricao_textual(caminho_curto, arquivo_log);
-
-    // animação do caminho mais rápdio
-    animacao_definir_margem_x(animacao_rapido, 0);
-    animacao_definir_margem_y(animacao_rapido, 0);
-    // descrição textual do caminho mais rapido
-    descricao_textual(caminho_rapido, arquivo_log);
+    if (animacao_rapido != NULL) {
+        animacao_definir_margem_x(animacao_rapido, -4);
+        animacao_definir_margem_y(animacao_rapido, -4);
+    }
 
     // O comando não recebeu um novo sufixo, continuar a utilizar o antigo.
     if (strcmp(sufixo, "-") == 0)
@@ -760,5 +686,78 @@ char *calcular_trajeto_vias_seguras(QuadTree qt_vias_copia, Grafo vias_copia, Po
     char *novo_sufixo = malloc(sizeof *sufixo * 1024);
     novo_sufixo[0] = '\0';
     strcpy(novo_sufixo, sufixo);
+    return novo_sufixo;
+}
+
+char *analisar_vertices_contidos_envoltoria(Grafo vias, QuadTree casos, Lista formas,
+                                            FILE *arquivo_log, Ponto *registradores,
+                                            Lista svg_atual, const char *linha) {
+    // obtém todos os casos
+    // 2000 = valor simbolico apenas para a ideia de obter todos os casos da cidade
+    Lista total_casos = quadtree_nos_dentro_retangulo(casos, 0, 0, 2000, 2000);
+    int tamanho = lista_obter_tamanho(total_casos);
+
+    // Cria uma lista de figuras para utilizar no graham scan.
+    Figura *lista_casos = malloc(tamanho * sizeof *lista_casos);
+    if (lista_casos == NULL) {
+        LOG_ERRO("Falha ao alocar memória!\n");
+        return NULL;
+    }
+
+    // Armazenando todos os casos como figura na lista.
+    int j = 0;
+    for_each_lista(no_contido, total_casos) {
+        lista_casos[j++] = quadtree_obter_info(lista_obter_info(no_contido));
+    }
+    lista_destruir(total_casos);
+    total_casos = NULL;
+
+    // Pilha utilizada para excluir os vertices do grafo.
+    Pilha pilha_vertices = graham_scan(tamanho, &lista_casos);
+    // Graham scan retorna uma pilha com os vertices da envoltoria convexa.
+    Pilha pilha_pontos = graham_scan(tamanho, &lista_casos);
+    free(lista_casos);
+    lista_casos = NULL;
+
+    QuadTree qt_vias_copia = quadtree_criar((funcGetChave *) vertice_obter_id);
+    Grafo vias_copia = criar_copia_grafo_vias(vias, qt_vias_copia);
+    excluir_vertices_contidos_envoltoria(vias_copia, pilha_vertices);
+    pilha_destruir(pilha_vertices);
+    pilha_vertices = NULL;
+
+    char *novo_sufixo = calcular_trajeto_vias_seguras(qt_vias_copia, vias_copia, registradores,
+                                                      svg_atual, linha, arquivo_log);
+
+    const int tamanho_pilha = pilha_obter_tamanho(pilha_pontos);
+    // Aloca uma matriz para armazenar os pontos encontrados.
+    double **pontos = malloc(sizeof *pontos * tamanho_pilha);
+    if (pontos == NULL) {
+        LOG_ERRO("Falha ao alocar memória!\n");
+        return NULL;
+    }
+
+    int i = 0;
+    // Carrega os pontos encontrados na matriz.
+    while (!pilha_esta_vazia(pilha_pontos)) {
+        pontos[i] = malloc(sizeof **pontos * 2);
+        if (pontos[i] == NULL) {
+            LOG_ERRO("Falha ao alocar memória!\n");
+            free(pontos);
+            return NULL;
+        }
+        Figura fig = pilha_remover(pilha_pontos);
+        pontos[i][0] = figura_obter_x_centro(fig);
+        pontos[i][1] = figura_obter_y_centro(fig);
+        i++;
+    }
+    pilha_destruir(pilha_pontos);
+    pilha_pontos = NULL;
+
+    Poligono poligono = poligono_criar(pontos, tamanho_pilha, "red", "yellow", 0.4);
+    lista_inserir_final(formas, poligono);
+    fprintf(arquivo_log, "\nÁrea da envoltória convexa: %lf\n", poligono_calcular_area(poligono));
+
+    quadtree_destruir(qt_vias_copia);
+    grafo_destruir(vias_copia);
     return novo_sufixo;
 }
