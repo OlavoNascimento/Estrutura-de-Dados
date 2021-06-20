@@ -23,6 +23,7 @@
 #include "../../Utils/graham_scan.h"
 #include "../../Utils/kruskal.h"
 #include "../../Utils/logging.h"
+#include "../../Utils/matematica.h"
 
 // Guarda as informações da face de uma quadra.
 struct InfoFace {
@@ -550,47 +551,21 @@ bool vertice_contido_envoltoria(Vertice vertice, Ponto *pontos, int tamanho_arra
     // resultado < : ponto está a direita da linha
     // se para todas as linhas o ponto está do mesmo lado, então ele está dentro do poligono
 
-    char resultado;
-    char resultado_anterior;
     double xp = vertice_obter_x(vertice);
     double yp = vertice_obter_y(vertice);
 
-    double x1 = ponto_obter_x(pontos[0]);
-    double y1 = ponto_obter_y(pontos[0]);
+    for (int i = 0; i < tamanho_array; i++) {
+        double x1 = ponto_obter_x(pontos[i]);
+        double y1 = ponto_obter_y(pontos[i]);
 
-    double x2 = ponto_obter_x(pontos[1]);
-    double y2 = ponto_obter_y(pontos[1]);
+        double x2 = ponto_obter_x(pontos[i + 1]);
+        double y2 = ponto_obter_y(pontos[i + 1]);
+        double pv = produto_vetorial(x2 - x1, y2 - y1, xp - x1, yp - y1);
 
-    int resp = (yp - y1) * (x2 - x1) - (xp - x1) * (y2 - y1);
-    if (resp < 0) {
-        resultado_anterior = 'D';
-    } else if (resp == 0) {
-        resultado_anterior = 'L';
-    } else {
-        resultado_anterior = 'E';
-    }
-
-    for (int i = 1; i < tamanho_array - 1; i++) {
-        x1 = ponto_obter_x(pontos[i]);
-        y1 = ponto_obter_y(pontos[i]);
-
-        x2 = ponto_obter_x(pontos[i + 1]);
-        y2 = ponto_obter_y(pontos[i + 1]);
-
-        resp = (yp - y1) * (x2 - x1) - (xp - x1) * (y2 - y1);
-        if (resp < 0) {
-            resultado = 'D';
-        } else if (resp == 0) {
-            resultado = 'L';
-        } else {
-            resultado = 'E';
-        }
-
-        // se houve alguma aresta do poligono em que o ponto ficou em um lado diferente, ele não
-        // está contido pelo poligono
-        if (resultado != resultado_anterior) {
+        // Se houve alguma aresta do poligono em que o ponto ficou em um lado diferente, ele não
+        // está contido pelo poligono.
+        if (pv > 0)
             return false;
-        }
     }
 
     return true;
